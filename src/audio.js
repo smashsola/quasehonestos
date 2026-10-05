@@ -1,18 +1,16 @@
+import {speechTiming} from './speech-timing.js';
 let ctx,fanGain;
 // Cartoon syllables: each caller has a different pitch, pace and vowel color.
-const murmurProfiles={nino:[205,.12,850,1500],olga:[165,.19,650,1100],davi:[115,.14,430,1350],yara:[240,.105,1000,1900],pri:[190,.095,750,1750],bento:[95,.21,350,950]};
 const speakingNodes=new Set();
 function stopMurmurs(){for(const node of speakingNodes){try{node.stop();}catch{}}speakingNodes.clear();}
+document.addEventListener('qh-speaking-stop',stopMurmurs);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMurmurs();});
 document.addEventListener('click',e=>{if(e.target.closest('[data-sound-mute]'))stopMurmurs();},true);
 document.addEventListener('qh-murmur',async e=>{
  if(muted||document.hidden||!characterVolume)return;
  try{
   await ensureAudio();if(!ctx||muted||document.hidden)return;stopMurmurs();
-  const [basePitch,basePace,f1,f2]=murmurProfiles[e.detail.caller]||murmurProfiles.nino;
-  const emotion=e.detail.emotion,tone={amused:1.13,surprised:1.18,hurt:.86,angry:.9,confused:1.04}[emotion]||1;
-  const pitch=basePitch*tone,pace=basePace*(emotion==='amused'?.86:emotion==='hurt'?1.2:1);
-  const duration=Math.min(2.6,e.detail.duration/1000),start=ctx.currentTime+.02;
+  const {pitch,pace,f1,f2,duration}=speechTiming(e.detail.caller,e.detail.emotion,e.detail.duration),start=ctx.currentTime+.02;
   for(let i=0;i<Math.floor(duration/pace);i++){
    const t=start+i*pace,voice=ctx.createOscillator(),envelope=ctx.createGain();
    voice.type='sawtooth';voice.frequency.setValueAtTime(pitch*(1+.09*Math.sin(i*2.4)),t);
