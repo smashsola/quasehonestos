@@ -7,7 +7,7 @@ export const characterProfiles={
  bento:'Informal, brincalhão e ligado em memes. Pode rir de uma frase absurda, mas lembra de problemas ao compartilhar fotos e dados. Fica sério diante de desrespeito repetido.'
 };
 export function conversationContext(a){
- return {stage:['pitch','question','request','ready','done'].includes(a.stage)?a.stage:'pitch',outcome:['blocked','fooled','closed'].includes(a.outcome)?a.outcome:null,shared:!!a.item,fileSent:!!a.fileSent,trust:Math.max(0,Math.min(3,Number(a.trust)||0)),irritation:Math.max(0,Math.min(10,Number(a.irritation)||0)),suspicion:Math.max(0,Math.min(10,Number(a.suspicion)||0)),promisedFree:!!a.memory?.free};
+ return {stage:['pitch','question','request','ready','done'].includes(a.stage)?a.stage:'pitch',outcome:['blocked','fooled','closed'].includes(a.outcome)?a.outcome:null,shared:!!a.item,fileSent:!!a.fileSent,trust:Math.max(0,Math.min(3,Number(a.trust)||0)),irritation:Math.max(0,Math.min(10,Number(a.irritation)||0)),suspicion:Math.max(0,Math.min(10,Number(a.suspicion)||0)),promisedFree:!!a.memory?.free,proposalExplained:!!(a.proposalExplained||a.used?.includes('pitch')),doubtAnswered:!!(a.doubtAnswered||a.used?.includes('answer')),lastIntent:['chat','smalltalk','pitch','answer','question','request','wait','pressure','hostile','apology','uncertain','contradiction','thanks','after','unclear'].includes(a.lastIntent)?a.lastIntent:null};
 }
 export function replyDecision(context){return context.outcome?'ended':context.stage==='ready'&&context.shared?'shared':context.stage==='request'?'consider':'clarify';}
 export function nextObjective(a){

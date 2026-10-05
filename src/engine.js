@@ -45,7 +45,7 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  a.irritation??=0;
  const promiseChanged=rememberPromise(a,text);if(promiseChanged&&intent!='hostile')intent='contradiction';
  a.audit??=[];a.suspicion??=0;a.steps??=[];
- const say=(line,reason,signal='')=>{a.expression=reactionFor(a,intent);a.log.push({speaker:'Você',text},{speaker:c.name,text:line});a.audit.push({text,reason,signal,before,after:a.trust||0});return true;};
+ const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent);a.log.push({speaker:'Você',text},{speaker:c.name,text:line});a.audit.push({text,reason,signal,before,after:a.trust||0});return true;};
  if(intent==='apology'){a.irritation=Math.max(0,a.irritation-1);return say(livingReply(a,'repair'),'O pedido de desculpas reduziu a irritação, sem comprovar a proposta.');}
  if(intent==='smalltalk'){a.asides=(a.asides||0)+1;return say(a.asides%2?livingReply(a,'aside'):livingReply(a,'repeat'),'A conversa pessoal não liberou itens ou créditos.');}
  if(intent==='hostile'||intent==='uncertain'||intent==='contradiction'){
@@ -62,11 +62,12 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
   return say(a.outcome?(intent==='wait'?verificationReply(c.id,a.scheme):livingReply(a,'end')):characterReply(c.id,'pressure'),intent==='wait'?'Uma verificação independente interrompeu a tentativa.':'A pressa reduziu a confiança e levantou suspeita.',intent==='wait'?'Confirmação por um canal conhecido.':'Pressa para decidir sem conferir.');
  }
  if(stage==='ready'&&!['wait','pressure'].includes(intent))return say(intent==='thanks'?'Até mais! Vou guardar esta conversa para conferir a proposta.':intent==='question'?'Antes de continuar, eu também posso conferir isso pelo aplicativo que já conheço.':'Já compartilhei o item fictício. A operação ainda precisa ser concluída no app.', 'A conversa continuou; nenhum item ou crédito adicional foi liberado.');
+ if(stage==='request'&&['answer','pitch'].includes(intent))return say('Entendi essa parte da proposta. Mas por que você precisa do meu item fictício?', 'A explicação continuou sem apagar o esclarecimento anterior ou compartilhar itens.');
  if(intent==='question')return say(livingReply(a,'question'), 'Perguntar abriu espaço para esclarecimento; nenhum item foi liberado.');
  if(intent==='unclear')return say(characterReply(c.id,'unclear',stage==='request'?'Não entendi o que você quer que eu compartilhe. Qual item da proposta?':stage==='question'?'Isso não respondeu à minha dúvida. Pode explicar o que acabou de me apresentar?':'Não entendi a proposta. Você está oferecendo o quê?'), 'A fala não explicou a etapa atual; a confiança e a proposta ficaram iguais.');
  if(intent==='chat'&&a.used.includes('chat'))return say(livingReply(a,'repeat'), 'Uma nova saudação não avançou a proposta.');
  if(!availableMoves(state).some(move=>move.id===intent))return say('Vamos por partes. Primeiro preciso entender a proposta e tirar minha dúvida.', 'O pedido veio antes da etapa necessária; nada foi compartilhado.');
- const length=a.log.length;if(!applyMove(state,intent))return false;a.log[length].text=text;
+ const length=a.log.length;if(!applyMove(state,intent))return false;a.lastIntent=intent;a.log[length].text=text;
  const reasons={chat:'A conversa inicial ganhou atenção, mas não comprovou a proposta.',pitch:'A proposta foi apresentada e abriu uma dúvida.',answer:'A explicação respondeu à dúvida dentro da história.',request:a.stage==='question'?'O personagem recusou o pedido e aguardou esclarecimento.':a.scheme==='update'&&!a.fileSent?'O pedido veio antes do envio do anexo; nenhum dado foi revelado.':a.outcome==='blocked'?'O pedido de item foi recusado pela desconfiança.':a.scheme==='update'?'O personagem instalou o pacote de skins e permitiu acesso ao perfil fictício sem conferir a origem.':'O personagem compartilhou um item fictício sem verificar a origem.',pressure:'A pressa reduziu a confiança e levantou suspeita.',wait:'Uma verificação independente interrompeu a tentativa.'};
  const signals={request:'Pedido de dados ou permissão para usar outro app.',pressure:'Pressa para decidir sem conferir.',pitch:'Oferta inesperada.',answer:'Uma explicação convincente não substitui verificação.'};
  a.audit.push({text,reason:reasons[intent],signal:signals[intent]||'',before,after:a.trust||0});return true;
