@@ -21,6 +21,8 @@ O código atualizado está nas pastas `src/`, `functions/`, `scripts/` e `tests/
 
 ## IA de personagens
 
+A IA também avalia a variação de confiança de cada mensagem conforme a personalidade, o histórico e a informação apresentada. A mudança pode ser positiva, negativa ou zero, limitada a 25 pontos percentuais por mensagem e a uma barra de 0 a 100%. O motor valida a avaliação, impede ganhos por agressão e continua responsável por compartilhar itens e executar operações. Falhas da API usam as regras locais de reserva. O motivo da variação aparece no replay do atendimento.
+
 A integração opcional usa Gemini por uma **Cloudflare Pages Function** em `/api/dialogue`. A IA reescreve as falas com personalidade e contexto. O motor local continua responsável por emoções, etapas, itens, dinheiro e encerramento. Sem chave, sem conexão ou em caso de erro, permanece a resposta local.
 
 **Estado:** integração publicada no Cloudflare; respostas reais dependem de configurar a chave e validar a API. A chave nunca fica no navegador ou no repositório.

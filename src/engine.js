@@ -17,7 +17,22 @@ export function applyMove(state,id){if(state.active?.scheme){const changed=apply
  return true;
 }
 export function closeCall(state){if(!state.active)return false;if(!state.active.outcome){state.active.outcome='closed';state.active.log.push({speaker:'Sistema',text:'Você encerrou o atendimento.'});}return true;}
-export function applyTypedMove(state,_id,text){
+export function applyTypedMove(state,id,text,judgement=null){
+ const a=state.active;
+ if(!a||a.outcome||!a.prepared||!text.trim())return false;
+ const valid=judgement&&Number.isInteger(judgement.trustDelta)&&judgement.trustDelta>=-25&&judgement.trustDelta<=25&&typeof judgement.reason==='string'&&judgement.reason.length<=180;
+ if(!valid)return applyTypedMoveLocal(state,id,text);
+ const before=a.trust||0,intent=readIntent(text,a.scheme,a.stage);
+ const delta=intent==='hostile'||intent==='pressure'||rememberPromisePreview(a,text)?Math.min(0,judgement.trustDelta):judgement.trustDelta;
+ const assessed=Math.max(0,Math.min(3,Math.round((before+delta*.03)*1000)/1000));
+ a.trust=assessed;
+ const changed=applyTypedMoveLocal(state,id,text);
+ a.trust=changed?assessed:before;
+ if(changed){const audit=a.audit.at(-1);Object.assign(audit,{before,after:assessed,trustSource:'ai',trustReason:judgement.reason});}
+ return changed;
+}
+function rememberPromisePreview(a,text){const copy={memory:{...a.memory}};return rememberPromise(copy,text);}
+function applyTypedMoveLocal(state,_id,text){
  const a=state.active;if(!a||a.outcome||!a.prepared||!text.trim())return false;
  const c=callers.find(c=>c.id===a.caller),before=a.trust||0,stage=a.stage;let intent=readIntent(text,a.scheme,a.stage);
  a.irritation??=0;

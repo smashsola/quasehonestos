@@ -1,6 +1,6 @@
 import {walletAccountPanel} from './prize-wallet.js';
 import {nextObjective} from './conversation-context.js';
-import {polishReply} from './ai-dialogue.js';
+import {polishReply,evaluateTrust} from './ai-dialogue.js';
 import {fitWindow,resizeWindow} from './window-geometry.js';
 import {protectionCard} from './comedy-learning.js';
 import {flowPanel,filesContent,mailContent,helpContent,updateContent} from './app-content.js';
@@ -39,7 +39,15 @@ function celebrateEarnings(){
 async function animateMove(id,typedText){
  if(typing||!state.active)return;
  const logLength=state.active.log.length,priorTrust=state.active.trust||0,priorExpression=savedExpression(state.active);
- if(!(typedText?applyTypedMove(state,id,typedText):applyMove(state,id)))return;
+ let judgement=null;
+ if(typedText){
+  const pending=state.active;
+  typing={speaker:'Você',visible:logLength,trust:priorTrust,expression:priorExpression};render();
+  judgement=await evaluateTrust(pending,typedText);
+  if(state.active!==pending){typing=null;render();return;}
+  typing=null;
+ }
+ if(!(typedText?applyTypedMove(state,id,typedText,judgement):applyMove(state,id))){render();return;}
  typing={speaker:'Você',visible:logLength,trust:priorTrust,expression:priorExpression};render();
  const active=state.active,reply=active.log.at(-1);
  if(typedText){await polishReply(active,reply);if(state.active!==active){typing=null;return;}}
@@ -172,7 +180,7 @@ app.addEventListener('click',e=>{const b=e.target.closest('button');if(b?.datase
 
 function learningReplay(a){
  if(!a.audit?.length)return protectionCard(a.scheme,escape);
- return protectionCard(a.scheme,escape)+`<details class="learning-replay"><summary>O que suas falas mudaram</summary><ol>${a.audit.map(event=>`<li><blockquote>“${escape(event.text)}”</blockquote><p>${escape(event.reason)}</p><span class="trust-change">Confiança: ${Math.round(event.before/3*100)}% para ${Math.round(event.after/3*100)}%</span>${event.signal?`<small>Sinal de atenção: ${escape(event.signal)}</small>`:''}</li>`).join('')}</ol></details>`;
+ return protectionCard(a.scheme,escape)+`<details class="learning-replay"><summary>O que suas falas mudaram</summary><ol>${a.audit.map(event=>`<li><blockquote>“${escape(event.text)}”</blockquote><p>${escape(event.reason)}</p>${event.trustSource==='ai'?`<p class="trust-reason">Reação do personagem: ${escape(event.trustReason)}</p>`:''}<span class="trust-change">Confiança: ${Math.round(event.before/3*100)}% para ${Math.round(event.after/3*100)}%</span>${event.signal?`<small>Sinal de atenção: ${escape(event.signal)}</small>`:''}</li>`).join('')}</ol></details>`;
 }
 let lastIncomingId=null;
 function incomingMessages(){
