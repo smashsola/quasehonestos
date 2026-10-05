@@ -9,7 +9,9 @@ document.addEventListener('qh-murmur',async e=>{
  if(muted||document.hidden||!characterVolume)return;
  try{
   await ensureAudio();if(!ctx||muted||document.hidden)return;stopMurmurs();
-  const [pitch,pace,f1,f2]=murmurProfiles[e.detail.caller]||murmurProfiles.nino;
+  const [basePitch,basePace,f1,f2]=murmurProfiles[e.detail.caller]||murmurProfiles.nino;
+  const emotion=e.detail.emotion,tone={amused:1.13,surprised:1.18,hurt:.86,angry:.9,confused:1.04}[emotion]||1;
+  const pitch=basePitch*tone,pace=basePace*(emotion==='amused'?.86:emotion==='hurt'?1.2:1);
   const duration=Math.min(2.6,e.detail.duration/1000),start=ctx.currentTime+.02;
   for(let i=0;i<Math.floor(duration/pace);i++){
    const t=start+i*pace,voice=ctx.createOscillator(),envelope=ctx.createGain();

@@ -10,7 +10,7 @@ test('Cor da confiança acompanha o percentual e limita valores inválidos',()=>
 });
 test('Expressões reagem às falas e sobrevivem ao salvamento sem depender da janela',()=>{
  const s=start();applyTypedMove(s,'typed','oi');assert.equal(savedExpression(s.active),'happy');
- applyTypedMove(s,'typed','abc');assert.equal(savedExpression(s.active),'thinking');
+ applyTypedMove(s,'typed','abc');assert.equal(savedExpression(s.active),'confused');
  applyTypedMove(s,'typed','Preciso disso agora');assert.equal(savedExpression(s.active),'suspicious');
  applyTypedMove(s,'typed','Você é um idiota');assert.equal(savedExpression(s.active),'angry');
  const restored=load({getItem:key=>key===KEY?JSON.stringify(s):null});assert.equal(savedExpression(restored.active),'angry');

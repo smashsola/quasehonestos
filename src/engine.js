@@ -47,7 +47,7 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  a.irritation??=0;
  const promiseChanged=rememberPromise(a,text);if(promiseChanged&&intent!='hostile')intent='contradiction';
  a.audit??=[];a.suspicion??=0;a.steps??=[];
- const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent);a.log.push({speaker:'Você',text},{speaker:c.name,text:line});a.audit.push({text,reason,signal,before,after:a.trust||0});return true;};
+ const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,text:line});a.audit.push({text,reason,signal,before,after:a.trust||0});return true;};
  if(intent==='apology'){a.irritation=Math.max(0,a.irritation-1);return say(livingReply(a,'repair'),'O pedido de desculpas reduziu a irritação, sem comprovar a proposta.');}
  if(intent==='smalltalk'){a.asides=(a.asides||0)+1;return say(a.asides%2?livingReply(a,'aside'):livingReply(a,'repeat'),'A conversa pessoal não liberou itens ou créditos.');}
  if(intent==='hostile'||intent==='uncertain'||intent==='contradiction'){
