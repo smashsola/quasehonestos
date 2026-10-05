@@ -2,7 +2,7 @@ const normalize=text=>text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036
 const topics={prize:/premio|batata|trofeu|concurso/,support:/suporte|computador|paoos|torradeira|assistencia/,club:/clube|colher|associacao|convite|talher/,update:/skin|changer|blaster|visual|cosmica|atualiz|anexo|arquivo|pacote|instal/};
 export function readIntent(text,scheme,stage){
  const t=normalize(text).trim();
- if(/idiota|\bburr[oa]\b|otario|cala a boca|imbecil|trouxa|te odeio/.test(t))return 'hostile';
+ if(/idiota|\bburr[oa]\b|otario|cala a boca|imbecil|trouxa|te odeio|seu (?:merda|bosta)|sua (?:merda|bosta)|(?:vim|vou|quero).*\b(?:roubar|robar)\b/.test(t))return 'hostile';
  if(/desculp|foi mal|perdao/.test(t))return 'apology';
  if(/como (?:voce esta|vai)|como foi (?:seu|o seu) dia|(?:seu|o) cafe|sua batata|seus memes|o que voce gosta/.test(t))return 'smalltalk';
  if(/nao sei|sei la|tanto faz|esquece|mudei de ideia|nao tenho certeza/.test(t))return 'uncertain';
