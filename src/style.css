@@ -152,3 +152,22 @@ body:has(.desktop){overflow:hidden}.desktop-window .windowbar:active{cursor:grab
 .virtual-account strong{font-size:25px;white-space:nowrap}
 .virtual-account .account-debit{color:#ffd1b1!important}
 @media(max-width:600px){.desktop-window[data-window-id="calls"] .avatar,.desktop-window[data-window-id="calls"] .avatar img{width:82px;height:82px;flex-basis:82px}.desktop-window[data-window-id="calls"] .contact{gap:12px;padding:12px 14px}.desktop-window[data-window-id="calls"] .contact h1{font-size:19px}}
+/* Stable portraits and a clearer visual hierarchy in Zape. */
+img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
+.desktop-window[data-window-id="calls"] .contact{background:linear-gradient(120deg,#213c3d,#1f2c34);padding:14px 18px;gap:16px;border-bottom:1px solid #45685c66}
+.desktop-window[data-window-id="calls"] .avatar{width:100px;height:100px;flex-basis:100px;border:1px solid #9ac6af88;border-radius:20px;box-shadow:0 4px 12px #0003;overflow:hidden}
+.desktop-window[data-window-id="calls"] .avatar img{width:100%;height:100%;border:0;border-radius:0;pointer-events:none}
+.desktop-window[data-window-id="calls"] .contact>div:nth-child(2){min-width:0;flex:1}
+.desktop-window[data-window-id="calls"] .contact h1{font-size:22px;letter-spacing:-.5px;color:#f1f8f4}
+.desktop-window[data-window-id="calls"] .contact p{line-height:1.5;margin-top:6px;overflow-wrap:anywhere;color:#adc4b9}
+.desktop-window[data-window-id="calls"] .call-live{padding:6px 9px;border:1px solid #86c1a344;background:#9cc9ad10;border-radius:20px;color:#b8dbc7;white-space:nowrap}
+.desktop-window[data-window-id="calls"] .chat-toolbar{padding:9px 18px;background:#1d3035}
+.desktop-window[data-window-id="calls"] .trust-card{border:1px solid #63847855;border-radius:10px;padding:10px 12px;background:#172a2e;box-shadow:inset 0 1px 0 #ffffff08}
+.desktop-window[data-window-id="calls"] .trust-caption b{font-size:19px;font-variant-numeric:tabular-nums}
+.desktop-window[data-window-id="calls"] .trust-track{height:8px;border-radius:8px;background:#0c1c21;overflow:hidden;box-shadow:inset 0 1px 3px #0004}
+.desktop-window[data-window-id="calls"] .trust-fill{border-radius:8px;background:var(--trust-color);box-shadow:inset 0 1px 0 #ffffff40}
+.desktop-window[data-window-id="calls"] .bubble{padding:12px 15px;border:1px solid #769b8d18;border-radius:4px 14px 14px}
+.desktop-window[data-window-id="calls"] .bubble.own{border-radius:14px 4px 14px 14px;background:#14634f}
+.desktop-window[data-window-id="calls"] .message-compose textarea{border-radius:12px;border:1px solid #6b918366;background:#172a30;line-height:1.6;padding:12px;color:#e7f2ed;transition:border-color .15s,box-shadow .15s}
+.desktop-window[data-window-id="calls"] .message-compose textarea:focus{outline:none;border-color:#65bf9c;box-shadow:0 0 0 3px #65bf9c18}
+@media(max-width:600px){.desktop-window[data-window-id="calls"] .avatar{width:82px;height:82px;flex-basis:82px}.desktop-window[data-window-id="calls"] .contact{padding:12px 14px;gap:12px}.desktop-window[data-window-id="calls"] .contact h1{font-size:20px}}
