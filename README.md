@@ -31,7 +31,7 @@ Ao usar IA, as últimas mensagens e o contexto fictício são enviados ao Google
 
 1. Abra **Workers & Pages**, selecione `quasehonestos` e entre nas configurações de variáveis e segredos.
 2. Crie um **segredo** chamado `GEMINI_API_KEY` e cole a chave Gemini somente nesse campo.
-3. Opcionalmente, defina `GEMINI_MODEL`. O padrão é `gemini-2.5-flash-lite`; escolha um modelo disponível na sua conta.
+3. Opcionalmente, defina `GEMINI_MODEL`. O padrão é `gemini-3.5-flash-lite`; escolha um modelo disponível na sua conta.
 4. Publique novamente e teste uma conversa. Sem segredo, o jogo usa as falas locais.
 
 Configure quotas no projeto Google e proteção de tráfego no Cloudflare antes de divulgação ampla. A validação de origem não substitui autenticação ou limite global de gastos.
