@@ -1,5 +1,6 @@
 // The server owns the key. The engine validates AI trust changes and owns items/payments.
 import {conversationContext} from './conversation-context.js';
+import {dialogueIntents} from './language.js';
 export async function evaluateTrust(active,text,fetcher=fetch){
  try{
   const history=active.log.filter(m=>m.speaker!=='Sistema').slice(-11).map(({speaker,text})=>({speaker,text:text.slice(0,900)}));
@@ -8,7 +9,7 @@ export async function evaluateTrust(active,text,fetcher=fetch){
   if(!response.ok)return null;
   const result=await response.json();
   if(!Number.isInteger(result.trustDelta)||result.trustDelta< -25||result.trustDelta>25||typeof result.reason!=='string'||!result.reason.trim()||result.reason.length>180)return null;
-  return {trustDelta:result.trustDelta,reason:result.reason};
+  return {trustDelta:result.trustDelta,reason:result.reason,...(dialogueIntents.includes(result.intent)?{intent:result.intent}:{})};
  }catch{return null;}
 }
 export async function polishReply(active,reply,fetcher=fetch){

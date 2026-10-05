@@ -1,5 +1,6 @@
 import {livingReply,rememberPromise} from './living-dialogue.js';
 import {virtualAccount} from './prize-wallet.js';
+import {dialogueIntents,negatedRequest} from './language.js';
 import {reactionFor} from './mood.js';
 import {characterReply,verificationReply} from './personality.js';
 import {readIntent,defenseScenes} from './dialogue.js';
@@ -22,19 +23,25 @@ export function applyTypedMove(state,id,text,judgement=null){
  if(!a||a.outcome||!a.prepared||!text.trim())return false;
  const valid=judgement&&Number.isInteger(judgement.trustDelta)&&judgement.trustDelta>=-25&&judgement.trustDelta<=25&&typeof judgement.reason==='string'&&judgement.reason.length<=180;
  if(!valid)return applyTypedMoveLocal(state,id,text);
- const before=a.trust||0,intent=readIntent(text,a.scheme,a.stage);
+ const before=a.trust||0,intent=understoodIntent(text,a,judgement.intent);
  const delta=intent==='hostile'||intent==='pressure'||rememberPromisePreview(a,text)?Math.min(0,judgement.trustDelta):judgement.trustDelta;
  const assessed=Math.max(0,Math.min(3,Math.round((before+delta*.03)*1000)/1000));
  a.trust=assessed;
- const changed=applyTypedMoveLocal(state,id,text);
+ const changed=applyTypedMoveLocal(state,id,text,judgement.intent);
  a.trust=changed?assessed:before;
  if(changed){const audit=a.audit.at(-1);Object.assign(audit,{before,after:assessed,trustSource:'ai',trustReason:judgement.reason});}
  return changed;
 }
 function rememberPromisePreview(a,text){const copy={memory:{...a.memory}};return rememberPromise(copy,text);}
-function applyTypedMoveLocal(state,_id,text){
+function understoodIntent(text,a,semantic){
+ const local=readIntent(text,a.scheme,a.stage);
+ if(['hostile','pressure','wait'].includes(local))return local;
+ if(negatedRequest(text))return 'uncertain';
+ return dialogueIntents.includes(semantic)?semantic:local;
+}
+function applyTypedMoveLocal(state,_id,text,semantic=null){
  const a=state.active;if(!a||a.outcome||!a.prepared||!text.trim())return false;
- const c=callers.find(c=>c.id===a.caller),before=a.trust||0,stage=a.stage;let intent=readIntent(text,a.scheme,a.stage);
+ const c=callers.find(c=>c.id===a.caller),before=a.trust||0,stage=a.stage;let intent=understoodIntent(text,a,semantic);
  a.irritation??=0;
  const promiseChanged=rememberPromise(a,text);if(promiseChanged&&intent!='hostile')intent='contradiction';
  a.audit??=[];a.suspicion??=0;a.steps??=[];

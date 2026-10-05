@@ -1,9 +1,11 @@
-const normalize=text=>text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+import {normalizeMessage,negatedRequest} from './language.js';
+const normalize=normalizeMessage;
 const topics={prize:/premio|batata|trofeu|concurso/,support:/suporte|computador|paoos|torradeira|assistencia/,club:/clube|colher|associacao|convite|talher/,update:/skin|changer|blaster|visual|cosmica|atualiz|anexo|arquivo|pacote|instal/};
 export function readIntent(text,scheme,stage){
  const t=normalize(text).trim();
  if(/idiota|\bburr[oa]\b|otario|cala a boca|imbecil|trouxa|te odeio|seu (?:merda|bosta)|sua (?:merda|bosta)|(?:vim|vou|quero).*\b(?:roubar|robar)\b/.test(t))return 'hostile';
  if(/desculp|foi mal|perdao/.test(t))return 'apology';
+ if(negatedRequest(text))return 'uncertain';
  if(/como (?:voce esta|vai)|como foi (?:seu|o seu) dia|(?:seu|o) cafe|sua batata|seus memes|o que voce gosta/.test(t))return 'smalltalk';
  if(/nao sei|sei la|tanto faz|esquece|mudei de ideia|nao tenho certeza/.test(t))return 'uncertain';
  if(/sem pressa|com calma|pode (conferir|verificar|pensar)|consulte|confira no|verifique no/.test(t))return 'wait';
@@ -15,7 +17,8 @@ export function readIntent(text,scheme,stage){
  if(stage==='ready')return /obrigad|valeu|ate mais|tchau/.test(t)?'thanks':'after';
  if(stage==='request'){
   const item=scheme==='update'?/skin|changer|anexo|arquivo|pacote|instal/:scheme==='prize'?/cartao|batatapay|identificador|dados (?:da conta|do cartao)/:scheme==='support'?/sessao|acesso|paoos/:/passe|associacao/;
-  if(item.test(t)&&/envie|mande|manda|passe|passar|compartilh|abrir|abra|usar|use|liber|pode|quero|preciso|me da|instal/.test(t))return 'request';
+  const asking=/envie|envia|mande|manda|passe|passa|passar|compartilh|abrir|abra|abre|usar|use|liber|pode|quero|preciso|me da|instal|informe|me diz|me fala/.test(t);
+  if(asking&&(item.test(t)||/\b(?:codigo|identificador|isso|aquilo|esse dado)\b/.test(t)))return 'request';
   return 'unclear';
  }
  if(/\?$/.test(t)||/quem e|quem organizou|qual (e|o)|como funciona|por que|porque voce|de onde/.test(t))return 'question';

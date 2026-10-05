@@ -19,8 +19,8 @@ test('Cliente envia estado anterior e aceita só avaliações válidas; falha ma
 });
 test('Servidor retorna variação e motivo sem fala ou controle de etapas',async()=>{
  const original=globalThis.fetch;try{
-  globalThis.fetch=async(_url,options)=>{const data=JSON.parse(options.body);assert.match(data.systemInstruction.parts[0].text,/ÚLTIMA mensagem/);assert.deepEqual(data.generationConfig.responseSchema.required,['trustDelta','reason']);return Response.json({candidates:[{content:{parts:[{text:JSON.stringify({trustDelta:-12,reason:'Pressa sem explicar a origem.'})}]}}]});};
+  globalThis.fetch=async(_url,options)=>{const data=JSON.parse(options.body);assert.match(data.systemInstruction.parts[0].text,/ÚLTIMA mensagem/);assert.deepEqual(data.generationConfig.responseSchema.required,['trustDelta','reason','intent']);return Response.json({candidates:[{content:{parts:[{text:JSON.stringify({trustDelta:-12,reason:'Pressa sem explicar a origem.',intent:'pressure'})}]}}]});};
   const request=new Request('https://example.com/api/dialogue',{method:'POST',headers:{Origin:'https://example.com','Content-Type':'application/json'},body:JSON.stringify({caller:'olga',scheme:'prize',mode:'trust',reference:'Avaliar',history:[{speaker:'Você',text:'Preciso disso agora'}],context:{stage:'question',trust:1}})});
-  const response=await onRequestPost({request,env:{GEMINI_API_KEY:'test'}});assert.deepEqual(await response.json(),{trustDelta:-12,reason:'Pressa sem explicar a origem.'});
+  const response=await onRequestPost({request,env:{GEMINI_API_KEY:'test'}});assert.deepEqual(await response.json(),{trustDelta:-12,reason:'Pressa sem explicar a origem.',intent:'pressure'});
  }finally{globalThis.fetch=original;}
 });
