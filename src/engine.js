@@ -1,3 +1,4 @@
+import {operationReady,selectedOffer} from './app-interactions.js';
 import {livingReply,rememberPromise} from './living-dialogue.js';
 import {virtualAccount} from './prize-wallet.js';
 import {dialogueIntents,negatedRequest} from './language.js';
@@ -77,7 +78,7 @@ export function answerDefense(state,choiceId){
  const scene=defenseScenes[a.scheme]||defenseScenes.prize,choice=scene.choices.find(c=>c.id===choiceId);if(!choice)return false;
  a.defenseRound={choice:choice.id,label:choice.label,safe:choice.safe,feedback:choice.feedback,signal:scene.signal};return true;
 }
-export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=callers.find(c=>c.id===a.caller);state.history.push({caller:c.id,outcome:a.outcome,scheme:a.scheme||null,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],defenseRound:a.defenseRound||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(state.cursor===callers.length)state.finished=true;return true;}
+export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=callers.find(c=>c.id===a.caller);state.history.push({caller:c.id,outcome:a.outcome,scheme:a.scheme||null,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],offer:a.offer||null,diagnostic:a.diagnostic||null,defenseRound:a.defenseRound||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(state.cursor===callers.length)state.finished=true;return true;}
 export function buy(state,item){if(!item||state.decor.includes(item.id)||state.credits<item.price)return false;state.credits-=item.price;state.decor.push(item.id);return true;}
 
 export function availableMoves(state){
@@ -96,6 +97,7 @@ function applyInteraction(state,id){
  if(id==='request'){
   if(a.scheme==='update'&&!a.fileSent){a.used=a.used.filter(move=>move!=='request');a.log.push({speaker:c.name,text:'Ainda não chegou nenhum anexo aqui. Você está falando de qual arquivo?'});return true;}
   if(a.trust<2||a.suspicion>0){a.log.push({speaker:c.name,text:livingReply(a,'refuse')});a.stage='question';a.used=a.used.filter(move=>!['answer','request'].includes(move));return true;}
+  a.checkedToken=null;a.diagnostic=null;
   a.item={name:item.name,token:'QH-DEMO-'+c.id.toUpperCase()+'-'+a.scheme.toUpperCase(),app:item.app};a.stage='ready';a.steps.push('Item fictício compartilhado');a.log.push({speaker:c.name,text:characterReply(c.id,'received',item.received)});return true;
  }
  a.trust=Math.min(3,a.trust+1);
@@ -105,7 +107,7 @@ function applyInteraction(state,id){
  return true;
 }
 export function executeScheme(state,app){
- const a=state.active;if(!a||a.outcome||a.stage!=='ready'||a.item?.app!==app)return false;
+ const a=state.active;if(!operationReady(a,app))return false;
  const scheme=schemes.find(s=>s.id===a.scheme),c=callers.find(c=>c.id===a.caller);if(!scheme)return false;
  if(a.scheme==='update'&&(!a.fileSent||!updateProfiles[a.caller].every(field=>a.reviewedData?.includes(field.id))))return false;
  const ending=a.scheme==='update'?'Ué… meu perfil apareceu aí? Eu só queria uma skin nova para minha batata. Essa permissão tinha muito mais coisa do que eu esperava.':a.scheme==='support'?'O serviço foi registrado no meu PãoOS. Agora espero que a calculadora não passe a fazer torradas.':a.scheme==='club'?'A associação foi registrada. Vou perguntar à colher quando acontece a primeira reunião.':'O prêmio foi registrado. Só espero que a Batata Dourada não venha com gosto de purê.';

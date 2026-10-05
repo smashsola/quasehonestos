@@ -1,3 +1,4 @@
+import {prepareOperation} from './prepare-operation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fresh,nextCall,applyTypedMove,answerDefense,closeCall,finishCall,load,executeScheme} from '../src/engine.js';
@@ -16,7 +17,7 @@ test('Todas as propostas exigem explicação, dúvida respondida e pedido contex
   applyTypedMove(s,'typed',lines[1]);assert.equal(s.active.stage,'request');
   applyTypedMove(s,'typed','a');assert.equal(s.active.item,undefined);
   applyTypedMove(s,'typed',lines[2]);assert.equal(s.active.stage,'ready');assert.equal(s.credits,0);
-  assert.equal(executeScheme(s,s.active.item.app),true);
+  prepareOperation(s);assert.equal(executeScheme(s,s.active.item.app),true);
  }
 });
 test('Contradições e agressão têm consequências e defesa preserva saldo',()=>{

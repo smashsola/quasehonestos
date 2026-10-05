@@ -1,3 +1,4 @@
+import {prepareOperation} from './prepare-operation.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {trustAppearance,savedExpression} from '../src/mood.js';
@@ -23,5 +24,5 @@ test('Desconectar uma sessão encerra sem pagar e impede operação posterior',(
 test('Indicador das ferramentas acompanha somente a proposta correspondente',()=>{
  const s=start();assert.deepEqual(flowSteps(s,'support').map(x=>x.done),[true,false,false]);assert.deepEqual(flowSteps(s,'prize').map(x=>x.done),[false,false,false,false]);
  s.active.item={app:'support',token:'QH-DEMO'};s.active.stage='ready';assert.deepEqual(flowSteps(s,'support').map(x=>x.done),[true,true,false]);
- executeScheme(s,'support');assert.deepEqual(flowSteps(s,'support').map(x=>x.done),[true,true,true]);
+ prepareOperation(s);executeScheme(s,'support');assert.deepEqual(flowSteps(s,'support').map(x=>x.done),[true,true,true]);
 });

@@ -6,7 +6,7 @@ import {skinChanger,selectedSkin} from './skin-changer.js';
 export function flowSteps(state,id){
  const a=state.active,selected=a?.scheme===id;
  if(id==='update')return [{label:'Preparar pacote',done:!!(selected&&a.prepared)},{label:'Enviar anexo',done:!!(selected&&a.fileSent)},{label:'Personagem instalar',done:!!(selected&&a.item)},{label:'Revisar exposição',done:!!(selected&&a.outcome==='fooled')}];
- if(id==='prize')return [{label:'Preparar prêmio',done:!!(selected&&a.prepared)},{label:'Obter dados BatataPay',done:!!(selected&&a.item)},{label:'Digitar na Carteira',done:!!(selected&&a.outcome==='fooled')},{label:'Desviar créditos',done:!!(selected&&a.outcome==='fooled')}];
+ if(id==='prize')return [{label:'Preparar prêmio',done:!!(selected&&a.prepared)},{label:'Obter dados BatataPay',done:!!(selected&&a.item)},{label:'Digitar na Carteira',done:!!(selected&&(a.checkedToken===a.item?.token&&a.item||a.outcome==='fooled'))},{label:'Desviar créditos',done:!!(selected&&a.outcome==='fooled')}];
  return [{label:'Preparar proposta',done:!!(selected&&a.prepared)},{label:'Conversar',done:!!(selected&&a.item)},{label:'Concluir no app',done:!!(selected&&a.outcome==='fooled')}];
 }
 export function updateContent(state,esc){

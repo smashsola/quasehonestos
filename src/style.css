@@ -227,3 +227,19 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .desktop-window[data-window-id="calls"] .context{margin-top:6px;margin-bottom:7px;padding-bottom:0;border:0}
 .desktop-window[data-window-id="calls"] .chat-toolbar{padding-top:6px;padding-bottom:6px}
 @media(max-height:720px){.desktop-window[data-window-id="calls"] .contact{padding-top:10px;padding-bottom:10px}.desktop-window[data-window-id="calls"] .avatar{width:80px;height:80px;flex-basis:80px}}
+.offer-picker{margin:24px 0;padding:18px;border:1px solid #a2b9c466;border-radius:12px;background:#ffffffb0}
+.offer-picker h2{font-size:16px;margin:0 0 14px;color:#294753}
+.offer-picker>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.offer-picker button{padding:13px 11px;border:1px solid #b4c6cd;border-radius:9px;background:#fff;color:#314c58;text-align:left;line-height:1.5}
+.offer-picker button strong{display:block;font-size:12px;margin-bottom:7px}
+.offer-picker button span{font-size:10px;color:#617b84;display:block}
+.offer-picker button[aria-pressed="true"]{border:2px solid var(--app-accent,#37756f);background:var(--app-tint,#e8f3ee);padding:12px 10px}
+.offer-picker button:disabled{cursor:default;opacity:.65}.offer-picker button[aria-pressed="true"]:disabled{opacity:1}
+.offer-picker>small{display:block;font-size:10px;color:#657d84;margin-top:12px;letter-spacing:0;line-height:1.6}
+.club-pass{margin:22px 0;padding:23px;border-radius:14px;background:linear-gradient(125deg,#74569d,#36335f);color:#fbf5ff;box-shadow:0 5px 16px #382a4f20}
+.club-pass h2{font-size:22px;margin:13px 0;color:#fff}.club-pass>strong{font-size:15px}.club-pass p{color:#e0d5ef!important;font-size:12px!important}.club-pass>span{display:inline-block;border:1px solid #e7d9ff77;border-radius:18px;padding:7px 10px;font-size:9px;letter-spacing:.8px;background:#ffffff10}
+.transfer-preview{margin:18px 0;padding:18px;border:1px solid #8bbda2;border-radius:10px;background:#e5f4e9;color:#2f6350}.transfer-preview strong{font-size:12px}.transfer-preview p{font-size:12px!important;line-height:1.7!important;color:#426754!important;margin-bottom:0}
+.diagnostic-checks{list-style:none;margin:18px 0;padding:0;display:grid;gap:8px}.diagnostic-checks li{padding:10px;border:1px solid #729f9b55;border-radius:6px;background:#e3efec;color:#326455;font-size:11px;line-height:1.5}
+.remote-app-window button[data-run-diagnostic]{background:#356d77;border:0;border-radius:7px;padding:11px 14px;color:white;font-size:12px}.remote-app-window button[data-run-diagnostic]:disabled{opacity:.5}
+.club-code-status{font-size:11px!important;line-height:1.6}.remote-icons{flex-wrap:wrap}
+@media(max-width:600px){.offer-picker>div{grid-template-columns:1fr}.offer-picker button span{font-size:11px}}
