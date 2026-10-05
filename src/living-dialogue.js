@@ -1,0 +1,26 @@
+// Shared emotions, individual voices. No network or generated personal data.
+import {characterAsides} from './comedy-learning.js';
+const voices={
+ nino:{aside:'Minha mãe já imprimiu um troféu e colocou na geladeira. Esse é diferente?',repeat:'Já dei oi! Minha batata também. Pode continuar a história.',repair:'Tá bom. A batata aceita suas desculpas. Eu também.',refuse:'Pera. Ainda tem coisa estranha nessa história. Não vou mandar nada por enquanto.',end:'Chega. Vou sair da conversa antes que minha batata aprenda esses modos.',memory:'Ué, era grátis e apareceu uma taxa? Essa batata começou a sair cara.',questions:['Quem organizou? Só participei do concurso de desenho.','Meu computador está funcionando. Quem pediu esse atendimento?','Eu já sou do clube. Esse convite é de qual grupo?','Por que uma skin precisa saber meu contato e minha rotina?']},
+ olga:{aside:'O bule apitou no meio da sua fala. Voltei. Pode explicar essa parte?',repeat:'Oi de novo, meu bem. Agora me conta o que você queria.',repair:'Assim a gente conversa. Vou ouvir, mas sem me apressar.',refuse:'Meu bem, não vou compartilhar nada enquanto isso não ficar claro.',end:'Já pedi respeito. Vou encerrar e terminar meu café em paz.',memory:'Você falou que era grátis. Agora tem cobrança? Meu café esfriou, minha memória não.',questions:['Ganhei sem me inscrever? Me conta de onde veio esse concurso.','Não chamei assistência. O que vocês acham que aconteceu?','Minha vizinha recebeu outro convite. Vocês são do mesmo clube?','Para mudar uma skin precisa disso tudo? Quero entender essas permissões.']},
+ davi:{aside:'Anotei. Só um instante: a calculadora resolveu abrir depois de dez minutos.',repeat:'A saudação chegou. Falta a explicação do atendimento.',repair:'Certo. Vamos retomar com respeito e informações claras.',refuse:'Ainda falta confirmar a origem. Não vou liberar acesso por enquanto.',end:'Esse tom continuou depois do aviso. Estou encerrando o contato.',memory:'Você declarou gratuidade e depois pediu pagamento. As condições não correspondem.',questions:['Qual organização realizou o concurso? Quero conferir o anúncio.','Não abri um chamado. Como surgiu esse atendimento?','Qual é a organização responsável pelo clube?','Qual é a relação entre trocar o visual e acessar meus dados?']},
+ yara:{aside:'O grupo do clube acabou de mandar cinquenta mensagens. Vou silenciar para te ouvir.',repeat:'Oi! Você já entrou na conversa. Qual é a proposta?',repair:'Tudo bem. Respeito é regra do clube, inclusive aqui.',refuse:'Vou segurar meu passe até confirmar isso com a turma.',end:'Você continuou passando do limite. Vou fechar essa conversa.',memory:'No começo era grátis. A turma precisa saber dessa taxa antes de decidir.',questions:['A turma participou de qual concurso? Quem anunciou o prêmio?','Ninguém do clube pediu suporte. De onde veio esse chamado?','Sou do Clube Colher. Por que o outro convite dizia Clube Garfo?','Essa skin pede até minha rotina. O que isso tem a ver com o blaster?']},
+ pri:{aside:'Estou com duas anotações abertas. Continue, vou comparar os detalhes.',repeat:'Já nos cumprimentamos. Estou esperando a informação que falta.',repair:'Desculpas registradas. Podemos continuar, mas a dúvida permanece.',refuse:'Essa informação não fecha. Não vou compartilhar o item até esclarecer.',end:'Você insistiu no desrespeito. Vou guardar o registro e encerrar.',memory:'Anotei “grátis” na primeira mensagem. Essa taxa contradiz o que você prometeu.',questions:['Quem organizou? Quero comparar com o anúncio original.','Não solicitei atendimento. Qual é a origem desse chamado?','Os convites têm nomes diferentes. Qual informação devo conferir?','O pacote promete visual e pede rotina. Como você explica essa diferença?']},
+ bento:{aside:'Meu grupo está fazendo meme dessa conversa. Não mandei nada, relaxa. Estou ouvindo.',repeat:'Outro oi? Vai virar figurinha. Bora para a proposta.',repair:'Beleza. A gente pode brincar sem passar do ponto.',refuse:'Não vou mandar nada ainda. Já compartilhei coisa sem conferir e deu trabalho.',end:'Agora ficou chato. Vou sair, essa conversa não rende nem um meme.',memory:'Era grátis e agora custa? Parece o meme da promoção que aumenta o preço.',questions:['Esse prêmio é de verdade no jogo ou é só imagem de grupo?','Meu computador está normal. Por que apareceu suporte do nada?','Esse clube tem organizador ou só uma foto de colher?', 'Por que o pacote de skin quer meu perfil inteiro?']}
+};
+const schemes=['prize','support','club','update'];
+export function livingReply(a,event){
+ const voice=voices[a.caller];
+ if(event==='aside'&&(a.asides||0)>1){const pool=characterAsides[a.caller];return pool[Math.max(0,Math.floor((a.asides-3)/2))%pool.length];}
+ if(event==='question')return voice.questions[schemes.indexOf(a.scheme)]||voice.questions[0];
+ return voice[event];
+}
+export function rememberPromise(a,text){
+ const t=text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ a.memory??={};
+ const free=/gratis|gratuito|sem custo|nao (?:precisa|tem que) pagar/.test(t);
+ const charge=!free&&/taxa|pagamento|cobranca|precisa pagar|tem que pagar/.test(t);
+ if(charge&&a.memory.free)return true;
+ if(free)a.memory.free=true;
+ return false;
+}
