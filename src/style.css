@@ -243,3 +243,13 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .remote-app-window button[data-run-diagnostic]{background:#356d77;border:0;border-radius:7px;padding:11px 14px;color:white;font-size:12px}.remote-app-window button[data-run-diagnostic]:disabled{opacity:.5}
 .club-code-status{font-size:11px!important;line-height:1.6}.remote-icons{flex-wrap:wrap}
 @media(max-width:600px){.offer-picker>div{grid-template-columns:1fr}.offer-picker button span{font-size:11px}}
+.shop-catalog{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0 28px}
+.shop-catalog .shop-product{display:flex;flex-wrap:wrap;align-items:flex-start;gap:12px;padding:16px;background:white;border:1px solid #abbdc266;border-radius:12px;box-shadow:0 3px 8px #193c4406}
+.shop-product .shop-art{display:grid;place-items:center;flex:0 0 56px;width:56px;height:56px;border-radius:12px;background:#f3f2ec;font-size:30px}
+.shop-product>div{min-width:100px;flex:1}.shop-product strong{line-height:1.5}.shop-product p{font-size:11px!important;line-height:1.6!important;color:#617681!important}
+.shop-product button{width:100%;min-height:35px;background:var(--app-accent);border-radius:7px;line-height:1.4;margin-top:5px}.shop-product button:disabled{background:#e9eff1;color:#6a7d83;opacity:1;border:1px solid #c9d6da}
+.desktop[data-wallpaper="sunset"],.wallpaper-preview.sunset{background-image:radial-gradient(circle at 70% 34%,#ffdc93 0 9%,transparent 9.2%),linear-gradient(165deg,#544569 0%,#c17d7a 50%,#294d57 100%)}
+.desktop[data-wallpaper="night"],.wallpaper-preview.night{background-image:radial-gradient(circle at 20% 25%,#baf1eb 0 1px,transparent 2px),radial-gradient(circle at 68% 15%,#f9eec9 0 2px,transparent 3px),radial-gradient(ellipse at 70% 45%,#706aa455,transparent 60%),linear-gradient(135deg,#162743,#302444);background-size:95px 105px,165px 175px,100% 100%,100% 100%}
+.desktop[data-wallpaper="retro"],.wallpaper-preview.retro{background-image:linear-gradient(#57ca8922 1px,transparent 1px),linear-gradient(90deg,#57ca8922 1px,transparent 1px),radial-gradient(ellipse at center,#264a3c,#101f20);background-size:40px 40px,40px 40px,100% 100%}
+.desktop-decor{max-width:calc(100vw - 180px);flex-wrap:wrap;justify-content:flex-end;gap:16px;font-size:44px}.desktop-decor [data-decor="neon"]{color:#99fff0;filter:drop-shadow(0 0 8px #47eec6)}.desktop-decor [data-decor="trophy"]{filter:drop-shadow(0 0 7px #eed58a55)}
+@media(max-width:600px){.shop-catalog{grid-template-columns:1fr}.desktop-decor{font-size:30px;right:15px;gap:12px;max-width:60vw}}

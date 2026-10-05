@@ -16,7 +16,7 @@ test('Todos os perfis só pagam após revisão; salvamento impede crédito dupli
  for(let cursor=0;cursor<6;cursor++){const s=start(cursor);explain(s);sendUpdateFile(s);applyTypedMove(s,'typed','Pode abrir o arquivo?');
  assert.equal(executeScheme(s,'update'),false);assert.equal(reviewUpdateData(s,'unknown'),false);
  for(const field of updateProfiles[s.active.caller]){assert.equal(reviewUpdateData(s,field.id),true);assert.equal(reviewUpdateData(s,field.id),false);}
- const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(executeScheme(restored,'wallet'),false);assert.equal(executeScheme(restored,'update'),true);assert.equal(restored.credits,35);
+ const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(executeScheme(restored,'wallet'),false);assert.equal(executeScheme(restored,'update'),true);assert.equal(restored.credits,350);
  assert.equal(executeScheme(load({getItem:()=>JSON.stringify(restored)}),'update'),false);finishCall(restored);assert.ok(restored.history.at(-1).steps.includes('Dado exposto: Contato cadastrado'));
  }
 });

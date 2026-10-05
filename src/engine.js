@@ -7,10 +7,11 @@ import {characterReply,verificationReply} from './personality.js';
 import {readIntent,defenseScenes} from './dialogue.js';
 import {updateProfiles} from './update-profiles.js';
 import {skinCatalog,selectedSkin} from './skin-changer.js';
+import {furniture} from './data.js';
 import {callers,moves,defenseTriggers,conversations,schemes,interactionMoves,schemeItems} from './data.js';
 export const KEY='quase-honestos-v1';
 export const fresh=()=>({version:1,shift:0,cursor:0,credits:0,history:[],discovered:[],decor:[],mode:'solo',active:null,finished:false});
-export function load(storage){try{const s=JSON.parse(storage.getItem(KEY));if(s?.version!==1)return fresh();const valid=new Set(callers.map(c=>c.id));if(!Array.isArray(s.history)||s.history.some(h=>!valid.has(h.caller)||!['blocked','fooled','closed'].includes(h.outcome)))return fresh();if(!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>callers.length||!Number.isFinite(s.credits)||s.credits<0)return fresh();return {...fresh(),...s,discovered:(s.discovered||[]).filter(id=>valid.has(id)),decor:(s.decor||[]).filter(id=>['plant','lamp','duck'].includes(id)),active:s.active&&valid.has(s.active.caller)?s.active:null};}catch{return fresh();}}
+export function load(storage){try{const s=JSON.parse(storage.getItem(KEY));if(s?.version!==1)return fresh();const valid=new Set(callers.map(c=>c.id));if(!Array.isArray(s.history)||s.history.some(h=>!valid.has(h.caller)||!['blocked','fooled','closed'].includes(h.outcome)))return fresh();if(!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>callers.length||!Number.isFinite(s.credits)||s.credits<0)return fresh();return {...fresh(),...s,discovered:(s.discovered||[]).filter(id=>valid.has(id)),decor:(s.decor||[]).filter(id=>furniture.some(item=>item.id===id)),active:s.active&&valid.has(s.active.caller)?s.active:null};}catch{return fresh();}}
 export function nextCall(state){if(state.active||state.cursor>=callers.length)return false;const c=callers[state.cursor];state.active={caller:c.id,trust:0,used:[],log:[],outcome:null,expression:'neutral'};return true;}
 export function applyMove(state,id){if(state.active?.scheme){const changed=applyInteraction(state,id);if(changed)state.active.expression=reactionFor(state.active,id);return changed;}const a=state.active,m=moves.find(m=>m.id===id);if(!a||a.outcome||!m||a.used.includes(id))return false;const c=callers.find(c=>c.id===a.caller);a.used.push(id);a.log.push({speaker:'Você',text:m.reply});
  const warned=state.history.some(h=>h.outcome==='blocked');
@@ -79,7 +80,8 @@ export function answerDefense(state,choiceId){
  a.defenseRound={choice:choice.id,label:choice.label,safe:choice.safe,feedback:choice.feedback,signal:scene.signal};return true;
 }
 export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=callers.find(c=>c.id===a.caller);state.history.push({caller:c.id,outcome:a.outcome,scheme:a.scheme||null,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],offer:a.offer||null,diagnostic:a.diagnostic||null,defenseRound:a.defenseRound||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(state.cursor===callers.length)state.finished=true;return true;}
-export function buy(state,item){if(!item||state.decor.includes(item.id)||state.credits<item.price)return false;state.credits-=item.price;state.decor.push(item.id);return true;}
+export function buy(state,item){const product=furniture.find(product=>product.id===item?.id);if(!product||state.decor.includes(product.id)||state.credits<product.price)return false;state.credits-=product.price;state.decor.push(product.id);if(product.type==='wallpaper')state.wallpaper=product.id;return true;}
+export function equipWallpaper(state,id){if(id==='default'){state.wallpaper=id;return true;}if(!state.decor.includes(id)||!furniture.some(item=>item.id===id&&item.type==='wallpaper'))return false;state.wallpaper=id;return true;}
 
 export function availableMoves(state){
  const a=state.active;if(!a||a.outcome||!a.scheme)return moves;

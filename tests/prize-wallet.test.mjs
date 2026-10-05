@@ -10,6 +10,6 @@ test('Prêmio expõe só conta virtual após compartilhar e desvia créditos uma
  applyMove(state,'pitch');applyMove(state,'answer');applyTypedMove(state,'typed','Pode compartilhar o identificador BatataPay?');
  const account=virtualAccount(state.active);assert.ok(account);assert.match(account.identifier,/QH-DEMO/);assert.equal(account.debit,0);assert.equal(state.credits,0);
  prepareOperation(state);assert.equal(executeScheme(state,'wallet'),true);const restored=load({getItem:()=>JSON.stringify(state)});const after=virtualAccount(restored.active);
- assert.equal(account.balance-after.balance,state.credits);assert.equal(after.debit,30);assert.equal(restored.active.expression,'suspicious');assert.match(restored.active.log.at(-1).text,/DIMINUIU/);assert.equal(executeScheme(restored,'wallet'),false);
+ assert.equal(account.balance-after.balance,state.credits);assert.equal(after.debit,300);assert.equal(restored.active.expression,'suspicious');assert.match(restored.active.log.at(-1).text,/DIMINUIU/);assert.equal(executeScheme(restored,'wallet'),false);
  }
 });

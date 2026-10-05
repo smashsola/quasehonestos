@@ -1,7 +1,7 @@
-const balances={nino:90,olga:160,davi:120,yara:100,pri:150,bento:80};
+const balances={nino:900,olga:1600,davi:1200,yara:1000,pri:1500,bento:800};
 export function virtualAccount(a){
  if(a?.scheme!=='prize'||a.item?.app!=='wallet')return null;
- const before=balances[a.caller]||100,amount=a.outcome==='fooled'?(a.earned||30):0;
+ const before=balances[a.caller]||1000,amount=a.outcome==='fooled'?(a.earned||300):0;
  return {identifier:a.item.token,before,balance:before-amount,debit:amount};
 }
 export function walletAccountPanel(a,name,escape){
