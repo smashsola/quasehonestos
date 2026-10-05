@@ -6,6 +6,8 @@ Jogo educativo de comédia sobre manipulação e proteção digital, desenvolvid
 
 **[Jogar agora](https://quasehonestos.pages.dev/)**
 
+O código atualizado está nas pastas `src/`, `functions/`, `scripts/` e `tests/`. Inclui piadas variadas por personagem e explicações abríveis de proteção para cada proposta. A suíte atual tem 43 testes. O ZIP mantido neste repositório é um pacote de uma versão anterior; use os arquivos da branch `main` para continuar o desenvolvimento. A publicação no GitHub não atualiza automaticamente o upload direto do Cloudflare.
+
 ## O que já funciona
 
 - Desktop com aplicativos, janelas móveis, fichas, correio e loja de decoração.
