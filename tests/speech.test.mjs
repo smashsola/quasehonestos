@@ -6,8 +6,10 @@ import {expressions} from '../src/mood.js';
 test('Ritmo e duração acompanham personagem, emoção e tamanho da fala',()=>{
  assert.notEqual(speechTiming('nino','happy').pace,speechTiming('olga','happy').pace);
  assert.ok(speechTiming('bento','amused').pace<speechTiming('bento','hurt').pace);
- assert.equal(replyDuration('x'.repeat(900)),4400);assert.equal(replyDuration('Oi'),1400);
- assert.equal(speechTiming('nino','happy',999999).duration,4.4);
+ assert.equal(replyDuration('x'.repeat(900)),7500);assert.equal(replyDuration('Oi'),2800);
+ assert.ok(replyDuration('Uma resposta mais longa, com pausas para você acompanhar o personagem.')>replyDuration('Oi'));
+ for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const pace=speechTiming(caller,emotion).pace;assert.ok(pace>=.25&&pace<=.55,`${caller}/${emotion}: ritmo legível`);}
+ assert.equal(speechTiming('nino','happy',999999).duration,7.5);
 });
 test('Retratos falantes mantêm emoção, boca articulada e opção de movimento reduzido',async()=>{
  for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}-talking.svg`,import.meta.url),'utf8');assert.match(svg,/mouth-rest/);assert.match(svg,/mouth-speaking/);assert.match(svg,/class="speech-head"/);assert.match(svg,/prefers-reduced-motion/);assert.ok(svg.includes(`syllable ${speechTiming(caller,emotion).pace}s`));}
