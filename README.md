@@ -48,7 +48,17 @@ npm run build
 
 O build gera `dist/`. Para testar a função localmente, use `npx wrangler pages dev dist` após o build e configure a chave em `.dev.vars`, ignorado pelo Git. O servidor local simples usa as falas offline.
 
-## Publicação
+## Publicar como Worker pelo GitHub
+
+O `wrangler.jsonc` padrão aponta para `worker/index.js` e serve os arquivos de `dist/`. A rota `/api/dialogue` reutiliza a integração Gemini no servidor. O build é executado automaticamente pelo Wrangler antes do deploy.
+
+No Cloudflare Workers Builds, use a raiz do repositório, comando de build `npm run build` e comando de deploy `npm run deploy:worker` (ou `npx wrangler deploy`). As dependências estão declaradas em `package.json` e fixadas em `package-lock.json`; a instalação pode usar `npm ci`.
+
+O segredo `GEMINI_API_KEY` precisa ser configurado no Worker também; segredos do projeto Pages não são transferidos automaticamente. Sem ele, as falas locais continuam funcionando.
+
+## Publicação Pages existente
+
+Para atualizar o Pages manualmente, execute `npm run deploy:pages`. Para desenvolvimento Pages, use `npx wrangler pages dev dist --config wrangler.pages.jsonc`. A configuração Pages está separada em `wrangler.pages.jsonc` para preservar a publicação existente.
 
 O jogo está publicado no Cloudflare Pages por upload direto. Para usar integração Git em outro projeto Pages: framework nenhum, comando `npm run build`, saída `dist` e raiz do repositório. A pasta `functions/` deve permanecer na raiz.
 
