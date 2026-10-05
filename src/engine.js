@@ -1,4 +1,5 @@
 import {livingReply,rememberPromise} from './living-dialogue.js';
+import {virtualAccount} from './prize-wallet.js';
 import {reactionFor} from './mood.js';
 import {characterReply,verificationReply} from './personality.js';
 import {readIntent,defenseScenes} from './dialogue.js';
@@ -85,7 +86,9 @@ export function executeScheme(state,app){
  const scheme=schemes.find(s=>s.id===a.scheme),c=callers.find(c=>c.id===a.caller);if(!scheme)return false;
  if(a.scheme==='update'&&(!a.fileSent||!updateProfiles[a.caller].every(field=>a.reviewedData?.includes(field.id))))return false;
  const ending=a.scheme==='update'?'Ué… meu perfil apareceu aí? Eu só queria uma skin nova para minha batata. Essa permissão tinha muito mais coisa do que eu esperava.':a.scheme==='support'?'O serviço foi registrado no meu PãoOS. Agora espero que a calculadora não passe a fazer torradas.':a.scheme==='club'?'A associação foi registrada. Vou perguntar à colher quando acontece a primeira reunião.':'O prêmio foi registrado. Só espero que a Batata Dourada não venha com gosto de purê.';
- a.earned=scheme.payout;state.credits+=a.earned;a.outcome='fooled';a.stage='done';a.expression=a.scheme==='update'?'suspicious':'happy';a.steps.push('Operação fictícia concluída em '+schemeItems[a.scheme].tool);a.log.push({speaker:'Sistema',text:'Operação simulada concluída. C$ '+a.earned+' recebidos pela firma.'},{speaker:c.name,text:ending});return true;
+ const account=virtualAccount(a);
+ if(account){a.walletTransfer={before:account.balance,amount:scheme.payout,after:account.balance-scheme.payout};a.steps.push('Identificador BatataPay usado para desviar C$ '+scheme.payout);}
+ a.earned=scheme.payout;state.credits+=a.earned;a.outcome='fooled';a.stage='done';a.expression=['update','prize'].includes(a.scheme)?'suspicious':'happy';a.steps.push('Operação fictícia concluída em '+schemeItems[a.scheme].tool);a.log.push({speaker:'Sistema',text:account?'Desvio simulado: − C$ '+a.earned+' da conta do personagem; + C$ '+a.earned+' para a firma.':'Operação simulada concluída. C$ '+a.earned+' recebidos pela firma.'},{speaker:c.name,text:account?'Ué, meu saldo DIMINUIU? Você falou em prêmio. Vou conferir isso no app da Batata Cósmica e avisar o grupo.':ending});return true;
 }
 export function sendUpdateFile(state){
  const a=state.active;if(!a||a.scheme!=='update'||!a.prepared||a.stage!=='request'||a.outcome||a.fileSent)return false;

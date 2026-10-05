@@ -14,7 +14,7 @@ export function readIntent(text,scheme,stage){
  if(/quem (e|organizou)|como funciona|por que|porque voce|de onde/.test(t))return 'question';
  if(stage==='ready')return /obrigad|valeu|ate mais|tchau/.test(t)?'thanks':'after';
  if(stage==='request'){
-  const item=scheme==='update'?/skin|changer|anexo|arquivo|pacote|instal/:scheme==='prize'?/cartao/:scheme==='support'?/sessao|acesso|paoos/:/passe|associacao/;
+  const item=scheme==='update'?/skin|changer|anexo|arquivo|pacote|instal/:scheme==='prize'?/cartao|batatapay|identificador|dados (?:da conta|do cartao)/:scheme==='support'?/sessao|acesso|paoos/:/passe|associacao/;
   if(item.test(t)&&/envie|mande|manda|passe|passar|compartilh|abrir|abra|usar|use|liber|pode|quero|preciso|me da|instal/.test(t))return 'request';
   return 'unclear';
  }

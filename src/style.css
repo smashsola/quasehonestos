@@ -137,3 +137,18 @@ body:has(.desktop){overflow:hidden}.desktop-window .windowbar:active{cursor:grab
 .desktop-window[data-window-id="calls"] .choices button.quiet{display:block;width:fit-content;max-width:100%;min-height:36px;margin-top:10px;padding:9px 13px;border:1px solid #80585b;border-radius:6px;background:#392b3090;color:#efbabb;font-size:12px;line-height:1.4;text-align:center}
 .desktop-window[data-window-id="calls"] .choices button.quiet:hover:not(:disabled){background:#51353b;border-color:#b77b81;color:#ffe0dc;text-decoration:none}
 .desktop-window[data-window-id="calls"] .choices button.quiet:disabled{opacity:.4;cursor:default}
+
+/* Give the caller's expression room without pushing chat out of the window. */
+.desktop-window[data-window-id="calls"] .contact{gap:18px;padding:16px 20px}
+.desktop-window[data-window-id="calls"] .avatar{width:112px;height:112px;flex:0 0 112px;border-radius:18px;overflow:hidden;box-shadow:0 5px 18px #0004}
+.desktop-window[data-window-id="calls"] .avatar img{width:112px;height:112px;border-radius:18px;display:block;object-fit:cover;border:2px solid #78a28e}
+.desktop-window[data-window-id="calls"] .contact h1{font-size:23px}
+.virtual-account{margin:20px 0;padding:20px;border-radius:14px;background:linear-gradient(130deg,#204940,#142d37);color:#e5f5e9;box-shadow:0 6px 18px #1232}
+.virtual-account>small{color:#b0d8c3!important;letter-spacing:1px;font-size:10px}
+.virtual-account h2{margin:10px 0;color:#fff;font-size:21px}
+.virtual-account p{color:#c5ded5!important;margin:12px 0 7px;font-size:12px!important}
+.virtual-account code{display:block;overflow-wrap:anywhere;font-size:12px;letter-spacing:.8px;padding:10px 0;color:#ffe4a7}
+.virtual-account>div{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:16px 0;border-top:1px solid #81b49b55;padding-top:16px;font-size:12px}
+.virtual-account strong{font-size:25px;white-space:nowrap}
+.virtual-account .account-debit{color:#ffd1b1!important}
+@media(max-width:600px){.desktop-window[data-window-id="calls"] .avatar,.desktop-window[data-window-id="calls"] .avatar img{width:82px;height:82px;flex-basis:82px}.desktop-window[data-window-id="calls"] .contact{gap:12px;padding:12px 14px}.desktop-window[data-window-id="calls"] .contact h1{font-size:19px}}

@@ -21,7 +21,7 @@ test('Desconectar uma sessão encerra sem pagar e impede operação posterior',(
  const prize=start();prize.active.scheme='prize';assert.equal(disconnectSession(prize),false);
 });
 test('Indicador das ferramentas acompanha somente a proposta correspondente',()=>{
- const s=start();assert.deepEqual(flowSteps(s,'support').map(x=>x.done),[true,false,false]);assert.deepEqual(flowSteps(s,'prize').map(x=>x.done),[false,false,false]);
+ const s=start();assert.deepEqual(flowSteps(s,'support').map(x=>x.done),[true,false,false]);assert.deepEqual(flowSteps(s,'prize').map(x=>x.done),[false,false,false,false]);
  s.active.item={app:'support',token:'QH-DEMO'};s.active.stage='ready';assert.deepEqual(flowSteps(s,'support').map(x=>x.done),[true,true,false]);
  executeScheme(s,'support');assert.deepEqual(flowSteps(s,'support').map(x=>x.done),[true,true,true]);
 });
