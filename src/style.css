@@ -257,6 +257,24 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .portrait-emotion{display:inline-flex;align-items:center;margin-top:6px;padding:3px 7px;border-radius:12px;border:1px solid #a0c3b233;background:#ffffff05;color:#b8d0c5;font-size:9px;line-height:1.4;letter-spacing:.2px}
 .avatar[data-expression="amused"],.avatar[data-expression="happy"]{border-color:#83dab1!important}.avatar[data-expression="confused"],.avatar[data-expression="thinking"]{border-color:#e0c17e!important}.avatar[data-expression="angry"]{border-color:#e89590!important}.avatar[data-expression="hurt"]{border-color:#aba8d8!important}.avatar[data-expression="surprised"]{border-color:#b4e3f4!important}
 .portrait-react{animation:portrait-reaction .35s ease-out both}
+.consequence-card{margin:14px 0 18px;padding:18px;border:1px solid #aac2b8;border-left:4px solid #c78951;border-radius:10px;background:#f5f8f4;color:#294c43}
+.consequence-card[data-outcome="blocked"]{border-left-color:#508b73}
+.consequence-card[data-outcome="closed"]{border-left-color:#6f8996}
+.consequence-card>small{display:block;font-size:9px;letter-spacing:1.1px;color:#617b72;line-height:1.6}
+.consequence-card h3{font-size:18px;line-height:1.35;margin:10px 0;letter-spacing:-.4px}
+.desktop-window .consequence-card .consequence-summary{margin:10px 0;font-size:13px;line-height:1.7;color:#294c43;max-width:none}
+.desktop-window .consequence-card .consequence-joke{margin:12px 0 0;padding-top:11px;border-top:1px dashed #afc5bb;font-size:11px;line-height:1.6;color:#65756a;font-style:italic}
+.consequence-card .consequence-protection{margin:15px 0 0;padding:0;background:#e8f0e9;border-color:#bed0c4;color:#294c43;overflow:hidden}
+.consequence-protection>summary{padding:13px 36px 13px 14px;font-size:12px;line-height:1.5;cursor:pointer}
+.consequence-detail{padding:0 14px 16px;border-top:1px solid #c4d4c8}
+.consequence-detail h4{margin:17px 0 6px;font-size:12px;color:#294c43}
+.desktop-window .consequence-detail p{margin:6px 0;font-size:12px;line-height:1.7;color:#496356;max-width:none}
+.desktop-window .consequence-detail blockquote{margin:13px 0;padding:13px;background:#f7faf5;border:1px solid #c5d6c9;border-radius:6px}
+.consequence-detail blockquote small,.consequence-detail blockquote span{display:block;font-size:10px;line-height:1.6;letter-spacing:0;color:#617b72}
+.consequence-detail>small{display:block;margin-top:16px;font-size:10px;line-height:1.6;letter-spacing:0;color:#617b72}
+.consequence-detail>a{display:inline-block;margin-top:10px;font-size:11px;line-height:1.5;color:#306a58;text-underline-offset:3px}
+.desktop-window .result-context{line-height:1.65}
+@media(max-width:600px){.consequence-card{padding:14px}.consequence-card h3{font-size:16px}}
 @keyframes portrait-reaction{0%{transform:scale(.97)}55%{transform:scale(1.025)}100%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.portrait-react{animation:none}}
 .avatar.is-speaking{box-shadow:0 0 0 2px #83c8ad22,0 4px 12px #0003!important}
