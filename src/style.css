@@ -312,3 +312,33 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 @keyframes portrait-reaction{0%{transform:scale(.97)}55%{transform:scale(1.025)}100%{transform:scale(1)}}
 @media(prefers-reduced-motion:reduce){.portrait-react{animation:none}}
 .avatar.is-speaking{box-shadow:0 0 0 2px #83c8ad22,0 4px 12px #0003!important}
+.desktop-window[data-window-id="calls"] .shift-ending{padding:24px;max-width:720px;margin-inline:auto;box-sizing:border-box;color:#e1eee8;background:linear-gradient(145deg,#203b37,#162b31)}
+.shift-stamp{display:flex;align-items:center;gap:8px;font-size:10px;letter-spacing:1.3px;color:#93d2b1}
+.shift-stamp>span{width:6px;height:6px;border-radius:50%;background:#91d2b0}
+.desktop-window[data-window-id="calls"] .shift-ending h1{margin:18px 0 22px;font-size:30px;line-height:1.15;color:#eff6eb}
+.shift-receipt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.shift-receipt>div{padding:13px 10px;background:#ffffff08;border:1px solid #88a79c40;border-radius:8px}
+.desktop-window[data-window-id="calls"] .shift-receipt small{display:block;color:#b8cec4;letter-spacing:0;font-size:10px;line-height:1.5}
+.shift-receipt strong{display:block;margin-top:8px;color:#e3efd9;font-size:19px;font-variant-numeric:tabular-nums}
+.shift-receipt strong.receipt-loss{color:#ffb5a9}
+.desktop-window[data-window-id="calls"] .shift-ending p.receipt-note{margin:10px 0 22px;color:#b9cec5;font-size:10px;line-height:1.6}
+.boss-goodbye{background:#edf2e9;color:#29483e;border:1px solid #c0cebc;border-radius:12px;overflow:hidden}
+.boss-contact{display:flex;align-items:center;gap:12px;padding:16px;background:#e0e9da;border-bottom:1px solid #bdcbb7}
+.boss-contact img{flex-shrink:0;border-radius:14px;border:1px solid #8ea491;background:#c3d3be;user-select:none}
+.desktop-window[data-window-id="calls"] .boss-contact small{color:#526c56;font-size:8px;letter-spacing:.5px;line-height:1.6}
+.boss-contact strong{display:block;font-size:17px;margin:4px 0;color:#29483e}
+.boss-contact span{display:block;font-size:10px;color:#657260}
+.boss-lines{padding:4px 16px 0}
+.desktop-window[data-window-id="calls"] .boss-goodbye p{color:#2d4b3e;font-size:12px;line-height:1.75;max-width:none;margin:12px 0}
+.boss-questions{display:flex;flex-wrap:wrap;gap:7px;padding:4px 16px 18px}
+.boss-questions button{padding:9px 11px;border:1px solid #a4bca2;border-radius:7px;background:#f8fbf4;color:#34563e;font-size:11px;line-height:1.4}
+.boss-questions button:hover,.boss-questions button[aria-pressed="true"]{background:#d0e2c8;border-color:#729d75;color:#23462c}
+.boss-answer{margin:0 16px 18px;padding:12px 14px;background:#dce9d5;border-left:3px solid #699372;border-radius:5px}
+.desktop-window[data-window-id="calls"] .boss-answer small{letter-spacing:0;font-size:10px;color:#4c6651}
+.desktop-window[data-window-id="calls"] .boss-answer p{margin:8px 0 0}
+.shift-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.shift-actions button{padding:11px 14px;border-radius:7px;border:1px solid #8ca897;background:#ffffff0b;color:#d9e8df;font-size:12px}
+.shift-actions button.primary{background:#a8c99e;border-color:#a8c99e;color:#20392b}
+.shift-actions button:hover{filter:brightness(1.1)}
+.desktop-window[data-window-id="calls"] .shift-ending p.ending-footnote{color:#b9cec5;font-size:10px;line-height:1.7;margin:14px 0 0}
+@media(max-width:420px){.desktop-window[data-window-id="calls"] .shift-ending{padding:18px}.shift-receipt{gap:5px}.shift-receipt>div{padding:10px 7px}.shift-receipt strong{font-size:16px}.boss-contact{padding:12px}.boss-contact strong{font-size:15px}}
