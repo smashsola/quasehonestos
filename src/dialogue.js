@@ -21,8 +21,9 @@ export function readIntent(text,scheme,stage){
   if(asking&&(item.test(t)||/\b(?:codigo|identificador|isso|aquilo|esse dado)\b/.test(t)))return 'request';
   return 'unclear';
  }
+ if(stage==='question'&&!/^(?:quem|como|qual|onde|porque|por que)\b/.test(t)&&/\b(?:foi|e|era|vem|veio|somos|trabalho|serve|oferece|organiza)\b/.test(t)&&/firma|organiz|concurso|batata|paoos|assistencia|clube|colher|convite|talher|certificado|servico|skin|changer|blaster|visual|cosmica|anexo|versao|aplicativo|torneio|evento|liga|equipe|pessoal|galera/.test(t))return 'answer';
  if(/\?$/.test(t)||/quem e|quem organizou|qual (e|o)|como funciona|por que|porque voce|de onde/.test(t))return 'question';
- if(stage==='question')return /firma|organiz|concurso|batata|paoos|assistencia|clube|colher|convite|talher|certificado|servico|skin|changer|blaster|visual|cosmica|atualiz|anexo|versao|aplicativo/.test(t)?'answer':'unclear';
+ if(stage==='question')return /firma|organiz|concurso|batata|paoos|assistencia|clube|colher|convite|talher|certificado|servico|skin|changer|blaster|visual|cosmica|atualiz|anexo|versao|aplicativo|torneio|evento|liga|equipe|pessoal|galera|pra (?:receber|participar)|para (?:receber|participar)/.test(t)?'answer':'unclear';
  return topics[scheme]?.test(t)?'pitch':'unclear';
 }
 export const dialogueHints={pitch:'Conte qual proposta você preparou: prêmio, suporte, clube ou pacote de skins.',question:'Responda à dúvida que apareceu na última mensagem.',request:'A proposta foi explicada. Diga qual item fictício você quer usar.',ready:'O item está disponível. Você pode continuar conversando ou abrir o app.'};

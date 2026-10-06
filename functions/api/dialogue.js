@@ -2,9 +2,11 @@ import {expressions} from '../../src/mood.js';
 import {callers,schemes} from '../../src/data.js';
 import {characterProfiles,conversationContext,replyDecision} from '../../src/conversation-context.js';
 import {dialogueIntents,informalGuidance,contextualHumor} from '../../src/language.js';
+import {looksPersonal} from '../../src/privacy-data.js';
 const json=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'no-store'}});
 export async function onRequestPost({request,env}){
  if(request.headers.get('Origin')!==new URL(request.url).origin)return json({error:'origin'},403);
+ if(env.DIALOGUE_AI_ENABLED!=='true')return json({error:'local-dialogue'},503);
  if(!env.GEMINI_API_KEY)return json({error:'offline'},503);
  if(!request.headers.get('Content-Type')?.includes('application/json'))return json({error:'format'},415);
  const raw=await request.text();if(raw.length>16000)return json({error:'size'},413);
@@ -12,6 +14,7 @@ export async function onRequestPost({request,env}){
  const person=callers.find(c=>c.id===data.caller),scheme=schemes.find(s=>s.id===data.scheme);
  if(!person||!scheme||!Array.isArray(data.history)||data.history.length>12||typeof data.reference!=='string'||data.reference.length>900)return json({error:'input'},400);
  if(data.history.some(m=>!m||!['Você',person.name].includes(m.speaker)||typeof m.text!=='string'||m.text.length>900))return json({error:'input'},400);
+ if(looksPersonal(data.reference)||data.history.some(m=>looksPersonal(m.text)))return json({error:'personal-data'},400);
  const expression=expressions.includes(data.expression)?data.expression:'neutral';
  if(data.mode!==undefined&&!['trust','reply'].includes(data.mode))return json({error:'input'},400);
  const evaluate=data.mode==='trust';

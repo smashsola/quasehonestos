@@ -3,6 +3,7 @@ import {livingReply,rememberPromise} from './living-dialogue.js';
 import {virtualAccount} from './prize-wallet.js';
 import {dialogueIntents,negatedRequest} from './language.js';
 import {reactionFor} from './mood.js';
+import {sharingThreshold} from './dialogue-balance.js';
 import {characterReply,verificationReply} from './personality.js';
 import {readIntent,defenseScenes} from './dialogue.js';
 import {updateProfiles} from './update-profiles.js';
@@ -98,7 +99,7 @@ function applyInteraction(state,id){
  if(id==='pressure'){a.trust=Math.max(0,a.trust-1);a.suspicion++;if(c.defense==='pause'||a.suspicion>=2){blockInteraction(state,a,c);return true;}a.stage='question';a.log.push({speaker:c.name,text:characterReply(c.id,'pressure')});return true;}
  if(id==='request'){
   if(a.scheme==='update'&&!a.fileSent){a.used=a.used.filter(move=>move!=='request');a.log.push({speaker:c.name,text:'Ainda não chegou nenhum anexo aqui. Você está falando de qual arquivo?'});return true;}
-  if(a.trust<2||a.suspicion>0){a.log.push({speaker:c.name,text:livingReply(a,'refuse')});a.stage='question';a.used=a.used.filter(move=>!['answer','request'].includes(move));return true;}
+  if(a.trust<sharingThreshold(c.id)||a.suspicion>0){a.log.push({speaker:c.name,text:livingReply(a,'refuse')});a.stage='question';a.used=a.used.filter(move=>!['answer','request'].includes(move));return true;}
   a.checkedToken=null;a.diagnostic=null;
   a.item={name:item.name,token:'QH-DEMO-'+c.id.toUpperCase()+'-'+a.scheme.toUpperCase(),app:item.app};a.stage='ready';a.steps.push('Item fictício compartilhado');a.log.push({speaker:c.name,text:characterReply(c.id,'received',item.received)});return true;
  }
