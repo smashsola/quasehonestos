@@ -1,6 +1,8 @@
+import {nextSkipLine} from './boot-copy.js';
 const screen=document.querySelector('#os-boot');
 const app=document.querySelector('#app');
 if(screen){
+ screen.querySelector('button').textContent=nextSkipLine(localStorage);
  const status=screen.querySelector('[data-boot-status]');
  const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  let finished=false;

@@ -257,6 +257,16 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .portrait-emotion{display:inline-flex;align-items:center;margin-top:6px;padding:3px 7px;border-radius:12px;border:1px solid #a0c3b233;background:#ffffff05;color:#b8d0c5;font-size:9px;line-height:1.4;letter-spacing:.2px}
 .avatar[data-expression="amused"],.avatar[data-expression="happy"]{border-color:#83dab1!important}.avatar[data-expression="confused"],.avatar[data-expression="thinking"]{border-color:#e0c17e!important}.avatar[data-expression="angry"]{border-color:#e89590!important}.avatar[data-expression="hurt"]{border-color:#aba8d8!important}.avatar[data-expression="surprised"]{border-color:#b4e3f4!important}
 .portrait-react{animation:portrait-reaction .35s ease-out both}
+.incoming-money{padding:12px;border:1px solid #c18e78;border-radius:6px;background:#f5e4d8;color:#78352c;font-weight:600;font-size:12px;line-height:1.6}
+.incoming-money.kept{border-color:#aac9b4;background:#dfede1;color:#315b47}
+.incoming-money span{display:block;margin-top:5px;font-size:10px;font-weight:400}
+.incoming-results .incoming-money{margin:13px 0;font-size:12px!important}
+.loss-toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:1200;pointer-events:none;display:flex;flex-direction:column;gap:9px;padding:20px 25px;background:#3d2425;border:1px solid #d4917e;border-radius:10px;box-shadow:0 10px 35px #0005;color:#ffddd0;text-align:center;max-width:calc(100vw - 30px);animation:loss-arrive .25s ease-out}
+.loss-toast small{color:#dab0a3;font-size:9px;letter-spacing:1px}
+.loss-toast strong{font-size:26px;color:#ffa995;letter-spacing:-.8px}
+.loss-toast span{font-size:11px;line-height:1.5;color:#e7beb0}
+@keyframes loss-arrive{from{opacity:0;translate:0 -10px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:reduce){.loss-toast{animation:none}}
 .taskbar .network-toggle{flex:0 0 40px;width:40px;min-width:40px;padding:9px;color:#cee2dc;background:transparent;border-bottom:0;border-radius:5px}
 .taskbar .network-toggle svg{display:block;width:22px;height:22px;margin:auto}
 .taskbar .network-toggle:hover,.taskbar .network-toggle[aria-expanded="true"]{background:#ffffff15}
@@ -286,13 +296,13 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .consequence-card[data-outcome="closed"]{border-left-color:#6f8996}
 .consequence-card>small{display:block;font-size:9px;letter-spacing:1.1px;color:#617b72;line-height:1.6}
 .consequence-card h3{font-size:18px;line-height:1.35;margin:10px 0;letter-spacing:-.4px}
-.desktop-window .consequence-card p.consequence-summary{margin:10px 0;font-size:13px;line-height:1.7;color:#294c43;max-width:none}
-.desktop-window .consequence-card p.consequence-joke{margin:12px 0 0;padding-top:11px;border-top:1px dashed #afc5bb;font-size:11px;line-height:1.6;color:#65756a;font-style:italic}
+.desktop-window[data-window-id] .consequence-card p.consequence-summary{margin:10px 0;font-size:13px;line-height:1.7;color:#183e4b;max-width:none;font-weight:500}
+.desktop-window[data-window-id] .consequence-card p.consequence-joke{margin:12px 0 0;padding-top:11px;border-top:1px dashed #afc5bb;font-size:11px;line-height:1.6;color:#795331;font-style:italic}
 .consequence-card .consequence-protection{margin:15px 0 0;padding:0;background:#e8f0e9;border-color:#bed0c4;color:#294c43;overflow:hidden}
 .consequence-protection>summary{padding:13px 36px 13px 14px;font-size:12px;line-height:1.5;cursor:pointer}
 .consequence-detail{padding:0 14px 16px;border-top:1px solid #c4d4c8}
 .consequence-detail h4{margin:17px 0 6px;font-size:12px;color:#294c43}
-.desktop-window .consequence-card .consequence-detail p{margin:6px 0;font-size:12px;line-height:1.7;color:#496356;max-width:none}
+.desktop-window[data-window-id] .consequence-card .consequence-detail p{margin:6px 0;font-size:12px;line-height:1.7;color:#284f4c;max-width:none}
 .desktop-window .consequence-detail blockquote{margin:13px 0;padding:13px;background:#f7faf5;border:1px solid #c5d6c9;border-radius:6px}
 .consequence-detail blockquote small,.consequence-detail blockquote span{display:block;font-size:10px;line-height:1.6;letter-spacing:0;color:#617b72}
 .consequence-detail>small{display:block;margin-top:16px;font-size:10px;line-height:1.6;letter-spacing:0;color:#617b72}

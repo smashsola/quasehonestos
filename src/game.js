@@ -12,10 +12,12 @@ import {flowPanel,filesContent,mailContent,helpContent,updateContent} from './ap
 import {trustAppearance,savedExpression,expressionNames} from './mood.js';
 import {remoteProfiles} from './remote-profiles.js';
 import {checkIncoming,answerIncoming,dismissIncoming,snoozeIncoming} from './incoming.js';
-import {dialogueHints,defenseScenes} from './dialogue.js';
+import {dialogueHints} from './dialogue.js';
+import {incomingScene,refreshIncoming,incomingReport} from './incoming-scenes.js';
 import {callers,moves,bossLines,schemes,furniture,interactionMoves,schemeItems} from './data.js';
 import {load,KEY,nextCall,applyMove,closeCall,finishCall,fresh,buy,equipWallpaper,availableMoves,executeScheme,applyTypedMove,disconnectSession,sendUpdateFile,reviewUpdateData,chooseSkin} from './engine.js';
 const app=document.querySelector('#app');let state=load(localStorage);
+refreshIncoming(state);
 if(state.active?.log.length===1&&!state.active.used.length&&!state.active.outcome&&state.active.log[0].speaker!=='Você')state.active.log=[];
 if(state.active&&!state.active.scheme&&!state.active.used.length&&!state.active.outcome)state.active.log=[];
 const legacyLines=['Você tenta encurtar o tempo para decidir.','Você mostra um cargo inventado. O crachá tem um carimbo de batata.','Você usa simpatia para tentar conquistar confiança.','Você apresenta a proposta fictícia e espera uma decisão.'];
@@ -205,18 +207,27 @@ let lastIncomingId=null;
 function incomingMessages(){
  const p=state.incoming?.pending;document.querySelector('.incoming-message')?.remove();
  if(!p||(!p.open&&Date.now()<p.snoozedUntil))return;
- const scene=defenseScenes[p.scene],result=p.result,box=document.createElement('section');box.className='incoming-message '+(p.open?'expanded':'');box.setAttribute('aria-label','Mensagem recebida');
+ const scene=incomingScene(p),result=p.result;if(!scene)return;const box=document.createElement('section');box.className='incoming-message '+(p.open?'expanded':'');box.setAttribute('aria-label','Mensagem recebida');
  if(lastIncomingId===p.id)box.style.animation='none';lastIncomingId=p.id;
- box.innerHTML=`<header><span class="incoming-symbol">✉</span><div><small>NOVA MENSAGEM</small><strong>${escape(p.sender)}</strong></div><button data-incoming="${result?'dismiss':'later'}" aria-label="${result?'Fechar mensagem':'Ver depois'}">×</button></header>${!p.open?`<p>${escape(scene.message.slice(0,72))}…</p><button class="incoming-open" data-incoming="open">Ler o recado</button>`:`<div class="incoming-body"><div class="unknown-sender">Contato fora da sua lista</div><blockquote>${escape(scene.message)}</blockquote>${result?`<div class="defense-feedback ${result.safe?'safe':'review'}" role="status"><strong>${result.safe?'Você interrompeu a tentativa.':'A mensagem era uma tentativa de golpe.'}</strong><p>${escape(result.feedback)}</p><small>Sinal de atenção: ${escape(result.signal)}</small></div><button class="incoming-open" data-incoming="dismiss">De volta ao batente</button>`:`<p>Como você responde?</p><div class="defense-options">${scene.choices.map(choice=>`<button data-incoming-choice="${choice.id}">${escape(choice.label)}</button>`).join('')}</div>`}</div>`}`;
+ box.innerHTML=`<header><span class="incoming-symbol">✉</span><div><small>NOVA MENSAGEM</small><strong>${escape(p.sender)}</strong></div><button data-incoming="${result?'dismiss':'later'}" aria-label="${result?'Fechar mensagem':'Ver depois'}">×</button></header>${!p.open?`<p>${escape(scene.message.slice(0,72))}…</p><button class="incoming-open" data-incoming="open">Ler o recado</button>`:`<div class="incoming-body"><div class="unknown-sender">Contato fora da sua lista</div><blockquote>${escape(scene.message)}</blockquote>${result?`<div class="defense-feedback ${result.safe?'safe':'review'}" role="status"><strong>${result.safe?'Seu dinheiro ficou com você.':'A firma caiu no próprio ramo.'}</strong><p>${escape(result.feedback)}</p>${incomingMoney(result)}<small>Sinal de atenção: ${escape(result.signal)}</small></div><button class="incoming-open" data-incoming="dismiss">De volta ao batente</button>`:`<p>Como você responde?</p><div class="defense-options">${scene.choices.map(choice=>`<button data-incoming-choice="${choice.id}">${escape(choice.label)}</button>`).join('')}</div>`}</div>`}`;
  document.querySelector('.desktop')?.append(box);
+}
+function incomingMoney(r){
+ if(!Number.isFinite(r.penalty))return '<p class="incoming-money">Sem desconto registrado neste recado antigo.</p>';
+ return '<p class="incoming-money '+(r.safe?'kept':'lost')+'">'+(r.safe?'Nenhum C$ perdido.':r.penalty?'− C$ '+r.penalty+' do seu saldo.':'Sem saldo para descontar. A tentativa continua registrada.')+' <span>Saldo após a resposta: C$ '+r.after+'</span></p>';
+}
+function showIncomingLoss(r){
+ if(r.safe||!r.penalty)return;
+ document.querySelector('.loss-toast')?.remove();const toast=document.createElement('div');toast.className='loss-toast';toast.setAttribute('role','status');
+ toast.innerHTML='<small>CADÊ MEU SALÁRIO?</small><strong>− C$ '+r.penalty+'</strong><span>Foi parar na firma dos outros.</span>';document.body.append(toast);setTimeout(()=>toast.remove(),4800);
 }
 function incomingResults(){
  const history=state.incoming?.history||[];if(!history.length)return '';
- return `<section class="incoming-results"><h2>Mensagens que chegaram para você</h2>${history.map(h=>`<details><summary>${escape(h.sender)} <span>${h.safe?'Tentativa interrompida':'Risco percebido no replay'}</span></summary><p><b>Sua escolha:</b> ${escape(h.label)}</p><p>${escape(h.feedback)}</p><small>Sinal de atenção: ${escape(h.signal)}</small></details>`).join('')}</section>`;
+ return `<section class="incoming-results"><h2>Mensagens que chegaram para você</h2>${history.map(h=>`<details><summary>${escape(h.sender)} <span>${h.safe?'Tentativa interrompida':h.penalty?'Perdeu C$ '+h.penalty:'Tentativa de golpe registrada'}</span></summary><p><b>Sua escolha:</b> ${escape(h.label)}</p><p>${escape(h.feedback)}</p>${incomingMoney(h)}<small>Sinal de atenção: ${escape(h.signal)}</small></details>`).join('')}</section>`;
 }
 app.addEventListener('click',e=>{
  const choice=e.target.closest('[data-incoming-choice]'),action=e.target.closest('[data-incoming]');if(!choice&&!action)return;
- if(choice)answerIncoming(state,choice.dataset.incomingChoice);
+ if(choice){if(answerIncoming(state,choice.dataset.incomingChoice)){render();showIncomingLoss(state.incoming.pending.result);}return;}
  else if(action.dataset.incoming==='open')state.incoming.pending.open=true;
  else if(action.dataset.incoming==='later')snoozeIncoming(state);
  else dismissIncoming(state);
@@ -280,7 +291,7 @@ app.addEventListener('click',e=>{
  if(b.hasAttribute('data-check-card'))checkAppCode('wallet');
  if(b.dataset.toggleDecor){const id=b.dataset.toggleDecor;if(!state.decor.includes(id))return;state.hiddenDecor??=[];state.hiddenDecor=state.hiddenDecor.includes(id)?state.hiddenDecor.filter(d=>d!==id):[...state.hiddenDecor,id];render();}
  if(b.hasAttribute('data-disconnect-remote')&&disconnectSession(state)){render();}
- if(b.hasAttribute('data-export-results')){saveTextFile('quase-honestos-relatorio.txt',['QUASE HONESTOS — RESULTADOS',...state.history.map(h=>{const person=callers.find(c=>c.id===h.caller);return `\n${person.name} · ${h.outcome==='fooled'?'Proposta aceita':h.outcome==='blocked'?'Tentativa interrompida':'Conversa encerrada'} · C$ ${h.earned||0}\n${resultReport(h)}\n`+(h.audit||[]).map(event=>`“${event.text}”\n${event.reason} Confiança: ${Math.round(event.before/3*100)}% para ${Math.round(event.after/3*100)}%`).join('\n');}),`\nSaldo final: C$ ${state.credits}`].join('\n'));}
+ if(b.hasAttribute('data-export-results')){saveTextFile('quase-honestos-relatorio.txt',['QUASE HONESTOS — RESULTADOS',...state.history.map(h=>{const person=callers.find(c=>c.id===h.caller);return `\n${person.name} · ${h.outcome==='fooled'?'Proposta aceita':h.outcome==='blocked'?'Tentativa interrompida':'Conversa encerrada'} · C$ ${h.earned||0}\n${resultReport(h)}\n`+(h.audit||[]).map(event=>`“${event.text}”\n${event.reason} Confiança: ${Math.round(event.before/3*100)}% para ${Math.round(event.after/3*100)}%`).join('\n');}),incomingReport(state.incoming?.history),`\nSaldo final: C$ ${state.credits}`].join('\n'));}
  if(b.hasAttribute('data-export-certificate')&&state.active?.scheme==='prize'){const c=callers.find(c=>c.id===state.active.caller);saveTextFile('batata-dourada-certificado.txt',`CERTIFICADO FICTÍCIO — QUASE HONESTOS\nBatata Dourada\nDestinatário: ${c.name}\nCategoria: ${selectedOffer(state.active)?.name||'Talento tubérculo'}\nEmitido pela firma imaginária. Válido somente dentro do jogo.`);}
 });
 
