@@ -1,3 +1,4 @@
+import './network.js';
 import {offerPicker,chooseOffer,selectedOffer,verifyOperationCode,runRemoteDiagnostic,operationReady,clubPassPanel} from './app-interactions.js';
 import {codeFeedback} from './app-feedback.js';
 import {portraitSource,updatePortraits} from './portrait-speech.js';

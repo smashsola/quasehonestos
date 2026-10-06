@@ -257,18 +257,42 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .portrait-emotion{display:inline-flex;align-items:center;margin-top:6px;padding:3px 7px;border-radius:12px;border:1px solid #a0c3b233;background:#ffffff05;color:#b8d0c5;font-size:9px;line-height:1.4;letter-spacing:.2px}
 .avatar[data-expression="amused"],.avatar[data-expression="happy"]{border-color:#83dab1!important}.avatar[data-expression="confused"],.avatar[data-expression="thinking"]{border-color:#e0c17e!important}.avatar[data-expression="angry"]{border-color:#e89590!important}.avatar[data-expression="hurt"]{border-color:#aba8d8!important}.avatar[data-expression="surprised"]{border-color:#b4e3f4!important}
 .portrait-react{animation:portrait-reaction .35s ease-out both}
+.taskbar .network-toggle{flex:0 0 40px;width:40px;min-width:40px;padding:9px;color:#cee2dc;background:transparent;border-bottom:0;border-radius:5px}
+.taskbar .network-toggle svg{display:block;width:22px;height:22px;margin:auto}
+.taskbar .network-toggle:hover,.taskbar .network-toggle[aria-expanded="true"]{background:#ffffff15}
+.taskbar .sound-toggle{margin-left:0}
+.network-panel{position:fixed;right:18px;bottom:72px;z-index:950;width:340px;max-width:calc(100vw - 28px);max-height:calc(100svh - 94px);overflow:auto;padding:20px;background:#203b40;color:#e4eee7;border:1px solid #77988d;border-radius:12px;box-shadow:0 18px 55px #081f3777;font-family:'Space Grotesk',system-ui,sans-serif}
+.network-heading{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:20px}
+.network-heading small{font-size:8px;letter-spacing:1.4px;color:#9ebcb0}
+.network-heading h2{margin:5px 0 0;font-size:18px;letter-spacing:-.4px}
+.network-heading button{width:32px;height:32px;border:0;border-radius:5px;background:#ffffff08;color:#c8dbd2;font-size:23px}
+.network-heading button:hover{background:#ffffff15}
+.network-connected{display:flex;align-items:center;gap:13px;padding:15px 12px;background:#76c3a110;border:1px solid #76c3a144;border-radius:8px}
+.network-symbol{width:35px;flex:0 0 35px;color:#83d2b0}.network-symbol svg{width:30px;height:30px;display:block}
+.network-connected strong{display:block;font-size:12px;overflow-wrap:anywhere}
+.network-connected div>span{display:flex;align-items:center;gap:6px;margin-top:8px;font-size:10px;color:#9ad8b8}
+.network-connected i{width:5px;height:5px;border-radius:50%;background:#7cd5a9}
+.network-tagline{margin:14px 0 20px;font-size:12px;line-height:1.6;color:#d9c3a4}
+.network-details{margin:0;padding-top:5px;border-top:1px solid #819f9133}
+.network-details>div{display:flex;justify-content:space-between;gap:15px;margin:12px 0;font-size:10px;line-height:1.6}
+.network-details dt{color:#92b1a7}.network-details dd{margin:0;text-align:right;color:#ceded3}
+.network-diagnose{display:block;width:100%;margin-top:18px;padding:11px 12px;border:1px solid #8aab9866;border-radius:6px;background:#80ad9518;color:#dcebe2;font-size:11px}
+.network-diagnose:hover{background:#80ad9530}
+.network-diagnostic{margin:12px 0 0;min-height:35px;font-size:11px;line-height:1.7;color:#aac7b9}
+.network-panel>footer{margin:17px 0 0;padding:12px 0 0;border-top:1px solid #819f9133;text-align:left;font-size:9px;line-height:1.6;color:#8ba99e}
+@media(max-width:600px){.network-panel{right:14px;bottom:70px}.taskbar .network-toggle{flex-basis:36px;min-width:36px;width:36px}}
 .consequence-card{margin:14px 0 18px;padding:18px;border:1px solid #aac2b8;border-left:4px solid #c78951;border-radius:10px;background:#f5f8f4;color:#294c43}
 .consequence-card[data-outcome="blocked"]{border-left-color:#508b73}
 .consequence-card[data-outcome="closed"]{border-left-color:#6f8996}
 .consequence-card>small{display:block;font-size:9px;letter-spacing:1.1px;color:#617b72;line-height:1.6}
 .consequence-card h3{font-size:18px;line-height:1.35;margin:10px 0;letter-spacing:-.4px}
-.desktop-window .consequence-card .consequence-summary{margin:10px 0;font-size:13px;line-height:1.7;color:#294c43;max-width:none}
-.desktop-window .consequence-card .consequence-joke{margin:12px 0 0;padding-top:11px;border-top:1px dashed #afc5bb;font-size:11px;line-height:1.6;color:#65756a;font-style:italic}
+.desktop-window .consequence-card p.consequence-summary{margin:10px 0;font-size:13px;line-height:1.7;color:#294c43;max-width:none}
+.desktop-window .consequence-card p.consequence-joke{margin:12px 0 0;padding-top:11px;border-top:1px dashed #afc5bb;font-size:11px;line-height:1.6;color:#65756a;font-style:italic}
 .consequence-card .consequence-protection{margin:15px 0 0;padding:0;background:#e8f0e9;border-color:#bed0c4;color:#294c43;overflow:hidden}
 .consequence-protection>summary{padding:13px 36px 13px 14px;font-size:12px;line-height:1.5;cursor:pointer}
 .consequence-detail{padding:0 14px 16px;border-top:1px solid #c4d4c8}
 .consequence-detail h4{margin:17px 0 6px;font-size:12px;color:#294c43}
-.desktop-window .consequence-detail p{margin:6px 0;font-size:12px;line-height:1.7;color:#496356;max-width:none}
+.desktop-window .consequence-card .consequence-detail p{margin:6px 0;font-size:12px;line-height:1.7;color:#496356;max-width:none}
 .desktop-window .consequence-detail blockquote{margin:13px 0;padding:13px;background:#f7faf5;border:1px solid #c5d6c9;border-radius:6px}
 .consequence-detail blockquote small,.consequence-detail blockquote span{display:block;font-size:10px;line-height:1.6;letter-spacing:0;color:#617b72}
 .consequence-detail>small{display:block;margin-top:16px;font-size:10px;line-height:1.6;letter-spacing:0;color:#617b72}

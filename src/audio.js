@@ -59,12 +59,13 @@ new MutationObserver(()=>{if(!document.querySelector('[data-sound-panel]')||(pan
 document.addEventListener('input',e=>{const kind=e.target.dataset.volume;if(!kind)return;const value=Number(e.target.value);if(kind==='click')clickVolume=value;else if(kind==='keyboard')keyboardVolume=value;else if(kind==='message')messageVolume=value;else if(kind==='character'){characterVolume=value;stopMurmurs();}else fanVolume=value;localStorage.setItem(kind==='click'?'qh-click-volume':kind==='character'?'qh-character-volume':kind==='keyboard'?'qh-keyboard-volume':kind==='message'?'qh-message-volume':'qh-fan-volume',String(value));e.target.previousElementSibling.textContent=value+'%';updateFan();});
 document.addEventListener('change',async e=>{if(e.target.dataset.volume==='message'){playMessage();}else if(e.target.dataset.volume==='keyboard'){try{await ensureAudio();playKey();}catch{}}else if(e.target.dataset.volume==='click'){try{await ensureAudio();playClick();}catch{}}});
 document.addEventListener('click',async e=>{
- if(e.target.closest('[data-sound-panel]')){panelOpen=!panelOpen;controls();}
+ if(e.target.closest('[data-sound-panel]')){panelOpen=!panelOpen;if(panelOpen)document.dispatchEvent(new CustomEvent('qh-tray-open',{detail:'sound'}));controls();}
  else if(e.target.closest('[data-sound-close]')){panelOpen=false;controls();}
  else if(e.target.closest('[data-sound-mute]')){muted=!muted;localStorage.setItem('qh-muted',String(muted));e.target.closest('button').textContent=muted?'Ativar sons':'Silenciar tudo';controls();updateFan();if(muted&&ctx)ctx.suspend().catch(()=>{});}
  try{await ensureAudio();if(e.detail===0&&e.target.closest('button')&&!muted){playClick();setTimeout(()=>playClick(true),60);}}catch{}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panelOpen){panelOpen=false;controls();document.querySelector('[data-sound-panel]')?.focus();}});
+document.addEventListener('qh-tray-open',e=>{if(e.detail!=='sound'&&panelOpen){panelOpen=false;controls();}});
 document.addEventListener('qh-earned',async()=>{if(muted)return;try{await ensureAudio();if(!ctx)return;const now=ctx.currentTime;[1320,1760,2217].forEach((frequency,i)=>{const oscillator=ctx.createOscillator(),gain=ctx.createGain();oscillator.type='sine';oscillator.frequency.value=frequency;gain.gain.setValueAtTime(0,now+i*.065);gain.gain.linearRampToValueAtTime(.08,now+i*.065+.006);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.065+.28);oscillator.connect(gain);gain.connect(ctx.destination);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};oscillator.start(now+i*.065);oscillator.stop(now+i*.065+.3);});}catch{}});
 
 
