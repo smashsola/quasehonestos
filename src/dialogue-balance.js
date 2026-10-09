@@ -1,2 +1,3 @@
-const thresholds={nino:1.5,bento:1.55,yara:1.65,olga:1.75,davi:1.9,pri:1.95};
+const thresholds={nino:1.15,bento:1.2,yara:1.4,olga:1.45,davi:2.35,pri:2.5};
+export const demandingCaller=caller=>caller==='davi'||caller==='pri';
 export const sharingThreshold=caller=>thresholds[caller]||1.9;

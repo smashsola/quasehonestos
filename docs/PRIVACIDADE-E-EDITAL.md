@@ -1,6 +1,6 @@
 # Privacidade, dados e uso de IA — Quase Honestos
 
-Revisão: 05/10/2026. Protótipo educativo; este documento não é uma certificação jurídica.
+Revisão: 09/10/2026. Protótipo educativo; este documento não é uma certificação jurídica.
 
 ## Requisitos lidos no regulamento TeenTech 2026
 
@@ -28,7 +28,7 @@ Testes de Gemini usam respostas simuladas e ativação explícita apenas no proc
 
 ## Originalidade e referências
 
-Scam With Your Friends foi consultado como referência de organização do desktop, conversas, acesso remoto cenográfico e apps de distração. Não foram incorporados arquivos, imagens, áudio, logos ou código do jogo. Rabisca e Discórdia são funções e interfaces próprias, com cenário visual criado em HTML/CSS/SVG e textos fictícios. A Discórdia não se conecta ao Discord real.
+Scam With Your Friends foi consultado como referência de organização do desktop, conversas, acesso remoto cenográfico e apps de distração. Não foram incorporados arquivos, imagens, áudio, logos ou código do jogo. Rabisca e Discórdia foram retirados do desktop a pedido da equipe. Os aplicativos restantes usam cenários próprios em HTML/CSS/SVG e operações fictícias.
 
 ## Pontos que a equipe deve completar antes da entrega formal
 

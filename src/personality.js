@@ -8,11 +8,12 @@ const voices={
  bento:{answer:'Ah, agora entendi a história. E o que você precisa depois?',pressure:'Se eu fizer correndo, vai virar outro meme errado.',hostile:'Zoar a mesa tudo bem. Me ofender já passou do ponto.',unclear:'Não entendi. Explica sem cortar a parte principal do meme?',received:'Pronto. Dessa vez não mandei a foto da mesa junto.'}
 };
 export function characterReply(caller,event,base=''){
+ if(event==='received'&&base)return base;
  const line=voices[caller]?.[event];
  return line?(base?base+' '+line:line):base;
 }
 export function verificationReply(caller,scheme){
- const source=scheme==='update'?'a loja de aplicativos que eu já uso':scheme==='support'?'o suporte que eu já conheço':scheme==='club'?'a organização do clube':'o aplicativo do concurso';
+ const source=scheme==='link'?'o BatataPay aberto por mim, sem usar o link recebido':scheme==='update'?'a loja de aplicativos que eu já uso':scheme==='support'?'o suporte que eu já conheço':scheme==='club'?'a organização do clube':'o aplicativo do concurso';
  const openings={nino:'A batata pediu uma pausa.',olga:'Vou terminar meu café primeiro.',davi:'Vou conferir a origem desse atendimento.',yara:'Vou consultar a turma.',pri:'Vou comparar as informações.',bento:'Vou revisar tudo antes de compartilhar.'};
  return `${openings[caller]||'Vou conferir a proposta.'} Prefiro confirmar com ${source} antes de continuar.`;
 }

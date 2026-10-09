@@ -1,7 +1,7 @@
 import {incomingScenes,incomingScene} from './incoming-scenes.js';
 const delay=(random,min,max)=>min+Math.floor(random()*(max-min));
 export function checkIncoming(state,now=Date.now(),random=Math.random){
- if(!state.active?.log.length||state.finished)return false;
+ if(!state.active?.log.length||state.active.outcome||state.finished||(state.cursor===0&&state.tutorial==='active'))return false;
  state.incoming??={nextAt:null,pending:null,history:[],seen:[]};const inbox=state.incoming;
  if(inbox.pending||inbox.history.length>=3)return false;
  if(!Number.isFinite(inbox.nextAt)){inbox.nextAt=now+delay(random,35000,70000);return false;}

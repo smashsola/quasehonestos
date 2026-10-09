@@ -4,7 +4,7 @@ import {fresh,nextCall,applyTypedMove,sendUpdateFile,reviewUpdateData,executeSch
 import {updateProfiles} from '../src/update-profiles.js';
 import {updateContent} from '../src/app-content.js';
 function start(cursor=0){const s=fresh();s.cursor=cursor;nextCall(s);Object.assign(s.active,{scheme:'update',prepared:true,stage:'pitch',log:[{speaker:'Você',text:'Editor de fotos'}]});return s;}
-function explain(s){applyTypedMove(s,'typed','Tenho um pacote de skins da Batata Cósmica');applyTypedMove(s,'typed','A firma preparou o pacote de skins da Batata Cósmica');}
+function explain(s){applyTypedMove(s,'typed','Oi');applyTypedMove(s,'typed','Tenho um pacote de skins da Batata Cósmica');applyTypedMove(s,'typed','O pacote pede perfil e contato para registrar as skins');}
 test('Anexo exige explicação e envio; enviar sozinho não expõe dados',()=>{
  const s=start();assert.equal(sendUpdateFile(s),false);explain(s);
  applyTypedMove(s,'typed','Pode instalar o Skins Cósmicas?');assert.equal(s.active.item,undefined);assert.equal(s.active.stage,'request');

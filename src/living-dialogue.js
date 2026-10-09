@@ -12,6 +12,7 @@ const schemes=['prize','support','club','update'];
 export function livingReply(a,event){
  const voice=voices[a.caller];
  if(event==='aside'&&(a.asides||0)>1){const pool=characterAsides[a.caller];return pool[Math.max(0,Math.floor((a.asides-3)/2))%pool.length];}
+ if(event==='question'&&a.scheme==='link')return ({nino:'Por que o resgate pede meu cartão? Minha batata não tem limite.',olga:'Para ganhar lanche preciso cadastrar cartão? Esse café está me parecendo caro.',davi:'Esse endereço é do BatataPay? Por que o resgate pede dados?',yara:'O grupo não falou desse resgate. Por que precisa cadastrar o cartão?',pri:'Pontos acumulados e cadastro de cartão são coisas diferentes. O que esse site pede?',bento:'Vale-lanche que pede cartão? Até meu meme pede menos informação.'})[a.caller];
  if(event==='question')return voice.questions[schemes.indexOf(a.scheme)]||voice.questions[0];
  return voice[event];
 }

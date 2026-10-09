@@ -6,7 +6,7 @@ import {resultImpact,consequenceCard,resultReport} from '../src/result-impact.js
 
 function start(scheme){const s=fresh();nextCall(s);Object.assign(s.active,{scheme,prepared:true,stage:'pitch',log:[{speaker:'Nino',text:'Oi'}]});return s;}
 function obtain(s){
- const lines={prize:['Prêmio da Batata','A firma organizou o concurso de batatas','Pode compartilhar seu cartão fictício?'],support:['Tenho suporte para seu PãoOS','A assistência da firma organizou o serviço de PãoOS','Pode abrir a sessão de PãoOS?'],club:['Tenho um convite do Clube da Colher','O clube organizou a associação de talheres','Pode compartilhar seu passe?'],update:['Trouxe skins da Batata Cósmica','A firma preparou as skins da Batata Cósmica','Pode instalar o pacote de skins?']}[s.active.scheme];
+ const lines={prize:['Prêmio da Batata','A firma organizou o concurso de batatas','Pode compartilhar seu cartão fictício?'],support:['Tenho suporte para seu PãoOS','A assistência da firma organizou o serviço de PãoOS','Pode abrir a sessão de PãoOS?'],club:['Tenho um convite do Clube da Colher','O clube organizou a associação de talheres','Pode compartilhar seu passe?'],update:['Trouxe skins da Batata Cósmica','O pacote pede perfil e contato para registrar as skins','Pode instalar o pacote de skins?']}[s.active.scheme];
  applyTypedMove(s,'typed',lines[0]);applyTypedMove(s,'typed',lines[1]);if(s.active.scheme==='update')sendUpdateFile(s);applyTypedMove(s,'typed',lines[2]);assert.ok(s.active.item);
 }
 

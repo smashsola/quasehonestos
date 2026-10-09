@@ -1,77 +1,60 @@
 # Quase Honestos
 
-Uma firma quase confiável. Um estagiário sem referências. Seis personagens que têm bons motivos para desconfiar.
+Jogo educativo de comédia para o TeenTech 2026, categoria **Prevenção à Violência**. O Trambique OS preserva desktop, aplicativos, personagens e salvamentos. O diferencial é relacionar a conversa às consequências registradas e praticar proteção numa situação nova, incluindo exposição e constrangimento num grupo.
 
-Jogo educativo de comédia sobre manipulação e proteção digital, desenvolvido para o desafio TeenTech 2026. Explore o Trambique OS, converse com personagens e acompanhe as consequências de suas decisões em um universo fictício.
+## Funcionamento atual
 
-**[Jogar agora](https://quasehonestos.pages.dev/)**
+- Seis personagens e cinco propostas cenográficas; conversa digitada, expressões e humor brasileiro.
+- Interpretação separada das regras da partida e da redação da resposta. Proteção, recusa, dúvida, assunto solto e conflito com o estado têm tratamento próprio.
+- Receber link, abrir página, enviar cadastro e executar o app são eventos distintos. O modelo não cria itens, permissões ou pagamentos.
+- Replay: fala relevante, reação, consequência registrada, risco e proteção. Registros antigos continuam acessíveis.
+- Defesa curta com consulta de evidências: cobrança falsa, aviso legítimo e exposição de um colega. Essa atividade não paga créditos.
+- Objetivo visível, esperas menores, redimensionamento por teclado e uma janela por vez no celular, com navegação pela barra/menu.
 
-O código atualizado está nas pastas `src/`, `functions/`, `scripts/` e `tests/`. Inclui piadas variadas por personagem e explicações abríveis de proteção para cada proposta. A suíte atual tem 43 testes. O ZIP mantido neste repositório é um pacote de uma versão anterior; use os arquivos da branch `main` para continuar o desenvolvimento. A publicação no GitHub não atualiza automaticamente o upload direto do Cloudflare.
+Créditos mostram desempenho na ficção, **não conhecimento de segurança**. Dados QH-DEMO, anexos, computadores e transações não têm valor fora do jogo. Não há captura de dados reais ou acesso remoto externo.
 
-## O que já funciona
+## Executar e testar
 
-- Desktop com aplicativos, janelas móveis, fichas, correio e loja de decoração.
-- Seis personagens: Nino, Olga, Davi, Yara, Pri e Bento.
-- Quatro propostas fictícias: prêmio, suporte remoto, clube e pacote de skins.
-- Conversas digitadas, reações próprias, expressões e memória de promessas sobre gratuidade.
-- Recusa e desconfiança permitem continuar conversando; pressão e agressão repetidas podem encerrar o contato.
-- Mensagens inesperadas com escolhas de defesa e explicações sobre riscos.
-- Progresso salvo no navegador e relatório de partida.
-- Respostas locais de reserva: o jogo funciona sem IA.
-
-## IA de personagens
-
-A IA também avalia a variação de confiança de cada mensagem conforme a personalidade, o histórico e a informação apresentada. A mudança pode ser positiva, negativa ou zero, limitada a 25 pontos percentuais por mensagem e a uma barra de 0 a 100%. O motor valida a avaliação, impede ganhos por agressão e continua responsável por compartilhar itens e executar operações. Falhas da API usam as regras locais de reserva. O motivo da variação aparece no replay do atendimento.
-
-A integração opcional usa Gemini por uma **Cloudflare Pages Function** em `/api/dialogue`. A IA reescreve as falas com personalidade e contexto. O motor local continua responsável por emoções, etapas, itens, dinheiro e encerramento. Sem chave, sem conexão ou em caso de erro, permanece a resposta local.
-
-**Estado:** integração publicada no Cloudflare; respostas reais dependem de configurar a chave e validar a API. A chave nunca fica no navegador ou no repositório.
-
-Ao usar IA, as últimas mensagens e o contexto fictício são enviados ao Google. Não escreva dados pessoais reais. A função não mantém um banco de conversas; o progresso fica no navegador.
-
-## Configurar a chave no Cloudflare
-
-1. Abra **Workers & Pages**, selecione `quasehonestos` e entre nas configurações de variáveis e segredos.
-2. Crie um **segredo** chamado `GEMINI_API_KEY` e cole a chave Gemini somente nesse campo.
-3. Opcionalmente, defina `GEMINI_MODEL`. O padrão é `gemini-3.5-flash-lite`; escolha um modelo disponível na sua conta.
-4. Publique novamente e teste uma conversa. Sem segredo, o jogo usa as falas locais.
-
-Configure quotas no projeto Google e proteção de tráfego no Cloudflare antes de divulgação ampla. A validação de origem não substitui autenticação ou limite global de gastos.
-
-## Executar e verificar
-
-Requer Node.js 20 ou mais recente.
+Node.js 20 ou mais recente:
 
 ```sh
+npm ci
 npm run dev
 npm test
 npm run build
 ```
 
-O build gera `dist/`. Para testar a função localmente, use `npx wrangler pages dev dist` após o build e configure a chave em `.dev.vars`, ignorado pelo Git. O servidor local simples usa as falas offline.
+O servidor usa a porta 4180; `PORT` define outra. O build gera `dist/`. O código atual está em `src/`, `functions/`, `worker/`, `scripts/` e `tests/`; o ZIP antigo do repositório não é a fonte atual. A cópia local pode conter mudanças ainda não publicadas.
 
-## Publicar como Worker pelo GitHub
+## IA e privacidade
 
-O `wrangler.jsonc` padrão aponta para `worker/index.js` e serve os arquivos de `dist/`. A rota `/api/dialogue` reutiliza a integração Gemini no servidor. O build é executado automaticamente pelo Wrangler antes do deploy.
+O diálogo público usa interpretação local, respostas autorais e regras de progresso. **Não é um LLM treinado pela equipe.** IA generativa foi usada como apoio ao desenvolvimento, pesquisa e revisão; a equipe deve documentar esse uso.
 
-No Cloudflare Workers Builds, use a raiz do repositório, comando de build `npm run build` e comando de deploy `npm run deploy:worker` (ou `npx wrangler deploy`). As dependências estão declaradas em `package.json` e fixadas em `package-lock.json`; a instalação pode usar `npm ci`.
+O adaptador experimental Gemini em `/api/dialogue` permanece desativado no cliente (`publicDialogueAI=false`) e Worker (`DIALOGUE_AI_ENABLED=false`). Os [termos do Gemini](https://ai.google.dev/gemini-api/terms) restringem apps destinados ou provavelmente acessados por menores de 18 anos. A idade da conta não resolve essa restrição sobre o público. Não ativar no TeenTech apenas configurando uma chave.
 
-O segredo `GEMINI_API_KEY` precisa ser configurado no Worker também; segredos do projeto Pages não são transferidos automaticamente. Sem ele, as falas locais continuam funcionando.
+O adaptador protege segredo no servidor, limita contexto, valida respostas e usa timeout/fallback. Sua lógica foi testada com respostas simuladas; isso não comprova a qualidade do modelo em produção. Nenhuma dependência paga foi adicionada. Uma alternativa futura exige melhora demonstrada, revisão do público permitido, tratamento de dados, retenção, custos e limites. Segredos nunca devem ir para `vars`, HTML ou Git.
 
-## Publicação Pages existente
+O jogo mantém aviso de privacidade e bloqueio de formatos comuns de dados reais. O bloqueio não detecta toda informação pessoal. Instrua estudantes a escrever somente sobre a ficção, sem relatos identificáveis.
 
-Para atualizar o Pages manualmente, execute `npm run deploy:pages`. Para desenvolvimento Pages, use `npx wrangler pages dev dist --config wrangler.pages.jsonc`. A configuração Pages está separada em `wrangler.pages.jsonc` para preservar a publicação existente.
+## Material da apresentação
 
-O jogo está publicado no Cloudflare Pages por upload direto. Para usar integração Git em outro projeto Pages: framework nenhum, comando `npm run build`, saída `dist` e raiz do repositório. A pasta `functions/` deve permanecer na raiz.
+- [Avaliação antes/depois](docs/AVALIACAO-APRENDIZAGEM.md): situações distintas, gabarito e registro agregado sem identificação. **Ainda não aplicada.**
+- [Pitch de 3 minutos](docs/PITCH-3-MINUTOS.md): roteiro do diferencial educativo.
+- [Privacidade e edital](docs/PRIVACIDADE-E-EDITAL.md): funcionamento e pendências formais.
+- [Próxima atualização](docs/PROXIMA-ATUALIZACAO.md): lote local e histórico das mudanças.
 
-## Referências e autoria
+Testes do programa não comprovam eficácia educacional. O instrumento piloto é autoral, ainda sem validação com estudantes.
 
-Inspirado na ideia de conversas e aplicativos fictícios de **Scam With Your Friends**, com personagens, humor e conteúdo educativo próprios, sem vínculo com os criadores da referência.
+## Publicar
 
-Tema TeenTech: **Conexão Segura: Transformando inovação em proteção**. IA generativa foi utilizada como apoio à análise, programação e revisão; a equipe deve revisar os resultados e registrar esse uso na documentação da competição.
+`wrangler.jsonc` serve `dist/` por `worker/index.js`; `npm run deploy:worker` executa o build e implanta. A configuração Pages está separada em `wrangler.pages.jsonc`; `npm run deploy:pages` usa o projeto Pages existente. Instalação reproduzível: `npm ci`.
 
-Todas as ligações, anexos, contas e operações são cenográficas. O jogo não realiza acesso remoto ou transações reais. Seu placar descreve decisões na simulação, não certifica segurança na vida real.
+Publicação é uma ação separada. O pedido de melhoria não implica push ou deploy.
 
+## Referências
+
+Inspirado na organização de conversas e apps fictícios de Scam With Your Friends, com conteúdo, personagens e assets próprios, sem vínculo com os criadores.
+
+- [CERT.br — fascículos](https://cartilha.cert.br/fasciculos/)
 - [Regulamento TeenTech](https://teentech.teckids.org.br/regulamento)
-- [Gemini API](https://ai.google.dev/api/generate-content)
-- [Cloudflare Pages Functions](https://developers.cloudflare.com/pages/functions/)
+- [Gemini — termos](https://ai.google.dev/gemini-api/terms)

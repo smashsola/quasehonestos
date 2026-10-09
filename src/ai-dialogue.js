@@ -1,5 +1,6 @@
 // The server owns the key. The engine validates AI trust changes and owns items/payments.
 import {conversationContext} from './conversation-context.js';
+import {replyIsGrounded} from './dialogue-model-rules.js';
 import {applyReplyEmotion} from './mood.js';
 import {dialogueIntents} from './language.js';
 import {publicDialogueAI,looksPersonal} from './privacy-data.js';
@@ -26,7 +27,7 @@ export async function polishReply(active,reply,fetcher=fetch){
   const history=dialogueHistory(active.log.slice(0,-1),12);
   const response=await fetcher('/api/dialogue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({caller:active.caller,scheme:active.scheme,expression:active.expression,history,reference:reply.text,context:conversationContext(active)}),signal:AbortSignal.timeout(13000)});
   if(!response.ok)return false;const data=await response.json();
-  if(typeof data.text!=='string'||!data.text.trim()||data.text.length>700)return false;
+  if(typeof data.text!=='string'||!data.text.trim()||data.text.length>700||!replyIsGrounded(data.text,history,reply.text,conversationContext(active)))return false;
   reply.text=data.text.trim();reply.ai=true;if(data.emotion)applyReplyEmotion(active,data.emotion);return true;
  }catch{return false;}
 }

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {fresh,buy,equipWallpaper,load} from '../src/engine.js';
 import {furniture,schemes} from '../src/data.js';
 test('Ganhos novos financiam compras de faixas diferentes',()=>{
- assert.deepEqual(schemes.map(s=>s.payout),[300,400,250,350]);
+ assert.deepEqual(schemes.map(s=>s.payout),[300,400,250,350,450]);
  assert.equal(new Set(furniture.map(item=>item.id)).size,10);
  assert.ok(furniture.some(item=>item.price<250));assert.ok(furniture.some(item=>item.price>400));
 });

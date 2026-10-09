@@ -7,7 +7,7 @@ export const expressions=Object.keys(expressionNames);
 export function reactionFor(a,event,text=''){
  if((a.irritation||0)>=2||event==='hostile')return 'angry';
  if(a.suspicion||event==='pressure'||event==='contradiction')return 'suspicious';
- if(event==='unclear')return 'confused';
+ if(event==='unclear'||event==='wrong-item')return 'confused';
  if(/(?:odiei|nao gostei|horrivel|feio).*(?:desenho|cafe|meme|planilha)/i.test(text.normalize('NFD').replace(/[\u0300-\u036f]/g,'')))return 'hurt';
  if(event==='smalltalk'&&/kkk|haha|rsrs|😂|🤣/.test(text))return 'amused';
  if(['question','uncertain','pitch'].includes(event))return 'thinking';

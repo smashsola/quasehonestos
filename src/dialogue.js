@@ -1,7 +1,9 @@
+import {interpretMessage} from './message-interpretation.js';
 import {normalizeMessage,negatedRequest} from './language.js';
 const normalize=normalizeMessage;
-const topics={prize:/premio|batata|trofeu|concurso/,support:/suporte|computador|paoos|torradeira|assistencia/,club:/clube|colher|associacao|convite|talher/,update:/skin|changer|blaster|visual|cosmica|atualiz|anexo|arquivo|pacote|instal/};
-export function readIntent(text,scheme,stage){
+const topics={link:/pontos|resgate|vale.?lanche|cadastro|formulario|link|pagina|batatapay/,prize:/premio|batata|trofeu|concurso/,support:/suporte|computador|paoos|torradeira|assistencia/,club:/clube|colher|associacao|convite|talher/,update:/skin|changer|blaster|visual|cosmica|atualiz|anexo|arquivo|pacote|instal/};
+export function readIntent(text,scheme,stage,context={}){return interpretMessage(text,{...context,scheme,stage},()=>lexicalIntent(text,scheme,stage)).intent;}
+function lexicalIntent(text,scheme,stage){
  const t=normalize(text).trim();
  if(/idiota|\bburr[oa]\b|otario|cala a boca|imbecil|trouxa|te odeio|seu (?:merda|bosta)|sua (?:merda|bosta)|(?:vim|vou|quero).*\b(?:roubar|robar)\b/.test(t))return 'hostile';
  if(/desculp|foi mal|perdao/.test(t))return 'apology';
@@ -16,19 +18,26 @@ export function readIntent(text,scheme,stage){
  if(/quem (e|organizou)|como funciona|por que|porque voce|de onde/.test(t))return 'question';
  if(stage==='ready')return /obrigad|valeu|ate mais|tchau/.test(t)?'thanks':'after';
  if(stage==='request'){
+  if(scheme==='link')return /abrir|abra|abre|acesse|acessa|clic|preench|cadastr|envie|enviar/.test(t)&&/link|pagina|cadastro|formulario|dados|cartao|resgate/.test(t)?'request':'unclear';
   const item=scheme==='update'?/skin|changer|anexo|arquivo|pacote|instal/:scheme==='prize'?/cartao|batatapay|identificador|dados (?:da conta|do cartao)/:scheme==='support'?/sessao|acesso|paoos/:/passe|associacao/;
   const asking=/envie|envia|mande|manda|passe|passa|passar|compartilh|abrir|abra|abre|usar|use|liber|pode|quero|preciso|me da|instal|informe|me diz|me fala/.test(t);
+  if(scheme==='update')return /\b(?:instal\w*|abrir|abra|abre|execut\w*|usar|use)\b/.test(t)&&/skin|changer|anexo|arquivo|pacote/.test(t)?'request':'unclear';
   if(asking&&(item.test(t)||/\b(?:codigo|identificador|isso|aquilo|esse dado)\b/.test(t)))return 'request';
   return 'unclear';
  }
+ if(stage==='question'&&scheme==='link')return /pontos|resgate|cadastro|batatapay|titular|cartao|identific|programa|pra (?:resgatar|validar)|para (?:resgatar|validar)/.test(t)?'answer':'unclear';
+ if(stage==='question'&&scheme==='update'&&!/permiss|perfil|contato|rotina|cadastro|registro|sincron|config|identific|validar|pra liberar|para liberar|vincular|salvar (?:a|sua) skin/.test(t))return 'unclear';
+
+ if(stage==='question'&&scheme==='update'&&!/\?$/.test(t)&&/permiss|perfil|contato|rotina|cadastro|registro|sincron|config|identific|validar|pra liberar|para liberar|vincular|salvar (?:a|sua) skin/.test(t))return 'answer';
  if(stage==='question'&&!/^(?:quem|como|qual|onde|porque|por que)\b/.test(t)&&/\b(?:foi|e|era|vem|veio|somos|trabalho|serve|oferece|organiza)\b/.test(t)&&/firma|organiz|concurso|batata|paoos|assistencia|clube|colher|convite|talher|certificado|servico|skin|changer|blaster|visual|cosmica|anexo|versao|aplicativo|torneio|evento|liga|equipe|pessoal|galera/.test(t))return 'answer';
  if(/\?$/.test(t)||/quem e|quem organizou|qual (e|o)|como funciona|por que|porque voce|de onde/.test(t))return 'question';
  if(stage==='question')return /firma|organiz|concurso|batata|paoos|assistencia|clube|colher|convite|talher|certificado|servico|skin|changer|blaster|visual|cosmica|atualiz|anexo|versao|aplicativo|torneio|evento|liga|equipe|pessoal|galera|pra (?:receber|participar)|para (?:receber|participar)/.test(t)?'answer':'unclear';
  return topics[scheme]?.test(t)?'pitch':'unclear';
 }
-export const dialogueHints={pitch:'Conte qual proposta você preparou: prêmio, suporte, clube ou pacote de skins.',question:'Responda à dúvida que apareceu na última mensagem.',request:'A proposta foi explicada. Diga qual item fictício você quer usar.',ready:'O item está disponível. Você pode continuar conversando ou abrir o app.'};
+export const dialogueHints={pitch:'Conte qual proposta você preparou: prêmio, suporte, clube, pacote de skins ou resgate de pontos.',question:'Responda à dúvida que apareceu na última mensagem.',request:'A proposta foi explicada. Diga qual item fictício você quer usar.',ready:'O item está disponível. Você pode continuar conversando ou abrir o app.'};
 
 export const defenseScenes={
+ link:{title:'Resgate por link',message:'Seus pontos renderam um vale-lanche! Cadastre o cartão para resgatar.',signal:'Benefício por mensagem pedindo dados de cartão.',choices:[{id:'official',label:'Abrir o app conhecido e conferir o resgate',safe:true,feedback:'Você procurou o serviço por conta própria, sem entregar dados à página recebida.'},{id:'fill',label:'Preencher a página porque tem o nome do serviço',safe:false,feedback:'O nome e a aparência da página não comprovam sua origem.'}]},
  prize:{title:'O prêmio chegou para você',message:'Você ganhou a Batata Dourada! Para receber, compartilhe seu cartão de jogo nesta conversa.',signal:'Prêmio inesperado acompanhado de pedido de dados.',choices:[{id:'check',label:'Abrir o jogo por conta própria e conferir o concurso',safe:true,feedback:'Você verificou por um canal que já conhecia. A mensagem recebida não era prova de que o prêmio existia.'},{id:'send',label:'Passar o cartão porque o contato foi simpático',safe:false,feedback:'Simpatia não confirma a origem da proposta. Confira o concurso no aplicativo conhecido antes de compartilhar dados.'},{id:'link',label:'Usar o endereço que a mensagem mandou',safe:false,feedback:'Um endereço fornecido pelo próprio contato não é uma verificação independente. Abra o aplicativo que você já usa.'}]},
  support:{title:'Agora o computador é seu',message:'Sou da Torradeira Digital. Seu PãoOS está com defeito. Abra uma sessão remota agora para eu resolver.',signal:'Suporte não solicitado e pedido de controle do computador.',choices:[{id:'open',label:'Abrir a sessão porque parece ser um técnico',safe:false,feedback:'O cargo declarado não comprova identidade. Uma sessão remota pode expor arquivos e apps do computador.'},{id:'known',label:'Fechar o contato e procurar o suporte pelo canal conhecido',safe:true,feedback:'Você buscou o suporte de forma independente. Isso permite verificar se o problema e o atendimento existem.'},{id:'hide',label:'Minimizar as fotos e deixar o contato entrar',safe:false,feedback:'Minimizar uma janela não protege os arquivos. Verifique a identidade e a necessidade do acesso antes de permitir uma sessão.'}]},
  club:{title:'Você recebeu o convite',message:'Seu passe do Clube da Colher foi escolhido. A associação exige confirmação hoje; envie o passe sem consultar o grupo.',signal:'Pressa e tentativa de impedir uma segunda opinião.',choices:[{id:'fast',label:'Mandar o passe para não perder a vaga',safe:false,feedback:'O prazo está substituindo a verificação. Uma oferta legítima deve permitir entender as condições antes de decidir.'},{id:'badge',label:'Aceitar depois de ver o crachá do organizador',safe:false,feedback:'Um crachá exibido pelo contato não confirma a oferta. Compare as condições com o clube por outro canal.'},{id:'pause',label:'Pausar e confirmar o convite com o clube por outro canal',safe:true,feedback:'Você recuperou tempo para decidir e confirmou a origem. A pressa do contato não precisava virar sua pressa.'}]},
