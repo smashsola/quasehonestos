@@ -10,8 +10,8 @@ import {assessmentForms,beginClassSession,answerClassAssessment,finishClassPlay,
 const start=()=>{const s=fresh();nextCall(s);Object.assign(s.active,{scheme:'prize',prepared:true,stage:'pitch',log:[{speaker:'Você',text:'Olá'}]});return s;};
 const answers=form=>assessmentForms[form].map(q=>({action:q.correctAction,evidence:q.correctEvidence}));
 test('Celular em retrato e paisagem mantém um app; desktop conserva janelas',()=>{
- for(const width of [360,390,412,768])assert.equal(compactScreen(width,844),true);
- assert.equal(compactScreen(844,390),true);assert.equal(compactScreen(1280,720),false);
+ for(const width of [360,390,412,768])assert.equal(compactScreen(width,844,true),true);
+ assert.equal(compactScreen(844,390,true),true);assert.equal(compactScreen(1280,720,false),false);assert.equal(compactScreen(595,672,false),false);assert.equal(compactScreen(390,844,false),false);assert.equal(compactScreen(768,1024,true),true);
 });
 test('Leitura antiga preserva posição e conta só mensagens novas; fim acompanha resposta',()=>{
  assert.deepEqual(readingPosition({bottom:false,count:8,unread:1},10),{follow:false,unread:3});
@@ -20,14 +20,15 @@ test('Leitura antiga preserva posição e conta só mensagens novas; fim acompan
  assert.deepEqual(readingPosition(undefined,2),{follow:true,unread:0});
 });
 test('Viewport distingue redução por teclado de zoom, sem alterar partida',()=>{
- assert.deepEqual(viewportLayout({width:390,height:844,visualHeight:490,offsetTop:8,focused:true}),{height:490,top:8,keyboard:true});
- assert.equal(viewportLayout({width:390,height:844,visualHeight:490,scale:2,focused:true}).keyboard,false);
- assert.equal(viewportLayout({width:1280,height:720,visualHeight:400,focused:true}).keyboard,false);
- assert.equal(viewportLayout({width:390,height:844,visualHeight:820,focused:true}).keyboard,false);
+ assert.deepEqual(viewportLayout({width:390,height:844,visualHeight:490,offsetTop:8,focused:true,touch:true}),{height:490,top:8,keyboard:true});
+ assert.equal(viewportLayout({width:390,height:844,visualHeight:490,scale:2,focused:true,touch:true}).keyboard,false);
+ assert.equal(viewportLayout({width:1280,height:720,visualHeight:400,focused:true,touch:true}).keyboard,false);
+ assert.equal(viewportLayout({width:390,height:844,visualHeight:820,focused:true,touch:true}).keyboard,false);
 });
 test('Alternador expõe aplicativos e mensagens novas com nomes acessíveis',()=>{
  const html=mobileNavigation([['calls','', 'Zape'],['boss','','Correio'],['files','','Fichas']],'files',{expanded:true,pending:true,unread:2});
  assert.match(html,/aria-modal="true"/);assert.match(html,/data-app="files" aria-current="page"/);assert.match(html,/mensagens novas/);assert.match(html,/Correio · mensagem nova/);
+ assert.match(html,/<svg class="os-app-grid"/);assert.doesNotMatch(html,/▦/);
 });
 test('Hipótese usa a regra protetiva sem apagar exposição nem alterar saldo ou fatos reais',()=>{
  const s=start();applyTypedMove(s,'typed','Tenho um prêmio do concurso');applyTypedMove(s,'typed','A equipe do concurso organizou a premiação');applyTypedMove(s,'typed','Me passa seu cartão');

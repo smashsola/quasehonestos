@@ -2,6 +2,12 @@
 
 09/10/2026 — navegador Chromium do Codex, emulação de viewport. Sem aparelho real.
 
+### Correção visual após a publicação
+
+O modo de celular agora exige entrada principal por toque e largura até 1000 px. O painel estreito do computador conserva desktop, ícones, barra de tarefas e janelas. O SVG de Aplicativos usa a paleta do OS; no celular o retrato tem 58 px e as propostas aparecem em uma coluna com texto maior. Crachá e bilhete da tela inicial foram preservados.
+
+Conferência adicional em Chromium com toque emulado: 360 × 800, 390 × 844, 412 × 915, 768 × 1024 e 844 × 390, uma janela e alternador sem overflow horizontal. Sem toque: 595 × 672 com desktop e ajuste de largura por teclado (479 → 459 CSS px); 1280 × 720 com duas janelas. Isso não equivale a teste em aparelho real. A partida e suas regras não foram alteradas neste ajuste.
+
 | Área útil em CSS px | Verificação observada |
 |---|---|
 | 360 × 800 | Proposta, conversa, leitura antiga com aviso de novas mensagens; sem rolagem horizontal |
