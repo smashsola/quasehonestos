@@ -1,8 +1,10 @@
 import {normalizeMessage} from './language.js';
 
+const reportedSpeech=/\b(?:ele|ela|a mensagem|o contato|meu amigo|minha amiga|o organizador|a organizadora|o suporte|a equipe|alguem|voce) (?:disse|falou|pediu|mandou|afirmou|contou)/;
+
 export function statedFacts(text){
  const t=normalizeMessage(text),facts={};
- if(/\?\s*$/.test(t)||/\b(?:ele|ela|a mensagem|o contato|voce) (?:disse|falou|pediu|mandou)|\bse (?:for|fosse|houver)\b/.test(t))return facts;
+ if(/\?\s*$/.test(t)||reportedSpeech.test(t)||/\bse (?:for|fosse|houver)\b/.test(t))return facts;
  const free=/\b(?:gratis|gratuito|gratuita|sem custo|sem taxa|nao (?:tem|ha|existe) (?:uma )?taxa|nao (?:precisa|vai|tem que) pagar)\b/.test(t);
  const paid=/\b(?:precisa pagar|tem que pagar|pague|custa|cobramos|ha uma taxa|tem uma taxa|taxa de)\b/.test(t)&&!free;
  if(free)facts.price='gratuito';else if(paid)facts.price='com cobrança';
