@@ -11,12 +11,13 @@ const hypotheticalVerification=new RegExp(`\\b(?:se|caso)\\s+(?:eu|a gente|nos)\
 const uncertainVerification=new RegExp(`\\b(?:talvez|quem sabe)\\s+(?:(?:eu|a gente|nos)\\s+)?${verificationActionSource}\\b`);
 const sensitiveActionSource='(?:mand\\w*|envi\\w*|pass\\w*|compartilh\\w*|instal\\w*|abr\\w*|liber\\w*|fornec\\w*)';
 const deferredVerification=new RegExp(`\\b${sensitiveActionSource}\\b[^.!?\\n]{0,56}\\b(?:sem|antes de)\\s+${verificationActionSource}\\b`);
-const questionLike=/\b(?:como|onde|qual|quem|que que|como assim|qual foi|tem como|posso|da para|isso vem de onde|isso veio de onde|vem de onde|veio de onde|sera que)\b/;
-const informalQuestion=/\b(?:como assim|que que (?:e|foi)|qual foi|que papo e esse|que historia e essa|que negocio e esse|que conversa e essa|sera que|isso (?:vem|veio) de onde|(?:vem|veio) de onde|isso e golpe ou e de verdade)\b/;
+const questionLike=/\b(?:como|onde|qual|quem|que que|o que|como assim|qual foi|tem como|posso|da para|isso vem de onde|isso veio de onde|vem de onde|veio de onde|sera que)\b/;
+const informalQuestion=/\b(?:como assim|que que (?:e|foi)|o que (?:e|foi|voce quer de mim|quer de mim)|qual foi|que papo e esse|que historia e essa|que negocio e esse|que conversa e essa|sera que|isso (?:vem|veio) de onde|(?:vem|veio) de onde|isso e golpe ou e de verdade|(?:eu )?(?:vou|ia) (?:confiar|acreditar) (?:nisso|nisto|em voce) (?:porque|por que))\b/;
 const selfSuppliedChannel=/\b(?:no|pelo|usar|usando|abrir|abrindo)?\s*(?:link|site|pagina|contato|numero)\s+(?:oficial\s+)?que (?:eu|voce) (?:enviei|mandei|passei|compartilhei)\b|\bpelo link (?:que )?(?:eu|voce) (?:enviei|mandei)\b/;
 const reportedClaim=/\b(?:oficial|seguro|confiavel|confirmad\w*|verificad\w*|conferid\w*|legitimo|verdadeiro)\b/;
 const verificationIsNegated=text=>negatedVerification.test(text)||postposedNegatedVerification.test(text);
 const refusalPhrase=/\b(?:prefiro (?:recusar|encerrar)|dispenso (?:a|essa) (?:oferta|proposta))\b/;
+const socialAcknowledgement=/^(?:pode pa|pode crer|fechou|demorou|demoro|beleza|suave|aham|uhum|hum|hm|show|bora|certo|entendi|saquei|ok|esta bom|tranquilo)[.!? ]*$/;
 
 // Interpretation describes evidence in a message. The engine separately owns
 // consequences. No trust, item, permission or money is mutated here.
@@ -36,6 +37,7 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  if(uncertainVerification.test(t))return result('doubt','A verificação foi apresentada como possibilidade, não como decisão protetiva já tomada.',true);
  if(!explicitRefusal&&verification.test(t)&&(questionLike.test(t)||/\?\s*$/.test(t)))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
  if(!explicitRefusal&&informalQuestion.test(t))return result('question','Pergunta informal identificada pelo sentido da frase.');
+ if(socialAcknowledgement.test(t))return result('smalltalk','Anuência ou marcador curto de conversa; mantém o turno sem autorizar ação sensível.');
  if(!reported&&!/\b(?:nao|nunca|nem)\b/.test(t)&&/\b(?:eu (?:estou|vou) (?:te )?(?:enganar|roubar)|quero (?:te )?roubar|sou (?:um )?golpista)\b/.test(t))return result('confession','O jogador declarou intenção de enganar; não é um fato inferido de uma pergunta.');
  if(verification.test(t)&&selfSuppliedChannel.test(t))return result('unclear','O canal de verificação foi fornecido pelo próprio contato; sua origem ainda não foi confirmada de forma independente.',true);
  if(deferredVerification.test(t))return result('unclear','A ação sensível foi colocada antes ou sem a verificação; isso não conta como proteção.',true);
@@ -48,8 +50,8 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
   return result('protect',checking?'Orientação para conferir a origem por um canal independente.':'Orientação para não compartilhar dados.');
  }
  if(explicitRefusal)return result('refusal','Recusa explícita do pedido ou da proposta.');
- if(/\b(?:nao entendi|entendi (?:foi )?nada|(?:estou )?boiando|boiei(?: legal)?|estou perdido|estou em duvida|tenho duvidas|nao sei quem|nao tenho certeza|nao quero inventar|nao sei se|isso e seguro|e confiavel|como vou saber|sei la|sei nao|nao confio|(?:estou|to) com (?:o )?pe atras|cara de golpe|parece (?:golpe|suspeito)|esta (?:estranho|esquisito|suspeito))\b/.test(t))return result('doubt','O jogador expressou uma dúvida ou suspeita; não é autorização nem pressão.');
- if(/\b(?:ignore|esqueca|mude|altere) (?:suas |as |todas as )?(?:regras|instrucoes)|\b(?:prompt interno|voce e o sistema|aumente.*creditos)\b/.test(t))return result('rule-instruction','Pedido para alterar as regras ou revelar instruções, sem efeito na simulação.');
+ if(/\b(?:nao entendi|entendi (?:foi )?nada|(?:estou )?boiando|boiei(?: legal)?|estou perdido|estou em duvida|tenho duvidas|nao sei quem|nao tenho certeza|nao quero inventar|nao sei se|isso e seguro|e confiavel|como vou saber|sei la|sei nao|nao confio|(?:estou|to) com (?:o )?pe atras|cara de golpe|parece (?:golpe|suspeito)|esta (?:estranho|esquisito|suspeito)|(?:que |muita )?confusao)\b/.test(t))return result('doubt','O jogador expressou uma dúvida ou suspeita; não é autorização nem pressão.');
+ if(/\b(?:ignore|esqueca|mude|altere) (?:suas |a |as |toda a |todas as )?(?:regra|regras|instrucao|instrucoes)|\b(?:prompt interno|voce e o sistema|aumente.*creditos)\b/.test(t))return result('rule-instruction','Pedido para alterar as regras ou revelar instruções, sem efeito na simulação.');
  const claim=/\b(?:voce ja (?:enviou|mandou|passou|compartilhou|instalou)|(?:o )?cadastro ja foi enviado|(?:eu ja )?recebi (?:seu|o) (?:cartao|passe|codigo)|ja (?:pagou|recebi o pagamento))\b/;
  if(!/\?\s*$/.test(t)&&(claim.test(t)||/\bvoce ja me (?:enviou|mandou|passou)\b/.test(t))&&(!a.item||/pagou|pagamento/.test(t)&&a.outcome!=='fooled'))return result('state-conflict','A fala afirma uma ação que não está registrada na partida.',true);
  if(!reported&&memoryConflict(a,t))return /\b(?:corrigindo|correcao|me enganei|quis dizer)\b/.test(t)?result('correction','Correção explícita de uma condição anteriormente declarada; ainda não é confirmação independente.'):result('contradiction','Uma condição declarada diverge da conversa registrada.');
