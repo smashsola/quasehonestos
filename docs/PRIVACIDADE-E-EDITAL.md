@@ -42,3 +42,9 @@ Identificar o responsável/controlador por nome e canal de atendimento adequado;
 - Gemini — termos: https://ai.google.dev/gemini-api/terms
 - Cloudflare — privacidade: https://www.cloudflare.com/privacypolicy/
 - Referência oficial de gameplay e apps: https://store.steampowered.com/app/4954910/ e https://jataterworldwide.com/scam-with-your-friends/
+
+## Atividade de sala e preferências móveis
+
+A atividade opcional registra localmente escolhas codificadas de ação/evidência, qualidade da defesa e tempo decorrido. Não pede nomes nem relatos pessoais e não envia a avaliação ao servidor. O relatório de aprendizagem omite dinheiro, anotações e conversas completas. A exportação dos dados da partida no aviso de privacidade continua distinta e inclui as falas salvas.
+
+A memória da conversa e as continuações da história pertencem à ficção e ao salvamento local. Posições de leitura e abertura de explicações ficam em `qh-window-views`; rascunhos continuam em armazenamento de sessão. Instrumento ainda não validado com alunos.

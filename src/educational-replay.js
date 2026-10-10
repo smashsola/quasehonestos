@@ -1,3 +1,4 @@
+import {replayComparison} from './replay-comparison.js';
 import {callers} from './data.js';
 
 export function replayEvents(a){
@@ -14,6 +15,6 @@ export function replayEvents(a){
 }
 
 export function educationalReplay(a,esc){
- const events=replayEvents(a);if(!events.length)return '';
- return `<details class="learning-replay educational-replay" open><summary>Replay: fala, reação e proteção</summary><p class="replay-intro">Estas são as falas desta partida. A confiança descreve o personagem; não mede seu conhecimento.</p><ol>${events.map(event=>`<li><dl><div><dt>Você disse</dt><dd>“${esc(event.text)}”</dd></div><div><dt>O personagem respondeu</dt><dd>“${esc(event.reaction)}”</dd></div><div><dt>O que ficou registrado</dt><dd>${esc(event.reason)}</dd></div><div><dt>Risco observado</dt><dd>${esc(event.risk)}</dd></div><div><dt>Atitude de proteção</dt><dd>${esc(event.protection)}</dd></div></dl><span class="trust-change">Confiança do personagem: ${Math.round(event.before/3*100)}% para ${Math.round(event.after/3*100)}%</span></li>`).join('')}</ol></details>`;
+ const events=replayEvents(a),comparison=replayComparison(a);if(!events.length)return '';
+ return `<details class="learning-replay educational-replay" open><summary>Replay: fala, reação e proteção</summary><p class="replay-intro">Estas são as falas desta partida. A confiança descreve o personagem; não mede seu conhecimento.</p><ol>${events.map(event=>`<li><dl><div><dt>Você disse</dt><dd>“${esc(event.text)}”</dd></div><div><dt>O personagem respondeu</dt><dd>“${esc(event.reaction)}”</dd></div><div><dt>O que ficou registrado</dt><dd>${esc(event.reason)}</dd></div><div><dt>Risco observado</dt><dd>${esc(event.risk)}</dd></div><div><dt>Atitude de proteção</dt><dd>${esc(event.protection)}</dd></div></dl><span class="trust-change">Confiança do personagem: ${Math.round(event.before/3*100)}% para ${Math.round(event.after/3*100)}%</span></li>`).join('')}</ol>${comparison?`<section class="replay-comparison"><h3>Comparação hipotética</h3><p><b>O que aconteceu:</b> ${esc(comparison.actual)}</p><p><b>Outra ação, antes do compartilhamento:</b> ${esc(comparison.action)}</p><p>${esc(comparison.alreadyUsed?'Essa proteção já foi usada neste atendimento.':comparison.hypothesis)}</p><small>${esc(comparison.timing)}</small></section>`:''}</details>`;
 }

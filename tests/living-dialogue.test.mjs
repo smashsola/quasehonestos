@@ -10,7 +10,7 @@ test('Todos os personagens têm dúvidas e reações próprias',()=>{
 });
 test('Memória sobre gratuidade sobrevive ao salvamento e contradições não encerram',()=>{
  let s=start();applyTypedMove(s,'','O prêmio da Batata é grátis');s=load({getItem:()=>JSON.stringify(s)});
- applyTypedMove(s,'','Precisa pagar uma taxa');assert.equal(s.active.outcome,null);assert.equal(s.active.stage,'question');assert.equal(s.active.log.at(-1).text,livingReply(s.active,'memory'));assert.equal(s.credits,0);
+ applyTypedMove(s,'','Precisa pagar uma taxa');assert.equal(s.active.outcome,null);assert.equal(s.active.stage,'question');assert.match(s.active.log.at(-1).text,/gratuito.*cobrança/);assert.equal(s.active.facts.claims.price,'gratuito');assert.equal(s.credits,0);
  applyTypedMove(s,'','Precisa pagar uma taxa');assert.equal(s.active.outcome,null);
 });
 test('Desculpas acalmam sem liberar item; agressão repetida encerra',()=>{

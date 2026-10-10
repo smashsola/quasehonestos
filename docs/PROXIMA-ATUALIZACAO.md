@@ -46,3 +46,16 @@ Clona Cartão foi verificado nos testes com todos os seis personagens. Última s
 Validação: 112 testes aprovados, build concluído, fluxos de proteção e pagamento conferidos na prévia, defesa legítima sem alteração de saldo, tela de 390 × 844 sem rolagem horizontal e console sem erros capturados. O motor continua local, com cobertura delimitada de linguagem; não foi ativado provedor externo nem criada dependência paga.
 
 O usuário autorizou concluir e publicar este lote no GitHub e no Cloudflare em 09/10/2026. Os pedidos anteriores de aguardar uma publicação foram substituídos por essa autorização.
+
+## Investigação, continuidade e celular — 09/10/2026
+
+Este lote sucede a publicação e78d952. Após a implementação e verificação local, o usuário autorizou sua publicação no GitHub e no Cloudflare em 09/10/2026.
+
+- Defesa com títulos neutros e registros nos apps existentes. Seis casos variam evidências: cobranças, retirada, oficina, exposição e confirmação pendente. Uma fonte relevante basta; decisão sem fonte continua possível e é distinguida.
+- Memória das condições de preço, organização e necessidade de dados, dúvida perguntada/explicada, recusa e contradição. Paráfrases e voz ativa/passiva não ficam presas à frase original do teste.
+- Continuação fictícia no Correio: quem verificou reconhece outra abordagem; quem sofreu exposição procura apoio, sem culpa da vítima.
+- Replay preservado aberto; comparação explicitamente hipotética calculada pela regra protetiva do motor em cópia isolada.
+- Celular com um app, alternador, indicador de recados, retorno direto, rascunho e leitura preservados. Enter insere linha; Enviar é claro e acessível. Modo de paisagem, visualViewport, safe areas e movimento reduzido.
+- Atividade curta no Manual com começo e fim, avaliações A/B distintas e resultado local sem conversas por padrão. Reserva de tempo é provisória; somente percurso técnico foi cronometrado.
+
+Validação: 129 testes aprovados, build e diff verificados. Detalhes e limitações em VALIDACAO-MOBILE.md e SESSOES-EM-SALA.md. Sem aparelho real, aplicação com estudantes ou afirmação de eficácia. Motor público continua local, sem nova dependência paga.

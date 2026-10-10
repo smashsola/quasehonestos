@@ -11,11 +11,11 @@ function controls(){
   const panel=document.createElement('section');panel.id='network-panel';panel.className='network-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-labelledby','network-title');
   panel.innerHTML=`<div class="network-heading"><div><small>TRAMBIQUE OS</small><h2 id="network-title">Internet da firma</h2></div><button data-network-close aria-label="Fechar painel de internet">×</button></div><div class="network-connected"><span class="network-symbol">${wifi}</span><div><strong>FIRMA_5G_QUASE_6G</strong><span><i></i> Conectado por um milagre</span></div></div><p class="network-tagline">Sinal forte. Reputação fraca.</p><dl class="network-details"><div><dt>Velocidade</dt><dd>Boa… até o chefe abrir 37 abas</dd></div><div><dt>Estabilidade</dt><dd>Maior que a do estagiário</dd></div></dl><button class="network-diagnose" data-network-diagnose>Diagnosticar a gambiarra</button><p class="network-diagnostic" role="status">${diagnostic<0?'A impressora já tentou culpar o Wi-Fi.':diagnoses[diagnostic]}</p><footer>Rede fictícia do jogo · nenhum ajuste no seu Wi-Fi</footer>`;
   panel.querySelector('footer').textContent='Trambique Net · rede fictícia, desculpas ilimitadas';
-  document.querySelector('.desktop').append(panel);
+  document.querySelector('.desktop').append(panel);panel.querySelector('[data-network-close]').focus({preventScroll:true});
  }
  if(!open)document.querySelector('#network-panel')?.remove();
 }
-function close(returnFocus=false){open=false;controls();if(returnFocus)document.querySelector('[data-network-toggle]')?.focus({preventScroll:true});}
+function close(returnFocus=false){open=false;controls();if(returnFocus){const mobile=document.querySelector('.mobile-dock [data-mobile-apps]');(mobile?.getBoundingClientRect().height?mobile:document.querySelector('[data-network-toggle]'))?.focus({preventScroll:true});}}
 document.addEventListener('click',e=>{
  if(e.target.closest('[data-network-toggle]')){open=!open;if(open)document.dispatchEvent(new CustomEvent('qh-tray-open',{detail:'network'}));controls();}
  else if(e.target.closest('[data-network-close]'))close(true);

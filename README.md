@@ -8,8 +8,11 @@ Jogo educativo de comédia para o TeenTech 2026, categoria **Prevenção à Viol
 - Interpretação separada das regras da partida e da redação da resposta. Proteção, recusa, dúvida, assunto solto e conflito com o estado têm tratamento próprio.
 - Receber link, abrir página, enviar cadastro e executar o app são eventos distintos. O modelo não cria itens, permissões ou pagamentos.
 - Replay: fala relevante, reação, consequência registrada, risco e proteção. Registros antigos continuam acessíveis.
-- Defesa curta com consulta de evidências: cobrança falsa, aviso legítimo e exposição de um colega. Essa atividade não paga créditos.
-- Objetivo visível, esperas menores, redimensionamento por teclado e uma janela por vez no celular, com navegação pela barra/menu.
+- Investigação pelos registros de Loja, Fichas, Correio e Resultados: situações fraudulentas, legítimas e inconclusivas. Decidir cedo é permitido; fonte pertinente distingue decisão sustentada de palpite. Não paga créditos.
+- Memória de condições declaradas, dúvidas, recusas e contradições; repetir explicações equivalentes não aumenta confiança.
+- Consequências reaparecem no Correio e replay compara o ocorrido com uma hipótese calculada pelas regras, sem apagar exposição.
+- Atividade curta no Manual: avaliação antes/depois, um atendimento e defesa; relatório local codificado, sem nomes ou conversas por padrão.
+- Objetivo visível, esperas menores, redimensionamento por teclado e uma janela por vez no celular, com alternador ao alcance do toque, rascunho e leitura preservados. Teclado móvel usa botão Enviar; Enter insere linha.
 
 Créditos mostram desempenho na ficção, **não conhecimento de segurança**. Dados QH-DEMO, anexos, computadores e transações não têm valor fora do jogo. Não há captura de dados reais ou acesso remoto externo.
 
@@ -39,6 +42,8 @@ O jogo mantém aviso de privacidade e bloqueio de formatos comuns de dados reais
 ## Material da apresentação
 
 - [Avaliação antes/depois](docs/AVALIACAO-APRENDIZAGEM.md): situações distintas, gabarito e registro agregado sem identificação. **Ainda não aplicada.**
+- [Sessão curta em sala](docs/SESSOES-EM-SALA.md): começo, fim e estimativa provisória baseada no percurso técnico.
+- [Validação de celular](docs/VALIDACAO-MOBILE.md): telas verificadas, percurso e limites do teste sem aparelho real.
 - [Pitch de 3 minutos](docs/PITCH-3-MINUTOS.md): roteiro do diferencial educativo.
 - [Privacidade e edital](docs/PRIVACIDADE-E-EDITAL.md): funcionamento e pendências formais.
 - [Próxima atualização](docs/PROXIMA-ATUALIZACAO.md): lote local e histórico das mudanças.

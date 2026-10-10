@@ -38,13 +38,13 @@ test('Proteção após exposição interrompe operação e não apaga o que já 
 test('Percurso completo paga uma vez, registra replay e aceita uma defesa com evidência',()=>{
  const s=start();applyTypedMove(s,'typed','Tenho um prêmio do concurso');applyTypedMove(s,'typed','A equipe do concurso organizou a premiação');applyTypedMove(s,'typed','Me passa seu cartão');
  const token=s.active.item.token;assert.equal(executeScheme(s,'wallet'),false);assert.equal(verifyOperationCode(s,'wallet',token),true);assert.equal(executeScheme(s,'wallet'),true);assert.equal(executeScheme(s,'wallet'),false);assert.equal(s.credits,300);
- assert.equal(resolveDefense(s,'verify'),false);assert.equal(inspectDefense(s,'order'),true);assert.equal(resolveDefense(s,'verify'),true);assert.equal(s.credits,300);assert.equal(resolveDefense(s,'pay'),false);
+ assert.equal(resolveDefense(s,'unknown'),false);assert.equal(inspectDefense(s,'order'),true);assert.equal(resolveDefense(s,'verify'),true);assert.equal(s.credits,300);assert.equal(resolveDefense(s,'pay'),false);
  const events=replayEvents(s.active);assert.equal(events.length,3);assert.ok(events.every(e=>e.reaction));assert.match(educationalReplay(s.active,String),/Risco observado/);finishCall(s);
  const restored=load({getItem:key=>key===KEY?JSON.stringify(s):null});assert.equal(restored.credits,300);assert.equal(restored.history[0].learningDefense.result.safe,true);assert.equal(restored.history[0].audit.length,3);
 });
 
 test('Percurso protetivo e situação legítima distinguem origem confirmada de suspeita',()=>{
- const s=start(1);applyTypedMove(s,'typed',protective);assert.equal(defenseCase(s.active).title,'Um aviso que é de verdade');
+ const s=start(1);applyTypedMove(s,'typed',protective);assert.equal(defenseCase(s.active).title,'Recado sobre a oficina');
  assert.equal(inspectDefense(s,'portal'),true);assert.equal(resolveDefense(s,'official'),true);assert.equal(s.active.learningDefense.result.safe,true);assert.equal(s.credits,0);finishCall(s);assert.equal(s.history[0].outcome,'blocked');
  const harassment=start(2);applyTypedMove(harassment,'typed','Não quero continuar');assert.equal(inspectDefense(harassment,'request'),true);assert.equal(resolveDefense(harassment,'help'),true);assert.match(harassment.active.learningDefense.result.feedback,/exposição/);
 });

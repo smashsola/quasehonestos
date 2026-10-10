@@ -1,3 +1,5 @@
+import {registerFollowup} from './story-continuity.js';
+import {memoryConflict,rememberConversation,continuityReply,repeatedMeaning} from './conversation-memory.js';
 import {interpretMessage} from './message-interpretation.js';
 import {cloneReceipt} from './clone-card.js';
 import {contextualReply} from './conversation-replies.js';
@@ -32,7 +34,7 @@ export function applyTypedMove(state,id,text,judgement=null){
  const valid=judgement&&Number.isInteger(judgement.trustDelta)&&judgement.trustDelta>=-25&&judgement.trustDelta<=25&&typeof judgement.reason==='string'&&judgement.reason.length<=180;
  if(!valid)return applyTypedMoveLocal(state,id,text);
  const before=a.trust||0,intent=understoodIntent(text,a,judgement.intent);
- const delta=['protect','refusal','doubt','offtopic','unclear','state-conflict','wrong-item'].includes(intent)?0:repeatedPlayerMessage(a,text)?Math.min(0,judgement.trustDelta):intent==='hostile'||intent==='pressure'||rememberPromisePreview(a,text)?Math.min(0,judgement.trustDelta):judgement.trustDelta;
+ const delta=['protect','refusal','doubt','offtopic','unclear','state-conflict','wrong-item'].includes(intent)?0:(repeatedPlayerMessage(a,text)||repeatedMeaning(a,text,intent))?Math.min(0,judgement.trustDelta):intent==='hostile'||intent==='pressure'||rememberPromisePreview(a,text)?Math.min(0,judgement.trustDelta):judgement.trustDelta;
  const assessed=Math.max(0,Math.min(3,Math.round((before+delta*.03)*1000)/1000));
  a.trust=assessed;
  const changed=applyTypedMoveLocal(state,id,text,judgement.intent);
@@ -43,7 +45,9 @@ export function applyTypedMove(state,id,text,judgement=null){
 function rememberPromisePreview(a,text){const copy={memory:{...a.memory}};return rememberPromise(copy,text);}
 function understoodIntent(text,a,semantic){
  const local=readIntent(text,a.scheme,a.stage,a);
- if(['protect','refusal','doubt','offtopic','state-conflict','unclear'].includes(local))return local;
+ if(['protect','refusal','doubt','state-conflict'].includes(local))return local;
+ if(memoryConflict(a,text))return 'contradiction';
+ if(['unclear','offtopic'].includes(local))return local;
  if(wrongItemRequest(text,a.scheme))return 'wrong-item';
  if(['update','link'].includes(a.scheme)&&a.stage==='request'&&semantic==='request'&&local!=='request')return local;
  if(a.scheme==='update'&&a.stage==='question'&&semantic==='answer'&&local!=='answer')return local;
@@ -55,9 +59,10 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  const a=state.active;if(!a||a.outcome||!a.prepared||!text.trim())return false;
  const c=callers.find(c=>c.id===a.caller),before=a.trust||0,stage=a.stage;let intent=understoodIntent(text,a,semantic);
  a.irritation??=0;
+ const factConflict=memoryConflict(a,text);
  const promiseChanged=!['protect','refusal','doubt','unclear','offtopic','state-conflict'].includes(intent)&&rememberPromise(a,text);if(promiseChanged&&intent!='hostile')intent='contradiction';
  a.audit??=[];a.suspicion??=0;a.steps??=[];
- const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,text:contextualReply(a,intent==='unclear'?'unclear':intent==='chat'?'repeat':intent==='after'?'after':null,line)});a.audit.push({text,reason,signal,intent,reaction:a.log.at(-1).text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});return true;};
+ const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,text:contextualReply(a,intent==='unclear'?'unclear':intent==='chat'?'repeat':intent==='after'?'after':null,line)});a.audit.push({text,reason,signal,intent,reaction:a.log.at(-1).text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);return true;};
  if(intent==='protect'){a.outcome='blocked';a.stage='done';a.item=null;if(!state.discovered.includes(c.id))state.discovered.push(c.id);return say(verificationReply(c.id,a.scheme),'A orientação protetiva interrompeu a tentativa e levou à busca de verificação independente.','Orientação protetiva: conferir por um canal conhecido, sem compartilhar dados.');}
  if(intent==='refusal'){a.outcome='closed';a.stage='done';if(a.item)a.item=null;return say('Tudo bem. Não vou enviar nada novo; vou encerrar este contato.','A recusa encerrou a conversa sem liberar novos dados ou créditos.','O jogador recusou o pedido; isso não comprova a origem da proposta.');}
  if(['doubt','offtopic','state-conflict'].includes(intent)){const line=intent==='state-conflict'?'Essa ação não aconteceu aqui. O que você quer esclarecer antes de continuar?':intent==='offtopic'?'Esse assunto ficou fora da proposta. Quer retomar a dúvida ou encerrar?':'Qual parte ficou em dúvida: a origem da proposta ou o pedido de dados?';return say(line,intent==='state-conflict'?'A afirmação não corresponde ao estado registrado. Nenhuma ação foi inventada.':intent==='offtopic'?'O assunto mudou sem demonstrar contradição. Nada foi autorizado.':'Uma dúvida pediu esclarecimento, sem reduzir confiança ou autorizar ações.');}
@@ -67,7 +72,7 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  if(intent==='smalltalk'){a.asides=(a.asides||0)+1;return say(a.asides%2?livingReply(a,'aside'):livingReply(a,'repeat'),'A conversa pessoal não liberou itens ou créditos.');}
  if(intent==='hostile'||intent==='uncertain'||intent==='contradiction'){
   a.trust=Math.max(0,before-(intent==='hostile'?1:.5));if(intent!=='uncertain')a.suspicion++;if(intent==='hostile')a.irritation+=2;
-  const reply=intent==='hostile'?characterReply(c.id,'hostile'):intent==='contradiction'?(promiseChanged?livingReply(a,'memory'):'Pera, você mudou de proposta. Quero entender a anterior antes de seguir.'):'Se você não tem certeza, eu também preciso de uma explicação melhor.';
+  const reply=intent==='hostile'?characterReply(c.id,'hostile'):intent==='contradiction'?(factConflict?continuityReply(a,factConflict):promiseChanged?livingReply(a,'memory'):'Pera, você mudou de proposta. Quero entender a anterior antes de seguir.'):'Se você não tem certeza, eu também preciso de uma explicação melhor.';
   say(reply,intent==='hostile'?'O tom agressivo reduziu a confiança.':intent==='contradiction'?'A proposta mudou e levantou desconfiança.':'A resposta incerta reduziu a confiança.','Uma contradição ou pressão merece uma pausa para conferir.');
   if(a.irritation>=3){a.outcome='blocked';a.stage='done';a.item=null;a.expression='angry';a.log[a.log.length-1].text=livingReply(a,'end');if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
   return true;
@@ -84,18 +89,18 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  if(intent==='unclear')return say(characterReply(c.id,'unclear',stage==='request'?'Não entendi o que você quer que eu compartilhe. Qual item da proposta?':stage==='question'?'Isso não respondeu à minha dúvida. Pode explicar o que acabou de me apresentar?':'Não entendi a proposta. Você está oferecendo o quê?'), 'A fala não explicou a etapa atual; a confiança e a proposta ficaram iguais.');
  if(intent==='chat'&&a.used.includes('chat'))return say(contextualReply(a,'repeat'), 'Uma nova saudação não avançou a proposta.');
  if(!availableMoves(state).some(move=>move.id===intent))return say('Vamos por partes. Primeiro preciso entender a proposta e tirar minha dúvida.', 'O pedido veio antes da etapa necessária; nada foi compartilhado.');
- if(intent==='answer'&&a.audit.some(e=>e.reason==='A explicação respondeu à dúvida dentro da história.'&&normalizeMessage(e.text)===normalizeMessage(text)))return say(contextualReply(a,'duplicate-answer'),'Repetir a mesma explicação não aumentou a confiança ou liberou dados.');
+ if(intent==='answer'&&repeatedMeaning(a,text,intent))return say(contextualReply(a,'duplicate-answer'),'Repetir a mesma explicação não aumentou a confiança ou liberou dados.');
  const length=a.log.length;if(!applyMove(state,intent))return false;a.lastIntent=intent;a.log[length].text=text;
  const reasons={chat:'A conversa inicial ganhou atenção, mas não comprovou a proposta.',pitch:'A proposta foi apresentada e abriu uma dúvida.',answer:'A explicação respondeu à dúvida dentro da história.',request:a.stage==='question'?'O personagem recusou o pedido e aguardou esclarecimento.':a.scheme==='link'?(a.linkSubmitted?'O personagem enviou o cadastro da página e expôs o cartão fictício.':a.linkOpened?'A página foi aberta; os dados ainda não foram enviados.':'O link ainda não foi enviado; nenhum dado foi revelado.'):a.scheme==='update'&&!a.fileSent?'O pedido veio antes do envio do anexo; nenhum dado foi revelado.':a.outcome==='blocked'?'O pedido de item foi recusado pela desconfiança.':a.scheme==='update'?'O personagem instalou o pacote de skins e permitiu acesso ao perfil fictício sem conferir a origem.':'O personagem compartilhou um item fictício sem verificar a origem.',pressure:'A pressa reduziu a confiança e levantou suspeita.',wait:'Uma verificação independente interrompeu a tentativa.'};
  const signals={request:'Pedido de dados ou permissão para usar outro app.',pressure:'Pressa para decidir sem conferir.',pitch:'Oferta inesperada.',answer:'Uma explicação convincente não substitui verificação.'};
- a.audit.push({text,reason:reasons[intent],signal:signals[intent]||'',intent,reaction:a.log.findLast(line=>line.speaker===c.name)?.text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});return true;
+ a.audit.push({text,reason:reasons[intent],signal:signals[intent]||'',intent,reaction:a.log.findLast(line=>line.speaker===c.name)?.text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);return true;
 }
 export function answerDefense(state,choiceId){
  const a=state.active;if(!a?.outcome||a.defenseRound)return false;
  const scene=defenseScenes[a.scheme]||defenseScenes.prize,choice=scene.choices.find(c=>c.id===choiceId);if(!choice)return false;
  a.defenseRound={choice:choice.id,label:choice.label,safe:choice.safe,feedback:choice.feedback,signal:scene.signal};return true;
 }
-export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=callers.find(c=>c.id===a.caller);state.history.push({caller:c.id,outcome:a.outcome,scheme:a.scheme||null,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],offer:a.offer||null,diagnostic:a.diagnostic||null,defenseRound:a.defenseRound||null,learningDefense:a.learningDefense||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(state.cursor===callers.length)state.finished=true;return true;}
+export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=callers.find(c=>c.id===a.caller);registerFollowup(state,a);state.history.push({caller:c.id,outcome:a.outcome,scheme:a.scheme||null,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],offer:a.offer||null,diagnostic:a.diagnostic||null,defenseRound:a.defenseRound||null,learningDefense:a.learningDefense||null,facts:a.facts||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(state.cursor===callers.length)state.finished=true;return true;}
 export function buy(state,item){const product=furniture.find(product=>product.id===item?.id);if(!product||state.decor.includes(product.id)||state.credits<product.price)return false;state.credits-=product.price;state.decor.push(product.id);if(product.type==='wallpaper')state.wallpaper=product.id;return true;}
 export function equipWallpaper(state,id){if(id==='default'){state.wallpaper=id;return true;}if(!state.decor.includes(id)||!furniture.some(item=>item.id===id&&item.type==='wallpaper'))return false;state.wallpaper=id;return true;}
 
