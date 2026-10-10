@@ -21,6 +21,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: Refresh Wrangler lock for diagnosis
+        run: |
+          npm install --package-lock-only --save-dev wrangler@4.149.0
+          git diff -- package.json package-lock.json
       - name: Install
         run: npm ci
       - name: Security audit
