@@ -46,6 +46,6 @@ test('Modelo recebe os eventos de link separados e a dificuldade, sem transforma
    return Response.json({candidates:[{content:{parts:[{text:JSON.stringify({text:'Enviei o cadastro e meu cartão.',decision:'consider'})}]}}]});
   };
   const request=new Request('https://example.com/api/dialogue',{method:'POST',headers:{Origin:'https://example.com','Content-Type':'application/json'},body:JSON.stringify({caller:'davi',scheme:'link',history:[],reference:'A página abriu, mas o cadastro continua vazio.',context:conversationContext(state)})});
-  assert.equal((await onRequestPost({request,env:{DIALOGUE_AI_ENABLED:'true',GEMINI_API_KEY:'test'}})).status,503);
+  assert.equal((await onRequestPost({request,env:{DIALOGUE_AI_ENABLED:'true',DIALOGUE_PROVIDER:'gemini',DIALOGUE_ALLOW_EXPERIMENTAL_PROVIDERS:'true',GEMINI_API_KEY:'test'}})).status,503);
  }finally{globalThis.fetch=original;}
 });
