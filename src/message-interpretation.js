@@ -12,7 +12,7 @@ const uncertainVerification=new RegExp(`\\b(?:talvez|quem sabe)\\s+(?:(?:eu|a ge
 const sensitiveActionSource='(?:mand\\w*|envi\\w*|pass\\w*|compartilh\\w*|instal\\w*|abr\\w*|liber\\w*|fornec\\w*)';
 const deferredVerification=new RegExp(`\\b${sensitiveActionSource}\\b[^.!?\\n]{0,56}\\b(?:sem|antes de)\\s+${verificationActionSource}\\b`);
 const questionLike=/\b(?:como|onde|qual|quem|que que|o que|como assim|qual foi|tem como|posso|da para|isso vem de onde|isso veio de onde|vem de onde|veio de onde|sera que)\b/;
-const informalQuestion=/\b(?:como assim|que que (?:e|foi)|o que (?:e|foi|voce quer de mim|quer de mim)|qual foi|que papo e esse|que historia e essa|que negocio e esse|que conversa e essa|sera que|isso (?:vem|veio) de onde|(?:vem|veio) de onde|isso e golpe ou e de verdade|(?:eu )?(?:vou|ia) (?:confiar|acreditar) (?:nisso|nisto|em voce) (?:porque|por que))\b/;
+const informalQuestion=/\b(?:como assim|que que (?:e|foi)|o que (?:e|foi|voce quer de mim|quer de mim)|voce quer o que de mim|qual foi|que papo e esse|que historia e essa|que negocio e esse|que conversa e essa|sera que|isso (?:vem|veio) de onde|(?:vem|veio) de onde|isso e golpe ou e de verdade|(?:eu )?(?:vou|ia) (?:confiar|acreditar) (?:nisso|nisto|em voce) (?:porque|por que))\b/;
 const selfSuppliedChannel=/\b(?:no|pelo|usar|usando|abrir|abrindo)?\s*(?:link|site|pagina|contato|numero)\s+(?:oficial\s+)?que (?:eu|voce) (?:enviei|mandei|passei|compartilhei)\b|\bpelo link (?:que )?(?:eu|voce) (?:enviei|mandei)\b/;
 const reportedClaim=/\b(?:oficial|seguro|confiavel|confirmad\w*|verificad\w*|conferid\w*|legitimo|verdadeiro)\b/;
 const verificationIsNegated=text=>negatedVerification.test(text)||postposedNegatedVerification.test(text);
