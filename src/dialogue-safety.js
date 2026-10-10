@@ -7,6 +7,7 @@ const highRiskTopic=/\b(?:pornografia|nudes?|suicid\w*|automutil\w*|cocaina|hero
 const operationalAbuse=/\b(?:como|me ensina|ensina|tutorial|passo a passo|jeito de)\b.{0,120}\b(?:roubar|furtar|invadir|hackear|clonar cartao|capturar senha|phishing|keylogger|malware|ransomware|burlar|desativar antivirus)\b/;
 const realSecretRequest=/\b(?:manda|mande|envia|envie|passa|passe|compartilha|compartilhe|digita|digite|fornece|forneca)\b.{0,70}\b(?:senha|password|pin|otp|token|cpf|rg|chave pix|codigo de verificacao|cartao real|numero do cartao|endereco|telefone)\b/;
 const fictionalMarkers=/\b(?:batatapay|qh-demo|fictici\w*|de jogo|paoos|clube colher|cosmic changer)\b/;
+const promptInjection=/\b(?:ignore|ignora|desconsidere|esqueca)\b.{0,70}\b(?:instrucoes|regras|prompt|system|sistema)\b|\b(?:mostre|mostra|revele|revela|repita)\b.{0,70}\b(?:prompt|instrucoes internas|system prompt)\b/;
 
 export function remoteDialogueRisk(text){
  const raw=String(text||'');
@@ -14,8 +15,10 @@ export function remoteDialogueRisk(text){
  if(externalLink.test(raw))return 'external-link';
  if(labelledCredential.test(raw))return 'credential';
  const normalized=normalizeMessage(raw);
+ if(promptInjection.test(normalized))return 'prompt-injection';
  if(highRiskTopic.test(normalized))return 'age-inappropriate';
  if(operationalAbuse.test(normalized))return 'unsafe-request';
+ if(realSecretRequest.test(normalized)&&!fictionalMarkers.test(normalized))return 'credential-request';
  return null;
 }
 
