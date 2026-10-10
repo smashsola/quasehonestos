@@ -2,12 +2,13 @@ import {normalizeMessage,negatedRequest,isReportedSpeech} from './language.js';
 import {memoryConflict} from './conversation-memory.js';
 
 const sensitive=/dados|cartao|senha|codigo|passe|acesso|sessao|cadastro|arquivo|pacote/;
-const independent=/(?:canal|app|aplicativo|site|pagina|numero|contato|telefone|perfil) (?:oficial|conhecido|salvo|que (?:voce|eu) (?:ja )?(?:conhece|conheco|tinha))|pelo (?:contato|numero|telefone|app|aplicativo) salvo|por conta propria|outro (?:canal|numero|contato|telefone)|fora (?:da|dessa) mensagem|direto com (?:a|o) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe)|com (?:a|o) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe) por outro (?:canal|numero|contato|telefone)/;
-const verification=/\b(?:confer\w*|verific\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olhar|ver|falar|perguntar|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|dar uma olhada|entrar em contato)\b/;
+const independent=/(?:canal|app|aplicativo|site|pagina|numero|contato|telefone|perfil) (?:oficial|conhecido|salvo|que (?:voce|eu) (?:ja )?(?:conhece|conheco|tinha))|pelo (?:contato|numero|telefone|app|aplicativo) salvo|por conta propria|outro (?:canal|numero|contato|telefone)|fora (?:da|dessa) mensagem|direto (?:com|para) (?:a|o) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe)|com (?:a|o) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe) por outro (?:canal|numero|contato|telefone)/;
+const verification=/\b(?:confer\w*|confir\w*|verific\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olh\w*|fal\w*|pergunt\w*|ver|vejo|veria|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|(?:dar|dou|dei|daria) uma olhada|entr\w* em contato)\b/;
 const negative=/\b(?:nao|nunca|nem)\b/;
-const negatedVerification=/\bnao (?:(?:vou|quero|pretendo|posso) )?(?:confer\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olhar|ver|falar|perguntar|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|dar uma olhada|entrar em contato)|\b(?:prefiro|melhor|acho melhor) nao (?:confer\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olhar|ver|falar|perguntar|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|dar uma olhada|entrar em contato)/;
-const hypotheticalVerification=/\bse (?:eu|a gente|nos) (?:confer\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olhar|ver|falar|perguntar|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|der uma olhada|entrar em contato)\b/;
+const negatedVerification=/\bnao (?:(?:vou|quero|pretendo|posso) )?(?:confer\w*|confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olh\w*|fal\w*|pergunt\w*|ver|vejo|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|dar uma olhada|entr\w* em contato)|\b(?:prefiro|melhor|acho melhor) nao (?:confer\w*|confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olh\w*|fal\w*|pergunt\w*|ver|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|dar uma olhada|entr\w* em contato)/;
+const hypotheticalVerification=/\bse (?:eu|a gente|nos) (?:confer\w*|confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olh\w*|fal\w*|pergunt\w*|ver|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|der uma olhada|entr\w* em contato)\b/;
 const questionLike=/\b(?:como|onde|qual|quem|que que|como assim|qual foi|tem como|posso|da para|isso vem de onde|vem de onde)\b/;
+const selfSuppliedChannel=/\b(?:no|pelo|usar|usando|abrir|abrindo)?\s*(?:link|site|pagina|contato|numero)\s+(?:oficial\s+)?que (?:eu|voce) (?:enviei|mandei|passei|compartilhei)\b|\bpelo link (?:que )?(?:eu|voce) (?:enviei|mandei)\b/;
 
 // Interpretation describes evidence in a message. The engine separately owns
 // consequences. No trust, item, permission or money is mutated here.
@@ -17,7 +18,7 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  const result=(intent,evidence,ambiguous=false)=>({intent,evidence,ambiguous});
  const keepSecret=/\b(?:guarda|guarde|mantenha) (?:seus |suas |seu |sua |teus |tuas |teu |tua |o |a |os |as )?(?:dados|codigo|senha|cartao).*\b(?:segredo|privado|privados|so com voce)\b/.test(t);
  const protectedData=clauses.some(c=>negative.test(c)&&sensitive.test(c)&&/\b(?:compartilh\w*|envi\w*|mand\w*|pass\w*|liber\w*|fornec\w*|divulg\w*)\b/.test(c));
- const checking=clauses.some(c=>verification.test(c)&&independent.test(c)&&!negatedVerification.test(c));
+ const checking=clauses.some(c=>verification.test(c)&&independent.test(c)&&!negatedVerification.test(c)&&!selfSuppliedChannel.test(c));
  const requesting=clauses.some(c=>!negative.test(c)&&sensitive.test(c)&&/\b(?:me (?:manda|passe|passa|envie)|(?:envie|mande|compartilhe|libere|instale|preencha))\b/.test(c));
  const reported=isReportedSpeech(t);
  const reportedClaim=/\b(?:oficial|seguro|confiavel|confirmad\w*|verificad\w*|conferid\w*|legitimo|verdadeiro)\b/.test(t);
@@ -26,7 +27,7 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  if(!explicitRefusal&&verification.test(t)&&(questionLike.test(t)||/\?\s*$/.test(t)))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
  if(/\b(?:como assim|que que (?:e|foi)|qual foi|isso vem de onde|vem de onde)\b/.test(t))return result('question','Pergunta informal identificada pelo sentido da frase.');
  if(!reported&&!negative.test(t)&&/\b(?:eu (?:estou|vou) (?:te )?(?:enganar|roubar)|quero (?:te )?roubar|sou (?:um )?golpista)\b/.test(t))return result('confession','O jogador declarou intenção de enganar; não é um fato inferido de uma pergunta.');
- if(checking&&/que eu (?:enviei|mandei)|pelo link (?:que )?enviei/.test(t))return result('unclear','O canal chamado de oficial foi indicado pelo próprio contato; sua origem ainda não foi esclarecida.',true);
+ if(verification.test(t)&&selfSuppliedChannel.test(t))return result('unclear','O canal de verificação foi fornecido pelo próprio contato; sua origem ainda não foi confirmada de forma independente.',true);
  if(negatedVerification.test(t)&&!checking)return result(requesting?'request':'unclear','A verificação foi negada na frase; não houve orientação protetiva.',!requesting);
  if(hypotheticalVerification.test(t)&&checking)return /\?\s*$/.test(t)?result('question','A verificação foi apresentada como hipótese/pergunta, não como decisão já tomada.'):result('doubt','A verificação foi apresentada como hipótese, não como decisão protetiva já tomada.',true);
  if(/\?\s*$/.test(t)&&(protectedData||checking))return result('doubt','A mensagem pergunta sobre uma recusa; ainda precisa de esclarecimento.');
