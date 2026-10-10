@@ -1,6 +1,6 @@
 # Avaliação piloto — antes e depois
 
-Revisão: 09/10/2026. **Ainda não aplicada com estudantes. Sem resultados de aprendizagem.**
+Revisão: 10/10/2026. **Ainda não aplicada com estudantes. Sem resultados de aprendizagem.**
 
 A atividade está no Manual e seu instrumento atual está em `src/classroom-session.js`. As versões A e B têm quatro situações distintas, na mesma ordem de competências: verificar origem, reconhecer situação legítima, lidar com inconclusão e buscar apoio diante de exposição. A dificuldade foi planejada para comparação, mas sua equivalência não foi validada.
 
@@ -12,6 +12,8 @@ A atividade está no Manual e seu instrumento atual está em `src/classroom-sess
 | Buscar apoio | Telefone para incomodar colega | Foto privada para montagem | Recusa da divulgação e finalidade de constranger |
 
 Cada situação pede **ação e evidência**. Uma ação adequada com evidência irrelevante não conta como decisão sustentada. A avaliação não usa saldo, confiança do personagem, número de cliques ou satisfação.
+
+A porcentagem de confiança mostrada durante a conversa é um **indicador determinístico da simulação**, calculado a partir do estado do jogo. Ela não é nota de aprendizagem e não entra no resultado antes/depois. O Qwen/Workers AI pode redigir a reação do personagem, mas não define a pontuação da atividade em sala. Essa separação evita que variações de texto do modelo mudem o resultado educacional entre estudantes.
 
 ## Gabarito da versão implementada
 
@@ -33,6 +35,8 @@ Não mostre o gabarito antes da avaliação. A interface mostra a comparação s
 ## Protocolo piloto
 
 Use [a sessão curta](SESSOES-EM-SALA.md). Sem nomes, contato, idade exata ou relatos pessoais. O jogo exporta códigos de escolhas e evidências; mantenha só o necessário para a análise combinada com a escola. Registre turma apenas de forma agregada, evitando grupos tão pequenos que identifiquem alguém.
+
+Para uma turma inteira, prefira um navegador/dispositivo por estudante. Em dispositivo compartilhado, conclua e exporte o registro necessário antes de apagar os dados locais para a próxima pessoa. Comece todos pelo mesmo fluxo: quatro situações A → um atendimento com tutorial opcional do Supervisor → replay e investigação → quatro situações B.
 
 Para cada item e momento, registre número de respostas, ações adequadas, evidências adequadas e decisões sustentadas por ambas. Informe ausências e use o mesmo denominador ao comparar. Modelo vazio: `versão | momento | item | respostas | ação adequada | evidência adequada | ambas`.
 
