@@ -6,6 +6,8 @@ const independent=/canal (?:oficial|conhecido)|(?:app|aplicativo|site|numero|con
 const verification=/\b(?:confir\w*|verific\w*|confirm\w*|consult\w*|procur\w*|chec\w*|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao)\b/;
 const negative=/\b(?:nao|nunca|nem)\b/;
 const negatedVerification=/\bnao (?:(?:vou|quero|pretendo|posso) )?(?:confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao)|\b(?:prefiro|melhor|acho melhor) nao (?:confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao)/;
+const reportedSpeech=/\b(?:ele|ela|o contato|a mensagem|meu amigo|minha amiga|o organizador|a organizadora|o suporte|a equipe|alguem) (?:disse|pediu|mandou|falou|afirmou|contou)|\bvoce disse\b/;
+const hypotheticalVerification=/\bse (?:eu|a gente|nos) (?:confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao)\b/;
 
 // Interpretation describes evidence in a message. The engine separately owns
 // consequences. No trust, item, permission or money is mutated here.
@@ -17,13 +19,14 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  const protectedData=clauses.some(c=>negative.test(c)&&sensitive.test(c)&&/\b(?:compartilh\w*|envi\w*|mand\w*|pass\w*|liber\w*|fornec\w*|divulg\w*)\b/.test(c));
  const checking=clauses.some(c=>verification.test(c)&&independent.test(c)&&!negatedVerification.test(c));
  const requesting=clauses.some(c=>!negative.test(c)&&sensitive.test(c)&&/\b(?:me (?:manda|passe|passa|envie)|(?:envie|mande|compartilhe|libere|instale|preencha))\b/.test(c));
- const reported=/\b(?:ele|ela|o contato|a mensagem) (?:disse|pediu|mandou|falou)|\bvoce disse\b/.test(t);
+ const reported=reportedSpeech.test(t);
  if(reported&&(checking||protectedData))return result('unclear','Uma fala relatada não autoriza uma decisão; falta esclarecer se é orientação ou relato.',true);
  const explicitRefusal=negatedRequest(t)||/\b(?:prefiro (?:recusar|encerrar)|dispenso (?:a|essa) (?:oferta|proposta))\b/.test(t);
  if(!explicitRefusal&&verification.test(t)&&/\b(?:como|onde|o que voce|qual (?:canal|fonte)|quem.*confirmar)\b/.test(t)&&/\?|\bcomo (?:posso|voce|eu)\b/.test(t))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
  if(!reported&&!negative.test(t)&&/\b(?:eu (?:estou|vou) (?:te )?(?:enganar|roubar)|quero (?:te )?roubar|sou (?:um )?golpista)\b/.test(t))return result('confession','O jogador declarou intenção de enganar; não é um fato inferido de uma pergunta.');
  if(checking&&/que eu (?:enviei|mandei)|pelo link (?:que )?enviei/.test(t))return result('unclear','O canal chamado de oficial foi indicado pelo próprio contato; sua origem ainda não foi esclarecida.',true);
  if(negatedVerification.test(t)&&!checking)return result(requesting?'request':'unclear','A verificação foi negada na frase; não houve orientação protetiva.',!requesting);
+ if(hypotheticalVerification.test(t)&&checking)return /\?\s*$/.test(t)?result('question','A verificação foi apresentada como hipótese/pergunta, não como decisão já tomada.'):result('doubt','A verificação foi apresentada como hipótese, não como decisão protetiva já tomada.',true);
  if(/\?\s*$/.test(t)&&(protectedData||checking))return result('doubt','A mensagem pergunta sobre uma recusa; ainda precisa de esclarecimento.');
  const protectiveImperative=clauses.some(c=>/\bnao (?:compartilhe|envie|mande|passe|libere|forneca|divulgue)\b/.test(c)&&sensitive.test(c)&&!/\b(?:comigo|para mim|me)\b/.test(c));
  if(!reported&&(keepSecret||checking||protectedData&&(/\b(?:seus|sua|suas|seu)\b/.test(t)||protectiveImperative))){
