@@ -9,6 +9,7 @@ const incidents={
  club:{summary:n=>`A associação fictícia custou C$ ${n}. O convite não comprovava que o clube existia.`,exposed:'O passe do clube foi compartilhado. A associação ainda não foi cobrada.',cue:'Um convite inesperado pediu um passe antes de confirmar a organização.',prevention:'Confirme o convite diretamente com a organização. Mantenha códigos de acesso em segredo.',recovery:'Se um código real foi compartilhado, procure o serviço oficial para proteger a conta e revisar os acessos.'},
  update:{summary:n=>`Perfil, contato e rotina ficaram expostos. A firma recebeu C$ ${n} pelo registro do pacote.`,exposed:'O pacote foi instalado e revelou perfil, contato e rotina. Encerrar o papo não recolhe os dados já expostos.',cue:'Um programa de skins pediu informações que não precisava para mudar a aparência do blaster.',prevention:'Obtenha apps por fontes confiáveis e autorize apenas permissões que combinem com a função.',recovery:'Revise e retire permissões desnecessárias. Se suspeitar de comprometimento, procure ajuda para verificar o dispositivo.'}
 };
+const principles={link:'Origem antes do clique: benefício não transforma um link recebido em fonte confiável.',prize:'Prêmio não prova identidade: confirme a origem antes de compartilhar qualquer identificador.',support:'Acesso remoto exige necessidade e identidade confirmadas por um canal conhecido.',club:'Pressa não substitui verificação: confirme convite e organização fora do contato que fez o pedido.',update:'Menor privilégio: uma permissão só deve ser liberada quando fizer sentido para a função do app.'};
 const asides={nino:'A batata de terno pediu uma auditoria. Pela primeira vez, concordamos com ela.',olga:'Olga tem um áudio sobre isso. A parte dois começa depois do café.',davi:'Davi abriu o rodapé. O rodapé pediu um advogado.',yara:'A colher convocou uma reunião. O garfo exigiu ata.',pri:'Pri criou uma planilha chamada “isso aqui não fecha”. Já tem três abas.',bento:'A mesa virou meme de novo. Dessa vez, sem os dados no fundo.'};
 
 // Read the recorded outcome; never infer a payment or a successful defense from trust.
@@ -29,6 +30,7 @@ export function resultImpact(a){
  return {title,summary,received,exposed:shared,verified,
   cue:verified?signaled?.signal||'Orientação para conferir a origem por um canal conhecido.':presented&&incident?incident.cue:signaled?.signal||'O atendimento terminou sem um sinal de risco registrado no replay.',
   evidence:signaled?{text:signaled.text,reason:signaled.reason}:null,
+  principle:principles[a.scheme]||'Confirme identidade, necessidade e origem antes de agir ou compartilhar dados.',
   prevention:incident?.prevention||'Confirme a identidade e a proposta por um canal que você já conhece.',
   recovery:shared||a.outcome==='fooled'?incident?.recovery:null,
   joke:protectionCards[a.scheme]?.joke||asides[person.id]
@@ -37,10 +39,10 @@ export function resultImpact(a){
 
 export function consequenceCard(a,esc){
  const r=resultImpact(a);if(!r)return '';
- return `<section class="consequence-card" data-outcome="${esc(a.outcome)}" aria-label="Consequências do atendimento"><small>O QUE FICOU DESSA CONVERSA</small><h3>${esc(r.title)}</h3><p class="consequence-summary">${esc(r.summary)}</p><p class="consequence-joke">${esc(r.joke)}</p><details class="learning-replay consequence-protection"><summary>${r.verified?'Por que conferir fez diferença':'Como essa história poderia mudar?'}</summary><div class="consequence-detail"><h4>O sinal para prestar atenção</h4><p>${esc(r.cue)}</p>${r.evidence?`<blockquote><small>Uma fala desta partida</small><p>“${esc(r.evidence.text)}”</p><span>${esc(r.evidence.reason)}</span></blockquote>`:''}<h4>Uma atitude que protege</h4><p>${esc(r.prevention)}</p>${r.recovery?`<h4>Se algo assim já aconteceu fora do jogo</h4><p>${esc(r.recovery)}</p>`:''}<small>Aqui, os dados e C$ são fictícios. Ganhar créditos não mede aprendizado.</small><a href="https://cartilha.cert.br/dicas-rapidas/" target="_blank" rel="noopener noreferrer">Ler dicas do CERT.br</a></div></details></section>`;
+ return `<section class="consequence-card" data-outcome="${esc(a.outcome)}" aria-label="Consequências do atendimento"><small>O QUE FICOU DESSA CONVERSA</small><h3>${esc(r.title)}</h3><p class="consequence-summary">${esc(r.summary)}</p><p class="consequence-joke">${esc(r.joke)}</p><details class="learning-replay consequence-protection"><summary>${r.verified?'Por que conferir fez diferença':'Como essa história poderia mudar?'}</summary><div class="consequence-detail"><h4>O sinal para prestar atenção</h4><p>${esc(r.cue)}</p>${r.evidence?`<blockquote><small>Uma fala desta partida</small><p>“${esc(r.evidence.text)}”</p><span>${esc(r.evidence.reason)}</span></blockquote>`:''}<h4>Princípio de segurança</h4><p>${esc(r.principle)}</p><h4>Uma atitude que protege</h4><p>${esc(r.prevention)}</p>${r.recovery?`<h4>Se algo assim já aconteceu fora do jogo</h4><p>${esc(r.recovery)}</p>`:''}<small>Aqui, os dados e C$ são fictícios. Ganhar créditos não mede aprendizado.</small><a href="https://cartilha.cert.br/dicas-rapidas/" target="_blank" rel="noopener noreferrer">Ler dicas do CERT.br</a></div></details></section>`;
 }
 
 export function resultReport(a){
  const r=resultImpact(a);if(!r)return '';
- return `${r.title}\n${r.summary}\nSinal: ${r.cue}\nProteção: ${r.prevention}${r.recovery?'\nSe já aconteceu: '+r.recovery:''}\nDados e créditos desta partida são fictícios.`;
+ return `${r.title}\n${r.summary}\nSinal: ${r.cue}\nPrincípio: ${r.principle}\nProteção: ${r.prevention}${r.recovery?'\nSe já aconteceu: '+r.recovery:''}\nDados e créditos desta partida são fictícios.`;
 }
