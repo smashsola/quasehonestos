@@ -18,6 +18,10 @@ export function contextualReply(a,event,fallback='',message=''){
  const item=items[a.scheme]||'a proposta';
  if(event==='question'){
   const t=message.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if(/verific|confer|confirm|checar/.test(t)&&/como|o que voce|qual canal|qual fonte|onde/.test(t)){
+   const known=a.facts?.claims?.origin?`Você mencionou ${a.facts.claims.origin}, mas isso ainda é uma afirmação.`:/nao sei quem|nao sabe quem/.test(t)?'Se você não sabe quem organiza, não vamos inventar um responsável.':'Sem confirmação independente, não vou tratar o convite como comprovado.';
+   return `${known} ${a.caller==='olga'?'Meu bem, eu procuraria':'Eu procuraria'} um contato que eu já conheça fora desta conversa; até confirmar, nenhum passe ou dado novo.`;
+  }
   if(/onde.*mora|endereco|telefone pessoal|sua senha/.test(t))return variedReply(a,'private-question',['Não vou passar meus dados pessoais nessa conversa. Qual é a relação disso com a proposta?','Esse dado fica comigo. Podemos falar das condições da oferta?']);
   if(/quem (?:e|organizou)|de onde/.test(t)&&a.facts?.claims?.origin)return `Você disse que foi ${a.facts.claims.origin}. Ainda não confirmei essa informação por outro canal.`;
   if(/como funciona|por que|porque voce/.test(t))return `É isso que quero entender com você: ${questions[a.scheme]?.[0]||'como funciona a proposta?'}`;

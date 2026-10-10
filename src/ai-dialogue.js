@@ -23,6 +23,12 @@ export async function evaluateTrust(active,text,fetcher=fetch){
  }catch{return null;}
 }
 const pendingReplies=new WeakMap();
+const diagnostics=new WeakMap();
+export const dialogueDiagnostic=reply=>diagnostics.get(reply)||null;
+function diagnose(reply,source,status,model=null){
+ const value={source,status,model};diagnostics.set(reply,value);
+ if(typeof location!=='undefined'&&['localhost','127.0.0.1'].includes(location.hostname))console.info('[dialogue]',value);
+}
 export function polishReply(active,reply,fetcher=fetch){
  if(reply.ai)return Promise.resolve(true);
  if(pendingReplies.has(reply))return pendingReplies.get(reply);
@@ -34,9 +40,9 @@ async function polishReplyOnce(active,reply,fetcher){
  try{
   const history=dialogueHistory(active.log.slice(0,-1),12);
   const response=await fetcher('/api/dialogue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'grounded-reply',caller:active.caller,scheme:active.scheme,expression:active.expression,history,reference:reply.text,context:conversationContext(active)}),signal:AbortSignal.timeout(13000)});
-  if(!response.ok)return false;const data=await response.json();
-  if(active.lastIntent&&!validStructuredReply(data,history,reply.text,conversationContext(active)))return false;
+  if(!response.ok){diagnose(reply,'fallback',response.status);return false;}const data=await response.json();
+  if(active.lastIntent&&!validStructuredReply(data,history,reply.text,conversationContext(active))){diagnose(reply,'fallback','validation');return false;}
   if(typeof data.text!=='string'||!data.text.trim()||data.text.length>700||!replyIsGrounded(data.text,history,reply.text,conversationContext(active)))return false;
-  reply.text=data.text.trim();reply.ai=true;if(data.emotion)applyReplyEmotion(active,data.emotion);return true;
- }catch{return false;}
+  reply.text=data.text.trim();reply.ai=true;diagnose(reply,'api',response.status,response.headers?.get('X-Dialogue-Model'));if(data.emotion)applyReplyEmotion(active,data.emotion);return true;
+ }catch{diagnose(reply,'fallback','unavailable');return false;}
 }

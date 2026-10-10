@@ -1,3 +1,4 @@
+import {endingSummary} from './conversation-ending.js';
 import {callers} from './data.js';
 import {protectionCards} from './comedy-learning.js';
 
@@ -21,8 +22,8 @@ export function resultImpact(a){
  if(a.outcome==='fooled'){title='A proposta passou. Quem pagou a conta?';summary=incident?.summary(received)||`A proposta foi aceita. C$ ${received} recebidos pela firma.`;}
  else if(shared){title='Sem pagamento. Mas houve exposição.';summary=incident?.exposed||'Um item foi compartilhado antes do encerramento. Nenhum crédito foi recebido.';}
  else if(verified){title='A conferência interrompeu a tentativa.';summary='A orientação para conferir por um canal conhecido interrompeu a conversa antes da operação. Nenhum crédito foi recebido.';}
- else if(a.outcome==='blocked'){title='Ele encerrou. O motivo também importa.';summary='O personagem interrompeu a conversa sem concluir a operação. O registro não mostra uma verificação independente.';}
- else{title='Conversa encerrada, operação incompleta.';summary='Você encerrou antes de concluir a operação. Nenhum crédito foi recebido; isso não prova que o personagem reconheceu o golpe.';}
+ else if(a.outcome==='blocked'){title='Ele encerrou. O motivo também importa.';summary=endingSummary(a)+' O registro não mostra uma verificação independente.';}
+ else{title='Conversa encerrada, operação incompleta.';summary=endingSummary(a)+' Nenhum crédito foi recebido; isso não comprova a origem da proposta.';}
  const signaled=[...audit].reverse().find(e=>e.signal&&e.text);
  const presented=shared||a.outcome==='fooled'||(a.steps||[]).includes('Proposta apresentada')||audit.some(e=>e.signal==='Oferta inesperada.');
  return {title,summary,received,exposed:shared,verified,

@@ -31,7 +31,7 @@ O servidor usa a porta 4180; `PORT` define outra. O build gera `dist/`. O códig
 
 ## IA e privacidade
 
-O diálogo público usa interpretação e regras locais; o Cloudflare Workers AI (Meta Llama 3.3 70B) redige a reação com validação e resposta autoral de reserva. **Não é um LLM treinado pela equipe.** IA generativa foi usada como apoio ao desenvolvimento, pesquisa e revisão; a equipe deve documentar esse uso.
+O diálogo público usa interpretação e regras locais; o Cloudflare Workers AI (Qwen3 30B A3B) redige a reação com validação e resposta autoral de reserva. **Não é um LLM treinado pela equipe.** IA generativa foi usada como apoio ao desenvolvimento, pesquisa e revisão; a equipe deve documentar esse uso.
 
 O Worker usa DIALOGUE_PROVIDER=workers-ai, DIALOGUE_AI_ENABLED=true e o binding Workers_AI. O Gemini permanece fora do fluxo público. Os [termos do Gemini](https://ai.google.dev/gemini-api/terms) restringem apps destinados ou provavelmente acessados por menores de 18 anos. A idade da conta não resolve essa restrição sobre o público. Não ativar no TeenTech apenas configurando uma chave.
 
@@ -68,8 +68,13 @@ Inspirado na organização de conversas e apps fictícios de Scam With Your Frie
 Veja [a revisão técnica](docs/REVISAO-DIALOGO.md). O motor local reconhece correções e mantém memória das declarações; declarações não equivalem a verificação. A defesa relaciona a decisão a um registro consultado, sem exigir todas as fontes. Replay e conversa têm visualizações separadas. O adaptador opcional redige a reação após as regras, com validação e fallback; não calcula créditos. Rode node scripts/evaluate-dialogue.mjs para a bateria local. O modo --live exige configuração e pode consumir cota; não é executado por padrão.
 
 ### Workers AI em produção
-Modelo: @cf/meta/llama-3.3-70b-instruct-fp8-fast, da Meta, não treinado pela equipe. Uma chamada por reação, JSON validado, limite de 300 tokens e espera de até 12 segundos; falhas mantêm a resposta local. Não há gravação de conversas no servidor deste projeto. O aviso de privacidade informa o envio de até 12 falas e estado da simulação; filtros de dados pessoais não identificam todos os casos.
+Modelo configurado nesta revisão local: @cf/qwen/qwen3-30b-a3b-fp8, da Qwen, não treinado pela equipe. Uma chamada por reação, JSON validado, limite de 768 tokens e espera de até 12 segundos; falhas mantêm a resposta local. Não há gravação de conversas no servidor deste projeto. O aviso de privacidade informa o envio de até 12 falas e estado da simulação; filtros de dados pessoais não identificam todos os casos.
 
 Verificação real: três respostas HTTP 200 (orientação protetiva, esclarecimento e repetição), com estado e saldo intactos. Repetir a explicação manteve confiança 2. A bateria automatizada passou com 169 testes. Não houve teste com alunos ou comparação de eficácia.
 
 Não foi contratado plano nem ativada cobrança. A Cloudflare oferece franquia diária de 10.000 Neurons; no Workers Paid excedentes são cobrados, portanto acompanhe o painel da conta. Quota ou indisponibilidade acionam a reserva local. Referências: https://developers.cloudflare.com/workers-ai/platform/pricing/ e https://developers.cloudflare.com/workers-ai/platform/data-usage/ . O servidor estático local de desenvolvimento não executa o binding: teste IA no site publicado ou via Wrangler.
+
+## Revisão local — Olga, Qwen e investigação
+Esta revisão ainda não foi publicada. A produção permanece na versão anterior com Llama 3.3. A identidade do novo modelo fica em src/dialogue-config.js, compartilhada entre backend e aviso de privacidade. Gemini e Claude continuam como adaptadores experimentais selecionáveis explicitamente; não são fallbacks automáticos. O fallback atual é o diálogo autoral local.
+
+Veja docs/REVISAO-OLGA-QWEN.md e docs/QWEN-VALIDACAO.json. Diagnósticos em desenvolvimento registram somente origem API/fallback, status, identificador do modelo e tamanho/formato da resposta, sem textos ou chaves. A prévia Wrangler usa o binding remoto e não modifica a implantação pública.

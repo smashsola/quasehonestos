@@ -5,4 +5,4 @@ const words={prr:'',poha:'',bgl:'negocio',bagui:'negocio',bagulho:'negocio',pree
 export function normalizeMessage(text){
  return String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/([a-z])\1{2,}/g,'$1$1').replace(/\b[a-z]+\b/g,word=>words[word]||word).replace(/\s+/g,' ').trim();
 }
-export function negatedRequest(text){return /\bnao (?:me )?(?:manda|mande|envia|envie|compartilhe|instale|instala|abra|abre|passe|passa|quero|preciso|preencha|preencher|clique|clicar)\b/.test(normalizeMessage(text));}
+export function negatedRequest(text){return /\bnao (?:me )?(?:manda|mande|envia|envie|compartilhe|instale|instala|abra|abre|passe|passa|preencha|preencher|clique|clicar)\b|\bnao (?:quero|preciso)\s+(?:isso|disso|participar|continuar|receber|a oferta|essa oferta|o convite|esse convite|instalar|abrir|enviar|compartilhar)\b|\bnao quero\s*[.!?]*$/.test(normalizeMessage(text));}

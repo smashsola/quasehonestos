@@ -1,0 +1,47 @@
+{
+  "scope": "Cenários fictícios do desenvolvedor, prévia remota via binding; não é produção nem estudo com alunos",
+  "originalCase": {
+    "status": 200,
+    "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+    "intent": "question"
+  },
+  "results": [
+    {
+      "intent": "answer",
+      "status": 200,
+      "source": "api",
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "ms": 1665,
+      "stateUnchanged": true,
+      "outcome": null,
+      "ending": null,
+      "validatedReply": true
+    },
+    {
+      "intent": "question",
+      "status": 200,
+      "source": "api",
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "ms": 806,
+      "stateUnchanged": true,
+      "outcome": null,
+      "ending": null,
+      "validatedReply": true
+    },
+    {
+      "intent": "refusal",
+      "status": 200,
+      "source": "api",
+      "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+      "ms": 851,
+      "stateUnchanged": true,
+      "outcome": "closed",
+      "ending": {
+        "actor": "character",
+        "cause": "refusal",
+        "turn": 3
+      },
+      "validatedReply": true
+    }
+  ]
+}

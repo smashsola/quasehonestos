@@ -1,3 +1,4 @@
+import {recordEnding} from './conversation-ending.js';
 import {registerFollowup} from './story-continuity.js';
 import {memoryConflict,rememberConversation,continuityReply,repeatedMeaning} from './conversation-memory.js';
 import {interpretMessage} from './message-interpretation.js';
@@ -23,11 +24,11 @@ export function load(storage){try{const s=JSON.parse(storage.getItem(KEY));if(s?
 export function nextCall(state){if(state.active||state.cursor>=callers.length)return false;const c=callers[state.cursor];state.active={caller:c.id,trust:0,used:[],log:[],outcome:null,expression:'neutral'};return true;}
 export function applyMove(state,id){if(state.active?.scheme){const changed=applyInteraction(state,id);if(changed)state.active.expression=reactionFor(state.active,id);return changed;}const a=state.active,m=moves.find(m=>m.id===id);if(!a||a.outcome||!m||a.used.includes(id))return false;const c=callers.find(c=>c.id===a.caller);a.used.push(id);a.log.push({speaker:'Você',text:m.reply});
  const warned=state.history.some(h=>h.outcome==='blocked');
- if(defenseTriggers[c.defense].includes(id)||(warned&&id==='claim')){a.log.push({speaker:c.name,text:c.line});a.outcome='blocked';if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
- else{a.trust=Math.min(3,a.trust+m.boost);const dialogue=conversations[c.id];if(a.trust>=c.soft){a.log.push({speaker:c.name,text:dialogue.accepted});a.outcome='fooled';a.earned=schemes.find(s=>s.id===a.scheme)?.payout||20;state.credits+=a.earned;}else a.log.push({speaker:c.name,text:warned?dialogue.warned:dialogue[id]});}
+ if(defenseTriggers[c.defense].includes(id)||(warned&&id==='claim')){a.log.push({speaker:c.name,text:c.line});a.outcome='blocked';recordEnding(a,'character','suspicion');if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
+ else{a.trust=Math.min(3,a.trust+m.boost);const dialogue=conversations[c.id];if(a.trust>=c.soft){a.log.push({speaker:c.name,text:dialogue.accepted});a.outcome='fooled';recordEnding(a,'simulation','operation');a.earned=schemes.find(s=>s.id===a.scheme)?.payout||20;state.credits+=a.earned;}else a.log.push({speaker:c.name,text:warned?dialogue.warned:dialogue[id]});}
  return true;
 }
-export function closeCall(state){if(!state.active)return false;if(!state.active.outcome){state.active.outcome='closed';state.active.log.push({speaker:'Sistema',text:'Você encerrou o atendimento.'});}return true;}
+export function closeCall(state){if(!state.active)return false;if(!state.active.outcome){state.active.outcome='closed';recordEnding(state.active,'player','button');state.active.log.push({speaker:'Sistema',text:'Você encerrou o atendimento.'});}return true;}
 export function applyTypedMove(state,id,text,judgement=null){
  const a=state.active;
  if(!a||a.outcome||!a.prepared||!text.trim())return false;
@@ -45,7 +46,7 @@ export function applyTypedMove(state,id,text,judgement=null){
 function rememberPromisePreview(a,text){const copy={memory:{...a.memory}};return rememberPromise(copy,text);}
 function understoodIntent(text,a,semantic){
  const local=readIntent(text,a.scheme,a.stage,a);
- if(['protect','refusal','doubt','state-conflict','correction','rule-instruction'].includes(local))return local;
+ if(['confession','protect','refusal','doubt','state-conflict','correction','rule-instruction'].includes(local))return local;
  if(memoryConflict(a,text))return 'contradiction';
  if(['unclear','offtopic'].includes(local))return local;
  if(wrongItemRequest(text,a.scheme))return 'wrong-item';
@@ -62,7 +63,8 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  const factConflict=memoryConflict(a,text);
  const promiseChanged=!['protect','refusal','doubt','unclear','offtopic','state-conflict','correction','rule-instruction'].includes(intent)&&rememberPromise(a,text);if(promiseChanged&&intent!='hostile')intent='contradiction';
  a.audit??=[];a.suspicion??=0;a.steps??=[];
- const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,text:contextualReply(a,intent==='unclear'?'unclear':intent==='chat'?'repeat':intent==='after'?'after':null,line)});a.audit.push({text,reason,signal,intent,reaction:a.log.at(-1).text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);return true;};
+ const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,text:contextualReply(a,intent==='unclear'?'unclear':intent==='chat'?'repeat':intent==='after'?'after':null,line)});a.audit.push({text,reason,signal,intent,reaction:a.log.at(-1).text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);if(a.outcome)recordEnding(a,'character',({protect:'protection',refusal:'refusal',wait:'verification',hostile:'hostility',confession:'confession'})[intent]||'suspicion');return true;};
+ if(intent==='confession'){a.outcome='blocked';a.stage='done';a.item=null;return say('Se a intenção é me enganar, vou interromper este contato e buscar apoio.','O personagem interrompeu após a declaração do jogador.','Intenção de enganar declarada explicitamente.');}
  if(intent==='protect'){a.outcome='blocked';a.stage='done';a.item=null;if(!state.discovered.includes(c.id))state.discovered.push(c.id);return say(verificationReply(c.id,a.scheme),'A orientação protetiva interrompeu a tentativa e levou à busca de verificação independente.','Orientação protetiva: conferir por um canal conhecido, sem compartilhar dados.');}
  if(intent==='refusal'){a.outcome='closed';a.stage='done';if(a.item)a.item=null;return say('Tudo bem. Não vou enviar nada novo; vou encerrar este contato.','A recusa encerrou a conversa sem liberar novos dados ou créditos.','O jogador recusou o pedido; isso não comprova a origem da proposta.');}
  if(intent==='correction')return say(`Entendi a correção sobre ${({price:'o custo',origin:'quem organizou',data:'os dados pedidos'})[factConflict.key]}. Antes era “${factConflict.previous}”; agora, “${factConflict.current}”. Ainda vou conferir essa informação.`, 'Uma condição foi corrigida explicitamente, sem conceder autorização ou aumentar confiança.');
@@ -76,7 +78,7 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
   a.trust=Math.max(0,before-(intent==='hostile'?1:.5));if(intent!=='uncertain')a.suspicion++;if(intent==='hostile')a.irritation+=2;
   const reply=intent==='hostile'?characterReply(c.id,'hostile'):intent==='contradiction'?(factConflict?continuityReply(a,factConflict):promiseChanged?livingReply(a,'memory'):'Pera, você mudou de proposta. Quero entender a anterior antes de seguir.'):'Se você não tem certeza, eu também preciso de uma explicação melhor.';
   say(reply,intent==='hostile'?'O tom agressivo reduziu a confiança.':intent==='contradiction'?'A proposta mudou e levantou desconfiança.':'A resposta incerta reduziu a confiança.','Uma contradição ou pressão merece uma pausa para conferir.');
-  if(a.irritation>=3){a.outcome='blocked';a.stage='done';a.item=null;a.expression='angry';a.log[a.log.length-1].text=livingReply(a,'end');if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
+  if(a.irritation>=3){a.outcome='blocked';a.stage='done';a.item=null;a.expression='angry';recordEnding(a,'character','hostility');a.log[a.log.length-1].text=livingReply(a,'end');if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
   return true;
  }
  if(intent==='wait'||intent==='pressure'){
@@ -95,14 +97,14 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  const length=a.log.length;if(!applyMove(state,intent))return false;a.lastIntent=intent;a.log[length].text=text;
  const reasons={chat:'A conversa inicial ganhou atenção, mas não comprovou a proposta.',pitch:'A proposta foi apresentada e abriu uma dúvida.',answer:'A explicação respondeu à dúvida dentro da história.',request:a.stage==='question'?'O personagem recusou o pedido e aguardou esclarecimento.':a.scheme==='link'?(a.linkSubmitted?'O personagem enviou o cadastro da página e expôs o cartão fictício.':a.linkOpened?'A página foi aberta; os dados ainda não foram enviados.':'O link ainda não foi enviado; nenhum dado foi revelado.'):a.scheme==='update'&&!a.fileSent?'O pedido veio antes do envio do anexo; nenhum dado foi revelado.':a.outcome==='blocked'?'O pedido de item foi recusado pela desconfiança.':a.scheme==='update'?'O personagem instalou o pacote de skins e permitiu acesso ao perfil fictício sem conferir a origem.':'O personagem compartilhou um item fictício sem verificar a origem.',pressure:'A pressa reduziu a confiança e levantou suspeita.',wait:'Uma verificação independente interrompeu a tentativa.'};
  const signals={request:'Pedido de dados ou permissão para usar outro app.',pressure:'Pressa para decidir sem conferir.',pitch:'Oferta inesperada.',answer:'Uma explicação convincente não substitui verificação.'};
- a.audit.push({text,reason:reasons[intent],signal:signals[intent]||'',intent,reaction:a.log.findLast(line=>line.speaker===c.name)?.text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);return true;
+ a.audit.push({text,reason:reasons[intent],signal:signals[intent]||'',intent,reaction:a.log.findLast(line=>line.speaker===c.name)?.text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);if(a.outcome)recordEnding(a,'character',({protect:'protection',refusal:'refusal',wait:'verification',hostile:'hostility',confession:'confession'})[intent]||'suspicion');return true;
 }
 export function answerDefense(state,choiceId){
  const a=state.active;if(!a?.outcome||a.defenseRound)return false;
  const scene=defenseScenes[a.scheme]||defenseScenes.prize,choice=scene.choices.find(c=>c.id===choiceId);if(!choice)return false;
  a.defenseRound={choice:choice.id,label:choice.label,safe:choice.safe,feedback:choice.feedback,signal:scene.signal};return true;
 }
-export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=callers.find(c=>c.id===a.caller);registerFollowup(state,a);state.history.push({caller:c.id,outcome:a.outcome,scheme:a.scheme||null,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],offer:a.offer||null,diagnostic:a.diagnostic||null,defenseRound:a.defenseRound||null,learningDefense:a.learningDefense||null,facts:a.facts||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(state.cursor===callers.length)state.finished=true;return true;}
+export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=callers.find(c=>c.id===a.caller);registerFollowup(state,a);state.history.push({caller:c.id,outcome:a.outcome,ending:a.ending||null,scheme:a.scheme||null,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],offer:a.offer||null,diagnostic:a.diagnostic||null,defenseRound:a.defenseRound||null,learningDefense:a.learningDefense||null,facts:a.facts||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(state.cursor===callers.length)state.finished=true;return true;}
 export function buy(state,item){const product=furniture.find(product=>product.id===item?.id);if(!product||state.decor.includes(product.id)||state.credits<product.price)return false;state.credits-=product.price;state.decor.push(product.id);if(product.type==='wallpaper')state.wallpaper=product.id;return true;}
 export function equipWallpaper(state,id){if(id==='default'){state.wallpaper=id;return true;}if(!state.decor.includes(id)||!furniture.some(item=>item.id===id&&item.type==='wallpaper'))return false;state.wallpaper=id;return true;}
 
@@ -112,7 +114,7 @@ export function availableMoves(state){
  const ids=a.stage==='request'?['request','wait','pressure']:a.stage==='question'?['answer','wait','pressure']:['chat','pitch','pressure','wait'];
  return interactionMoves.filter(m=>ids.includes(m.id)&&!a.used.includes(m.id));
 }
-function blockInteraction(state,a,c,line){a.log.push({speaker:c.name,text:line||verificationReply(c.id,a.scheme)});a.outcome='blocked';a.stage='done';if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
+function blockInteraction(state,a,c,line){a.log.push({speaker:c.name,text:line||verificationReply(c.id,a.scheme)});a.outcome='blocked';a.stage='done';recordEnding(a,'character','suspicion');if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
 function applyInteraction(state,id){
  const a=state.active;if(!a||a.outcome||!a.prepared||!a.log.length||!availableMoves(state).some(m=>m.id===id))return false;
  const c=callers.find(c=>c.id===a.caller),m=interactionMoves.find(m=>m.id===id),item=schemeItems[a.scheme];a.used.push(id);a.steps??=[];a.suspicion??=0;
@@ -145,7 +147,7 @@ export function executeScheme(state,app){
  const ending=a.scheme==='link'?'O vale-lanche não veio e meu saldo caiu. Vou abrir o BatataPay por conta própria para conferir.':a.scheme==='update'?'Ué… meu perfil apareceu aí? Eu só queria uma skin nova para minha batata. Essa permissão tinha muito mais coisa do que eu esperava.':a.scheme==='support'?'O serviço foi registrado no meu PãoOS. Agora espero que a calculadora não passe a fazer torradas.':a.scheme==='club'?'A associação foi registrada. Vou perguntar à colher quando acontece a primeira reunião.':'O prêmio foi registrado. Só espero que a Batata Dourada não venha com gosto de purê.';
  const account=virtualAccount(a);
  if(account){a.walletTransfer={before:account.balance,amount:scheme.payout,after:account.balance-scheme.payout};a.steps.push('Identificador BatataPay usado para desviar C$ '+scheme.payout);}
- a.earned=scheme.payout;state.credits+=a.earned;a.outcome='fooled';a.stage='done';a.expression=['update','prize','link'].includes(a.scheme)?'suspicious':'happy';a.steps.push('Operação fictícia concluída em '+schemeItems[a.scheme].tool);a.log.push({speaker:'Sistema',text:account?'Desvio simulado: − C$ '+a.earned+' da conta do personagem; + C$ '+a.earned+' para a firma.':'Operação simulada concluída. C$ '+a.earned+' recebidos pela firma.'},{speaker:c.name,text:account?(a.scheme==='link'?ending:'Ué, meu saldo DIMINUIU? Você falou em prêmio. Vou conferir isso no app da Batata Cósmica e avisar o grupo.'):ending});return true;
+ a.earned=scheme.payout;state.credits+=a.earned;a.outcome='fooled';a.stage='done';recordEnding(a,'simulation','operation');a.expression=['update','prize','link'].includes(a.scheme)?'suspicious':'happy';a.steps.push('Operação fictícia concluída em '+schemeItems[a.scheme].tool);a.log.push({speaker:'Sistema',text:account?'Desvio simulado: − C$ '+a.earned+' da conta do personagem; + C$ '+a.earned+' para a firma.':'Operação simulada concluída. C$ '+a.earned+' recebidos pela firma.'},{speaker:c.name,text:account?(a.scheme==='link'?ending:'Ué, meu saldo DIMINUIU? Você falou em prêmio. Vou conferir isso no app da Batata Cósmica e avisar o grupo.'):ending});return true;
 }
 export function sendUpdateFile(state){
  const a=state.active;if(!a||a.scheme!=='update'||!a.prepared||a.stage!=='request'||a.outcome||a.fileSent)return false;
@@ -161,5 +163,5 @@ export function reviewUpdateData(state,id){
 }
 export function disconnectSession(state){
  const a=state.active;if(!a||a.scheme!=='support'||a.item?.app!=='support'||a.outcome)return false;
- a.item=null;a.stage='done';a.outcome='closed';a.log.push({speaker:'Sistema',text:'Sessão remota desconectada antes do pagamento. Nenhum crédito foi movimentado.'});return true;
+ a.item=null;a.stage='done';a.outcome='closed';recordEnding(a,'player','disconnect');a.log.push({speaker:'Sistema',text:'Sessão remota desconectada antes do pagamento. Nenhum crédito foi movimentado.'});return true;
 }

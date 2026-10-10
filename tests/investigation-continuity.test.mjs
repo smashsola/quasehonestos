@@ -29,15 +29,15 @@ test('Títulos e ações não revelam a legitimidade; fontes aparecem nos apps e
  const s=end(1),scene=defenseCase(s.active);assert.equal(scene.kind,'legitimate');assert.doesNotMatch(scene.title,/verdade|legítimo|golpe|falso/i);const panel=defensePanel(s.active,String);assert.doesNotMatch(panel,/toda mensagem é golpe|data-defense-inspect|disabled/);assert.match(defenseSourcePanel(s.active,'boss',String),/Aviso OF-12/);assert.match(defenseSourcePanel(s.active,'files',String),/professora Lina/);assert.equal(defenseSourcePanel(s.active,'wallet',String),'');
 });
 test('Uma fonte pertinente sustenta decisão legítima; palpite fica distinto',()=>{
- const supported=end(1);inspectDefense(supported,'portal');resolveDefense(supported,'official','portal');assert.equal(supported.active.learningDefense.result.quality,'supported');assert.equal(supported.credits,0);
+ const supported=end(1);inspectDefense(supported,'portal');resolveDefense(supported,'official','portal','matches');assert.equal(supported.active.learningDefense.result.quality,'supported');assert.equal(supported.credits,0);
  const guess=end(1);assert.equal(resolveDefense(guess,'official'),true);assert.equal(guess.active.learningDefense.result.quality,'unverified');assert.equal(guess.credits,0);
 });
 test('Fraude e inconclusão têm evidências diferentes e decisões sustentadas',()=>{
- const fraud=end();inspectDefense(fraud,'order');resolveDefense(fraud,'verify','order');assert.equal(fraud.active.learningDefense.result.kind,'fraudulent');assert.equal(fraud.active.learningDefense.result.quality,'supported');
- const inconclusive=end(3);inspectDefense(inconclusive,'calendar');resolveDefense(inconclusive,'confirm','calendar');assert.equal(inconclusive.active.learningDefense.result.kind,'inconclusive');assert.equal(inconclusive.active.learningDefense.result.quality,'supported');assert.match(inconclusive.active.learningDefense.result.feedback,/não prova fraude/);
+ const fraud=end();inspectDefense(fraud,'order');resolveDefense(fraud,'verify','order','conflicts');assert.equal(fraud.active.learningDefense.result.kind,'fraudulent');assert.equal(fraud.active.learningDefense.result.quality,'supported');
+ const inconclusive=end(3);inspectDefense(inconclusive,'calendar');resolveDefense(inconclusive,'confirm','calendar','missing');assert.equal(inconclusive.active.learningDefense.result.kind,'inconclusive');assert.equal(inconclusive.active.learningDefense.result.quality,'supported');assert.match(inconclusive.active.learningDefense.result.feedback,/não prova fraude/);
 });
 test('Consulta e decisão sobrevivem à retomada; decisão única não altera saldo nem apaga defesa antiga',()=>{
- const s=end(3);s.credits=80;inspectDefense(s,'contact');const restored=load({getItem:()=>JSON.stringify(s)});assert.deepEqual(restored.active.learningDefense.seen,['contact']);resolveDefense(restored,'confirm','contact');assert.equal(resolveDefense(restored,'accept'),false);finishCall(restored);assert.equal(restored.history[0].learningDefense.result.quality,'supported');assert.equal(restored.credits,80);
+ const s=end(3);s.credits=80;inspectDefense(s,'contact');const restored=load({getItem:()=>JSON.stringify(s)});assert.deepEqual(restored.active.learningDefense.seen,['contact']);resolveDefense(restored,'confirm','contact','missing');assert.equal(resolveDefense(restored,'accept'),false);finishCall(restored);assert.equal(restored.history[0].learningDefense.result.quality,'supported');assert.equal(restored.credits,80);
  const old=end();old.active.learningDefense={caseId:'school',seen:['portal'],result:{label:'Antiga',safe:true,feedback:'Guardado'}};assert.match(defensePanel(old.active,String),/Guardado/);
 });
 

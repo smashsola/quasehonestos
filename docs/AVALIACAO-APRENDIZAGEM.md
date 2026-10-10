@@ -44,3 +44,5 @@ A interface usa A antes e B depois. Essa ordem fixa pode introduzir efeito da ve
 
 ## Retenção opcional
 Após 3 a 7 dias, use outra situação fictícia: mudança de local de atividade com aviso incompleto, compra quitada com nova cobrança ou convite confirmado no mural. Peça ação e registro pertinente, com dificuldade revisada pelos educadores. Registre apenas códigos de escolha agregados, sem nomes ou mensagens pessoais. Compare decisões sustentadas, reconhecimento de solicitações legítimas e busca de confirmação. Ainda não aplicado; não demonstra eficácia por si só.
+
+Na investigação, o jogador escolhe o registro e a relação com o recado (confirmação, conflito, falta de confirmação ou ausência de autorização). Sem essa relação pertinente, a decisão permanece não sustentada. A exportação inclui apenas códigos dessa relação, sem justificativa livre ou conversas. Uma relação correta pode resultar de palpite; discuta oralmente o motivo sem gravá-lo por padrão. Os formulários A/B existentes cobrem verificação, solicitação legítima, inconclusão e apoio. A dificuldade comparável é uma intenção de desenho, ainda depende de revisão e piloto com estudantes.

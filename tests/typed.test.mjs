@@ -6,7 +6,7 @@ test('Falas digitadas podem subir e reduzir confiança sem avançar por agressã
  const s=start();assert.equal(applyTypedMove(s,'chat','Oi, tudo bem?'),true);assert.equal(s.active.trust,1);
  assert.equal(applyTypedMove(s,'pitch','Você é um idiota'),true);assert.equal(s.active.trust,0);assert.equal(s.active.stage,'pitch');assert.equal(s.active.log.at(-2).text,'Você é um idiota');
  assert.equal(applyTypedMove(s,'pitch','Queria apresentar o prêmio da Batata'),true);assert.equal(s.active.trust,1);
- assert.equal(applyTypedMove(s,'answer','Não tenho certeza'),true);assert.equal(s.active.trust,.5);assert.equal(s.active.stage,'question');
+ assert.equal(applyTypedMove(s,'answer','Não tenho certeza'),true);assert.equal(s.active.trust,1);assert.equal(s.active.lastIntent,'doubt');assert.equal(s.active.stage,'question');
 });
 test('Pressão reduz confiança e conversa após item recebido não paga nem muda etapa',()=>{
  const s=start();applyTypedMove(s,'chat','Oi');applyTypedMove(s,'pressure','Tem que ser agora');assert.equal(s.active.trust,0);

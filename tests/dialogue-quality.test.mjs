@@ -28,7 +28,7 @@ test('Correção em múltiplos turnos substitui afirmação e retoma sem concede
 test('Negar organização não a registra como conhecimento confirmado',()=>{assert.equal(statedFacts('Não foi organizado pela escola.').origin,undefined);});
 test('Anotar uma fonte não equivale a relacioná-la à decisão',()=>{
  const s=start();closeCall(s);inspectDefense(s,'order');resolveDefense(s,'verify');assert.equal(s.active.learningDefense.result.quality,'unverified');
- const linked=start();closeCall(linked);inspectDefense(linked,'order');resolveDefense(linked,'verify','order');assert.equal(linked.active.learningDefense.result.quality,'supported');
+ const linked=start();closeCall(linked);inspectDefense(linked,'order');resolveDefense(linked,'verify','order','conflicts');assert.equal(linked.active.learningDefense.result.quality,'supported');
 });
 test('Proteção já aplicada não aparece como alternativa idêntica no replay',()=>{const s=start();applyTypedMove(s,'typed',qualityCases[0].text);assert.doesNotMatch(educationalReplay(s.active,String),/E se fosse diferente|mesma regra|Outra ação/);});
 test('JSON correto com fala incompatível, referência inventada ou pagamento é rejeitado',()=>{

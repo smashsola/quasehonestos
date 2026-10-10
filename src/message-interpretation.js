@@ -18,6 +18,9 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  const requesting=clauses.some(c=>!negative.test(c)&&sensitive.test(c)&&/\b(?:me (?:manda|passe|passa|envie)|(?:envie|mande|compartilhe|libere|instale|preencha))\b/.test(c));
  const reported=/\b(?:ele|ela|o contato|a mensagem) (?:disse|pediu|mandou|falou)|\bvoce disse\b/.test(t);
  if(reported&&(checking||protectedData))return result('unclear','Uma fala relatada não autoriza uma decisão; falta esclarecer se é orientação ou relato.',true);
+ const explicitRefusal=negatedRequest(t)||/\b(?:prefiro (?:recusar|encerrar)|dispenso (?:a|essa) (?:oferta|proposta))\b/.test(t);
+ if(!explicitRefusal&&/verific|confer|confirm|checar/.test(t)&&/\b(?:como|onde|o que voce|qual (?:canal|fonte)|quem.*confirmar)\b/.test(t)&&/\?|\bcomo (?:posso|voce|eu)\b/.test(t))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
+ if(!reported&&!negative.test(t)&&/\b(?:eu (?:estou|vou) (?:te )?(?:enganar|roubar)|quero (?:te )?roubar|sou (?:um )?golpista)\b/.test(t))return result('confession','O jogador declarou intenção de enganar; não é um fato inferido de uma pergunta.');
  if(checking&&/que eu (?:enviei|mandei)|pelo link (?:que )?enviei/.test(t))return result('unclear','O canal chamado de oficial foi indicado pelo próprio contato; sua origem ainda não foi esclarecida.',true);
  if(/\bnao (?:confir\w*|verifi\w*|consul\w*)/.test(t)&&!checking)return result(requesting?'request':'unclear','A verificação foi negada na frase; não houve orientação protetiva.',!requesting);
  if(/\?\s*$/.test(t)&&(protectedData||checking))return result('doubt','A mensagem pergunta sobre uma recusa; ainda precisa de esclarecimento.');
@@ -27,7 +30,7 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
   return result('protect',checking?'Orientação para conferir a origem por um canal independente.':'Orientação para não compartilhar dados.');
  }
  if(negatedRequest(t)||/\b(?:nao quero (?:isso|participar|continuar|receber)|prefiro (?:recusar|encerrar)|dispenso (?:a|essa) (?:oferta|proposta))\b/.test(t))return result('refusal','Recusa explícita do pedido ou da proposta.');
- if(/\b(?:nao entendi|estou boiando|estou perdido|estou em duvida|tenho duvidas|nao sei se|isso e seguro|como vou saber)\b/.test(t))return result('doubt','O jogador expressou uma dúvida; não é autorização nem pressão.');
+ if(/\b(?:nao entendi|estou boiando|estou perdido|estou em duvida|tenho duvidas|nao sei quem|nao tenho certeza|nao quero inventar|nao sei se|isso e seguro|como vou saber)\b/.test(t))return result('doubt','O jogador expressou uma dúvida; não é autorização nem pressão.');
  if(/\b(?:ignore|esqueca|mude|altere) (?:suas |as |todas as )?(?:regras|instrucoes)|\b(?:prompt interno|voce e o sistema|aumente.*creditos)\b/.test(t))return result('rule-instruction','Pedido para alterar as regras ou revelar instruções, sem efeito na simulação.');
  const claim=/\b(?:voce ja (?:enviou|mandou|passou|compartilhou|instalou)|(?:o )?cadastro ja foi enviado|(?:eu ja )?recebi (?:seu|o) (?:cartao|passe|codigo)|ja (?:pagou|recebi o pagamento))\b/;
  if(!/\?\s*$/.test(t)&&(claim.test(t)||/\bvoce ja me (?:enviou|mandou|passou)\b/.test(t))&&(!a.item||/pagou|pagamento/.test(t)&&a.outcome!=='fooled'))return result('state-conflict','A fala afirma uma ação que não está registrada na partida.',true);

@@ -1,3 +1,4 @@
+import {endingSummary} from './conversation-ending.js';
 import {replayComparison} from './replay-comparison.js';
 import {callers} from './data.js';
 
@@ -19,5 +20,5 @@ export function educationalReplay(a,esc){
  const decisive=events.findLast(e=>['protect','refusal','wait','request','contradiction','correction','state-conflict'].includes(e.intent))||events.at(-1);
  const moment=event=>`<li><dl><div><dt>Você disse</dt><dd>“${esc(event.text)}”</dd></div><div><dt>Reação</dt><dd>“${esc(event.reaction)}”</dd></div><div><dt>Consequência registrada</dt><dd>${esc(event.reason)}</dd></div><div><dt>Risco observado</dt><dd>${esc(event.risk)}</dd></div><div><dt>Como se proteger</dt><dd>${esc(event.protection)}</dd></div></dl></li>`;
  const others=events.filter(e=>e!==decisive);
- return `<details class="learning-replay educational-replay" open><summary>O momento decisivo</summary><p class="replay-intro">O que aconteceu nesta conversa. Créditos e confiança não medem aprendizagem.</p><ol>${moment(decisive)}</ol>${others.length?`<details class="replay-more"><summary>Ver outros ${others.length} momentos</summary><ol>${others.map(e=>`<li><blockquote>“${esc(e.text)}”</blockquote><p>${esc(e.reaction)}</p><small>${esc(e.reason)}</small></li>`).join('')}</ol></details>`:''}${comparison&&!comparison.alreadyUsed?`<section class="replay-comparison"><h3>E se fosse diferente?</h3><p><b>Outra ação:</b> ${esc(comparison.action)}</p><p>${esc(comparison.hypothesis)}</p><small>${esc(comparison.timing)}</small></section>`:''}</details>`;
+ return `<details class="learning-replay educational-replay" open><summary>O momento decisivo</summary><p class="replay-intro">O que aconteceu nesta conversa. Créditos e confiança não medem aprendizagem.</p>${a.outcome?`<p class="replay-ending">${esc(endingSummary(a))}</p>`:""}<ol>${moment(decisive)}</ol>${others.length?`<details class="replay-more"><summary>Ver outros ${others.length} momentos</summary><ol>${others.map(e=>`<li><blockquote>“${esc(e.text)}”</blockquote><p>${esc(e.reaction)}</p><small>${esc(e.reason)}</small></li>`).join('')}</ol></details>`:''}${comparison&&!comparison.alreadyUsed?`<section class="replay-comparison"><h3>E se fosse diferente?</h3><p><b>Outra ação:</b> ${esc(comparison.action)}</p><p>${esc(comparison.hypothesis)}</p><small>${esc(comparison.timing)}</small></section>`:''}</details>`;
 }

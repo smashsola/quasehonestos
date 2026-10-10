@@ -8,7 +8,9 @@ import {modelConversationRules,replyIsGrounded} from '../../src/dialogue-model-r
 import {looksPersonal} from '../../src/privacy-data.js';
 const json=(body,status=200)=>Response.json(body,{status,headers:{'Cache-Control':'no-store'}});
 export async function onRequestPost({request,env}){
- if(request.headers.get('Origin')!==new URL(request.url).origin)return json({error:'origin'},403);
+ const origin=request.headers.get('Origin');
+ const devOrigin=/^http:\/\/(?:127\.0\.0\.1|localhost):\d+$/.test(env.DIALOGUE_DEV_ORIGIN||'')?env.DIALOGUE_DEV_ORIGIN:null;
+ if(origin!==new URL(request.url).origin&&(!devOrigin||origin!==devOrigin))return json({error:'origin'},403);
  if(env.DIALOGUE_AI_ENABLED!==true&&env.DIALOGUE_AI_ENABLED!=='true')return json({error:'local-dialogue'},503);
  const config=providerConfig(env);if(!config)return json({error:'offline'},503);
  if(!request.headers.get('Content-Type')?.includes('application/json'))return json({error:'format'},415);
@@ -49,6 +51,7 @@ export async function onRequestPost({request,env}){
   result=await upstream.json();
   }
   const text=providerText(config,result);
+  if(env.DIALOGUE_DIAGNOSTICS==='true')console.info('[dialogue-format]',{provider:config.provider,model:config.model,format:Object.keys(result||{}).join(','),length:typeof text==='string'?text.length:0});
   let reply;try{reply=JSON.parse(text);}catch{return json({error:'inconsistent',diagnostic:'json'},503);}
   if(evaluate){
    if(!Number.isInteger(reply.trustDelta)||reply.trustDelta< -25||reply.trustDelta>25||typeof reply.reason!=='string'||!reply.reason.trim()||reply.reason.length>180)return json({error:'inconsistent'},503);
@@ -62,6 +65,8 @@ export async function onRequestPost({request,env}){
   if(data.mode==='grounded-reply'&&!validStructuredReply(reply,data.history,data.reference,context))return json({error:'inconsistent',diagnostic:'grounding'},503);
   if(!replyIsGrounded(reply.text,data.history,data.reference,context))return json({error:'inconsistent'},503);
  if(reply.emotion!==undefined&&!expressions.includes(reply.emotion))return json({error:'inconsistent'},503);
-  return json({text:reply.text.trim(),...(reply.emotion?{emotion:reply.emotion}:{}),...(data.mode==='grounded-reply'?{intent:reply.intent,evidence:reply.evidence}:{})});
- }catch{return json({error:'unavailable'},503);}
+  const response=json({text:reply.text.trim(),...(reply.emotion?{emotion:reply.emotion}:{}),...(data.mode==='grounded-reply'?{intent:reply.intent,evidence:reply.evidence}:{})});
+  if(env.DIALOGUE_DIAGNOSTICS==='true'){response.headers.set('X-Dialogue-Source','api');response.headers.set('X-Dialogue-Model',config.model);}
+  return response;
+ }catch(error){if(env.DIALOGUE_DIAGNOSTICS==='true')console.warn('[dialogue-provider]',{code:error?.code||null,name:error?.name||'Error'});return json({error:'unavailable'},503);}
 }
