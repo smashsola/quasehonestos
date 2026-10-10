@@ -10,7 +10,7 @@ import {onRequestPost} from '../functions/api/dialogue.js';
 import {callers} from '../src/data.js';
 const arg=name=>process.argv.find(a=>a.startsWith(`--${name}=`))?.split('=').slice(1).join('=');
 const live=process.argv.includes('--live');
-const env={...process.env,DIALOGUE_PROVIDER:arg('provider')||'gemini',DIALOGUE_MODEL:arg('model')||'gemini-3.5-flash-lite',DIALOGUE_AI_ENABLED:'true'};
+const env={...process.env,DIALOGUE_PROVIDER:arg('provider')||'gemini',DIALOGUE_MODEL:arg('model')||'gemini-3.5-flash-lite',DIALOGUE_AI_ENABLED:'true',...(live?{DIALOGUE_ALLOW_EXPERIMENTAL_PROVIDERS:'true'}:{})};
 const config=providerConfig(env),results=[];
 const caller=callers.find(c=>c.id===(arg('caller')||'nino'));if(!caller)throw new Error('Personagem não encontrado');
 let tokenUsage=null;
