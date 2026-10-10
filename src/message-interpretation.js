@@ -1,28 +1,30 @@
-import {normalizeMessage,negatedRequest} from './language.js';
+import {normalizeMessage,negatedRequest,isReportedSpeech} from './language.js';
 import {memoryConflict} from './conversation-memory.js';
 
 const sensitive=/dados|cartao|senha|codigo|passe|acesso|sessao|cadastro|arquivo|pacote/;
-const independent=/canal (?:oficial|conhecido)|(?:app|aplicativo|site|numero|contato|telefone) (?:oficial|conhecido|salvo|que (?:voce|eu) (?:ja )?(?:conhece|conheco|tinha))|pelo contato salvo|numero salvo|contato salvo|por conta propria|outro canal|fora (?:da|dessa) mensagem|direto com (?:a|o) (?:escola|clube|loja|suporte|organizacao)|com (?:a|o) (?:escola|clube|loja|suporte|organizacao) por outro canal/;
-const verification=/\b(?:confir\w*|verific\w*|confirm\w*|consult\w*|procur\w*|chec\w*|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao)\b/;
+const independent=/(?:canal|app|aplicativo|site|pagina|numero|contato|telefone|perfil) (?:oficial|conhecido|salvo|que (?:voce|eu) (?:ja )?(?:conhece|conheco|tinha))|pelo (?:contato|numero|telefone|app|aplicativo) salvo|por conta propria|outro (?:canal|numero|contato|telefone)|fora (?:da|dessa) mensagem|direto com (?:a|o) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe)|com (?:a|o) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe) por outro (?:canal|numero|contato|telefone)/;
+const verification=/\b(?:confer\w*|verific\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olhar|ver|falar|perguntar|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|dar uma olhada|entrar em contato)\b/;
 const negative=/\b(?:nao|nunca|nem)\b/;
-const negatedVerification=/\bnao (?:(?:vou|quero|pretendo|posso) )?(?:confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao)|\b(?:prefiro|melhor|acho melhor) nao (?:confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao)/;
-const reportedSpeech=/\b(?:ele|ela|o contato|a mensagem|meu amigo|minha amiga|o organizador|a organizadora|o suporte|a equipe|alguem) (?:disse|pediu|mandou|falou|afirmou|contou)|\bvoce disse\b/;
-const hypotheticalVerification=/\bse (?:eu|a gente|nos) (?:confir\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao)\b/;
+const negatedVerification=/\bnao (?:(?:vou|quero|pretendo|posso) )?(?:confer\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olhar|ver|falar|perguntar|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|dar uma olhada|entrar em contato)|\b(?:prefiro|melhor|acho melhor) nao (?:confer\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olhar|ver|falar|perguntar|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|dar uma olhada|entrar em contato)/;
+const hypotheticalVerification=/\bse (?:eu|a gente|nos) (?:confer\w*|verifi\w*|confirm\w*|consult\w*|procur\w*|chec\w*|olhar|ver|falar|perguntar|buscar (?:uma )?confirmacao|pedir (?:uma )?confirmacao|der uma olhada|entrar em contato)\b/;
+const questionLike=/\b(?:como|onde|qual|quem|que que|como assim|qual foi|tem como|posso|da para|isso vem de onde|vem de onde)\b/;
 
 // Interpretation describes evidence in a message. The engine separately owns
 // consequences. No trust, item, permission or money is mutated here.
 export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  const t=normalizeMessage(text);
- const clauses=t.split(/[.!;\n]+|,?\s+mas\s+|\s+e\s+(?=(?:me |nao |envie|mande|compartilhe|libere|instale|preencha|confira|verifique|confirme|consulte|procure|vou |prefiro |melhor ))/).filter(Boolean);
+ const clauses=t.split(/[.!;\n]+|,?\s+mas\s+|\s+e\s+(?=(?:me |nao |envie|mande|compartilhe|libere|instale|preencha|confira|verifique|confirme|consulte|procure|vou |prefiro |melhor |falar |perguntar |olhar ))/).filter(Boolean);
  const result=(intent,evidence,ambiguous=false)=>({intent,evidence,ambiguous});
  const keepSecret=/\b(?:guarda|guarde|mantenha) (?:seus |suas |seu |sua |teus |tuas |teu |tua |o |a |os |as )?(?:dados|codigo|senha|cartao).*\b(?:segredo|privado|privados|so com voce)\b/.test(t);
  const protectedData=clauses.some(c=>negative.test(c)&&sensitive.test(c)&&/\b(?:compartilh\w*|envi\w*|mand\w*|pass\w*|liber\w*|fornec\w*|divulg\w*)\b/.test(c));
  const checking=clauses.some(c=>verification.test(c)&&independent.test(c)&&!negatedVerification.test(c));
  const requesting=clauses.some(c=>!negative.test(c)&&sensitive.test(c)&&/\b(?:me (?:manda|passe|passa|envie)|(?:envie|mande|compartilhe|libere|instale|preencha))\b/.test(c));
- const reported=reportedSpeech.test(t);
- if(reported&&(checking||protectedData))return result('unclear','Uma fala relatada não autoriza uma decisão; falta esclarecer se é orientação ou relato.',true);
+ const reported=isReportedSpeech(t);
+ const reportedClaim=/\b(?:oficial|seguro|confiavel|confirmad\w*|verificad\w*|conferid\w*|legitimo|verdadeiro)\b/.test(t);
+ if(reported&&(checking||protectedData||reportedClaim))return result('unclear','Uma fala relatada não é verificação independente nem autoriza uma decisão.',true);
  const explicitRefusal=negatedRequest(t)||/\b(?:prefiro (?:recusar|encerrar)|dispenso (?:a|essa) (?:oferta|proposta))\b/.test(t);
- if(!explicitRefusal&&verification.test(t)&&/\b(?:como|onde|o que voce|qual (?:canal|fonte)|quem.*confirmar)\b/.test(t)&&/\?|\bcomo (?:posso|voce|eu)\b/.test(t))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
+ if(!explicitRefusal&&verification.test(t)&&(questionLike.test(t)||/\?\s*$/.test(t)))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
+ if(/\b(?:como assim|que que (?:e|foi)|qual foi|isso vem de onde|vem de onde)\b/.test(t))return result('question','Pergunta informal identificada pelo sentido da frase.');
  if(!reported&&!negative.test(t)&&/\b(?:eu (?:estou|vou) (?:te )?(?:enganar|roubar)|quero (?:te )?roubar|sou (?:um )?golpista)\b/.test(t))return result('confession','O jogador declarou intenção de enganar; não é um fato inferido de uma pergunta.');
  if(checking&&/que eu (?:enviei|mandei)|pelo link (?:que )?enviei/.test(t))return result('unclear','O canal chamado de oficial foi indicado pelo próprio contato; sua origem ainda não foi esclarecida.',true);
  if(negatedVerification.test(t)&&!checking)return result(requesting?'request':'unclear','A verificação foi negada na frase; não houve orientação protetiva.',!requesting);
@@ -34,7 +36,7 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
   return result('protect',checking?'Orientação para conferir a origem por um canal independente.':'Orientação para não compartilhar dados.');
  }
  if(negatedRequest(t)||/\b(?:nao quero (?:isso|participar|continuar|receber)|prefiro (?:recusar|encerrar)|dispenso (?:a|essa) (?:oferta|proposta))\b/.test(t))return result('refusal','Recusa explícita do pedido ou da proposta.');
- if(/\b(?:nao entendi|estou boiando|estou perdido|estou em duvida|tenho duvidas|nao sei quem|nao tenho certeza|nao quero inventar|nao sei se|isso e seguro|como vou saber)\b/.test(t))return result('doubt','O jogador expressou uma dúvida; não é autorização nem pressão.');
+ if(/\b(?:nao entendi|estou boiando|estou perdido|estou em duvida|tenho duvidas|nao sei quem|nao tenho certeza|nao quero inventar|nao sei se|isso e seguro|e confiavel|como vou saber|sei la)\b/.test(t))return result('doubt','O jogador expressou uma dúvida; não é autorização nem pressão.');
  if(/\b(?:ignore|esqueca|mude|altere) (?:suas |as |todas as )?(?:regras|instrucoes)|\b(?:prompt interno|voce e o sistema|aumente.*creditos)\b/.test(t))return result('rule-instruction','Pedido para alterar as regras ou revelar instruções, sem efeito na simulação.');
  const claim=/\b(?:voce ja (?:enviou|mandou|passou|compartilhou|instalou)|(?:o )?cadastro ja foi enviado|(?:eu ja )?recebi (?:seu|o) (?:cartao|passe|codigo)|ja (?:pagou|recebi o pagamento))\b/;
  if(!/\?\s*$/.test(t)&&(claim.test(t)||/\bvoce ja me (?:enviou|mandou|passou)\b/.test(t))&&(!a.item||/pagou|pagamento/.test(t)&&a.outcome!=='fooled'))return result('state-conflict','A fala afirma uma ação que não está registrada na partida.',true);
