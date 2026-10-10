@@ -4,6 +4,7 @@ import {normalizeMessage,negatedRequest} from '../src/language.js';
 import {readIntent} from '../src/dialogue.js';
 import {statedFacts} from '../src/conversation-memory.js';
 import {resultImpact,consequenceCard,resultReport} from '../src/result-impact.js';
+import {fresh,nextCall,applyTypedMove} from '../src/engine.js';
 
 const context={scheme:'prize',stage:'request',used:['answer'],audit:[],facts:{claims:{}},memory:{}};
 
@@ -48,7 +49,6 @@ test('Concordância informal isolada não vira pedido de dado',()=>{
 
 test('Planos naturais de verificação independente são protetivos',()=>{
  const cases=[
-  'Eu verificaria no contato salvo antes de mandar qualquer coisa',
   'Vou buscar confirmação no canal oficial primeiro',
   'Prefiro confirmar direto com o clube por outro canal',
   'Quero checar no aplicativo que eu já conheço antes de continuar',
@@ -59,6 +59,13 @@ test('Planos naturais de verificação independente são protetivos',()=>{
   'oxe, primeiro eu pergunto direto pra organização por outro canal'
  ];
  for(const text of cases)assert.equal(readIntent(text,'prize','request',context),'protect',text);
+});
+
+test('Verificação condicional em -ria é hipótese, não uma decisão já tomada',()=>{
+ const text='Eu verificaria no contato salvo antes de mandar qualquer coisa';
+ assert.equal(readIntent(text,'prize','request',context),'doubt');
+ const state=fresh();nextCall(state);Object.assign(state.active,{...context,caller:'nino',trust:45,trustScale:100,prepared:true,log:[{speaker:'Nino',text:'O que você quer esclarecer?'}]});
+ applyTypedMove(state,'typed',text);assert.equal(state.active.lastIntent,'doubt');assert.equal(state.active.outcome,null);assert.equal(state.active.trust,45);assert.equal(state.credits,0);assert.equal(state.active.item,undefined);
 });
 
 test('Perguntas informais continuam perguntas e não prova de verificação',()=>{

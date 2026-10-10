@@ -39,8 +39,9 @@ test('Validação em sala separa porcentagem da avaliação de aprendizagem',()=
 
 test('Percentual de confiança continua determinístico e limitado',()=>{
  assert.equal(trustAppearance(0).percent,0);
- assert.equal(trustAppearance(1.15).percent,38);
- assert.equal(trustAppearance(2.35).percent,78);
- assert.equal(trustAppearance(3).percent,100);
- assert.equal(trustAppearance(99).percent,100);
+ assert.equal(trustAppearance(38).percent,38);
+ assert.equal(trustAppearance(78).percent,78);
+ assert.equal(trustAppearance(3).percent,3);
+ assert.equal(trustAppearance(99).percent,99);
+ assert.equal(trustAppearance(120).percent,100);
 });

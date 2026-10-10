@@ -12,20 +12,20 @@ function start(cursor=0){const s=fresh();s.cursor=cursor;nextCall(s);Object.assi
 
 test('Caso real reconhece proteção em cada personagem, sem reduzir confiança ou inventar exposição',()=>{
  for(let cursor=0;cursor<6;cursor++)for(const stage of ['pitch','question','request']){
-  const s=start(cursor);Object.assign(s.active,{stage,trust:2});applyTypedMove(s,'typed',protective,{intent:'uncertain',trustDelta:-25,reason:'Modelo incorreto.'});
-  assert.equal(s.active.lastIntent,'protect');assert.equal(s.active.trust,2);assert.equal(s.active.outcome,'blocked');assert.equal(s.credits,0);assert.ok(!s.active.item);assert.match(s.active.log.at(-1).text,/confirmar/);assert.doesNotMatch(s.active.log.at(-1).text,/você não tem certeza/);
+  const s=start(cursor);Object.assign(s.active,{stage,trust:67,trustScale:100});applyTypedMove(s,'typed',protective,{intent:'uncertain',trustDelta:-25,reason:'Modelo incorreto.'});
+  assert.equal(s.active.lastIntent,'protect');assert.equal(s.active.trust,67);assert.equal(s.active.outcome,'blocked');assert.equal(s.credits,0);assert.ok(!s.active.item);assert.match(s.active.log.at(-1).text,/confirmar/);assert.doesNotMatch(s.active.log.at(-1).text,/você não tem certeza/);
   const event=replayEvents(s.active)[0];assert.equal(event.text,protective);assert.match(event.reason,/verificação independente/);assert.match(event.protection,/canal conhecido/);assert.equal(resultImpact(s.active).exposed,false);
  }
 });
 
 test('Negação, dúvida, recusa, assunto solto e ambiguidade têm consequências diferentes',()=>{
  const cases=[['Não me manda o cartão','refusal'],['Não sei se esse prêmio é real','doubt'],['Hoje choveu no futebol','offtopic'],['Confirme no canal oficial; me envie seu cartão','unclear'],['Não compartilhe dados e me envie o cartão','unclear'],['Não confira no canal oficial','unclear'],['Não é urgente','unclear']];
- for(const [text,intent] of cases){const s=start();s.active.stage='request';s.active.trust=2;assert.equal(readIntent(text,'prize','request',s.active),intent);applyTypedMove(s,'typed',text);assert.equal(s.active.trust,2);assert.ok(!s.active.item);assert.equal(s.credits,0);if(intent!=='refusal')assert.equal(s.active.outcome,null);}
- const s=start();applyTypedMove(s,'typed','Você já enviou o cartão');assert.equal(s.active.lastIntent,'state-conflict');assert.equal(s.active.stage,'pitch');assert.ok(!s.active.item);
+ for(const [text,intent] of cases){const s=start();s.active.stage='request';s.active.trust=67;assert.equal(readIntent(text,'prize','request',s.active),intent);applyTypedMove(s,'typed',text);assert.equal(s.active.trust,67);assert.ok(!s.active.item);assert.equal(s.credits,0);if(intent!=='refusal')assert.equal(s.active.outcome,null);}
+ const s=start();s.active.trust=67;applyTypedMove(s,'typed','Você já enviou o cartão');assert.equal(s.active.lastIntent,'state-conflict');assert.ok(s.active.trust<67);assert.equal(s.active.stage,'pitch');assert.ok(!s.active.item);
 });
 
 test('Orientação sem pronome continua protetiva; recados aguardam a revisão da partida',()=>{
- const s=start();s.active.trust=2;applyTypedMove(s,'typed','Não compartilhe dados pessoais');assert.equal(s.active.lastIntent,'protect');assert.equal(s.active.trust,2);
+ const s=start();s.active.trust=67;applyTypedMove(s,'typed','Não compartilhe dados pessoais');assert.equal(s.active.lastIntent,'protect');assert.equal(s.active.trust,67);
  s.incoming={nextAt:1,pending:null,history:[],seen:[]};assert.equal(checkIncoming(s,40000,()=>0),false);assert.equal(s.incoming.pending,null);assert.equal(s.incoming.nextAt,1);
  finishCall(s);nextCall(s);s.active.log=[{speaker:'Olga',text:'Oi'}];assert.equal(checkIncoming(s,40000,()=>0),true);
 });

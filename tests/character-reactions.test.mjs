@@ -12,7 +12,7 @@ test('Emoção da resposta preserva limites e não altera confiança ou itens',a
  assert.equal(await polishReply(a,reply,async()=>Response.json({text:'Minha batata nunca pula o dia de perna!',emotion:'amused'})),true);
  assert.equal(savedExpression(a),'amused');assert.equal(a.trust,1);assert.equal(a.item,undefined);assert.equal(a.stage,'question');
  a.irritation=2;assert.equal(applyReplyEmotion(a,'happy'),false);assert.equal(savedExpression(a),'angry');
- a.irritation=0;a.suspicion=1;assert.equal(applyReplyEmotion(a,'amused'),false);assert.equal(savedExpression(a),'suspicious');
+ a.irritation=0;a.suspicion=1;a.lastIntent='contradiction';assert.equal(applyReplyEmotion(a,'amused'),false);assert.equal(savedExpression(a),'suspicious');
  a.outcome='fooled';assert.equal(applyReplyEmotion(a,'happy'),false);assert.equal(savedExpression(a),'suspicious');assert.equal(applyReplyEmotion(a,'invented'),false);
 });
 test('Reserva local diferencia confusão e brincadeira de agressão',()=>{

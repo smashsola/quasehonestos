@@ -12,7 +12,9 @@ test('Link enviado, abertura e envio do formulário são eventos diferentes para
   const s=start(i);assert.equal(sendCloneLink(s),false);explain(s);
   applyTypedMove(s,'typed','Pode abrir a página de resgate?');assert.equal(s.active.linkOpened,undefined);assert.equal(s.active.item,undefined);
   assert.equal(sendCloneLink(s),true);assert.equal(sendCloneLink(s),false);assert.deepEqual(clonedFields(s.active),[]);
-  applyTypedMove(s,'typed','Pode abrir a página de resgate?');assert.equal(s.active.linkOpened,true);assert.equal(s.active.item,undefined);
+  applyTypedMove(s,'typed','Pode abrir a página de resgate?');
+  if(s.active.stage==='question'){assert.equal(s.active.linkOpened,undefined);applyTypedMove(s,'typed','A equipe do programa BatataPay organizou o resgate.');applyTypedMove(s,'typed','Pode abrir a página de resgate?');}
+  assert.equal(s.active.linkOpened,true);assert.equal(s.active.item,undefined);
   applyTypedMove(s,'typed','Abre a página de resgate de novo');assert.equal(s.active.item,undefined);
   applyTypedMove(s,'typed','Pode me passar o cartão?');assert.equal(s.active.item,undefined);
   applyTypedMove(s,'typed','Pode preencher e enviar o cadastro de resgate?');assert.equal(s.active.linkSubmitted,true);assert.equal(s.active.stage,'ready');assert.equal(s.credits,0);

@@ -15,7 +15,7 @@ test('Meme exige cobrir cada detalhe e não altera dinheiro nem conversa',()=>{
 test('Respostas informais esclarecem sem liberar o dado antes do pedido',()=>{
  assert.equal(readIntent('Como é organizado o torneio?','prize','question'),'question');
  for(const text of ['Foi o pessoal que fez aquele evento','É da galera do torneio, entendeu?','Veio da equipe do jogo']){
-  const s=fresh();nextCall(s);Object.assign(s.active,{scheme:'prize',prepared:true,stage:'question',trust:1,log:[{speaker:'Nino',text:'Quem organizou?'}]});
+  const s=fresh();nextCall(s);Object.assign(s.active,{scheme:'prize',prepared:true,stage:'question',trust:33,log:[{speaker:'Nino',text:'Quem organizou?'}]});
   assert.equal(readIntent(text,'prize','question'),'answer');applyTypedMove(s,'typed',text);assert.equal(s.active.stage,'request');assert.equal(s.active.item,undefined);assert.equal(s.credits,0);
   applyTypedMove(s,'typed','Me passa aquele cod aí pfv');assert.equal(s.active.stage,'ready');assert.ok(s.active.item);assert.equal(s.credits,0);
  }
@@ -23,7 +23,7 @@ test('Respostas informais esclarecem sem liberar o dado antes do pedido',()=>{
 test('Dificuldade mantém personalidade e recusa confiança baixa ou pressão',()=>{
  assert.ok(sharingThreshold('nino')<sharingThreshold('davi'));
  for(const caller of ['nino','olga','davi','yara','pri','bento']){
-  const s=fresh();nextCall(s);Object.assign(s.active,{caller,scheme:'prize',prepared:true,stage:'request',trust:.3,log:[{speaker:'Você',text:'Oi'}]});
+  const s=fresh();nextCall(s);Object.assign(s.active,{caller,scheme:'prize',prepared:true,stage:'request',trust:3,log:[{speaker:'Você',text:'Oi'}]});
   applyTypedMove(s,'typed','Me passa o cartão BatataPay');assert.equal(s.active.item,undefined);assert.equal(s.credits,0);
  }
 });

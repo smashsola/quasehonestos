@@ -1,4 +1,12 @@
 // Local fictional dialogue; each caller keeps the same voice across proposals.
+export const personalityWeights={
+ nino:{casual:1.25,clarity:1,consistency:.9,pressure:.9,hostility:1},
+ olga:{casual:.8,clarity:1,consistency:1,pressure:1.15,hostility:1.05},
+ davi:{casual:.25,clarity:.8,consistency:1.15,pressure:1.15,hostility:1.1},
+ yara:{casual:1,clarity:1,consistency:1.05,pressure:1.05,hostility:1},
+ pri:{casual:.1,clarity:.85,consistency:1.3,pressure:1.25,hostility:1.1},
+ bento:{casual:1.15,clarity:1,consistency:1,pressure:1,hostility:1.05}
+};
 const voices={
  nino:{answer:'Entendi! Já estou desenhando essa história. Qual é a próxima etapa?',pressure:'Pera! Nem minha batata de corrida resolve tudo tão rápido.',hostile:'Ei! Até minha batata sabe conversar sem ofender.',unclear:'Me perdi no desenho. Pode explicar melhor?',received:'Tá aqui. Minha batata assinou como testemunha.'},
  olga:{answer:'Agora ficou mais claro. Vou deixar o café aqui. O que vem depois?',pressure:'Meu café nem esfriou. Vou decidir no meu tempo.',hostile:'Olha o respeito, meu bem. Não liguei para ouvir desaforo.',unclear:'Você pulou uma parte da história. Me conta de novo, com calma.',received:'Aqui está. Depois eu conto isso num áudio de sete minutos.'},

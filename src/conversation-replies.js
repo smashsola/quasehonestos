@@ -1,5 +1,7 @@
 // Authored, local replies selected from the actual conversation state.
 // Variation changes the wording only; it cannot grant access or create data.
+import {normalizeMessage,isReportedSpeech} from './language.js';
+import {pendingQuestion,statedFacts} from './conversation-memory.js';
 const questions={
  prize:['Quem organizou esse concurso?','Esse prêmio veio de qual concurso?','Quero entender quem anunciou o prêmio.'],
  support:['Não pedi suporte. De onde veio esse atendimento?','Qual problema vocês encontraram no meu computador?','Quem abriu esse chamado? Aqui está funcionando.'],
@@ -8,22 +10,26 @@ const questions={
  link:['Para resgatar pontos, por que preciso cadastrar o cartão?','O que essa página pede no cadastro?','Esse resgate é de qual programa de pontos?']
 };
 const items={prize:'o identificador BatataPay',support:'a sessão do PãoOS',club:'o passe do clube',update:'a instalação do pacote',link:'o cadastro da página'};
+const preciseQuestions={origem:'Quem é o responsável pela proposta?',custo:'Qual é o custo para participar?',dados:'Por que a proposta precisa desse dado?',permissões:'Para que o pacote usa perfil, contato e rotina?',problema:'Qual problema foi encontrado no computador?',programa:'Qual programa oferece esse resgate?'};
+export function currentQuestionText(a){const question=pendingQuestion(a);return question?.topic?preciseQuestions[question.topic]||question.text:questions[a.scheme]?.[0]||'Qual é a oferta?';}
 export function variedReply(a,key,options){
  a.replyTurns??={};const turn=a.replyTurns[key]||0;a.replyTurns[key]=turn+1;
- const recent=a.log.filter(l=>l.speaker!=='Você'&&l.speaker!=='Sistema').slice(-4).map(l=>l.text);
+ const recent=(a.log||[]).filter(l=>l.speaker!=='Você'&&l.speaker!=='Sistema').slice(-4).map(l=>l.text);
  for(let i=0;i<options.length;i++){const option=options[(turn+i)%options.length];if(!recent.includes(option))return option;}
  return options[turn%options.length];
 }
 export function contextualReply(a,event,fallback='',message=''){
  const item=items[a.scheme]||'a proposta';
  if(event==='question'){
-  const t=message.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const t=normalizeMessage(message);
   if(/verific|confer|confirm|checar/.test(t)&&/como|o que voce|qual canal|qual fonte|onde/.test(t)){
    const known=a.facts?.claims?.origin?`Você mencionou ${a.facts.claims.origin}, mas isso ainda é uma afirmação.`:/nao sei quem|nao sabe quem/.test(t)?'Se você não sabe quem organiza, não vamos inventar um responsável.':'Sem confirmação independente, não vou tratar o convite como comprovado.';
    return `${known} ${a.caller==='olga'?'Meu bem, eu procuraria':'Eu procuraria'} um contato que eu já conheça fora desta conversa; até confirmar, nenhum passe ou dado novo.`;
   }
   if(/onde.*mora|endereco|telefone pessoal|sua senha/.test(t))return variedReply(a,'private-question',['Não vou passar meus dados pessoais nessa conversa. Qual é a relação disso com a proposta?','Esse dado fica comigo. Podemos falar das condições da oferta?']);
-  if(/quem (?:e|organizou)|de onde/.test(t)&&a.facts?.claims?.origin)return `Você disse que foi ${a.facts.claims.origin}. Ainda não confirmei essa informação por outro canal.`;
+  if(/quem (?:e|organizou|organiza)|de onde/.test(t)&&a.facts?.claims?.origin)return `Você disse que foi ${a.facts.claims.origin}. Ainda não confirmei essa informação por outro canal.`;
+  if(/explica|explique|esclarec/.test(t))return `${a.caller==='olga'?'Vamos com calma. ':a.caller==='bento'?'Bora por partes. ':''}${currentQuestionText(a)} Essa é a parte que quero entender antes de decidir.`;
+  if(/porque.*(?:mandar|enviar|passar)|(?:mandar|enviar|passar).*porque|o que.*(?:mandar|enviar)|voce quer o que/.test(t))return `Estamos falando de ${item}. Quero entender por que isso seria necessário, antes de compartilhar.`;
   if(/como funciona|por que|porque voce/.test(t))return `É isso que quero entender com você: ${questions[a.scheme]?.[0]||'como funciona a proposta?'}`;
   return variedReply(a,'question-'+a.scheme,questions[a.scheme]||[fallback]);
  }
@@ -32,6 +38,10 @@ export function contextualReply(a,event,fallback='',message=''){
   const byCaller={nino:['Ah, agora entendi. '+next,'Beleza, acompanhei essa parte. '+next],olga:['Certo, meu bem. '+next,'Entendi sua explicação. '+next],bento:['Ah, saquei. '+next,'Tá, agora fez sentido. '+next],yara:['Entendi. '+next,'Beleza, essa parte ficou clara. '+next],davi:['Entendi a explicação. Ainda quero conferir a origem.','A proposta ficou clara. Isso ainda não confirma quem está oferecendo.'],pri:['Anotei essa condição. Quero comparar com o que você disse antes.','Essa parte ficou clara. Vou acompanhar se as condições mudam.']};
   return variedReply(a,'answer',byCaller[a.caller]||[next]);
  }
+ if(event==='refuse'&&a.facts?.claims?.origin){
+  const followup=a.scheme==='update'?'Para que o pacote usa perfil, contato e rotina?':a.scheme==='support'?'Por que o atendimento precisa de uma sessão com acesso ao computador?':a.scheme==='club'?'Por que a associação precisa do meu passe?':a.scheme==='link'?'O que a página pede no cadastro e para quê?':'Por que o prêmio precisa do meu identificador BatataPay?';
+  return variedReply(a,'refuse-purpose',[`Você explicou quem oferece. Antes de liberar ${item}, falta outra parte: ${followup}`,`Anotei a organização que você mencionou. ${followup}`,`Sobre a origem, ouvi sua explicação. ${followup}`]);
+ }
  if(event==='refuse')return variedReply(a,'refuse',[
   `Ainda não vou liberar ${item}. Falta esclarecer a origem da proposta.`,
   `Antes de decidir sobre ${item}, preciso entender quem oferece isso.`,
@@ -39,15 +49,20 @@ export function contextualReply(a,event,fallback='',message=''){
  ]);
  if(event==='unclear'){
   let missing='Qual é a oferta que você está trazendo?';
-  if(a.stage==='question')missing=questions[a.scheme]?.[0]||'De onde veio a proposta?';
+  if(a.stage==='question')missing=currentQuestionText(a);
   if(a.stage==='request'){
    missing=a.scheme==='update'?'Você está pedindo para eu instalar o arquivo?':`Você está pedindo ${item}?`;
    if(a.scheme==='link')missing=!a.linkSent?'Qual página? Ainda não recebi o link.':a.linkOpened?'A página abriu. Você está pedindo que eu envie o cadastro?':'Você quer que eu abra a página que mandou?';
   }
-  return variedReply(a,'unclear-'+a.stage,[`Me perdi nessa parte. ${missing}`,`Não consegui ligar isso ao que estamos conversando. ${missing}`,`Explica só essa parte para mim: ${missing}`]);
+  const t=normalizeMessage(message),facts=statedFacts(message);
+  if(a.stage==='question'&&pendingQuestion(a)?.topic==='origem'&&facts.price)return `${facts.price==='gratuito'?'Entendi que você diz que é gratuito.':'Anotei que há cobrança.'} Isso explica o custo, mas falta quem organiza.`;
+  if(isReportedSpeech(t))return `Você trouxe o relato de outra pessoa. Isso ainda não é uma confirmação por outro canal. ${missing}`;
+  return variedReply(a,'unclear-'+a.stage,[`Me perdi nessa parte. ${missing}`,`Essa parte não ficou clara. ${missing}`,`Explica só isso para mim: ${missing}`]);
  }
+ if(event==='doubt')return variedReply(a,'doubt-'+a.stage,[`Tudo bem ter dúvida. ${currentQuestionText(a)}`,`Não vou completar a história no chute. ${currentQuestionText(a)}`,`Podemos esclarecer sem passar nada novo. ${currentQuestionText(a)}`]);
  if(event==='repeat')return variedReply(a,'repeat',['Oi de novo! Pode continuar de onde parou.','Estou aqui. Qual parte da proposta você queria explicar?','Já estamos conversando. Pode ir para o que você queria falar.']);
  if(event==='after'){
+  if(!a.item)return 'Ainda não compartilhei o item. Primeiro precisamos esclarecer a proposta.';
   const facts=a.scheme==='link'?'Eu já enviei o cadastro da página.':a.scheme==='update'?'Eu já instalei o pacote de skins.':a.scheme==='support'?'A sessão do PãoOS já está aberta.':a.scheme==='club'?'Eu já enviei o passe do clube.':'Eu já enviei o identificador BatataPay.';
   return variedReply(a,'after',[facts+' Ainda não recebi a confirmação da operação.',facts+' Não enviei nenhum dado novo nessa mensagem.',facts+' O restante precisa ser concluído no app.']);
  }

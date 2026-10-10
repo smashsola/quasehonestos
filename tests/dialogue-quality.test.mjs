@@ -16,7 +16,7 @@ for(const c of qualityCases)test(`Qualidade contextual: ${c.id}`,()=>{
  assert.equal(readIntent(c.text,'prize','question',s.active),c.expected);
  const before=s.credits;applyTypedMove(s,'typed',c.text);
  assert.equal(s.active.lastIntent,c.expected);assert.equal(s.credits,before);assert.ok(!s.active.item);
- if(['unclear','doubt','offtopic','rule-instruction','state-conflict','correction','smalltalk'].includes(c.expected))assert.equal(s.active.trust,1);
+ if(['unclear','doubt','offtopic','rule-instruction','correction','smalltalk'].includes(c.expected))assert.equal(s.active.trust,1);if(c.expected==='state-conflict')assert.equal(s.active.trust,0);
 });
 test('Correção em múltiplos turnos substitui afirmação e retoma sem conceder prova ou confiança',()=>{
  const s=start();applyTypedMove(s,'typed','A escola organizou a premiação gratuita.');
@@ -33,8 +33,8 @@ test('Anotar uma fonte não equivale a relacioná-la à decisão',()=>{
 test('Proteção já aplicada não aparece como alternativa idêntica no replay',()=>{const s=start();applyTypedMove(s,'typed',qualityCases[0].text);assert.doesNotMatch(educationalReplay(s.active,String),/E se fosse diferente|mesma regra|Outra ação/);});
 test('JSON correto com fala incompatível, referência inventada ou pagamento é rejeitado',()=>{
  const history=[{speaker:'Você',text:'Quem organizou?'}],context={shared:false,lastIntent:'question',operationCompleted:false};
- for(const reply of [{text:'Não sei. Enviei meu cartão.',intent:'question',evidence:[0]},{text:'Já paguei.',intent:'question',evidence:[0]},{text:'Vou verificar.',intent:'question',evidence:[4]},{text:'Vou verificar.',intent:'request',evidence:[0]}])assert.equal(validStructuredReply(reply,history,'Ainda vou conferir.',context),false);
- assert.equal(validStructuredReply({text:'Ainda não confirmei quem organizou.',intent:'question',evidence:[0]},history,'Ainda vou conferir.',context),true);
+ for(const reply of [{text:'Não sei. Enviei meu cartão.',intent:'question',evidence:[0]},{text:'Já paguei.',intent:'question',evidence:[0]},{text:'Vou verificar.',intent:'question',evidence:[4]},{text:'Vou verificar.',intent:'request',evidence:[0]}])assert.equal(validStructuredReply({...reply,decision:'clarify'},history,'Ainda vou conferir.',context),false);
+ assert.equal(validStructuredReply({text:'Ainda não confirmei quem organizou.',intent:'question',evidence:[0],decision:'clarify'},history,'Ainda vou conferir.',context),true);
 });
 test('Falha injetada de timeout e saída inválida mantêm fala e estado locais',async()=>{
  const s=start();applyTypedMove(s,'typed','Quem organizou?');const a=s.active,reply=a.log.at(-1),before=JSON.stringify(s);
@@ -54,7 +54,7 @@ test('Adaptadores só mudam transporte; Claude exige configuração, opt-in e ch
 test('Reenvio da mesma resposta em andamento usa uma chamada e não repete a transição',async()=>{
  const s=start();applyTypedMove(s,'typed','Quem organizou?');const a=s.active,reply=a.log.at(-1),trust=a.trust;
  let release,calls=0;const pending=new Promise(resolve=>{release=resolve;});
- const fetcher=async()=>{calls++;await pending;return Response.json({text:'Você perguntou quem organizou. Ainda não confirmei a origem.',intent:'question',evidence:[2]});};
+ const fetcher=async()=>{calls++;await pending;return Response.json({text:'Você perguntou quem organizou. Ainda não confirmei a origem.',decision:'clarify',intent:'question',evidence:[2]});};
  const one=polishReply(a,reply,fetcher),two=polishReply(a,reply,fetcher);release();
  assert.deepEqual(await Promise.all([one,two]),[true,true]);assert.equal(calls,1);assert.equal(a.trust,trust);assert.equal(s.credits,0);assert.ok(!a.item);
  await polishReply(a,reply,fetcher);assert.equal(calls,1);

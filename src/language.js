@@ -10,7 +10,29 @@ const speechVerb=/(?:disse|falou|pediu|mandou|afirmou|contou|garantiu|jurou)/;
 const speaker=/(?:ele|ela|voce|alguem|(?:o|a|um|uma|meu|minha) [a-z][a-z-]{1,24})/;
 const reportedSpeech=new RegExp(`\\b${speaker.source}\\s+${speechVerb.source}\\b|\\b${speechVerb.source}\\s+que\\b|\\b(?:me disseram|me falaram|disseram|falaram|ouvi dizer|dizem)\\s+que\\b|\\b(?:tao|estao) falando que\\b|\\bsegundo ${speaker.source}\\b`);
 export function normalizeMessage(text){
- return String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/([a-z])\1{2,}/g,'$1$1').replace(/\b[a-z]+\b/g,word=>words[word]||word).replace(/\s+/g,' ').trim();
+ return String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/([a-z])\1{2,}/g,'$1$1').replace(/\b[a-z]+\b/g,word=>Object.hasOwn(words,word)?words[word]:repairWord(word)).replace(/\s+/g,' ').trim();
+}
+// Repair only one-edit mistakes in a small semantic vocabulary. This is not a
+// phrase matcher and does not rewrite arbitrary names or the player's wording.
+const semanticVocabulary=['oficial','gratuito','gratuita','gratis','organizou','organizado','conferir','verificar','explicar','compartilhar','permissao','pagamento','cartao'];
+function oneEdit(a,b){
+ if(Math.abs(a.length-b.length)>1)return false;
+ let i=0,j=0,edits=0;
+ while(i<a.length&&j<b.length){if(a[i]===b[j]){i++;j++;continue;}if(++edits>1)return false;if(a.length>=b.length)i++;if(b.length>=a.length)j++;}
+ return edits+(i<a.length||j<b.length?1:0)===1;
+}
+function repairWord(word){if(word.length<5||semanticVocabulary.includes(word)||semanticVocabulary.some(candidate=>candidate.endsWith('r')&&candidate.slice(0,-1)===word))return word;const candidates=semanticVocabulary.filter(candidate=>oneEdit(word,candidate));return candidates.length===1?candidates[0]:word;}
+words.vo='vou';words.oqe='o que';words.gratiz='gratis';words.msm='mesmo';words.tu='voce';words.organizo='organizou';
+export function messageClauses(text){
+ return normalizeMessage(text).replace(/\bnum (?=(?:vou|quero|pretendo|posso|mand|envi|pass|verific|confer|confirm)\w*\b)/g,'nao ').split(/(?<=[.!?;])\s*|,\s*(?=(?:entendeu|ne|certo|ok)\?)|\s*,?\s+mas\s+|\s+e\s+(?=(?:eu |vou |nao |me |confira|verifique|confirme|consulte|procure|mande|envie|compartilhe|libere|instale|preencha))/).map(clause=>clause.trim()).filter(Boolean);
+}
+export function isQuestionClause(text){
+ const t=normalizeMessage(text).replace(/^(?:(?:oxe|ue|mano|vei|po|entao|ta|esta|mas|tipo|assim|pode pa|slk|meu deus)[, ]+)+/,'');
+ return /\?/.test(t)||/^(?:quem|qual|como|onde|quando|porque|por que|o que|que que|sera que|tem como|da para)\b/.test(t)||/\b(?:me )?(?:explica|explique|esclareca|me diz|me diga|me conta|me conte)\b/.test(t)||/\b(?:de onde|(?:confiar|acreditar).*porque|quem (?:organizou|organiza)|voce quer o que)\b/.test(t);
+}
+export function isHypotheticalClause(text){
+ const t=normalizeMessage(text);
+ return /\b(?:talvez|quem sabe|vai que|caso|se eu|se a gente|se nos|se for|se fosse|se houver)\b/.test(t)||/\b(?:eu |a gente |nos )?(?:verificaria|conferiria|confirmaria|consultaria|procuraria|checaria|pesquisaria|buscaria|olharia|falaria|perguntaria)\b/.test(t);
 }
 export function isReportedSpeech(text){return reportedSpeech.test(normalizeMessage(text));}
 export function negatedRequest(text){

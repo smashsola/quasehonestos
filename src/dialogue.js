@@ -2,7 +2,8 @@ import {interpretMessage} from './message-interpretation.js';
 import {normalizeMessage,negatedRequest} from './language.js';
 const normalize=normalizeMessage;
 const topics={link:/pontos|resgate|vale.?lanche|cadastro|formulario|link|pagina|batatapay/,prize:/premio|batata|trofeu|concurso/,support:/suporte|computador|paoos|torradeira|assistencia/,club:/clube|colher|associacao|convite|talher/,update:/skin|changer|blaster|visual|cosmica|atualiz|anexo|arquivo|pacote|instal/};
-export function readIntent(text,scheme,stage,context={}){return interpretMessage(text,{...context,scheme,stage},()=>lexicalIntent(text,scheme,stage)).intent;}
+export function readMessage(text,scheme,stage,context={}){return interpretMessage(text,{...context,scheme,stage},()=>lexicalIntent(text,scheme,stage));}
+export function readIntent(text,scheme,stage,context={}){return readMessage(text,scheme,stage,context).intent;}
 function lexicalIntent(text,scheme,stage){
  const t=normalize(text).trim();
  if(/idiota|\bburr[oa]\b|otario|cala a boca|imbecil|trouxa|te odeio|seu (?:merda|bosta)|sua (?:merda|bosta)|(?:vim|vou|quero).*\b(?:roubar|robar)\b/.test(t))return 'hostile';

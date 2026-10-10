@@ -6,7 +6,7 @@ import {fresh,nextCall,applyTypedMove,load,KEY,disconnectSession,executeScheme} 
 import {flowSteps} from '../src/app-content.js';
 function start(){const s=fresh();nextCall(s);Object.assign(s.active,{scheme:'support',prepared:true,stage:'pitch',steps:[],log:[{speaker:'Nino',text:'Oi'}]});return s;}
 test('Cor da confiança acompanha o percentual e limita valores inválidos',()=>{
- assert.equal(trustAppearance(0).color,'#ef827f');assert.equal(trustAppearance(1).color,'#e8b865');assert.equal(trustAppearance(1.5).color,'#e8b865');assert.equal(trustAppearance(2).color,'#66d3a3');assert.equal(trustAppearance(3).percent,100);assert.equal(trustAppearance(-1).percent,0);assert.equal(trustAppearance(9).percent,100);
+ assert.equal(trustAppearance(0).color,'#ef827f');assert.equal(trustAppearance(33).color,'#e8b865');assert.equal(trustAppearance(50).color,'#e8b865');assert.equal(trustAppearance(67).color,'#66d3a3');assert.equal(trustAppearance(100).percent,100);assert.equal(trustAppearance(-1).percent,0);assert.equal(trustAppearance(999).percent,100);assert.equal(trustAppearance(2).percent,2);
 });
 test('Expressões reagem às falas e sobrevivem ao salvamento sem depender da janela',()=>{
  const s=start();applyTypedMove(s,'typed','oi');assert.equal(savedExpression(s.active),'happy');
@@ -14,7 +14,7 @@ test('Expressões reagem às falas e sobrevivem ao salvamento sem depender da ja
  applyTypedMove(s,'typed','Preciso disso agora');assert.equal(savedExpression(s.active),'suspicious');
  applyTypedMove(s,'typed','Você é um idiota');assert.equal(savedExpression(s.active),'angry');
  const restored=load({getItem:key=>key===KEY?JSON.stringify(s):null});assert.equal(savedExpression(restored.active),'angry');
- assert.equal(savedExpression({...restored.active,stage:'pitch',trust:3}),'angry');
+ assert.equal(savedExpression({...restored.active,stage:'pitch',trust:100}),'angry');
 });
 test('Desconectar uma sessão encerra sem pagar e impede operação posterior',()=>{
  const s=start();Object.assign(s.active,{stage:'ready',item:{app:'support',token:'QH-DEMO'}});s.credits=25;

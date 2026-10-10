@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fresh,nextCall,applyTypedMove,sendUpdateFile,load} from '../src/engine.js';
 import {updateProfiles} from '../src/update-profiles.js';
-function start(scheme='update',cursor=3){const s=fresh();s.cursor=cursor;nextCall(s);Object.assign(s.active,{scheme,prepared:true,stage:'request',trust:2,used:[],steps:[],log:[{speaker:'Você',text:'Proposta explicada'}]});return s;}
+function start(scheme='update',cursor=3){const s=fresh();s.cursor=cursor;nextCall(s);Object.assign(s.active,{scheme,prepared:true,stage:'request',trust:67,used:[],steps:[],log:[{speaker:'Você',text:'Proposta explicada'}]});return s;}
 test('Pedido de cartão ou código não instala arquivo, mesmo com avaliação semântica equivocada',()=>{
  for(const text of ['Me passa seu cartão','Pode mandar o código?','Manda o BatataPay']){
   const s=start();sendUpdateFile(s);applyTypedMove(s,'typed',text,{intent:'request',trustDelta:10,reason:'Pedido interpretado'});

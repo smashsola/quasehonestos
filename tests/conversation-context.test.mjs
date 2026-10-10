@@ -7,7 +7,7 @@ import {fresh,nextCall,applyTypedMove} from '../src/engine.js';
 test('Contexto mantém etapa, memória e limites; orientação cita o item correto',()=>{
  assert.equal(new Set(Object.values(characterProfiles)).size,6);
  const context=conversationContext({stage:'request',trust:99,irritation:2,memory:{free:true}});
- assert.equal(context.trust,3);assert.equal(context.promisedFree,true);assert.equal(replyDecision(context),'consider');
+ assert.equal(context.trust,99);assert.equal(context.trustScale,100);assert.equal(context.promisedFree,true);assert.equal(replyDecision(context),'consider');
  assert.equal(replyDecision(conversationContext({stage:'ready',item:{}})),'shared');
  assert.equal(replyDecision(conversationContext({outcome:'blocked'})),'ended');
  assert.match(nextObjective({scheme:'prize',stage:'request'}),/cartão fictício.*Carteira/);

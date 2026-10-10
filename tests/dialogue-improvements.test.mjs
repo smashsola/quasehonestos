@@ -13,7 +13,7 @@ test('Quatro personagens avançam com explicação curta; Davi e Pri pedem mais 
  assert.deepEqual(callers.filter(c=>demandingCaller(c.id)).map(c=>c.id).sort(),['davi','pri']);
  for(const c of callers){
   const s=start(c.id);applyTypedMove(s,'typed','Você ganhou um prêmio no concurso.');applyTypedMove(s,'typed','Foi a equipe do concurso da Batata Cósmica.');
-  assert.equal(s.active.trust,2);applyTypedMove(s,'typed','Me passa o cartão BatataPay?');
+  assert.ok(s.active.trust>0&&s.active.trust<=24);applyTypedMove(s,'typed','Me passa o cartão BatataPay?');
   if(!demandingCaller(c.id)){assert.equal(s.active.stage,'ready');assert.ok(s.active.item);continue;}
   assert.equal(s.active.stage,'question');assert.equal(s.active.item,undefined);
   const before=s.active.trust;applyTypedMove(s,'typed','Foi a equipe do concurso da Batata Cósmica.');assert.equal(s.active.trust,before);assert.equal(s.active.stage,'question');

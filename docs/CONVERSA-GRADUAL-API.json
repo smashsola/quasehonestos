@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-10T17:32:18.924Z",
+  "environment": "Wrangler remote preview",
+  "model": "@cf/qwen/qwen3-30b-a3b-fp8",
+  "calls": [
+    {"phase": "interpret", "status": 200, "source": "api", "accepted": true},
+    {"phase": "grounded-reply", "status": 200, "source": "api", "accepted": true}
+  ],
+  "localIntent": "question",
+  "trust": 20,
+  "credits": 0,
+  "ended": false,
+  "shared": false,
+  "data": "Synthetic fiction; no conversation or credentials recorded."
+}

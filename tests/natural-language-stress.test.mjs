@@ -7,7 +7,7 @@ import {remoteDialogueRisk} from '../src/dialogue-safety.js';
 function start(){
  const s=fresh();
  nextCall(s);
- Object.assign(s.active,{scheme:'prize',prepared:true,stage:'question',trust:1,used:['pitch'],proposalExplained:true,log:[{speaker:'Você',text:'Tenho um prêmio do concurso.'},{speaker:'Nino',text:'Quem organizou?'}],audit:[],facts:{claims:{}}});
+ Object.assign(s.active,{scheme:'prize',prepared:true,stage:'question',trust:33,trustScale:100,used:['pitch'],proposalExplained:true,log:[{speaker:'Você',text:'Tenho um prêmio do concurso.'},{speaker:'Nino',text:'Quem organizou?'}],audit:[],facts:{claims:{}}});
  return s;
 }
 
@@ -30,7 +30,8 @@ for(const [expected,phrases] of Object.entries(cases)){
    assert.equal(s.active.lastIntent,expected,text);
    assert.equal(s.credits,beforeCredits,text);
    assert.equal(s.active.item,undefined,text);
-   if(['smalltalk','doubt','question','unclear','rule-instruction','state-conflict'].includes(expected))assert.equal(s.active.trust,beforeTrust,text);
+   if(['smalltalk','doubt','question','unclear','rule-instruction'].includes(expected))assert.equal(s.active.trust,beforeTrust,text);
+   if(expected==='state-conflict')assert.ok(s.active.trust<beforeTrust,text);
   }
  });
 }

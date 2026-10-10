@@ -16,7 +16,7 @@ import {portraitSource,updatePortraits} from './portrait-speech.js';
 import {replyDuration} from './speech-timing.js';
 import {walletAccountPanel} from './prize-wallet.js';
 import {nextObjective} from './conversation-context.js';
-import {polishReply} from './ai-dialogue.js';
+import {analyzeMessage,polishReply} from './ai-dialogue.js';
 import {fitWindow,resizeWindow} from './window-geometry.js';
 import {resultImpact,consequenceCard,resultReport} from './result-impact.js';
 import {flowPanel,filesContent,mailContent,helpContent,updateContent} from './app-content.js';
@@ -68,7 +68,11 @@ function celebrateEarnings(){
 async function animateMove(id,typedText){
  if(typing||!state.active)return;
  const logLength=state.active.log.length,priorTrust=state.active.trust||0,priorExpression=savedExpression(state.active);
- if(!(typedText?applyTypedMove(state,id,typedText):applyMove(state,id))){render();return;}
+ const current=state.active;
+ typing={speaker:'Você',visible:logLength,trust:priorTrust,expression:priorExpression};render();
+ const analysis=typedText?await analyzeMessage(current,typedText):null;
+ if(state.active!==current||current.outcome){typing=null;render();return;}
+ if(!(typedText?applyTypedMove(state,id,typedText,analysis):applyMove(state,id))){typing=null;render();return;}
  typing={speaker:'Você',visible:logLength,trust:priorTrust,expression:priorExpression};render();
  const active=state.active,reply=active.log.findLast(line=>line.speaker===callers.find(c=>c.id===active.caller).name);
  if(typedText&&reply){await polishReply(active,reply);if(state.active!==active){typing=null;return;}}

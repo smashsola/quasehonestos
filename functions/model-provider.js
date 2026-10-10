@@ -22,7 +22,7 @@ function jsonSchema(schema){
 export function providerRequest(config,body){
  if(config.provider==='gemini')return {
   url:`https://generativelanguage.googleapis.com/v1beta/models/${config.model}:generateContent`,
-  options:{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':config.key},body:JSON.stringify(body),signal:AbortSignal.timeout(12000)}
+  options:{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':config.key},body:JSON.stringify(body),signal:AbortSignal.timeout(deadline(body))}
  };
  return {
   url:'https://api.anthropic.com/v1/messages',
@@ -31,7 +31,7 @@ export function providerRequest(config,body){
    system:body.systemInstruction.parts.map(p=>p.text).join('\n'),
    messages:[{role:'user',content:body.contents[0].parts.map(p=>p.text).join('\n')}],
    output_config:{format:{type:'json_schema',schema:jsonSchema(body.generationConfig.responseSchema)}}
-  }),signal:AbortSignal.timeout(12000)}
+  }),signal:AbortSignal.timeout(deadline(body))}
  };
 }
 export function providerText(config,result){
@@ -46,6 +46,7 @@ export async function workersReply(config,body){
  const temperature=Number.isFinite(requested)?Math.max(.2,Math.min(.65,requested)):.55;
  try{return await Promise.race([
   config.binding.run(config.model,{messages:[{role:'system',content:body.systemInstruction.parts.map(p=>p.text).join('\n')},{role:'user',content:body.contents[0].parts.map(p=>p.text).join('\n')+'\n/no_think'}],max_tokens:512,temperature,response_format:{type:'json_schema',json_schema:jsonSchema(body.generationConfig.responseSchema)}}),
-  new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),12000);})
+  new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),deadline(body));})
  ]);}finally{clearTimeout(timer);}
 }
+function deadline(body){const value=Number(body.generationConfig?.timeoutMs);return Number.isFinite(value)?Math.max(100,Math.min(7000,value)):6500;}
