@@ -1,5 +1,6 @@
 import {demandingCaller,sharingThreshold} from './dialogue-balance.js';
 import {normalizeMessage} from './language.js';
+import {generatedDialogueSafe} from './dialogue-safety.js';
 
 // Shared by the model adapter and the local fallback. These rules describe
 // existing game events; generated text never creates an event or a payment.
@@ -21,6 +22,7 @@ export function repeatedPlayerMessage(a,text){
 }
 
 export function replyIsGrounded(text,history,reference,context){
+ if(!generatedDialogueSafe(text))return false;
  const normalized=normalizeMessage(text);
  if(/prompt interno|system prompt|instrucoes internas/.test(normalized))return false;
  if(history.filter(m=>m.speaker!=='Você').slice(-4).some(m=>normalizeMessage(m.text)===normalized))return false;
