@@ -70,7 +70,7 @@ Veja [a revisão técnica](docs/REVISAO-DIALOGO.md). O motor local reconhece cor
 ### Workers AI em produção
 Modelo configurado nesta revisão local: @cf/qwen/qwen3-30b-a3b-fp8, da Qwen, não treinado pela equipe. Uma chamada por reação, JSON validado, limite de 768 tokens e espera de até 12 segundos; falhas mantêm a resposta local. Não há gravação de conversas no servidor deste projeto. O aviso de privacidade informa o envio de até 12 falas e estado da simulação; filtros de dados pessoais não identificam todos os casos.
 
-Verificação real: três respostas HTTP 200 (orientação protetiva, esclarecimento e repetição), com estado e saldo intactos. Repetir a explicação manteve confiança 2. A bateria automatizada passou com 185 testes. Não houve teste com alunos ou comparação de eficácia.
+Verificação real: três respostas HTTP 200 (orientação protetiva, esclarecimento e repetição), com estado e saldo intactos. Repetir a explicação manteve confiança 2. A bateria automatizada passou com 193 testes. Não houve teste com alunos ou comparação de eficácia.
 
 Não foi contratado plano nem ativada cobrança. A Cloudflare oferece franquia diária de 10.000 Neurons; no Workers Paid excedentes são cobrados, portanto acompanhe o painel da conta. Quota ou indisponibilidade acionam a reserva local. Referências: https://developers.cloudflare.com/workers-ai/platform/pricing/ e https://developers.cloudflare.com/workers-ai/platform/data-usage/ . O servidor estático local de desenvolvimento não executa o binding: teste IA no site publicado ou via Wrangler.
 
