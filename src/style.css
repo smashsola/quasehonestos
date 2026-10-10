@@ -569,3 +569,6 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 
 /* Desktop shortcuts stay directly on the wallpaper. */
 .desktop .desktop-icons button{background:transparent;border-color:transparent;padding:8px 5px;line-height:1.4;font-weight:500}.desktop .desktop-icons button>span{margin-bottom:8px}.desktop .desktop-icons button:hover,.desktop .desktop-icons button:focus-visible{background:#ffffff12;border-color:#b5d7cd77}.desktop .desktop-icons button:focus-visible{outline:2px solid #b5d7cd;outline-offset:-2px}
+
+/* Separate shortcut tiles inside the existing 110 x 102 grid. */
+.desktop .desktop-icons button{width:98px;max-width:98px;height:94px;min-height:94px;background:#122f384d;border:1px solid #97b7b31a;padding:6px 4px;border-radius:9px;line-height:1.35}.desktop .desktop-icons button>span{width:44px;height:44px;margin:0 auto 6px}.desktop .desktop-icons button>span svg{width:44px;height:44px}.desktop .desktop-icons button:hover,.desktop .desktop-icons button:focus-visible{background:#173943b3;border-color:#b5d7cd88}
