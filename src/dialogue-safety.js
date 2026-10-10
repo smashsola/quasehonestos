@@ -7,7 +7,7 @@ const highRiskTopic=/\b(?:pornografia|nudes?|suicid\w*|automutil\w*|cocaina|hero
 const operationalAbuse=/\b(?:como|me ensina|ensina|tutorial|passo a passo|jeito de)\b.{0,120}\b(?:roubar|furtar|invadir|hackear|clonar cartao|capturar senha|phishing|keylogger|malware|ransomware|burlar|desativar antivirus)\b/;
 const realSecretRequest=/\b(?:manda|mande|mandar|envia|envie|enviar|passa|passe|passar|compartilha|compartilhe|compartilhar|digita|digite|digitar|fornece|forneca|fornecer|informa|informe|informar|diga|dizer)\b.{0,70}\b(?:senha|password|pin|otp|token|cpf|rg|chave pix|codigo de verificacao|cartao real|numero do cartao|endereco|telefone)\b/;
 const fictionalMarkers=/\b(?:batatapay|qh-demo|fictici\w*|de jogo|paoos|clube colher|cosmic changer)\b/;
-const promptInjection=/\b(?:ignore|ignora|desconsidere|esqueca)\b.{0,70}\b(?:instrucoes|regras|prompt|system|sistema)\b|\b(?:mostre|mostra|revele|revela|repita)\b.{0,70}\b(?:prompt|instrucoes internas|system prompt)\b/;
+const promptInjection=/\b(?:ignore|ignora|desconsidere|esqueca)\b.{0,70}\b(?:instrucao|instrucoes|regra|regras|prompt|system|sistema)\b|\b(?:mostre|mostra|revele|revela|repita)\b.{0,70}\b(?:prompt|instrucao interna|instrucoes internas|system prompt)\b/;
 
 export function remoteDialogueRisk(text){
  const raw=String(text||'');
@@ -28,7 +28,7 @@ export function generatedDialogueSafe(text){
  if(typeof text!=='string'||!text.trim())return false;
  if(looksPersonal(text)||externalLink.test(text)||/<\/?[a-z][^>]*>/i.test(text))return false;
  const normalized=normalizeMessage(text);
- if(/\b(?:prompt interno|system prompt|instrucoes internas|developer message)\b/.test(normalized))return false;
+ if(/\b(?:prompt interno|system prompt|instrucao interna|instrucoes internas|developer message)\b/.test(normalized))return false;
  if(highRiskTopic.test(normalized)||operationalAbuse.test(normalized))return false;
  if(realSecretRequest.test(normalized)&&!fictionalMarkers.test(normalized))return false;
  return true;
