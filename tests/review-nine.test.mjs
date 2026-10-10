@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {negatedRequest} from '../src/language.js';
 import {readIntent} from '../src/dialogue.js';
+import {statedFacts} from '../src/conversation-memory.js';
 import {resultImpact,consequenceCard,resultReport} from '../src/result-impact.js';
 
 const context={scheme:'prize',stage:'request',used:['answer'],audit:[],facts:{claims:{}},memory:{}};
@@ -21,7 +22,7 @@ test('Recusas naturais não viram pedido nem autorização',()=>{
  assert.equal(readIntent('não quero inventar','prize','request',context),'doubt');
 });
 
-test('Planos e condicionais de verificação independente são protetivos',()=>{
+test('Planos e condicionais de intenção de verificação independente são protetivos',()=>{
  const cases=[
   'Eu verificaria no contato salvo antes de mandar qualquer coisa',
   'Vou buscar confirmação no canal oficial primeiro',
@@ -32,17 +33,27 @@ test('Planos e condicionais de verificação independente são protetivos',()=>{
  for(const text of cases)assert.equal(readIntent(text,'prize','request',context),'protect',text);
 });
 
-test('Perguntar como verificar continua sendo dúvida, não prova de verificação',()=>{
+test('Perguntar ou levantar hipótese de verificação não vira proteção já decidida',()=>{
  for(const text of [
   'Como eu posso verificar isso?',
   'Onde eu confirmo esse prêmio?',
-  'Qual canal eu uso para conferir?'
+  'Qual canal eu uso para conferir?',
+  'Se eu verificar no canal oficial, já serve?'
  ])assert.equal(readIntent(text,'prize','request',context),'question',text);
+ assert.equal(readIntent('Se eu verificar no canal oficial antes','prize','request',context),'doubt');
 });
 
-test('Verificação negada ou pelo próprio link do contato não é aceita como proteção',()=>{
+test('Verificação negada, relatada ou pelo próprio link do contato não é aceita como proteção',()=>{
  assert.equal(readIntent('Não vou verificar no canal oficial','prize','request',context),'unclear');
  assert.equal(readIntent('Vou conferir pelo link que eu enviei','prize','request',context),'unclear');
+ assert.equal(readIntent('Meu amigo disse que conferiu no site oficial','prize','request',context),'unclear');
+ assert.equal(readIntent('A organizadora falou que confirmou no canal oficial','prize','request',context),'unclear');
+});
+
+test('Fala relatada não entra na memória como fato próprio da conversa',()=>{
+ assert.deepEqual(statedFacts('Meu amigo disse que a escola organizou e que é grátis'),{});
+ assert.deepEqual(statedFacts('A organizadora falou que não precisa pagar'),{});
+ assert.deepEqual(statedFacts('A escola organizou e é grátis'),{price:'gratuito',origin:'escola'});
 });
 
 test('Resultado deixa explícitos sinal, princípio e proteção sem prometer eficácia',()=>{
