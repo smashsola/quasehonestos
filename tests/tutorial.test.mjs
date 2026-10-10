@@ -1,9 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fresh,nextCall,applyTypedMove,finishCall,closeCall,load} from '../src/engine.js';
-import {tutorialStep,tutorialPanel,tutorialAction} from '../src/tutorial.js';
+import {tutorialStory,tutorialStep,tutorialPanel,tutorialAction} from '../src/tutorial.js';
 import {checkIncoming} from '../src/incoming.js';
 import {shiftLearning,shiftEnding} from '../src/shift-ending.js';
+test('Tutorial apresenta história curta e Supervisor sem usar a Chefia',()=>{
+ const html=tutorialPanel(fresh(),String);
+ assert.match(tutorialStory,/Quase Honestos/);assert.ok(tutorialStory.length<260);
+ assert.match(html,/Supervisor/);assert.match(html,/SEU PRIMEIRO DIA/);assert.match(html,/Trambique OS/);assert.doesNotMatch(html,/Chefia/);
+});
 test('Tutorial acompanha o estado real, não entrega itens ou altera créditos e permite pular',()=>{
  const s=fresh();assert.equal(tutorialStep(s).number,1);tutorialAction(s,'start');nextCall(s);assert.equal(tutorialStep(s).number,2);
  Object.assign(s.active,{scheme:'prize',prepared:true,stage:'pitch',log:[{speaker:'Você',text:'Oi'}]});assert.equal(tutorialStep(s).number,4);
