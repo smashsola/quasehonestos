@@ -42,9 +42,10 @@ test('Falha injetada de timeout e saída inválida mantêm fala e estado locais'
  assert.equal(JSON.stringify(s),before);
  assert.equal(await polishReply(a,reply,async()=>Response.json({text:'Enviei o cartão.',intent:'question',evidence:[0]})),false);assert.equal(JSON.stringify(s),before);
 });
-test('Adaptadores só mudam transporte; Claude exige configuração e chave próprias',()=>{
+test('Adaptadores só mudam transporte; Claude exige configuração, opt-in e chave próprias',()=>{
  assert.equal(providerConfig({DIALOGUE_PROVIDER:'claude'}),null);
- const config=providerConfig({DIALOGUE_PROVIDER:'claude',DIALOGUE_MODEL:'claude-sonnet-5-5',ANTHROPIC_API_KEY:'test-only'});
+ assert.equal(providerConfig({DIALOGUE_PROVIDER:'claude',DIALOGUE_MODEL:'claude-sonnet-5-5',ANTHROPIC_API_KEY:'test-only'}),null);
+ const config=providerConfig({DIALOGUE_PROVIDER:'claude',DIALOGUE_ALLOW_EXPERIMENTAL_PROVIDERS:'true',DIALOGUE_MODEL:'claude-sonnet-5-5',ANTHROPIC_API_KEY:'test-only'});
  const call=providerRequest(config,{systemInstruction:{parts:[{text:'Fala autorizada'}]},contents:[{parts:[{text:'Cenário fictício'}]}],generationConfig:{maxOutputTokens:300,responseSchema:{type:'OBJECT',properties:{text:{type:'STRING'}},required:['text']}}});
  assert.equal(call.url,'https://api.anthropic.com/v1/messages');assert.equal(JSON.parse(call.options.body).output_config.format.schema.additionalProperties,false);
  assert.equal(providerText(config,{content:[{type:'text',text:'Olá'}]}),'Olá');

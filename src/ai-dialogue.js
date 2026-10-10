@@ -2,16 +2,17 @@ import {validStructuredReply} from './structured-reply.js';
 // The server owns the key. The engine validates AI trust changes and owns items/payments.
 import {conversationContext} from './conversation-context.js';
 import {replyIsGrounded} from './dialogue-model-rules.js';
+import {remoteDialogueAllowed} from './dialogue-safety.js';
 import {applyReplyEmotion} from './mood.js';
 import {dialogueIntents} from './language.js';
-import {publicDialogueAI,looksPersonal} from './privacy-data.js';
+import {publicDialogueAI} from './privacy-data.js';
 export function dialogueHistory(log,limit=12){
  const lines=log.filter(m=>m.speaker!=='Sistema');
  const indices=lines.length<=limit?lines.map((_,i)=>i):[0,1,...Array.from({length:limit-2},(_,i)=>lines.length-(limit-2)+i)];
  return indices.map(i=>({speaker:lines[i].speaker,text:lines[i].text.slice(0,900)}));
 }
 export async function evaluateTrust(active,text,fetcher=fetch){
- if(fetcher===fetch||looksPersonal(text)||active.log.some(m=>looksPersonal(m.text)))return null;
+ if(fetcher===fetch||!remoteDialogueAllowed(text)||active.log.some(m=>!remoteDialogueAllowed(m.text)))return null;
  try{
   const history=dialogueHistory(active.log,11);
   history.push({speaker:'Você',text:text.slice(0,400)});
@@ -36,7 +37,7 @@ export function polishReply(active,reply,fetcher=fetch){
  pendingReplies.set(reply,pending);return pending;
 }
 async function polishReplyOnce(active,reply,fetcher){
- if((!publicDialogueAI&&fetcher===fetch)||active.log.some(m=>looksPersonal(m.text)))return false;
+ if((!publicDialogueAI&&fetcher===fetch)||active.log.some(m=>!remoteDialogueAllowed(m.text)))return false;
  try{
   const history=dialogueHistory(active.log.slice(0,-1),12);
   const response=await fetcher('/api/dialogue',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:'grounded-reply',caller:active.caller,scheme:active.scheme,expression:active.expression,history,reference:reply.text,context:conversationContext(active)}),signal:AbortSignal.timeout(13000)});
