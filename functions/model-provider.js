@@ -1,6 +1,7 @@
 // Optional server-only adapter. No SDK, retry, billing setup or stored transcripts.
 export function providerConfig(env){
  const provider=env.DIALOGUE_PROVIDER||'gemini';
+ if(provider==='workers-ai')return typeof env.Workers_AI?.run==='function'?{provider,model:'@cf/meta/llama-3.3-70b-instruct-fp8-fast',binding:env.Workers_AI}:null;
  if(!['gemini','claude'].includes(provider))return null;
  const model=env.DIALOGUE_MODEL||(provider==='gemini'?env.GEMINI_MODEL||'gemini-3.5-flash-lite':null);
  const key=provider==='gemini'?env.GEMINI_API_KEY:env.ANTHROPIC_API_KEY;
@@ -33,7 +34,15 @@ export function providerRequest(config,body){
  };
 }
 export function providerText(config,result){
+ if(config.provider==='workers-ai')return typeof result.response==='string'?result.response:JSON.stringify(result.response);
  return config.provider==='claude'
   ?result.content?.filter(p=>p.type==='text').map(p=>p.text||'').join('').trim()
   :result.candidates?.[0]?.content?.parts?.filter(p=>!p.thought).map(p=>p.text||'').join('').trim();
+}
+export async function workersReply(config,body){
+ let timer;
+ try{return await Promise.race([
+  config.binding.run(config.model,{messages:[{role:'system',content:body.systemInstruction.parts.map(p=>p.text).join('\n')},{role:'user',content:body.contents[0].parts.map(p=>p.text).join('\n')}],max_tokens:body.generationConfig.maxOutputTokens,temperature:.6,response_format:{type:'json_schema',json_schema:jsonSchema(body.generationConfig.responseSchema)}}),
+  new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),12000);})
+ ]);}finally{clearTimeout(timer);}
 }

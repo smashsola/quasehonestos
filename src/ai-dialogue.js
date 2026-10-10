@@ -11,7 +11,7 @@ export function dialogueHistory(log,limit=12){
  return indices.map(i=>({speaker:lines[i].speaker,text:lines[i].text.slice(0,900)}));
 }
 export async function evaluateTrust(active,text,fetcher=fetch){
- if((!publicDialogueAI&&fetcher===fetch)||looksPersonal(text)||active.log.some(m=>looksPersonal(m.text)))return null;
+ if(fetcher===fetch||looksPersonal(text)||active.log.some(m=>looksPersonal(m.text)))return null;
  try{
   const history=dialogueHistory(active.log,11);
   history.push({speaker:'Você',text:text.slice(0,400)});

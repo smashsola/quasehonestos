@@ -14,11 +14,11 @@ test('Bloqueia formatos comuns de dados reais e preserva os códigos cenográfic
  for(const value of ['teste@example.invalid','123.456.789-00','12345678900','(11) 91234-5678','4111 1111 1111 1111'])assert.equal(looksPersonal(value),true);
  for(const value of ['QH-DEMO-NINO-PRIZE','C$ 350','Pode me passar o cartão BatataPay?'])assert.equal(looksPersonal(value),false);
 });
-test('Diálogo público não transmite mensagens, mesmo se o servidor tiver uma chave',async()=>{
+test('IA pública bloqueia dados pessoais e mantém avaliação de confiança local',async()=>{
  const original=globalThis.fetch;let calls=0;globalThis.fetch=async()=>{calls++;throw Error('Não deve chamar');};
  try{
-  const a={caller:'nino',scheme:'prize',log:[{speaker:'Você',text:'Oi'}]},reply={text:'Fala local'};
-  assert.equal(publicDialogueAI,false);assert.equal(await evaluateTrust(a,'Oi'),null);assert.equal(await polishReply(a,reply),false);
+  const a={caller:'nino',scheme:'prize',log:[{speaker:'Você',text:'teste@example.invalid'}]},reply={text:'Fala local'};
+  assert.equal(publicDialogueAI,true);assert.equal(await evaluateTrust(a,'Oi'),null);assert.equal(await polishReply(a,reply),false);
   const request=new Request('https://example.com/api/dialogue',{method:'POST',headers:{Origin:'https://example.com','Content-Type':'application/json'},body:'{}'});
   const response=await onRequestPost({request,env:{GEMINI_API_KEY:'test',DIALOGUE_AI_ENABLED:'false'}});assert.equal(response.status,503);assert.equal(calls,0);assert.equal(reply.text,'Fala local');
  }finally{globalThis.fetch=original;}
