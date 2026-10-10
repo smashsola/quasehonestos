@@ -33,13 +33,13 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  const reported=clauses.some(c=>isReportedSpeech(c));
  const reportedEvidence=clauses.some(c=>isReportedSpeech(c)&&(verification.test(c)||reportedClaim.test(c)||sensitive.test(c)));
  if(reportedEvidence&&!checking&&!protectedData&&!explicitRefusal)return result('unclear','Uma fala relatada ou boato não é verificação independente nem autoriza uma decisão.',true);
+ if(uncertainVerification.test(t))return result('doubt','A verificação foi apresentada como possibilidade, não como decisão protetiva já tomada.',true);
  if(!explicitRefusal&&verification.test(t)&&(questionLike.test(t)||/\?\s*$/.test(t)))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
  if(!explicitRefusal&&informalQuestion.test(t))return result('question','Pergunta informal identificada pelo sentido da frase.');
  if(!reported&&!/\b(?:nao|nunca|nem)\b/.test(t)&&/\b(?:eu (?:estou|vou) (?:te )?(?:enganar|roubar)|quero (?:te )?roubar|sou (?:um )?golpista)\b/.test(t))return result('confession','O jogador declarou intenção de enganar; não é um fato inferido de uma pergunta.');
  if(verification.test(t)&&selfSuppliedChannel.test(t))return result('unclear','O canal de verificação foi fornecido pelo próprio contato; sua origem ainda não foi confirmada de forma independente.',true);
  if(deferredVerification.test(t))return result('unclear','A ação sensível foi colocada antes ou sem a verificação; isso não conta como proteção.',true);
  if(verificationIsNegated(t)&&!checking)return result(requesting?'request':'unclear','A verificação foi negada na frase; não houve orientação protetiva.',!requesting);
- if(uncertainVerification.test(t))return result('doubt','A verificação foi apresentada como possibilidade, não como decisão protetiva já tomada.',true);
  if(hypotheticalVerification.test(t))return /\?\s*$/.test(t)?result('question','A verificação foi apresentada como hipótese/pergunta, não como decisão já tomada.'):result('doubt','A verificação foi apresentada como hipótese, não como decisão protetiva já tomada.',true);
  if(/\?\s*$/.test(t)&&(protectedData||checking))return result('doubt','A mensagem pergunta sobre uma recusa; ainda precisa de esclarecimento.');
  const protectiveImperative=directClauses.some(c=>/\bnao (?:compartilhe|envie|mande|passe|libere|forneca|divulgue)\b/.test(c)&&sensitive.test(c)&&!/\b(?:comigo|para mim|me)\b/.test(c));
