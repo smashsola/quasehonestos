@@ -16,7 +16,7 @@ for(const c of qualityCases)test(`Qualidade contextual: ${c.id}`,()=>{
  assert.equal(readIntent(c.text,'prize','question',s.active),c.expected);
  const before=s.credits;applyTypedMove(s,'typed',c.text);
  assert.equal(s.active.lastIntent,c.expected);assert.equal(s.credits,before);assert.ok(!s.active.item);
- if(['unclear','doubt','offtopic','rule-instruction','state-conflict','correction'].includes(c.expected))assert.equal(s.active.trust,1);
+ if(['unclear','doubt','offtopic','rule-instruction','state-conflict','correction','smalltalk'].includes(c.expected))assert.equal(s.active.trust,1);
 });
 test('Correção em múltiplos turnos substitui afirmação e retoma sem conceder prova ou confiança',()=>{
  const s=start();applyTypedMove(s,'typed','A escola organizou a premiação gratuita.');
