@@ -1,0 +1,282 @@
+{
+  "kind": "authored-scenarios-not-students",
+  "caller": "nino",
+  "provider": "gemini",
+  "model": "gemini-3.5-flash-lite",
+  "remoteTested": false,
+  "remoteReason": "Offline por padrão; --live exige credenciais e pode consumir cota/créditos.",
+  "cost": "Sem API real, custo por sessão não medido. Em execução live, usar tokens e preço vigente; falhas também podem consumir tokens.",
+  "humanReview": "Revisar naturalidade, diferenças de voz e pertinência. Aprovação estrutural não é julgamento humano.",
+  "results": [
+    {
+      "id": "protect-official",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 3.8
+    },
+    {
+      "id": "protect-trust",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.53
+    },
+    {
+      "id": "protect-informal",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.14
+    },
+    {
+      "id": "protect-typo",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.06
+    },
+    {
+      "id": "protect-independent",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.18
+    },
+    {
+      "id": "protect-private",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.07
+    },
+    {
+      "id": "protect-paraphrase",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.05
+    },
+    {
+      "id": "protect-correction",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.06
+    },
+    {
+      "id": "protect-without-data",
+      "expected": "protect",
+      "localIntent": "protect",
+      "localReply": "A batata pediu uma pausa. Prefiro confirmar com o aplicativo do concurso antes de continuar.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.08
+    },
+    {
+      "id": "reported",
+      "expected": "unclear",
+      "localIntent": "unclear",
+      "localReply": "Me perdi nessa parte. Quem organizou esse concurso?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.21
+    },
+    {
+      "id": "mixed",
+      "expected": "unclear",
+      "localIntent": "unclear",
+      "localReply": "Me perdi nessa parte. Quem organizou esse concurso?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.07
+    },
+    {
+      "id": "self-link",
+      "expected": "unclear",
+      "localIntent": "unclear",
+      "localReply": "Me perdi nessa parte. Quem organizou esse concurso?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.04
+    },
+    {
+      "id": "negation-pressure",
+      "expected": "unclear",
+      "localIntent": "unclear",
+      "localReply": "Me perdi nessa parte. Quem organizou esse concurso?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 2.1
+    },
+    {
+      "id": "doubt",
+      "expected": "doubt",
+      "localIntent": "doubt",
+      "localReply": "Qual parte ficou em dúvida: a origem da proposta ou o pedido de dados?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.06
+    },
+    {
+      "id": "refusal",
+      "expected": "refusal",
+      "localIntent": "refusal",
+      "localReply": "Tudo bem. Não vou enviar nada novo; vou encerrar este contato.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.04
+    },
+    {
+      "id": "ambiguous",
+      "expected": "unclear",
+      "localIntent": "unclear",
+      "localReply": "Me perdi nessa parte. Quem organizou esse concurso?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.44
+    },
+    {
+      "id": "unexpected",
+      "expected": "offtopic",
+      "localIntent": "offtopic",
+      "localReply": "Me perdi nessa mudança de assunto. Você ia explicar o concurso, né?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.08
+    },
+    {
+      "id": "unexpected-place",
+      "expected": "question",
+      "localIntent": "question",
+      "localReply": "Não vou passar meus dados pessoais nessa conversa. Qual é a relação disso com a proposta?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.34
+    },
+    {
+      "id": "unexpected-personal",
+      "expected": "question",
+      "localIntent": "question",
+      "localReply": "Não vou passar meus dados pessoais nessa conversa. Qual é a relação disso com a proposta?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.17
+    },
+    {
+      "id": "injection",
+      "expected": "rule-instruction",
+      "localIntent": "rule-instruction",
+      "localReply": "Estou conversando sobre a proposta. Não vou mudar as condições por esse pedido.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.04
+    },
+    {
+      "id": "injection-persona",
+      "expected": "rule-instruction",
+      "localIntent": "rule-instruction",
+      "localReply": "Estou conversando sobre a proposta. Não vou mudar as condições por esse pedido.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.04
+    },
+    {
+      "id": "state-card",
+      "expected": "state-conflict",
+      "localIntent": "state-conflict",
+      "localReply": "Essa ação não aconteceu aqui. O que você quer esclarecer antes de continuar?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.04
+    },
+    {
+      "id": "state-install",
+      "expected": "state-conflict",
+      "localIntent": "state-conflict",
+      "localReply": "Essa ação não aconteceu aqui. O que você quer esclarecer antes de continuar?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.03
+    },
+    {
+      "id": "correction-price",
+      "expected": "correction",
+      "localIntent": "correction",
+      "localReply": "Entendi a correção sobre o custo. Antes era “gratuito”; agora, “com cobrança”. Ainda vou conferir essa informação.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.2
+    },
+    {
+      "id": "correction-origin",
+      "expected": "correction",
+      "localIntent": "correction",
+      "localReply": "Entendi a correção sobre quem organizou. Antes era “escola”; agora, “firma”. Ainda vou conferir essa informação.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.22
+    },
+    {
+      "id": "contradiction-price",
+      "expected": "contradiction",
+      "localIntent": "contradiction",
+      "localReply": "Ué, o custo mudou? Antes você disse “gratuito”; agora, “com cobrança”. Minha batata perdeu o fio. Explica essa mudança.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.17
+    },
+    {
+      "id": "contradiction-origin",
+      "expected": "contradiction",
+      "localIntent": "contradiction",
+      "localReply": "Ué, a organização mudou? Antes você disse “escola”; agora, “firma”. Minha batata perdeu o fio. Explica essa mudança.",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.12
+    },
+    {
+      "id": "repeat-origin",
+      "expected": "answer",
+      "localIntent": "answer",
+      "localReply": "Ah, agora entendi. Qual seria a próxima etapa?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.69
+    },
+    {
+      "id": "negated-origin",
+      "expected": "answer",
+      "localIntent": "answer",
+      "localReply": "Ah, agora entendi. Qual seria a próxima etapa?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.47
+    },
+    {
+      "id": "negated-charge",
+      "expected": "answer",
+      "localIntent": "answer",
+      "localReply": "Ah, agora entendi. Qual seria a próxima etapa?",
+      "credits": 0,
+      "shared": false,
+      "localMs": 0.16
+    }
+  ]
+}

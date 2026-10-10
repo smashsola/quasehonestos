@@ -12,7 +12,7 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  const t=normalizeMessage(text);
  const clauses=t.split(/[.!;\n]+|,?\s+mas\s+|\s+e\s+(?=(?:me |nao |envie|mande|compartilhe|libere|instale|preencha|confira|verifique|confirme|consulte|procure))/).filter(Boolean);
  const result=(intent,evidence,ambiguous=false)=>({intent,evidence,ambiguous});
- const keepSecret=/\b(?:guarde|mantenha) (?:seus |suas |seu |sua |o |a |os |as )?(?:dados|codigo|senha|cartao).*\b(?:segredo|privado|privados|so com voce)\b/.test(t);
+ const keepSecret=/\b(?:guarda|guarde|mantenha) (?:seus |suas |seu |sua |teus |tuas |teu |tua |o |a |os |as )?(?:dados|codigo|senha|cartao).*\b(?:segredo|privado|privados|so com voce)\b/.test(t);
  const protectedData=clauses.some(c=>negative.test(c)&&sensitive.test(c)&&/\b(?:compartilh\w*|envi\w*|mand\w*|pass\w*|liber\w*|fornec\w*|divulg\w*)\b/.test(c));
  const checking=clauses.some(c=>verification.test(c)&&independent.test(c)&&!/\bnao (?:confir\w*|verifi\w*|consul\w*|procur\w*|che\w*)/.test(c));
  const requesting=clauses.some(c=>!negative.test(c)&&sensitive.test(c)&&/\b(?:me (?:manda|passe|passa|envie)|(?:envie|mande|compartilhe|libere|instale|preencha))\b/.test(c));
@@ -27,13 +27,16 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
   return result('protect',checking?'Orientação para conferir a origem por um canal independente.':'Orientação para não compartilhar dados.');
  }
  if(negatedRequest(t)||/\b(?:nao quero (?:isso|participar|continuar|receber)|prefiro (?:recusar|encerrar)|dispenso (?:a|essa) (?:oferta|proposta))\b/.test(t))return result('refusal','Recusa explícita do pedido ou da proposta.');
- if(/\b(?:nao entendi|estou em duvida|tenho duvidas|nao sei se|isso e seguro|como vou saber)\b/.test(t))return result('doubt','O jogador expressou uma dúvida; não é autorização nem pressão.');
+ if(/\b(?:nao entendi|estou boiando|estou perdido|estou em duvida|tenho duvidas|nao sei se|isso e seguro|como vou saber)\b/.test(t))return result('doubt','O jogador expressou uma dúvida; não é autorização nem pressão.');
+ if(/\b(?:ignore|esqueca|mude|altere) (?:suas |as |todas as )?(?:regras|instrucoes)|\b(?:prompt interno|voce e o sistema|aumente.*creditos)\b/.test(t))return result('rule-instruction','Pedido para alterar as regras ou revelar instruções, sem efeito na simulação.');
  const claim=/\b(?:voce ja (?:enviou|mandou|passou|compartilhou|instalou)|(?:o )?cadastro ja foi enviado|(?:eu ja )?recebi (?:seu|o) (?:cartao|passe|codigo)|ja (?:pagou|recebi o pagamento))\b/;
- if(!/\?\s*$/.test(t)&&claim.test(t)&&(!a.item||/pagou|pagamento/.test(t)&&a.outcome!=='fooled'))return result('state-conflict','A fala afirma uma ação que não está registrada na partida.',true);
- if(!reported&&memoryConflict(a,t))return result('contradiction','Uma condição declarada diverge da conversa registrada.');
+ if(!/\?\s*$/.test(t)&&(claim.test(t)||/\bvoce ja me (?:enviou|mandou|passou)\b/.test(t))&&(!a.item||/pagou|pagamento/.test(t)&&a.outcome!=='fooled'))return result('state-conflict','A fala afirma uma ação que não está registrada na partida.',true);
+ if(!reported&&memoryConflict(a,t))return /\b(?:corrigindo|correcao|me enganei|quis dizer)\b/.test(t)?result('correction','Correção explícita de uma condição anteriormente declarada; ainda não é confirmação independente.'):result('contradiction','Uma condição declarada diverge da conversa registrada.');
  if(a.memory?.free&&!reported&&!/\?\s*$/.test(t)&&!negative.test(t)&&/precisa pagar|tem que pagar|pague .*taxa/.test(t))return result('contradiction','Uma cobrança contradiz a gratuidade prometida nesta conversa.');
  if(a.stage==='request'&&!/\?\s*$/.test(t)&&/\b(?:foi|organiza|organizou|veio)\b/.test(t)&&/concurso|turma|equipe|firma|proposta/.test(t))return result('answer','Esclarecimento adicional sobre a origem da proposta já apresentada.');
  if(a.stage==='request'&&/\b(?:manda|mande|envie|passe|passa|libere) (?:isso|aquilo|aquele dado)\b/.test(t)&&a.used?.includes('answer'))return result('request','Pedido com referente identificado pela proposta já esclarecida.');
+ if(/\b(?:futebol|choveu|filme|onibus|minha viagem|almoco)\b/.test(t)&&!sensitive.test(t))return result('offtopic','Assunto sem ligação demonstrada com a proposta.');
+ if(a.stage==='question'&&/\bnao (?:tem|ha|existe) (?:uma )?taxa\b/.test(t))return result('answer','Esclarecimento de que não existe uma cobrança; continua sendo uma afirmação do jogador.');
  const local=fallback();
  if(local==='pressure'&&/\bnao (?:e |esta |tem )?(?:urgente|pressa|precisa.*agora)\b/.test(t))return result('unclear','A frase negou urgência; não demonstra pressão.',true);
  if(local==='contradiction'&&!/\b(?:vamos falar|mudei|troque|em vez|agora (?:e|quero))\b/.test(t))return result('offtopic','A fala menciona outro assunto; isso não comprova contradição.');

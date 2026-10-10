@@ -41,3 +41,6 @@ No piloto, observe se as alternativas são igualmente compreensíveis, se os tí
 ## Limitações
 
 A interface usa A antes e B depois. Essa ordem fixa pode introduzir efeito da versão e da prática; um estudo mais rigoroso precisa alternar a ordem em formulários separados e revisar a comparabilidade. O relatório local permite discutir transferência e revisar conteúdo, mas não demonstra causalidade ou eficácia. Não invente percentuais nem trate escolhas de teste do desenvolvedor como resultados de estudantes.
+
+## Retenção opcional
+Após 3 a 7 dias, use outra situação fictícia: mudança de local de atividade com aviso incompleto, compra quitada com nova cobrança ou convite confirmado no mural. Peça ação e registro pertinente, com dificuldade revisada pelos educadores. Registre apenas códigos de escolha agregados, sem nomes ou mensagens pessoais. Compare decisões sustentadas, reconhecimento de solicitações legítimas e busca de confirmação. Ainda não aplicado; não demonstra eficácia por si só.

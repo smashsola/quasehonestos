@@ -22,9 +22,13 @@ export function repeatedPlayerMessage(a,text){
 
 export function replyIsGrounded(text,history,reference,context){
  const normalized=normalizeMessage(text);
+ if(/prompt interno|system prompt|instrucoes internas/.test(normalized))return false;
  if(history.filter(m=>m.speaker!=='Você').slice(-4).some(m=>normalizeMessage(m.text)===normalized))return false;
  const allowed=new Set((reference+' '+(context.itemToken||'')).match(/QH-DEMO-[A-Z0-9-]+/g)||[]);
  if((text.match(/QH-DEMO-[A-Z0-9-]+/g)||[]).some(token=>!allowed.has(token)))return false;
- if(!context.shared&&/\b(?:enviei|mandei|passei|compartilhei|preenchi|instalei|acabei de enviar)\b/.test(normalized)&&!/\b(?:nao|ainda nao|nem)\b/.test(normalized))return false;
+ if(!context.shared&&normalized.split(/[.!;]|\bmas\b/).some(clause=>/\b(?:enviei|mandei|passei|compartilhei|preenchi|instalei|acabei de enviar)\b/.test(clause)&&!/\b(?:nao|nem)\s+(?:\w+\s+){0,2}(?:enviei|mandei|passei|compartilhei|preenchi|instalei)/.test(clause)))return false;
+ if(!context.operationCompleted&&/\b(?:ja paguei|pagamento concluido|transferencia concluida|creditos depositados|saldo aumentado)\b/.test(normalized))return false;
+ const allowedAmounts=new Set(reference.match(/C\$\s*\d+/g)||[]);
+ if((text.match(/C\$\s*\d+/g)||[]).some(value=>!allowedAmounts.has(value)))return false;
  return true;
 }

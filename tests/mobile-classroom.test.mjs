@@ -41,12 +41,12 @@ test('Continuação vem depois e cita apoio ou reconhecimento observados; não d
 });
 test('Atividade antes/depois retoma progresso e mede ação + evidência em situações diferentes',()=>{
  const s=start();s.credits=55;assert.equal(beginClassSession(s,1000),true);assert.equal(beginClassSession(s,2000),false);assert.equal(answerClassAssessment(s,answers('A')),true);
- const restored=load({getItem:()=>JSON.stringify(s)});applyTypedMove(restored,'typed','Confira no canal oficial');inspectDefense(restored,'order');resolveDefense(restored,'verify');assert.equal(finishClassPlay(restored),true);finishCall(restored);
+ const restored=load({getItem:()=>JSON.stringify(s)});applyTypedMove(restored,'typed','Confira no canal oficial');inspectDefense(restored,'order');resolveDefense(restored,'verify','order');assert.equal(finishClassPlay(restored),true);finishCall(restored);
  assert.equal(answerClassAssessment(restored,answers('B'),61000),true);assert.equal(restored.classSession.elapsedSeconds,60);assert.equal(restored.credits,55);assert.equal(restored.cursor,1);
  assert.ok(restored.classSession.post.every(r=>r.supported));assert.notEqual(assessmentForms.A[0].prompt,assessmentForms.B[0].prompt);
  const wrongEvidence=answers('B');wrongEvidence[0].evidence=0;assert.equal(evaluateAssessment('B',wrongEvidence)[0].supported,false);
 });
 test('Exportação padrão não inclui nomes, dinheiro, anotações ou conversas completas',()=>{
- const s=start();s.notes={nino:'Texto particular'};s.active.log.push({speaker:'Você',text:'Texto de conversa particular'});closeCall(s);inspectDefense(s,'order');resolveDefense(s,'verify');finishCall(s);
+ const s=start();s.notes={nino:'Texto particular'};s.active.log.push({speaker:'Você',text:'Texto de conversa particular'});closeCall(s);inspectDefense(s,'order');resolveDefense(s,'verify','order');finishCall(s);
  const report=learningReport(s),text=JSON.stringify(report);assert.equal(report.assessment,null);assert.doesNotMatch(text,/particular|Nino|credits|speaker|caller|log"/);assert.match(text,/não demonstra eficácia/);assert.deepEqual(report.defenses[0].evidence,['order']);
 });

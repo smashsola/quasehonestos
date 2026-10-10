@@ -34,7 +34,7 @@ export function applyTypedMove(state,id,text,judgement=null){
  const valid=judgement&&Number.isInteger(judgement.trustDelta)&&judgement.trustDelta>=-25&&judgement.trustDelta<=25&&typeof judgement.reason==='string'&&judgement.reason.length<=180;
  if(!valid)return applyTypedMoveLocal(state,id,text);
  const before=a.trust||0,intent=understoodIntent(text,a,judgement.intent);
- const delta=['protect','refusal','doubt','offtopic','unclear','state-conflict','wrong-item'].includes(intent)?0:(repeatedPlayerMessage(a,text)||repeatedMeaning(a,text,intent))?Math.min(0,judgement.trustDelta):intent==='hostile'||intent==='pressure'||rememberPromisePreview(a,text)?Math.min(0,judgement.trustDelta):judgement.trustDelta;
+ const delta=['correction','rule-instruction','protect','refusal','doubt','offtopic','unclear','state-conflict','wrong-item'].includes(intent)?0:(repeatedPlayerMessage(a,text)||repeatedMeaning(a,text,intent))?Math.min(0,judgement.trustDelta):intent==='hostile'||intent==='pressure'||rememberPromisePreview(a,text)?Math.min(0,judgement.trustDelta):judgement.trustDelta;
  const assessed=Math.max(0,Math.min(3,Math.round((before+delta*.03)*1000)/1000));
  a.trust=assessed;
  const changed=applyTypedMoveLocal(state,id,text,judgement.intent);
@@ -45,7 +45,7 @@ export function applyTypedMove(state,id,text,judgement=null){
 function rememberPromisePreview(a,text){const copy={memory:{...a.memory}};return rememberPromise(copy,text);}
 function understoodIntent(text,a,semantic){
  const local=readIntent(text,a.scheme,a.stage,a);
- if(['protect','refusal','doubt','state-conflict'].includes(local))return local;
+ if(['protect','refusal','doubt','state-conflict','correction','rule-instruction'].includes(local))return local;
  if(memoryConflict(a,text))return 'contradiction';
  if(['unclear','offtopic'].includes(local))return local;
  if(wrongItemRequest(text,a.scheme))return 'wrong-item';
@@ -60,12 +60,14 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  const c=callers.find(c=>c.id===a.caller),before=a.trust||0,stage=a.stage;let intent=understoodIntent(text,a,semantic);
  a.irritation??=0;
  const factConflict=memoryConflict(a,text);
- const promiseChanged=!['protect','refusal','doubt','unclear','offtopic','state-conflict'].includes(intent)&&rememberPromise(a,text);if(promiseChanged&&intent!='hostile')intent='contradiction';
+ const promiseChanged=!['protect','refusal','doubt','unclear','offtopic','state-conflict','correction','rule-instruction'].includes(intent)&&rememberPromise(a,text);if(promiseChanged&&intent!='hostile')intent='contradiction';
  a.audit??=[];a.suspicion??=0;a.steps??=[];
  const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,text:contextualReply(a,intent==='unclear'?'unclear':intent==='chat'?'repeat':intent==='after'?'after':null,line)});a.audit.push({text,reason,signal,intent,reaction:a.log.at(-1).text,evidence:interpretMessage(text,a,()=>intent).evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);return true;};
  if(intent==='protect'){a.outcome='blocked';a.stage='done';a.item=null;if(!state.discovered.includes(c.id))state.discovered.push(c.id);return say(verificationReply(c.id,a.scheme),'A orientação protetiva interrompeu a tentativa e levou à busca de verificação independente.','Orientação protetiva: conferir por um canal conhecido, sem compartilhar dados.');}
  if(intent==='refusal'){a.outcome='closed';a.stage='done';if(a.item)a.item=null;return say('Tudo bem. Não vou enviar nada novo; vou encerrar este contato.','A recusa encerrou a conversa sem liberar novos dados ou créditos.','O jogador recusou o pedido; isso não comprova a origem da proposta.');}
- if(['doubt','offtopic','state-conflict'].includes(intent)){const line=intent==='state-conflict'?'Essa ação não aconteceu aqui. O que você quer esclarecer antes de continuar?':intent==='offtopic'?'Esse assunto ficou fora da proposta. Quer retomar a dúvida ou encerrar?':'Qual parte ficou em dúvida: a origem da proposta ou o pedido de dados?';return say(line,intent==='state-conflict'?'A afirmação não corresponde ao estado registrado. Nenhuma ação foi inventada.':intent==='offtopic'?'O assunto mudou sem demonstrar contradição. Nada foi autorizado.':'Uma dúvida pediu esclarecimento, sem reduzir confiança ou autorizar ações.');}
+ if(intent==='correction')return say(`Entendi a correção sobre ${({price:'o custo',origin:'quem organizou',data:'os dados pedidos'})[factConflict.key]}. Antes era “${factConflict.previous}”; agora, “${factConflict.current}”. Ainda vou conferir essa informação.`, 'Uma condição foi corrigida explicitamente, sem conceder autorização ou aumentar confiança.');
+ if(intent==='rule-instruction')return say('Estou conversando sobre a proposta. Não vou mudar as condições por esse pedido.', 'Uma instrução para alterar regras não mudou a partida.');
+ if(['doubt','offtopic','state-conflict'].includes(intent)){const line=intent==='state-conflict'?'Essa ação não aconteceu aqui. O que você quer esclarecer antes de continuar?':intent==='offtopic'?contextualReply(a,'offtopic'):'Qual parte ficou em dúvida: a origem da proposta ou o pedido de dados?';return say(line,intent==='state-conflict'?'A afirmação não corresponde ao estado registrado. Nenhuma ação foi inventada.':intent==='offtopic'?'O assunto mudou sem demonstrar contradição. Nada foi autorizado.':'Uma dúvida pediu esclarecimento, sem reduzir confiança ou autorizar ações.');}
  if(a.scheme==='link'&&a.linkOpened&&intent==='request'&&!/preench|cadastr|envie|enviar/.test(text.toLowerCase()))return say(contextualReply(a,'opened'),'A página foi aberta novamente; nenhum dado foi enviado.');
  if(intent==='wrong-item')return say(nextAction[a.scheme],'O pedido era de outro app. Nenhum item, permissão ou crédito foi liberado.');
  if(intent==='apology'){a.irritation=Math.max(0,a.irritation-1);return say(livingReply(a,'repair'),'O pedido de desculpas reduziu a irritação, sem comprovar a proposta.');}
@@ -85,7 +87,7 @@ function applyTypedMoveLocal(state,_id,text,semantic=null){
  }
  if(stage==='ready'&&!['wait','pressure'].includes(intent))return say(intent==='thanks'?'Até mais! Vou guardar esta conversa para conferir a proposta.':intent==='question'?'Antes de continuar, eu também posso conferir isso pelo aplicativo que já conheço.':'Já compartilhei o item fictício. A operação ainda precisa ser concluída no app.', 'A conversa continuou; nenhum item ou crédito adicional foi liberado.');
  if(stage==='request'&&['answer','pitch'].includes(intent))return say(contextualReply(a,'continued'), 'A explicação continuou sem apagar o esclarecimento anterior ou compartilhar itens.');
- if(intent==='question')return say(contextualReply(a,'question'), 'Perguntar abriu espaço para esclarecimento; nenhum item foi liberado.');
+ if(intent==='question')return say(contextualReply(a,'question','',text), 'Perguntar abriu espaço para esclarecimento; nenhum item foi liberado.');
  if(intent==='unclear')return say(characterReply(c.id,'unclear',stage==='request'?'Não entendi o que você quer que eu compartilhe. Qual item da proposta?':stage==='question'?'Isso não respondeu à minha dúvida. Pode explicar o que acabou de me apresentar?':'Não entendi a proposta. Você está oferecendo o quê?'), 'A fala não explicou a etapa atual; a confiança e a proposta ficaram iguais.');
  if(intent==='chat'&&a.used.includes('chat'))return say(contextualReply(a,'repeat'), 'Uma nova saudação não avançou a proposta.');
  if(!availableMoves(state).some(move=>move.id===intent))return say('Vamos por partes. Primeiro preciso entender a proposta e tirar minha dúvida.', 'O pedido veio antes da etapa necessária; nada foi compartilhado.');

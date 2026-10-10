@@ -511,6 +511,16 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
  @media(orientation:landscape) and (max-height:520px){.desktop-window[data-window-id="calls"] .contact,.desktop-window[data-window-id="calls"] .trust-card{display:none}.desktop-top{display:none}.desktop-window[data-window-id]{top:0!important;height:calc(100% - 64px - env(safe-area-inset-bottom))!important}.compose-help{display:none!important}}
 }
 @media(prefers-reduced-motion:reduce){.desktop *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.conversation[hidden],.debrief[hidden]{display:none!important}
+.result-tabs{display:flex;gap:8px;padding:8px 14px;margin:0;flex-shrink:0;background:#1c3238;border-bottom:1px solid #4e7169}
+.result-tabs button{min-height:44px;padding:10px 14px;border:1px solid #54756e;border-radius:5px;background:transparent;color:#c9ddd5;font-size:13px}
+.result-tabs button[aria-pressed="true"]{background:#355d52;color:#f1f2db;border-color:#91b4a0}
+.call-window-body:has(.debrief[hidden])>.conversation{flex:1!important;min-height:90px!important}
+.call-window-body:has(.result-tabs)>.trust-card{display:none}
+.call-window-body:has(.result-tabs)>.contact{padding-top:10px;padding-bottom:10px}
+.defense-citation{display:block;margin:18px 0 8px;font-weight:600;font-size:14px;color:#29493d}
+.defense-investigation select{width:100%;min-height:44px;padding:10px;font:inherit;font-size:16px;background:#fff;color:#254438;border:1px solid #759987;border-radius:3px}
+.replay-more{margin:12px 16px 18px}.replay-more summary{min-height:44px;padding:12px;color:#33594c}
 .replay-comparison{margin:0 16px 18px;padding:16px;border-top:2px solid #90ada0;background:#e6eee7;color:#244439}.desktop-window .replay-comparison :is(p,small,h3){color:#244439!important;line-height:1.65}.classroom-panel,.story-followups{margin:20px;padding:22px;border:1px solid #a9beb3;background:#eaf0e6;color:#244439}.classroom-panel :is(p,small,h2,legend,label,th,td),.story-followups :is(p,small,h2,strong){color:#244439!important;line-height:1.65}.classroom-panel fieldset{margin:18px 0;padding:16px;border:1px solid #91ab9a;min-width:0}.classroom-panel legend{font-size:15px;line-height:1.6}.classroom-panel label{display:block;margin:12px 0 7px;font-size:13px}.classroom-panel select{font:inherit;font-size:16px;width:100%;max-width:100%;min-height:44px;background:#fff;color:#244439;border:1px solid #829e8c;padding:10px}.classroom-panel button{min-height:44px;padding:12px 16px;background:#294d42;color:#fff;border:1px solid #294d42;margin:6px 6px 6px 0;white-space:normal}.classroom-panel table{width:100%;border-collapse:collapse;font-size:12px}.classroom-panel :is(th,td){padding:9px;border:1px solid #9eb4a6;text-align:left}.story-followups article{padding:16px;margin:14px 0;background:#fff;border-left:3px solid #779c87}.story-followups p{font-size:14px}.app-window-body>.app-return button{min-height:44px;padding:12px 16px}
 @media(pointer:coarse) and (max-width:1000px){.classroom-panel,.story-followups{margin:14px 12px;padding:16px}.classroom-panel fieldset{padding:12px}.classroom-panel table{font-size:11px}.classroom-panel :is(th,td){padding:7px;overflow-wrap:anywhere}.mobile-dock button:focus-visible,.mobile-app-switcher button:focus-visible{outline:3px solid #f1ba67;outline-offset:-3px}}
 
@@ -545,3 +555,9 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
  .desktop-window[data-window-id="calls"] .scheme-options button span{font-size:13px;line-height:1.6}
  .desktop-window[data-window-id="calls"] .scheme-options em{font-size:12px}
 }
+/* Clear desktop labels over the landscape without heavy outlines. */
+.desktop-icons button{color:#f4f8f5;text-shadow:none;font-weight:600;line-height:1.35;border-radius:9px;background:#122f3833}
+.desktop-icons button>span{filter:drop-shadow(0 3px 4px #10282e33);text-shadow:none}
+.desktop-icons button:hover,.desktop-icons button:focus-visible{background:#173943b3;border-color:#b5d7cd;outline-offset:2px}
+
+.desktop .desktop-icons button{color:#f4f8f5;text-shadow:none;font-weight:600;line-height:1.35;border-radius:9px;background:#122f3833}.desktop .desktop-icons button>span{text-shadow:none;filter:drop-shadow(0 3px 4px #10282e33)}.desktop .desktop-icons button:hover,.desktop .desktop-icons button:focus-visible{background:#173943b3;border-color:#b5d7cd}

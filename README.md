@@ -63,3 +63,6 @@ Inspirado na organização de conversas e apps fictícios de Scam With Your Frie
 - [CERT.br — fascículos](https://cartilha.cert.br/fasciculos/)
 - [Regulamento TeenTech](https://teentech.teckids.org.br/regulamento)
 - [Gemini — termos](https://ai.google.dev/gemini-api/terms)
+
+## Revisão de diálogo e investigação
+Veja [a revisão técnica](docs/REVISAO-DIALOGO.md). O motor local reconhece correções e mantém memória das declarações; declarações não equivalem a verificação. A defesa relaciona a decisão a um registro consultado, sem exigir todas as fontes. Replay e conversa têm visualizações separadas. O adaptador opcional redige a reação após as regras, com validação e fallback; não calcula créditos. Rode node scripts/evaluate-dialogue.mjs para a bateria local. O modo --live exige configuração e pode consumir cota; não é executado por padrão.

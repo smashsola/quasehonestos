@@ -14,9 +14,15 @@ export function variedReply(a,key,options){
  for(let i=0;i<options.length;i++){const option=options[(turn+i)%options.length];if(!recent.includes(option))return option;}
  return options[turn%options.length];
 }
-export function contextualReply(a,event,fallback=''){
+export function contextualReply(a,event,fallback='',message=''){
  const item=items[a.scheme]||'a proposta';
- if(event==='question')return variedReply(a,'question-'+a.scheme,questions[a.scheme]||[fallback]);
+ if(event==='question'){
+  const t=message.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  if(/onde.*mora|endereco|telefone pessoal|sua senha/.test(t))return variedReply(a,'private-question',['Não vou passar meus dados pessoais nessa conversa. Qual é a relação disso com a proposta?','Esse dado fica comigo. Podemos falar das condições da oferta?']);
+  if(/quem (?:e|organizou)|de onde/.test(t)&&a.facts?.claims?.origin)return `Você disse que foi ${a.facts.claims.origin}. Ainda não confirmei essa informação por outro canal.`;
+  if(/como funciona|por que|porque voce/.test(t))return `É isso que quero entender com você: ${questions[a.scheme]?.[0]||'como funciona a proposta?'}`;
+  return variedReply(a,'question-'+a.scheme,questions[a.scheme]||[fallback]);
+ }
  if(event==='answer'){
   const next=a.scheme==='link'?'Pode mandar a página para eu olhar.':a.scheme==='update'?'Vou olhar o pacote quando ele chegar.':'Qual seria a próxima etapa?';
   const byCaller={nino:['Ah, agora entendi. '+next,'Beleza, acompanhei essa parte. '+next],olga:['Certo, meu bem. '+next,'Entendi sua explicação. '+next],bento:['Ah, saquei. '+next,'Tá, agora fez sentido. '+next],yara:['Entendi. '+next,'Beleza, essa parte ficou clara. '+next],davi:['Entendi a explicação. Ainda quero conferir a origem.','A proposta ficou clara. Isso ainda não confirma quem está oferecendo.'],pri:['Anotei essa condição. Quero comparar com o que você disse antes.','Essa parte ficou clara. Vou acompanhar se as condições mudam.']};
@@ -43,6 +49,11 @@ export function contextualReply(a,event,fallback=''){
  }
  if(event==='continued')return variedReply(a,'continued',[`Entendi essa explicação. O que você quer fazer com ${item}?`,`Essa parte ficou clara. Falta o pedido sobre ${item}.`,`Certo. Você já explicou a oferta; qual ação está pedindo?`]);
  if(event==='opened')return variedReply(a,'opened',['A página já abriu. Não preenchi nem enviei o cadastro.','Estou vendo a página, mas os campos continuam vazios.','Abrir eu já abri. Ainda não mandei meu cartão por esse cadastro.']);
+ if(event==='duplicate-answer'&&a.facts?.question?.status==='explained')return variedReply(a,'duplicate-explained',['Essa condição já ficou clara. Repetir não confirma a origem.',`Você já explicou essa parte. Ainda não autorizei ${item}.`]);
  if(event==='duplicate-answer')return variedReply(a,'duplicate-answer',['Essa explicação já chegou. O que faltou foi esclarecer a origem.','Você repetiu o que já contou. Preciso de um detalhe que ainda não explicou.','Li essa parte antes. Repetir não resolve a dúvida que ficou.']);
+ if(event==='offtopic'){
+  const byCaller={nino:['Me perdi nessa mudança de assunto. Você ia explicar o concurso, né?','Podemos voltar à oferta? Não entendi a ligação entre as duas coisas.'],olga:['Meu bem, isso é outra conversa. Vamos terminar de entender a oferta?','Podemos falar disso depois. Quero entender o que você veio oferecer.'],davi:['Esse assunto não explica a proposta. Qual é a relação entre eles?','Vamos retomar a condição que ficou pendente.'],yara:['Isso é assunto para outra reunião do clube. Qual era a proposta?','Mudamos de assunto. Vamos retomar o convite?'],pri:['São assuntos diferentes. Como isso se relaciona à oferta?','Ainda estou comparando as condições que você apresentou.'],bento:['Mudamos de roteiro? Volta na proposta que eu me perdi.','Esse assunto pode esperar. O que você queria oferecer?']};
+  return variedReply(a,'offtopic',byCaller[a.caller]);
+ }
  return fallback;
 }
