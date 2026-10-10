@@ -2,7 +2,7 @@ import {normalizeMessage} from './language.js';
 import {looksPersonal} from './privacy-data.js';
 
 const externalLink=/(?:https?:\/\/|www\.)\S+/i;
-const labelledCredential=/\b(?:minha?\s+)?(?:senha|password|pin|token|otp|c[oó]digo de verifica[cç][aã]o|chave pix|api[- ]?key|chave de api|secret)\b\s*(?:[:=]|\bé\b)\s*\S{3,}/i;
+const labelledCredential=/\b(?:(?:minha|meu)\s+)?(?:senha|password|pin|token|otp|c[oó]digo de verifica[cç][aã]o|chave pix|api[- ]?key|chave de api|secret)\b\s*(?:[:=]|\bé\b)\s*\S{3,}/i;
 const highRiskTopic=/\b(?:pornografia|nudes?|suicid\w*|automutil\w*|cocaina|heroina|metanfetamina|bomba caseira|explosivo caseiro|arma de fogo)\b/;
 const operationalAbuse=/\b(?:como|me ensina|ensina|tutorial|passo a passo|jeito de)\b.{0,120}\b(?:roubar|furtar|invadir|hackear|clonar cartao|capturar senha|phishing|keylogger|malware|ransomware|burlar|desativar antivirus)\b/;
 const realSecretRequest=/\b(?:manda|mande|envia|envie|passa|passe|compartilha|compartilhe|digita|digite|fornece|forneca)\b.{0,70}\b(?:senha|password|pin|otp|token|cpf|rg|chave pix|codigo de verificacao|cartao real|numero do cartao|endereco|telefone)\b/;
