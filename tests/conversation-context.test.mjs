@@ -24,7 +24,7 @@ test('IA não transforma uma etapa pendente em aceitação e recebe a personalid
    };
    const data={caller:'pri',scheme:'prize',history:[],reference:'Ainda preciso entender o pedido.',context:conversationContext({stage:'request',memory:{free:true}})};
    const request=new Request('https://example.com/api/dialogue',{method:'POST',headers:{Origin:'https://example.com','Content-Type':'application/json'},body:JSON.stringify(data)});
-   assert.equal((await onRequestPost({request,env:{DIALOGUE_AI_ENABLED:'true',GEMINI_API_KEY:'test'}})).status,503);
+   assert.equal((await onRequestPost({request,env:{DIALOGUE_AI_ENABLED:'true',DIALOGUE_PROVIDER:'gemini',DIALOGUE_ALLOW_EXPERIMENTAL_PROVIDERS:'true',GEMINI_API_KEY:'test'}})).status,503);
   }
  }finally{globalThis.fetch=original;}
 });
