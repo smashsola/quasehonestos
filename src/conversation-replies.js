@@ -22,9 +22,14 @@ export function contextualReply(a,event,fallback='',message=''){
  const item=items[a.scheme]||'a proposta';
  if(event==='question'){
   const t=normalizeMessage(message);
+  const remembered=[];
+  if(/beneficio|promet/.test(t)&&a.facts?.claims?.benefit)remembered.push('o benefício seria '+a.facts.claims.benefit);
+  if(/prazo|quando/.test(t)&&a.facts?.claims?.deadline)remembered.push('o prazo seria '+a.facts.claims.deadline);
+  if(remembered.length)return `Você disse que ${remembered.join(' e ')}. Lembro da condição que você apresentou; isso não confirma a oferta por outro canal.`;
   if(/verific|confer|confirm|checar/.test(t)&&/como|o que voce|qual canal|qual fonte|onde/.test(t)){
    const known=a.facts?.claims?.origin?`Você mencionou ${a.facts.claims.origin}, mas isso ainda é uma afirmação.`:/nao sei quem|nao sabe quem/.test(t)?'Se você não sabe quem organiza, não vamos inventar um responsável.':'Sem confirmação independente, não vou tratar o convite como comprovado.';
-   return `${known} ${a.caller==='olga'?'Meu bem, eu procuraria':'Eu procuraria'} um contato que eu já conheça fora desta conversa; até confirmar, nenhum passe ou dado novo.`;
+   const plan={nino:'Eu buscaria um canal do concurso que já use; se não encontrar, pediria ajuda.',olga:'Eu procuraria um canal que já conheça fora desta conversa, sem depender deste convite.',davi:'Eu buscaria um registro ou canal já conhecido para comparar, fora desta conversa.',yara:'Eu buscaria confirmação com a turma por um canal já usado.',pri:'Eu buscaria uma fonte já conhecida para comparar; se faltar confirmação, aguardaria.',bento:'Eu buscaria um canal que já use ou pediria ajuda antes de topar.'}[a.caller]||'Eu buscaria outra confirmação.';
+   return `${known} ${plan} Até confirmar, suspenderia a decisão e não passaria dados.`;
   }
   if(/onde.*mora|endereco|telefone pessoal|sua senha/.test(t))return variedReply(a,'private-question',['Não vou passar meus dados pessoais nessa conversa. Qual é a relação disso com a proposta?','Esse dado fica comigo. Podemos falar das condições da oferta?']);
   if(/quem (?:e|organizou|organiza)|de onde/.test(t)&&a.facts?.claims?.origin)return `Você disse que foi ${a.facts.claims.origin}. Ainda não confirmei essa informação por outro canal.`;

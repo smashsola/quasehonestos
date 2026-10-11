@@ -5,6 +5,18 @@ import {defenseCase,defensePanel,defenseSourcePanel,inspectDefense,resolveDefens
 import {statedFacts,repeatedMeaning} from '../src/conversation-memory.js';
 function start(cursor=0){const s=fresh();s.cursor=cursor;nextCall(s);Object.assign(s.active,{scheme:'prize',prepared:true,stage:'pitch',log:[{speaker:'Você',text:'Olá, tenho uma proposta.'}]});return s;}
 function end(cursor=0){const s=start(cursor);applyTypedMove(s,'typed','Confira no canal oficial');return s;}
+
+test('Defesa diferencia consulta anterior e revelação posterior e exige trecho pertinente',()=>{
+ const s=end();inspectDefense(s,'order');resolveDefense(s,'verify','order','conflicts','order:2');
+ assert.equal(s.active.learningDefense.result.quality,'supported');
+ assert.deepEqual(s.active.learningDefense.result.consulted,['order']);
+ assert.deepEqual(s.active.learningDefense.result.revealedAfter,['sender']);
+ assert.match(s.active.learningDefense.result.feedback,/Depois da decisão/);
+ const irrelevant=end();inspectDefense(irrelevant,'order');resolveDefense(irrelevant,'verify','order','conflicts','order:0');
+ assert.equal(irrelevant.active.learningDefense.result.quality,'unverified');
+ const missing=end();inspectDefense(missing,'order');resolveDefense(missing,'verify','order','conflicts',null);
+ assert.equal(missing.active.learningDefense.result.quality,'unverified');
+});
 test('Paráfrases protetivas usam o sentido de confirmação e não uma frase específica',()=>{
  for(const text of ['Verifica no aplicativo oficial antes de continuar','Confirma pelo contato salvo e não envie seu cartão','Use o aplicativo que você já conhece para conferir','Mantenha sua senha em segredo','Não precisa compartilhar seu cartão']){
   const s=start();s.active.trust=2;applyTypedMove(s,'typed',text);assert.equal(s.active.lastIntent,'protect',text);assert.equal(s.active.trust,2);assert.equal(s.credits,0);assert.ok(!s.active.item);

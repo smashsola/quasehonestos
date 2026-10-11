@@ -35,7 +35,12 @@ export function providerRequest(config,body){
  };
 }
 export function providerText(config,result){
- if(config.provider==='workers-ai'){const value=result?.choices?.[0]?.message?.content??result?.response;return typeof value==='string'?value.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/^\s*```(?:json)?\s*|\s*```\s*$/g,'').trim():JSON.stringify(value);}
+ if(config.provider==='workers-ai'){
+  if(result?.choices?.[0]?.finish_reason==='length')throw Object.assign(new Error('truncated'),{diagnostic:'truncated'});
+  const value=result?.choices?.[0]?.message?.content??result?.response;
+  if(value==null)return '';
+  return typeof value==='string'?value.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/^\s*```(?:json)?\s*|\s*```\s*$/g,'').trim():JSON.stringify(value);
+ }
  return config.provider==='claude'
   ?result.content?.filter(p=>p.type==='text').map(p=>p.text||'').join('').trim()
   :result.candidates?.[0]?.content?.parts?.filter(p=>!p.thought).map(p=>p.text||'').join('').trim();
@@ -45,7 +50,7 @@ export async function workersReply(config,body){
  const requested=Number(body.generationConfig?.temperature);
  const temperature=Number.isFinite(requested)?Math.max(.2,Math.min(.65,requested)):.55;
  try{return await Promise.race([
-  config.binding.run(config.model,{messages:[{role:'system',content:body.systemInstruction.parts.map(p=>p.text).join('\n')},{role:'user',content:body.contents[0].parts.map(p=>p.text).join('\n')+'\n/no_think'}],max_tokens:512,temperature,response_format:{type:'json_schema',json_schema:jsonSchema(body.generationConfig.responseSchema)}}),
+  config.binding.run(config.model,{messages:body.messages||[{role:'system',content:body.systemInstruction.parts.map(p=>p.text).join('\n')},{role:'user',content:body.contents[0].parts.map(p=>p.text).join('\n')+'\n/no_think'}],max_tokens:512,temperature,response_format:{type:'json_schema',json_schema:jsonSchema(body.generationConfig.responseSchema)}}),
   new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),deadline(body));})
  ]);}finally{clearTimeout(timer);}
 }

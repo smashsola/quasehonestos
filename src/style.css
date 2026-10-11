@@ -577,3 +577,35 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 
 /* Keep the saved-state label separate from the privacy action. */
 .intro-footer{justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px 24px}.intro-footer>span{flex-shrink:0}
+.dialogue-local-status{display:block;padding:4px 14px;color:#bfd2c6;font-size:10px}
+
+/* Budget space by the actual chat window, including manually resized windows. */
+.desktop-window[data-window-id="calls"]:not(.welcome-window){container-name:chat-window;container-type:size}
+.desktop-window[data-window-id="calls"] .choices:has(.message-compose){min-height:0;flex:0 1 auto;max-height:50%;overflow:auto;overscroll-behavior:contain}
+.desktop-window[data-window-id="calls"] .message-compose textarea{width:100%;max-width:100%;font-size:16px;resize:vertical;max-height:110px}
+.desktop-window[data-window-id="calls"] .message-compose>div{flex-wrap:wrap;gap:8px}
+.desktop-window[data-window-id="calls"] .message-compose button[type="submit"]{min-height:44px;flex-shrink:0}
+.desktop-window[data-window-id="calls"] .compose-help p{overflow-wrap:anywhere}
+@container chat-window (max-height:560px){
+ .contact{padding:6px 12px!important;gap:10px!important}
+ .desktop-window[data-window-id="calls"] .avatar,.desktop-window[data-window-id="calls"] .avatar img{width:48px!important;height:48px!important;min-width:48px!important}
+ .desktop-window[data-window-id="calls"] .avatar{flex-basis:48px!important}
+ .contact h1,.contact h2{font-size:19px!important;margin:0!important}
+ .contact p,.trust-footer,.portrait-emotion{display:none!important}
+ .context{padding:4px 12px!important;margin:0!important}
+ .trust-card{margin:4px 12px!important;padding:6px 10px!important}
+ .desktop-window[data-window-id="calls"] .call-window-body>.conversation:not(:empty){min-height:50px!important;flex:1 1 100px!important}
+ .choices:has(.message-compose){padding:6px 12px!important;max-height:55%!important}
+ .compose-help p{max-height:64px;overflow:auto;margin:4px 0}
+ .desktop-window[data-window-id="calls"] .message-compose textarea{height:48px!important;min-height:48px!important;margin:4px 0!important}
+}
+@container chat-window (max-height:420px){
+ /* At extreme heights one reachable body scroll replaces clipped flex children. */
+ .call-window-body:has(.message-compose){overflow:auto!important}
+ .desktop-window[data-window-id="calls"] .call-window-body:has(.message-compose)>.conversation:not(:empty){flex:0 0 auto!important;min-height:100px!important;max-height:none!important;overflow:visible!important}
+ .call-window-body>.choices:has(.message-compose){flex:0 0 auto!important;max-height:none!important;overflow:visible!important}
+}
+.keyboard-open .desktop-window[data-window-id="calls"] .choices:has(.message-compose){max-height:none!important;flex:0 0 auto!important}
+.keyboard-open .desktop-window[data-window-id="calls"] .call-window-body:has(.message-compose){overflow:hidden!important}
+.keyboard-open .desktop-window[data-window-id="calls"] .call-window-body>.conversation:not(:empty){flex:1 1 0!important;min-height:0!important;overflow:auto!important}
+.defense-investigation :is(#defense-citation,#defense-relation,#defense-fragment){width:100%;min-width:0;min-height:44px;padding:10px;font-size:16px;margin-bottom:14px}

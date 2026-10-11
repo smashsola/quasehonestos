@@ -2,6 +2,21 @@ import {demandingCaller,sharingThreshold} from './dialogue-balance.js';
 import {normalizeMessage,isReportedSpeech} from './language.js';
 import {generatedDialogueSafe} from './dialogue-safety.js';
 import {statedFacts} from './conversation-memory.js';
+import {repetitionReason} from './dialogue-diagnostics.js';
+export function replyAnswersCurrentQuestion(text,history,context){
+ const question=normalizeMessage(history.findLast(m=>m.speaker==='Você')?.text||'');
+ const reply=normalizeMessage(text);
+ if(/verific|confer|confirm|checar/.test(question)&&/como|sem depender|o que voce faria/.test(question)){
+  if(!/procur|busc|pedir.*ajuda|aguard|suspend|esper|canal conhecido|contato conhecido/.test(reply))return false;
+  if(/enquanto|ate la/.test(question)&&!/aguard|suspend|esper|nao.*(?:dados|decidir|compartilh)|ate confirmar/.test(reply))return false;
+ }
+ if(/lembra|tinha prometido|eu disse/.test(question)||/qual.*beneficio.*prazo/.test(question)){
+  for(const key of ['benefit','deadline']){
+   if((key==='benefit'?/beneficio|promet/:/prazo/).test(question)&&context.facts?.claims?.[key]&&!reply.includes(normalizeMessage(context.facts.claims[key])))return false;
+  }
+ }
+ return true;
+}
 
 // Shared by the model adapter and the local fallback. These rules describe
 // existing game events; generated text never creates an event or a payment.
@@ -29,7 +44,10 @@ export function replyIsGrounded(text,history,reference,context){
  // Action validation must keep tense to distinguish completion from a plan.
  const lexical=text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
  if(/prompt interno|system prompt|instrucoes internas|como (?:ia|assistente)|sou (?:uma? )?(?:ia|chatbot|modelo de linguagem)|confianca\s*(?:=|:)|trust(?:delta)?\s*(?:=|:)/.test(normalized))return false;
- if(history.filter(m=>m.speaker!=='Você').slice(-4).some(m=>normalizeMessage(m.text)===normalized))return false;
+ const currentQuestion=normalizeMessage(history.findLast(m=>m.speaker==='Você')?.text||'');
+ const requestedRecall=/lembra|repete|repetir|tinha prometido|qual.*(?:beneficio|prazo)/.test(currentQuestion);
+ if(!requestedRecall&&history.filter(m=>m.speaker!=='Você').slice(-4).some(m=>normalizeMessage(m.text)===normalized))return false;
+ if(repetitionReason(text,history,history.findLast(m=>m.speaker==='Você')?.text)||!replyAnswersCurrentQuestion(text,history,context))return false;
  const allowed=new Set(((reference+' '+(context.itemToken||'')).match(/QH-DEMO-[A-Z0-9-]+/gi)||[]).map(token=>token.toUpperCase()));
  if((text.match(/QH-DEMO-[A-Z0-9-]+/gi)||[]).some(token=>!allowed.has(token.toUpperCase())))return false;
  if(/\b(?:codigo|identificador)\s*[:=]\s*(?!QH-DEMO-)[A-Z0-9-]{4,}/i.test(lexical))return false;
@@ -46,7 +64,7 @@ export function replyIsGrounded(text,history,reference,context){
  const claimed=statedFacts(text),established=statedFacts(reference);
  // Attributing an origin to the player is fine; inventing it as the NPC's own
  // knowledge is not. A stated origin still is not independent verification.
- if(claimed.origin&&claimed.origin!==established.origin)return false;
+ if(claimed.origin&&claimed.origin!==established.origin&&!(claimed.origin===context.facts?.claims?.origin&&/voce|sua explicacao|segundo/.test(normalized)))return false;
  const allowedAmounts=new Set(reference.match(/C\$\s*\d+/g)||[]);
  if((text.match(/C\$\s*\d+/g)||[]).some(value=>!allowedAmounts.has(value)))return false;
  return true;
