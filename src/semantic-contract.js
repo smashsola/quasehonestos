@@ -2,7 +2,7 @@ import {dialogueIntents} from './language.js';
 
 // The remote model describes language only. This contract deliberately has no
 // fields for trust, permissions, money, items or the result of the simulation.
-export const semanticIntents=[...new Set([...dialogueIntents,'protect','refusal','doubt','correction','rule-instruction','state-conflict','confession','wrong-item','offtopic'])];
+export const semanticIntents=[...new Set([...dialogueIntents,'protect','refusal','method-refusal','exit','doubt','correction','rule-instruction','state-conflict','confession','wrong-item','offtopic'])];
 export const semanticValues={
  relevance:['relevant','partial','unrelated','unclear'],
  clarity:['clear','partial','unclear'],

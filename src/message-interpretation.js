@@ -1,5 +1,6 @@
 import {normalizeMessage,negatedRequest,isReportedSpeech,messageClauses,isQuestionClause,isHypotheticalClause} from './language.js';
 import {memoryConflict,statedFacts,pendingQuestion,answersPendingQuestion,repeatedMeaning} from './conversation-memory.js';
+import {requestedExit,methodRefusal,attributionRepair,turnAgenda} from './turn-agenda.js';
 
 const sensitive=/dados|cartao|senha|codigo|passe|acesso|sessao|cadastro|arquivo|pacote/;
 const independent=/(?:canal|app|aplicativo|site|pagina|numero|contato|telefone|perfil|insta|instagram|portal) (?:oficial|conhecido|salvo|que (?:voce|eu) (?:ja )?(?:conhece|conheco|tinha))|(?:site|app|aplicativo|pagina|perfil|insta|instagram|portal) (?:da|do) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe)|pelo (?:contato|numero|telefone|app|aplicativo) salvo|por conta propria|por fora|outro (?:canal|numero|contato|telefone)|fora (?:da|dessa) mensagem|direto (?:com|para) (?:a|o) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe)|com (?:a|o) (?:escola|clube|loja|suporte|organizacao|prefeitura|equipe) por outro (?:canal|numero|contato|telefone)/;
@@ -51,7 +52,7 @@ function structuredAnalysis(text,a,clauses,intent,ambiguous){
  const hostility=direct.some(c=>/\b(?:idiota|burro|burra|otario|imbecil|trouxa|cala a boca|te odeio|seu merda|sua merda|seu bosta|sua bosta)\b/.test(c)&&!/\bnao (?:e |sou |seja |acho (?:voce )?)(?:um |uma )?(?:idiota|burro|burra|otario|imbecil|trouxa)\b/.test(c));
  const facts=statedFacts(text),answersQuestion=answersPendingQuestion(a,text),question=pendingQuestion(a),uncertainty=intent==='doubt'||uncertaintyPattern.test(t)||clauses.some(isHypotheticalClause);
  const rapport=/\b(?:voce tem razao|entendo (?:sua|a sua)|respeito (?:sua|a sua)|boa pergunta)\b/.test(t)?2:/\b(?:oi|ola|bom dia|boa tarde|boa noite|pode pa|pode crer|fechou|beleza|suave|aham|uhum|valeu|obrigad\w*|desculp\w*|foi mal|k{2,}|haha)\b/.test(t)?1:0;
- const semanticIntent=['protect','refusal','doubt','question','pressure','hostile','apology','rule-instruction','state-conflict','confession','correction','contradiction','request','wrong-item'].includes(intent);
+ const semanticIntent=['exit','method-refusal','protect','refusal','doubt','question','pressure','hostile','apology','rule-instruction','state-conflict','confession','correction','contradiction','request','wrong-item'].includes(intent);
  const relevant=semanticIntent||answersQuestion||proposalTopics[a.scheme]?.test(t);
  const partial=question&&!answersQuestion&&(Object.keys(facts).length>0||isReportedSpeech(t));
  const repetition=repeatedMeaning(a,text,intent);
@@ -68,6 +69,9 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  const result=(intent,evidence,ambiguous=false)=>({intent,evidence,ambiguous,analysis:structuredAnalysis(text,a,clauses,intent,ambiguous)});
  const directClauses=clauses.filter(c=>!isReportedSpeech(c));
  const lexical=fallback();
+ if(requestedExit(text))return result('exit','O jogador pediu explicitamente para encerrar pela mensagem.');
+ if(methodRefusal(text,a.scheme))return result('method-refusal','O jogador rejeitou um método específico, sem rejeitar toda a conversa.');
+ if(attributionRepair(a,text))return result('correction','O jogador contestou uma atribuição de fala; o histórico precisa ser reparado sem confirmar uma ação.');
  const keepSecret=directClauses.some(c=>/\b(?:guarda|guarde|mantenha) (?:seus |suas |seu |sua |teus |tuas |teu |tua |o |a |os |as )?(?:dados|codigo|senha|cartao).*\b(?:segredo|privado|privados|so com voce)\b/.test(c));
  const protectedData=directClauses.some(c=>/\b(?:nao|nunca|nem)\b/.test(c)&&sensitive.test(c)&&/\b(?:compartilh\w*|envi\w*|mand\w*|pass\w*|liber\w*|fornec\w*|divulg\w*)\b/.test(c));
  const checking=directClauses.some(c=>verification.test(c)&&independent.test(c)&&!verificationIsNegated(c)&&!deferredVerification.test(c)&&!isHypotheticalClause(c)&&!declaredPastCheck.test(c)&&!selfSuppliedChannel.test(c));
@@ -94,12 +98,14 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
   return result('protect',checking?'Orientação para conferir a origem por um canal independente.':'Orientação para não compartilhar dados.');
  }
  if(explicitRefusal)return result('refusal','Recusa explícita do pedido ou da proposta.');
+ if(/\b(?:corrigindo|correcao|me enganei|quis dizer)\b/.test(t)&&Object.keys(statedFacts(text)).length)return result('correction','Uma condição foi corrigida explicitamente; ainda é alegação, não prova.');
  if(lexical==='chat')return result('chat','Cumprimento social, sem responder à proposta ou autorizar uma operação.');
  if(lexical==='smalltalk')return result('smalltalk','Conversa social pertinente ao personagem; não responde por si só às condições da proposta.');
  const directSignals=structuredAnalysis(text,a,clauses,lexical,false);
  if(directSignals.hostility)return result('hostile','Ofensa dirigida identificada pelo contexto, sem confundir interjeição ou relato com ataque.');
  if(directSignals.pressure)return result('pressure','Pedido acompanhado de pressão para decidir ou agir imediatamente.');
  if(memoryConflict(a,text))return /\b(?:corrigindo|correcao|me enganei|quis dizer)\b/.test(t)?result('correction','Correção explícita de uma condição anteriormente declarada; ainda não é confirmação independente.'):result('contradiction','Uma condição declarada diverge da conversa registrada.');
+ if(turnAgenda(a,text).questions.length)return result('question','As perguntas pertinentes do turno foram identificadas sem autorizar ações.');
  if(a.stage==='question'&&answersPendingQuestion(a,text)&&!clauses.some(c=>isQuestionClause(c)&&!/^(?:entendeu|certo|ok|ne)[?. ]*$/.test(c)))return result('answer','Resposta à pergunta atual; continua sendo uma afirmação, não comprovação independente.');
  const politeRequest=/\b(?:pode|poderia|consegue|queria|quero|preciso)\b.*\b(?:passar|mandar|enviar|compartilhar|liberar|abrir|instalar|preencher|usar|executar|informar|me dar)\b/.test(t)&&!clauses.some(c=>/^.*?\b(?:porque|por que|como|onde|qual|quem|o que)\b/.test(c));
  const imperativeRequest=directClauses.some(c=>/\bme (?:passa|passe|manda|mande|envia|envie|da|de|informa|informe)\b|^(?:por favor[, ]+)?(?:passa|passe|manda|mande|envia|envie|compartilha|compartilhe|libera|libere|abra|abre|instala|instale|preencha|preenche|use|usa|execute|executa)\b/.test(c))&&!clauses.some(c=>/\b(?:porque|por que|como|onde|qual|quem|o que)\b/.test(c));

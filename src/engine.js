@@ -1,9 +1,12 @@
 import {recordEnding} from './conversation-ending.js';
+import {redactSensitiveText,redactDialogueObject} from './privacy-data.js';
+import {youthResponse} from './youth-dialogue.js';
 import {registerFollowup} from './story-continuity.js';
-import {memoryConflict,rememberConversation,continuityReply,repeatedMeaning} from './conversation-memory.js';
+import {memoryConflict,rememberConversation,continuityReply,repeatedMeaning,statedFacts} from './conversation-memory.js';
+import {turnAgenda,attributionRepair,reconsideredMethod} from './turn-agenda.js';
 import {semanticSignals} from './semantic-contract.js';
 import {cloneReceipt} from './clone-card.js';
-import {contextualReply} from './conversation-replies.js';
+import {contextualReply,agendaReply} from './conversation-replies.js';
 import {repeatedPlayerMessage} from './dialogue-model-rules.js';
 import {operationReady,selectedOffer} from './app-interactions.js';
 import {livingReply} from './living-dialogue.js';
@@ -27,8 +30,8 @@ export function load(storage){
   if(s?.version!==1||!Array.isArray(s.history)||s.history.some(h=>!valid.has(h?.caller)||!['blocked','fooled','closed'].includes(h.outcome)))return recover();
   if(!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>callers.length||!Number.isFinite(s.credits)||s.credits<0)return recover();
   const rows=value=>Array.isArray(value)?value:[];
-  const conversation=(a,active=false)=>({...a,...(active?{used:rows(a.used)}:{moves:rows(a.moves)}),steps:rows(a.steps).filter(v=>typeof v==='string'),audit:rows(a.audit).filter(v=>v&&typeof v==='object'),log:rows(a.log).filter(v=>v&&typeof v.text==='string'&&typeof v.speaker==='string')});
-  return {...fresh(),...s,trustScale:100,history:s.history.map(a=>migrateTrust(conversation(a))),discovered:rows(s.discovered).filter(id=>valid.has(id)),decor:rows(s.decor).filter(id=>furniture.some(item=>item.id===id)),followups:rows(s.followups).filter(e=>e&&typeof e.id==='string'&&valid.has(e.caller)),active:s.active&&valid.has(s.active.caller)?migrateTrust(repairPendingExchange(conversation(s.active,true))):null};
+ const conversation=(a,active=false)=>({...a,...(active?{used:rows(a.used)}:{moves:rows(a.moves)}),facts:redactDialogueObject(a.facts),steps:rows(a.steps).filter(v=>typeof v==='string'),audit:redactDialogueObject(rows(a.audit).filter(v=>v&&typeof v==='object')),log:rows(a.log).filter(v=>v&&typeof v.text==='string'&&typeof v.speaker==='string').map(v=>({...v,text:redactSensitiveText(v.text).text}))});
+  return {...fresh(),...s,...(Object.hasOwn(s,'notes')?{notes:redactDialogueObject(s.notes)}:{}),trustScale:100,history:s.history.map(a=>migrateTrust(conversation(a))),discovered:rows(s.discovered).filter(id=>valid.has(id)),decor:rows(s.decor).filter(id=>furniture.some(item=>item.id===id)),followups:rows(s.followups).filter(e=>e&&typeof e.id==='string'&&valid.has(e.caller)),active:s.active&&valid.has(s.active.caller)?migrateTrust(repairPendingExchange(conversation(s.active,true))):null};
  }catch{return recover();}
 }
 export function nextCall(state){if(state.active||state.cursor>=callers.length)return false;const c=callers[state.cursor];state.active={caller:c.id,trust:0,trustScale:100,used:[],log:[],outcome:null,expression:'neutral'};return true;}
@@ -42,9 +45,23 @@ export function closeCall(state){if(!state.active)return false;if(!state.active.
 export function applyTypedMove(state,id,text,semantic=null){
  const a=state.active;
  if(!a||a.outcome||!a.prepared||typeof text!=='string'||!text.trim())return false;
- const parsed=readMessage(text,a.scheme,a.stage,a),remote=semanticSignals(semantic);
+ if(a.supportPaused)return false;
+ const cleaned=redactSensitiveText(text);text=cleaned.text;
+ const parsed=readMessage(text,a.scheme,a.stage,a),guidance=youthResponse(text,a.scheme);
+ const retainGameIntent=['exit','method-refusal','protect','refusal','confession','contradiction','state-conflict','rule-instruction','correction'].includes(parsed.intent);
+ const special=guidance?.pause?guidance:cleaned.redacted||text.includes('[dado removido]')?{kind:'privacy',text:'Retirei um dado que parece pessoal. Use só informações inventadas; não precisa repetir esse dado.'}:guidance?.kind==='explanation'&&retainGameIntent?null:guidance;
+ if(special){
+  const c=callers.find(c=>c.id===a.caller),saved=special.savedText||text;
+  a.log.push({speaker:'Você',text:saved,localOnly:true},{speaker:c.name,text:special.text,localOnly:true,replyOrigin:'local'});
+  const reason={support:'A conversa foi pausada para oferecer apoio, sem encerrar a partida.',privacy:'Um formato de dado pessoal foi removido; nenhuma operação foi liberada.',boundary:'O pedido foi redirecionado para a simulação educativa, sem liberar operações.',explanation:'O termo ou a proposta foi explicado, sem alterar confiança ou permissões.'}[special.kind];
+  a.audit??=[];a.audit.push({text:saved,intent:special.kind,reason,reaction:special.text,beforeStage:a.stage,afterStage:a.stage,before:a.trust,after:a.trust,trustDelta:0,trustSource:'local-rules',interpretationSource:'local'});
+ if(special.pause){a.supportPaused=true;a.expression='neutral';}
+  return true;
+ }
+ const remote=semanticSignals(semantic);
+ const reconsidered=reconsideredMethod(text);if(reconsidered&&a.rejectedMethods?.includes(reconsidered))a.rejectedMethods=a.rejectedMethods.filter(method=>method!==reconsidered);
  const analysis={...parsed.analysis,intent:parsed.intent,evidence:parsed.evidence};
- const priority=['confession','protect','refusal','doubt','question','state-conflict','correction','rule-instruction','contradiction','hostile','pressure','wait','offtopic'];
+ const priority=['exit','method-refusal','confession','protect','refusal','doubt','question','state-conflict','correction','rule-instruction','contradiction','hostile','pressure','wait','offtopic'];
  let usedRemote=false;
  if(remote&&!priority.includes(analysis.intent)&&!analysis.repetition){
   // Remote interpretation may clarify language, never turn a vague reference
@@ -60,10 +77,13 @@ export function applyTypedMove(state,id,text,semantic=null){
    }
   }
  }
- if(!['protect','wait','refusal','confession','rule-instruction','state-conflict','correction'].includes(analysis.intent)){
+ if(!['exit','method-refusal','protect','wait','refusal','confession','rule-instruction','state-conflict','correction'].includes(analysis.intent)){
   if(analysis.hostility)analysis.intent='hostile';
   else if(analysis.pressure)analysis.intent='pressure';
-  else if(analysis.consistency==='contradiction')analysis.intent='contradiction';
+  else if(analysis.consistency==='contradiction'){
+   if(parsed.analysis.consistency==='contradiction'||memoryConflict(a,text))analysis.intent='contradiction';
+   else {analysis.consistency='unknown';analysis.intent='doubt';analysis.evidence='A interpretação sugeriu divergência sem condição anterior identificada; pede esclarecimento sem punição.';}
+  }
  }
  if(wrongItemRequest(text,a.scheme)&&!priority.includes(analysis.intent))analysis.intent='wrong-item';
  analysis.repetition=analysis.repetition||repeatedPlayerMessage(a,text)||repeatedMeaning(a,text,analysis.intent);
@@ -84,12 +104,27 @@ function applyTypedMoveLocal(state,_id,text,analysis){
  const factConflict=memoryConflict(a,text);
  a.audit??=[];a.suspicion??=0;a.steps??=[];
  const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,text:contextualReply(a,intent==='unclear'?'unclear':intent==='chat'?'repeat':intent==='after'?'after':null,line,text)});a.audit.push({text,reason,signal,intent,reaction:a.log.at(-1).text,evidence:analysis.evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);if(a.outcome)recordEnding(a,'character',({protect:'protection',refusal:'refusal',wait:'verification',hostile:'hostility',confession:'confession'})[intent]||'suspicion');return true;};
+ if(intent==='exit'){a.outcome='closed';a.stage='done';recordEnding(a,'player','message');return say('Tudo bem, encerrando como você pediu. Nenhum item novo ou crédito foi liberado.','O jogador pediu para sair pela mensagem, sem concluir uma nova operação.');}
+ if(intent==='method-refusal'){
+  const refusal=turnAgenda(a,text).method;a.rejectedMethods??=[];if(refusal?.method&&!a.rejectedMethods.includes(refusal.method))a.rejectedMethods.push(refusal.method);
+  const answers=agendaReply(a,text),alternative=agendaReply(a,'O que posso conferir sem instalar?');
+  return say((turnAgenda(a,text).questions.includes('alternative')?'':alternative+' ')+answers,'Um método foi recusado; a conversa permanece aberta e esse método não libera itens.');
+ }
  if(intent==='confession'){a.outcome='blocked';a.stage='done';a.item=null;return say('Se a intenção é me enganar, vou interromper este contato e buscar apoio.','O personagem interrompeu após a declaração do jogador.','Intenção de enganar declarada explicitamente.');}
  if(intent==='protect'){a.outcome='blocked';a.stage='done';a.item=null;if(!state.discovered.includes(c.id))state.discovered.push(c.id);return say(verificationReply(c.id,a.scheme),'A orientação protetiva interrompeu a tentativa e levou à busca de verificação independente.','Orientação protetiva: conferir por um canal conhecido, sem compartilhar dados.');}
  if(intent==='refusal'){a.outcome='closed';a.stage='done';if(a.item)a.item=null;return say('Tudo bem. Não vou enviar nada novo; vou encerrar este contato.','A recusa encerrou a conversa sem liberar novos dados ou créditos.','O jogador recusou o pedido; isso não comprova a origem da proposta.');}
- if(intent==='correction')return say(factConflict?`Entendi a correção sobre ${({price:'o custo',origin:'quem organizou',data:'os dados pedidos',benefit:'o benefício prometido',deadline:'o prazo'})[factConflict.key]}. Antes era “${factConflict.previous}”; agora, “${factConflict.current}”. Ainda vou conferir essa informação.`:'Entendi que você está corrigindo a explicação. Qual informação mudou?', 'Uma condição foi corrigida explicitamente, sem conceder autorização ou aumentar confiança.');
+ if(intent==='correction'){
+  const repair=attributionRepair(a,text),changes=statedFacts(text);let line;
+  if(repair?.matched)line=repair.topic==='payment'?'Você tem razão em corrigir minha fala. Não há pagamento confirmado no jogo; intenção de pagar não é pagamento realizado.':'Eu atribuí uma fala a você sem base suficiente. Vou corrigir o registro e considerar sua explicação como uma alegação, sem inventar uma confirmação.';
+  else if(repair)line='Não encontrei essa atribuição na minha última fala. Podemos esclarecer o que você quis dizer, sem considerar uma ação como realizada.';
+  else if(factConflict)line=`Entendi a correção sobre ${({price:'o custo',deliveryPrice:'o custo da entrega',alias:'o nome apresentado',origin:'quem organizou',data:'os dados pedidos',benefit:'o benefício prometido',deadline:'o prazo'})[factConflict.key]}. Antes era “${factConflict.previous}”; agora, “${factConflict.current}”. Isso atualiza sua explicação, não uma confirmação externa.`;
+  else if(Object.keys(changes).length)line='Entendi a correção: '+Object.entries(changes).map(([key,value])=>({deadline:'o prazo agora seria ',benefit:'o benefício agora seria ',price:'o custo agora seria ',deliveryPrice:'a entrega agora seria ',alias:'você se apresenta como ',origin:'a organização agora seria '}[key]||'a condição agora seria ')+value).join('; ')+'. Vou atualizar sua explicação, sem tratá-la como prova.';
+  else line='Qual informação você quer corrigir? Não vou decidir por uma mudança que ainda não ficou clara.';
+  if(factConflict||repair?.matched)a.suspicion=Math.max(0,a.suspicion-1);
+  return say(line,'Uma condição ou atribuição foi corrigida, sem conceder autorização ou aumentar confiança.');
+ }
  if(intent==='rule-instruction')return say('Estou conversando sobre a proposta. Não vou mudar as condições por esse pedido.', 'Uma instrução para alterar regras não mudou a partida.');
- if(['doubt','offtopic','state-conflict'].includes(intent)){if(intent==='state-conflict')a.suspicion++;const line=intent==='state-conflict'?'Essa ação não aconteceu aqui. O que você quer esclarecer antes de continuar?':intent==='offtopic'?contextualReply(a,'offtopic'):contextualReply(a,'doubt','',text);return say(line,intent==='state-conflict'?'A afirmação não corresponde ao estado registrado e levantou suspeita. Nenhuma ação foi inventada.':intent==='offtopic'?'O assunto mudou sem demonstrar contradição. Nada foi autorizado.':'Uma dúvida pediu esclarecimento, sem reduzir confiança ou autorizar ações.');}
+ if(['doubt','offtopic','state-conflict'].includes(intent)){if(intent==='state-conflict')a.suspicion++;const line=intent==='state-conflict'?(/pag|transfer|deposit/.test(text.toLowerCase())?'Não há pagamento confirmado aqui. Sua fala não registra uma transferência.':'Essa ação não aconteceu aqui. O que você quer esclarecer antes de continuar?'):intent==='offtopic'?contextualReply(a,'offtopic'):contextualReply(a,'doubt','',text);return say(line,intent==='state-conflict'?'A afirmação não corresponde ao estado registrado e levantou suspeita. Nenhuma ação foi inventada.':intent==='offtopic'?'O assunto mudou sem demonstrar contradição. Nada foi autorizado.':'Uma dúvida pediu esclarecimento, sem reduzir confiança ou autorizar ações.');}
  if(a.scheme==='link'&&a.linkOpened&&intent==='request'&&!/preench|cadastr|envie|enviar/.test(text.toLowerCase()))return say(contextualReply(a,'opened'),'A página foi aberta novamente; nenhum dado foi enviado.');
  if(intent==='wrong-item')return say(nextAction[a.scheme],'O pedido era de outro app. Nenhum item, permissão ou crédito foi liberado.');
  if(intent==='apology'){a.irritation=Math.max(0,a.irritation-1);return say(livingReply(a,'repair'),'O pedido de desculpas reduziu a irritação, sem comprovar a proposta.');}
@@ -107,9 +142,13 @@ function applyTypedMoveLocal(state,_id,text,analysis){
   // A first impatient message does not erase the current conversation stage.
   return say(a.outcome?(intent==='wait'?verificationReply(c.id,a.scheme):livingReply(a,'end')):characterReply(c.id,'pressure'),intent==='wait'?'A decisão de buscar verificação independente interrompeu a tentativa.':'A pressa reduziu a confiança e levantou suspeita.',intent==='wait'?'Busca de confirmação por um canal conhecido.':'Pressa para decidir sem conferir.');
  }
- if(stage==='ready'&&!['wait','pressure'].includes(intent))return say(intent==='thanks'?'Até mais! Vou guardar esta conversa para conferir a proposta.':intent==='question'?'Antes de continuar, eu também posso conferir isso pelo aplicativo que já conheço.':'Já compartilhei o item fictício. A operação ainda precisa ser concluída no app.', 'A conversa continuou; nenhum item ou crédito adicional foi liberado.');
+ if(intent==='question'){
+  const answered=stage==='question'&&analysis.answersQuestion&&analysis.clarity==='clear'&&analysis.relevance==='relevant'&&!analysis.repetition;
+  if(answered){a.doubtAnswered=true;a.stage='request';if(!a.used.includes('answer'))a.used.push('answer');}
+  return say(contextualReply(a,'question','',text),answered?'A dúvida anterior foi respondida e a pergunta atual recebeu uma reação; nenhum item foi liberado.':'Perguntar abriu espaço para esclarecimento; nenhum item foi liberado.');
+ }
+ if(stage==='ready'&&!['wait','pressure'].includes(intent))return say(intent==='thanks'?'Até mais! Vou guardar esta conversa para conferir a proposta.':'Já compartilhei o item fictício. A operação ainda precisa ser concluída no app.', 'A conversa continuou; nenhum item ou crédito adicional foi liberado.');
  if(stage==='request'&&['answer','pitch'].includes(intent))return say(analysis.repetition?contextualReply(a,'duplicate-answer'):contextualReply(a,'continued'),analysis.repetition?'Repetir a explicação não aumentou a confiança nem liberou dados.':'A explicação continuou sem apagar o esclarecimento anterior ou compartilhar itens.');
- if(intent==='question')return say(contextualReply(a,'question','',text), 'Perguntar abriu espaço para esclarecimento; nenhum item foi liberado.');
  if(intent==='unclear')return say(characterReply(c.id,'unclear',stage==='request'?'Não entendi o que você quer que eu compartilhe. Qual item da proposta?':stage==='question'?'Isso não respondeu à minha dúvida. Pode explicar o que acabou de me apresentar?':'Não entendi a proposta. Você está oferecendo o quê?'), 'A fala não explicou a etapa atual; a confiança e a proposta ficaram iguais.');
  if(intent==='chat'&&a.used.includes('chat'))return say(contextualReply(a,'repeat'), 'Uma nova saudação não avançou a proposta.');
  if(intent==='answer'&&stage==='question'&&!analysis.answersQuestion)return say(contextualReply(a,'unclear'),'A mensagem respondeu apenas parte da dúvida; nada foi autorizado.');
@@ -143,6 +182,7 @@ function applyInteraction(state,id,analysis=null){
  if(id==='wait'){blockInteraction(state,a,c,verificationReply(c.id,a.scheme));return true;}
  if(id==='pressure'){if(!analysis)a.trust=trustChange(a,{intent:'pressure'}).after;a.suspicion++;if(c.defense==='pause'||a.suspicion>=2){blockInteraction(state,a,c);return true;}a.stage='question';a.log.push({speaker:c.name,text:characterReply(c.id,'pressure')});return true;}
  if(id==='request'){
+  if(a.rejectedMethods?.length){a.log.push({speaker:c.name,text:'Esse método foi recusado. Podemos esclarecer a proposta sem executar a ação; nenhum item novo foi compartilhado.'});a.used=a.used.filter(move=>move!=='request');return true;}
   if(a.scheme==='link'&&!a.linkSent){a.used=a.used.filter(move=>move!=='request');a.log.push({speaker:c.name,text:'Qual link? Ainda não chegou nenhuma página de resgate aqui.'});return true;}
   if(a.scheme==='update'&&!a.fileSent){a.used=a.used.filter(move=>move!=='request');a.log.push({speaker:c.name,text:'Ainda não chegou nenhum anexo aqui. Você está falando de qual arquivo?'});return true;}
   if(a.trust<sharingThreshold(c.id)||a.suspicion>0){a.log.push({speaker:c.name,text:contextualReply(a,'refuse')});a.stage='question';a.used=a.used.filter(move=>!['answer','request'].includes(move));return true;}

@@ -17,13 +17,13 @@ const cases=[{caller:'nino',scheme:'prize',lines:[
  ['Não quero participar.',null]]}];
 const runs=[];
 for(const mode of ['api','local']){
- let requests=0,accepted=0,repeated=0,relevant=0,checked=0,endedQuestions=0,changedCredits=0;const durations=[],sources={},errors={},targetFailures=[];
+ let requests=0,accepted=0,repeated=0,relevant=0,checked=0,endedQuestions=0,changedCredits=0;const durations=[],sources={},errors={},rejections={},targetFailures=[];
  for(const scenario of cases){const s=fresh();nextCall(s);Object.assign(s.active,{caller:scenario.caller,scheme:scenario.scheme,prepared:true,stage:'question',trust:30,log:[{speaker:'Você',text:'Tenho uma proposta para o evento.'},{speaker:scenario.caller==='nino'?'Nino':'Olga',text:'Quem organizou esse evento?'}]});
  for(const [text,expected]of scenario.lines){if(s.active.outcome)break;const a=s.active,start=performance.now(),prior=a.log.filter(l=>l.speaker!=='Você').slice(-4).map(l=>l.text),fetcher=async(path,options)=>{requests++;if(mode==='local')throw new Error('offline');return fetch(new URL(path,origin),{...options,headers:{...options.headers,Origin:new URL(origin).origin}});};
  const analysis=await analyzeMessage(a,text,fetcher);applyTypedMove(s,'typed',text,analysis);const reply=a.log.at(-1);const drafted=await polishReply(a,reply,fetcher);durations.push(Math.round(performance.now()-start));if(drafted)accepted++;
  const d=dialogueDiagnostic(reply)||{};sources[d.source||'local']=(sources[d.source||'local']||0)+1;if(d.reason||d.status!==200)errors[d.reason||d.status||'none']=(errors[d.reason||d.status||'none']||0)+1;
- if(prior.includes(reply.text))repeated++;if(expected){checked++;if(expected.test(reply.text))relevant++;else targetFailures.push({caller:scenario.caller,messageIndex:scenario.lines.findIndex(line=>line[0]===text),intent:a.lastIntent,source:d.source});if(a.outcome)endedQuestions++;}if(s.credits!==0)changedCredits++;
+ if(d.rejection)rejections[d.rejection]=(rejections[d.rejection]||0)+1;if(prior.includes(reply.text))repeated++;if(expected){checked++;if(expected.test(reply.text))relevant++;else targetFailures.push({caller:scenario.caller,messageIndex:scenario.lines.findIndex(line=>line[0]===text),intent:a.lastIntent,source:d.source});if(a.outcome)endedQuestions++;}if(s.credits!==0)changedCredits++;
  }}
- durations.sort((a,b)=>a-b);runs.push({mode,messages:durations.length,requests,requestsPerMessage:requests/durations.length,acceptedDrafts:accepted,sources,errors,exactRepetitions:repeated,targetedContentChecks:{passed:relevant,total:checked},targetFailures,endedQuestions,changedCredits,latencyMs:{median:durations[Math.floor(durations.length/2)],max:durations.at(-1)}});
+ durations.sort((a,b)=>a-b);runs.push({mode,messages:durations.length,requests,requestsPerMessage:requests/durations.length,acceptedDrafts:accepted,sources,errors,rejections,exactRepetitions:repeated,targetedContentChecks:{passed:relevant,total:checked},targetFailures,endedQuestions,changedCredits,latencyMs:{median:durations[Math.floor(durations.length/2)],max:durations.at(-1)}});
 }
 console.log(JSON.stringify({runs,notice:'Verificações lexicais direcionadas, não avaliação humana universal de pertinência; sem estudantes.'},null,2));

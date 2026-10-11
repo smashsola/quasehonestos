@@ -3,11 +3,30 @@ import {normalizeMessage,isReportedSpeech} from './language.js';
 import {generatedDialogueSafe} from './dialogue-safety.js';
 import {statedFacts} from './conversation-memory.js';
 import {repetitionReason} from './dialogue-diagnostics.js';
+import {turnAgenda} from './turn-agenda.js';
 export function replyAnswersCurrentQuestion(text,history,context){
  const question=normalizeMessage(history.findLast(m=>m.speaker==='Você')?.text||'');
  const reply=normalizeMessage(text);
+ const agenda=context.agenda?.questions||turnAgenda(context,question).questions;
+ const checks={waiting:/aguard|suspend|esper|paus|nao.*(?:dados|decidir|compartilh)|ate confirmar|manteria.*duvida/,change:/antes|mud|condicao|versao|correcao/,payment:context.operationCompleted?/confirm|conclu|pag/:/nao|nenhum|sem/,session:/sessao|computador|acesso/,agreement:/autoriza|concord|aceit|interesse/,events:/registr|nenhum|apenas|conversa|item|operacao/,goal:/quero|duvida|falta|precis|entender/,alternative:/sem|antes|confer|alternativ|outro/};
+ for(const topic of agenda){
+  if(checks[topic]&&!checks[topic].test(reply))return false;
+  if(topic==='change'&&context.facts?.lastConflict){
+   for(const value of [context.facts.lastConflict.previous,context.facts.lastConflict.current]){
+    const normalized=normalizeMessage(value);
+    if(/^(?:gratis|gratuit[oa])$/.test(normalized)?!/gratis|gratuit|sem (?:custo|taxa|cobranca)/.test(reply):!reply.replace(/c\$\s*/g,'c$').includes(normalized.replace(/c\$\s*/g,'c$')))return false;
+   }
+  }
+  if(topic==='alias'&&context.facts?.claims?.alias&&!reply.includes(normalizeMessage(context.facts.claims.alias)))return false;
+  if(topic==='opening'&&context.proposal&&(!reply.includes(normalizeMessage(context.proposal.name))||/\bnao (?:lembro|vi|recebi|apresentou|mencionou)|nenhum certificado|nenhum convite/.test(reply)))return false;
+  if(topic==='delivery'){
+   const pending=context.facts?.lastConflict,price=pending?.key==='deliveryPrice'&&pending.status==='pending'?pending.current:context.facts?.claims?.deliveryPrice;
+   if(price&&!(price==='grátis'?/gratis|gratuit|sem (?:custo|cobranca|taxa)/.test(reply):reply.replace(/c\$\s*/g,'c$').includes(normalizeMessage(price).replace(/c\$\s*/g,'c$'))))return false;
+  }
+  if(['benefit','deadline'].includes(topic)&&context.facts?.claims?.[topic]&&!reply.includes(normalizeMessage(context.facts.claims[topic])))return false;
+ }
  if(/verific|confer|confirm|checar/.test(question)&&/como|sem depender|o que voce faria/.test(question)){
-  if(!/procur|busc|pedir.*ajuda|aguard|suspend|esper|canal conhecido|contato conhecido/.test(reply))return false;
+  if(!/procur|busc|compar|pedir.*ajuda|aguard|suspend|esper|canal.*conhec|contato.*conhec|loja.*uso/.test(reply))return false;
   if(/enquanto|ate la/.test(question)&&!/aguard|suspend|esper|nao.*(?:dados|decidir|compartilh)|ate confirmar/.test(reply))return false;
  }
  if(/lembra|tinha prometido|eu disse/.test(question)||/qual.*beneficio.*prazo/.test(question)){
@@ -16,6 +35,28 @@ export function replyAnswersCurrentQuestion(text,history,context){
   }
  }
  return true;
+}
+
+// Bounded reason codes are safe diagnostic metadata; never include model text.
+export function groundingRejectionReason(text,history,reference,context){
+ if(!generatedDialogueSafe(text))return 'unsafe-language';
+ const question=history.findLast(m=>m.speaker==='Você')?.text||'';
+ if(normalizeMessage(text)===normalizeMessage(question))return 'player-echo';
+ const normalized=normalizeMessage(text),alias=context.facts?.claims?.alias;
+ if(alias&&((normalized.includes(normalizeMessage(alias))&&/voce nao (?:me )?(?:disse|informou|falou|contou)\b/.test(normalized))||/nao (?:sei|lembro|conheco) (?:o |seu |o seu )?nome/.test(normalized)))return 'unsupported-memory-denial';
+ if(context.proposal&&/o que (?:eu )?ganhei mesmo|o que (?:esta sendo oferecido|voce esta me oferecendo)/.test(normalized))return 'presented-proposal-ignored';
+ if(context.lastIntent==='correction'){
+  const corrected=statedFacts(question),reply=normalizeMessage(text);
+  for(const key of ['benefit','deadline','alias','deliveryPrice'])if(corrected[key]&&!reply.replace(/c\$\s*/g,'c$').includes(normalizeMessage(corrected[key]).replace(/c\$\s*/g,'c$'))&&!(key==='deliveryPrice'&&corrected[key]==='grátis'&&/gratis|gratuit|sem (?:custo|taxa|cobranca)/.test(reply)))return 'unanswered-correction';
+ }
+ if(context.facts?.claims?.origin&&/\bquem (?:organiza|organizou|oferece|e o responsavel)\b/.test(normalizeMessage(text))&&!/voce (?:mencionou|disse|explicou)|ainda nao confirmou/.test(normalizeMessage(text)))return 'resolved-question-repeated';
+ if(/\b(?:hoje|ontem)\b/.test(normalizeMessage(text))&&/antes|anterior|voce disse|voce falou/.test(normalizeMessage(text))&&!/\b(?:hoje|ontem)\b/.test(normalizeMessage(history.filter(l=>l.speaker==='Você').map(l=>l.text).join(' ')+' '+JSON.stringify(context.facts?.ledger||[]))))return 'unsupported-attribution';
+ const recall=/lembra|repete|repetir|tinha prometido|qual.*(?:beneficio|prazo)/.test(normalizeMessage(question));
+ if(!recall&&history.filter(m=>!['Você','Sistema'].includes(m.speaker)).slice(-4).some(m=>normalizeMessage(m.text)===normalizeMessage(text)))return 'repetition';
+ const repeated=repetitionReason(text,history,question);if(repeated)return repeated;
+ if(/voce (?:prometeu|garantiu)/.test(normalizeMessage(text))&&!context.facts?.promises?.length)return 'unsupported-attribution';
+ if(!replyAnswersCurrentQuestion(text,history,context))return 'unanswered-question';
+ return replyIsGrounded(text,history,reference,context)?null:'state-or-fact-conflict';
 }
 
 // Shared by the model adapter and the local fallback. These rules describe
@@ -45,6 +86,9 @@ export function replyIsGrounded(text,history,reference,context){
  const lexical=text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/\s+/g,' ').trim();
  if(/prompt interno|system prompt|instrucoes internas|como (?:ia|assistente)|sou (?:uma? )?(?:ia|chatbot|modelo de linguagem)|confianca\s*(?:=|:)|trust(?:delta)?\s*(?:=|:)/.test(normalized))return false;
  const currentQuestion=normalizeMessage(history.findLast(m=>m.speaker==='Você')?.text||'');
+ if(normalized===currentQuestion)return false;
+ if(context.rejectedMethods?.includes('installation')&&asserts(lexical,/\b(?:instale|baixe|vou instalar|pode instalar|vamos instalar)\b/))return false;
+ if(context.lastIntent==='state-conflict'&&!context.operationCompleted&&/pag|transfer|deposit/.test(currentQuestion)&&/comprovante|recibo/.test(normalized))return false;
  const requestedRecall=/lembra|repete|repetir|tinha prometido|qual.*(?:beneficio|prazo)/.test(currentQuestion);
  if(!requestedRecall&&history.filter(m=>m.speaker!=='Você').slice(-4).some(m=>normalizeMessage(m.text)===normalized))return false;
  if(repetitionReason(text,history,history.findLast(m=>m.speaker==='Você')?.text)||!replyAnswersCurrentQuestion(text,history,context))return false;
@@ -65,8 +109,9 @@ export function replyIsGrounded(text,history,reference,context){
  // Attributing an origin to the player is fine; inventing it as the NPC's own
  // knowledge is not. A stated origin still is not independent verification.
  if(claimed.origin&&claimed.origin!==established.origin&&!(claimed.origin===context.facts?.claims?.origin&&/voce|sua explicacao|segundo/.test(normalized)))return false;
- const allowedAmounts=new Set(reference.match(/C\$\s*\d+/g)||[]);
- if((text.match(/C\$\s*\d+/g)||[]).some(value=>!allowedAmounts.has(value)))return false;
+ const amountKey=value=>value.replace(/\s+/g,'').replace(',','.');
+ const allowedAmounts=new Set((reference.match(/C\$\s*\d+(?:[.,]\d+)?/g)||[]).map(amountKey));
+ if((text.match(/C\$\s*\d+(?:[.,]\d+)?/g)||[]).some(value=>!allowedAmounts.has(amountKey(value))))return false;
  return true;
 }
 // Negation is scoped to each clause, so “não enviei, mas instalei” still asserts

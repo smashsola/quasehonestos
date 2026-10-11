@@ -21,6 +21,8 @@ Como reserva inicial de aula, estime **8–12 minutos** para esse percurso, acre
 
 ## Discussão breve
 
+Na revisão local de 10/10, há também uma continuação opcional no **Correio** após avançar o atendimento. Consulte o registro anterior e relacione-o à nova abordagem antes de escolher uma ação. A relação codificada entra no registro anônimo; consultar sozinho não comprova compreensão. Essa etapa adicional ainda não tem duração medida e não entrou nos 106 segundos do percurso técnico descrito acima.
+
 Pergunte: “Qual registro sustentou sua decisão?”, “Uma confirmação faltando prova fraude?” e “O que diferencia confirmar presença de fornecer acesso?”. Não peça exemplos pessoais ou nomes de vítimas. O humor é da firma; exposição e prejuízo merecem apoio, sem culpa da vítima.
 
 ## Registro sem identificação

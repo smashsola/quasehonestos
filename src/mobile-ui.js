@@ -1,4 +1,4 @@
-export const compactScreen=(width,height=Infinity,touch=false)=>touch&&width<=1000;
+export const compactScreen=(width,height=Infinity,touch=false)=>width<=600||touch&&width<=1000;
 export function readingPosition(previous,nextCount){
  if(!previous||previous.bottom)return {follow:true,unread:0};
  return {follow:false,unread:Math.max(0,(previous.unread||0)+nextCount-(previous.count||0))};

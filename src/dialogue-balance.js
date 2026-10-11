@@ -25,7 +25,7 @@ export function trustChange(a,analysis,{eligible=true}={}){
  else if(intent==='pressure'||analysis.pressure){delta=-Math.round(18*p.pressure);rule='pressure';}
  else if(intent==='contradiction'||analysis.consistency==='contradiction'){delta=-Math.round(13*p.consistency);rule='contradiction';}
  else if(intent==='state-conflict'){delta=-Math.round(10*p.consistency);rule='unrecorded-action';}
- else if(['protect','wait','refusal','confession','correction','rule-instruction','question','doubt','uncertain','unclear','offtopic','wrong-item'].includes(intent))rule=intent;
+ else if(['exit','method-refusal','protect','wait','refusal','confession','correction','rule-instruction','question','doubt','uncertain','unclear','offtopic','wrong-item'].includes(intent))rule=intent;
  else if(analysis.repetition){rule='repetition';}
  else if(!eligible||a.stage==='ready'||a.outcome){rule='no-progress';}
  else if(intent==='chat'||intent==='smalltalk'){

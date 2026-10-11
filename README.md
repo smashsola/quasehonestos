@@ -41,6 +41,7 @@ O jogo mantém aviso de privacidade e bloqueio de formatos comuns de dados reais
 
 ## Material da apresentação
 
+- [Revisão local de inicialização e continuidade](docs/REVISAO-INICIALIZACAO-E-CONTINUIDADE.md): reprodução do loop, 427 testes, chamadas reais à IA e limites da verificação móvel; ainda sem publicação deste lote.
 - [Avaliação antes/depois](docs/AVALIACAO-APRENDIZAGEM.md): situações distintas, gabarito e registro agregado sem identificação. **Ainda não aplicada.**
 - [Sessão curta em sala](docs/SESSOES-EM-SALA.md): começo, fim e estimativa provisória baseada no percurso técnico.
 - [Validação de celular](docs/VALIDACAO-MOBILE.md): telas verificadas, percurso e limites do teste sem aparelho real.

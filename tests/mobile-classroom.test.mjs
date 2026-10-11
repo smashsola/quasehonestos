@@ -11,7 +11,7 @@ const start=()=>{const s=fresh();nextCall(s);Object.assign(s.active,{scheme:'pri
 const answers=form=>assessmentForms[form].map(q=>({action:q.correctAction,evidence:q.correctEvidence}));
 test('Celular em retrato e paisagem mantém um app; desktop conserva janelas',()=>{
  for(const width of [360,390,412,430,768])assert.equal(compactScreen(width,844,true),true);
- assert.equal(compactScreen(844,390,true),true);assert.equal(compactScreen(1280,720,false),false);assert.equal(compactScreen(595,672,false),false);assert.equal(compactScreen(390,844,false),false);assert.equal(compactScreen(768,1024,true),true);
+ assert.equal(compactScreen(844,390,true),true);assert.equal(compactScreen(1280,720,false),false);assert.equal(compactScreen(595,672,false),true);assert.equal(compactScreen(390,844,false),true);assert.equal(compactScreen(768,1024,true),true);
 });
 test('Leitura antiga preserva posição e conta só mensagens novas; fim acompanha resposta',()=>{
  assert.deepEqual(readingPosition({bottom:false,count:8,unread:1},10),{follow:false,unread:3});

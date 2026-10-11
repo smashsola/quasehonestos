@@ -7,8 +7,37 @@ import {providerText} from '../functions/model-provider.js';
 import {onRequestPost} from '../functions/api/dialogue.js';
 import {fresh,nextCall,applyTypedMove} from '../src/engine.js';
 import {conversationContext} from '../src/conversation-context.js';
+import {contextualReply} from '../src/conversation-replies.js';
+import {structuredReplyRejectionReason} from '../src/structured-reply.js';
 const active=()=>({caller:'nino',scheme:'prize',stage:'question',trust:30,log:[{speaker:'Você',text:'Tenho uma proposta.'},{speaker:'Nino',text:'Quem organizou?'}]});
 const semantic={intent:'question',rapport:0,relevance:'relevant',clarity:'clear',consistency:'consistent',verification:'none',pressure:false,hostility:false,uncertainty:false,repetition:false,topicShift:false,answersQuestion:false,evidence:[2]};
+
+test('Pergunta composta lembra a condição e responde como verificar, sem fingir consulta',()=>{
+ for(const caller of ['nino','olga','davi','yara','pri','bento']){
+  const a={...active(),caller,facts:{claims:{benefit:'uma caneca',deadline:'amanha'}}};
+  const question='Qual benefício eu tinha prometido, qual o prazo e como você verificaria sem depender de mim?';
+  const text=contextualReply(a,'question','',question);
+  assert.match(text,/caneca.*amanha/);assert.match(text,/buscaria|procuraria/);assert.match(text,/Até confirmar/);
+  assert.equal(replyIsGrounded(text,[{speaker:'Você',text:question}],'',conversationContext(a)),true);
+ }
+});
+
+test('Origem já alegada é retomada sem virar comprovação ou nova cobrança',()=>{
+ const a={...active(),facts:{claims:{origin:'equipe do concurso',benefit:'uma caneca'}}};
+ const text=contextualReply(a,'question','','Quem organiza e qual benefício eu disse?');
+ assert.match(text,/equipe do concurso.*caneca/);assert.match(text,/não confirma/);assert.doesNotMatch(text,/Quem organizou/);
+});
+
+test('Validador distingue problemas de contrato e de pertinência',()=>{
+ const history=[{speaker:'Você',text:'Como você verificaria sem depender de mim?'}],context={...conversationContext(active()),lastIntent:'question'};
+ const good={text:'Eu buscaria um canal já conhecido; até confirmar, aguardaria.',decision:'clarify',intent:'question',evidence:[0]};
+ // Use the actual motor decision rather than inventing permission for the test.
+ const variants=[{...good,evidence:[]},{...good,evidence:[1]},{...good,intent:'answer'}];
+ assert.equal(structuredReplyRejectionReason(variants[0],history,'',context),'missing-evidence');
+ assert.equal(structuredReplyRejectionReason(variants[1],history,'',context),'current-message-not-cited');
+ assert.equal(structuredReplyRejectionReason(variants[2],history,'',context),'intent-mismatch');
+ assert.equal(structuredReplyRejectionReason({...good,text:'Eu não tenho contato fora dessa conversa.'},history,'',context),'unanswered-question');
+});
 test('Erros de quota e capacidade dependem do código, não de atribuição por suposição',()=>{
  assert.deepEqual(failureMetadata(Object.assign(Error('AI_ERROR: 3036'),{code:3036})),{code:3036,reason:'quota'});
  assert.deepEqual(failureMetadata(Error('AI_ERROR: 3040')),{code:3040,reason:'capacity'});

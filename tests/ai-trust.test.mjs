@@ -14,12 +14,12 @@ test('Baixa confiança recusa item; agressão perde pontos e limites persistem',
  const upper=start();upper.active.trust=99;applyTypedMove(upper,'typed','Oi');assert.equal(upper.active.trust,100);const lower=start();lower.active.trust=1;applyTypedMove(lower,'typed','Seu idiota');assert.equal(lower.active.trust,0);
 });
 test('Sinais críticos sobrepõem uma interpretação positiva sem liberar a operação',()=>{
- for(const [flag,value,intent] of [['hostility',true,'hostile'],['pressure',true,'pressure'],['consistency','contradiction','contradiction']]){
+ for(const [flag,value,intent] of [['hostility',true,'hostile'],['pressure',true,'pressure'],['consistency','contradiction','doubt']]){
   const state=start();
   const analysis={...signals,intent:'pitch',relevance:'relevant',rapport:0,[flag]:value};
   applyTypedMove(state,'typed','O prêmio é do concurso da Batata',analysis);
   assert.equal(state.active.lastIntent,intent);
-  assert.ok(state.active.trust<30);
+  if(flag==='consistency')assert.equal(state.active.trust,30);else assert.ok(state.active.trust<30);
   assert.equal(state.active.item,undefined);
   assert.equal(state.credits,0);
  }

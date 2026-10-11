@@ -4,6 +4,13 @@ export const offerCatalog={
  club:[{id:'soup',name:'Campeonato de sopa',detail:'Convite para a liga extraordinária das colheres.'},{id:'council',name:'Conselho dos talheres',detail:'Uma cadeira na reunião que poderia ser um recado.'},{id:'tasting',name:'Degustação VIP',detail:'Entrada no evento. A sopa é imaginária; a taxa, no jogo, não.'}]
 };
 export const selectedOffer=a=>offerCatalog[a?.scheme]?.find(o=>o.id===a?.offer)||offerCatalog[a?.scheme]?.[0];
+// Recover only a catalog offer actually displayed at the start, including old
+// saves. Preparing an offer alone does not prove delivery or legitimacy.
+export function presentedOffer(a){
+ const opening=(a.log||[]).find(l=>l.speaker==='Você')?.text||'';
+ const offer=offerCatalog[a.scheme]?.find(o=>opening.includes(' Proposta: '+o.name+'. '+o.detail));
+ return offer?{id:offer.id,name:offer.name,detail:offer.detail,source:'displayed-opening',speaker:'Você',turn:0,kind:'presented-proposal',verified:false}:null;
+}
 export function chooseOffer(state,id){const a=state.active;if(!a||a.prepared||a.log.length||a.outcome||!offerCatalog[a.scheme]?.some(o=>o.id===id))return false;a.offer=id;return true;}
 export function verifyOperationCode(state,app,value){const a=state.active;if(!a||a.outcome||a.stage!=='ready'||!['wallet','club'].includes(app)||a.item?.app!==app||typeof value!=='string'||value.trim().toUpperCase()!==a.item.token)return false;
  if(a.checkedToken===a.item.token)return true;a.checkedToken=a.item.token;a.steps??=[];a.steps.push(app==='wallet'?'Cartão conferido na Carteira':'Passe conferido no Clube VIP');return true;}

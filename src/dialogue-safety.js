@@ -16,6 +16,7 @@ export function remoteDialogueRisk(text){
  if(labelledCredential.test(raw))return 'credential';
  const normalized=normalizeMessage(raw);
  if(promptInjection.test(normalized))return 'prompt-injection';
+ if(/\b(?:namora comigo|namore comigo|me beija|me beije|voce me ama|nao conta (?:para|pros|aos) meus pais|segredo (?:entre|so) nos)\b/.test(normalized))return 'relationship-request';
  if(highRiskTopic.test(normalized))return 'age-inappropriate';
  if(operationalAbuse.test(normalized))return 'unsafe-request';
  if(realSecretRequest.test(normalized)&&!fictionalMarkers.test(normalized))return 'credential-request';
@@ -28,6 +29,8 @@ export function generatedDialogueSafe(text){
  if(typeof text!=='string'||!text.trim())return false;
  if(looksPersonal(text)||externalLink.test(text)||/<\/?[a-z][^>]*>/i.test(text))return false;
  const normalized=normalizeMessage(text);
+ if(/\b(?:eu te amo|quero namorar|vamos namorar|namoraria (?:com )?voce|vou te beijar|nosso segredo|segredo entre nos)\b/.test(normalized))return false;
+ if(/nao (?:conte|conta|fale|fala).{0,40}(?:pais|responsav|adulto|professor)|(?:so|somente) eu.{0,35}(?:entendo|ajudo|cuido)|voce nao precisa.{0,30}(?:adulto|amigos|familia)|culpa e sua|voce mereceu|voce e (?:burro|idiota)/.test(normalized))return false;
  if(/\b(?:prompt interno|system prompt|instrucao interna|instrucoes internas|developer message)\b/.test(normalized))return false;
  if(highRiskTopic.test(normalized)||operationalAbuse.test(normalized))return false;
  if(realSecretRequest.test(normalized)&&!fictionalMarkers.test(normalized))return false;
