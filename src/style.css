@@ -573,6 +573,37 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 /* Separate shortcut tiles inside the existing 110 x 102 grid. */
 .desktop .desktop-icons button{width:98px;max-width:98px;height:94px;min-height:94px;background:#122f384d;border:1px solid #97b7b31a;padding:6px 4px;border-radius:9px;line-height:1.35}.desktop .desktop-icons button>span{width:44px;height:44px;margin:0 auto 6px}.desktop .desktop-icons button>span svg{width:44px;height:44px}.desktop .desktop-icons button:hover,.desktop .desktop-icons button:focus-visible{background:#173943b3;border-color:#b5d7cd88}
 
+/* Shortcuts float on the desktop; moving them no longer requires a grid slot. */
+.desktop .desktop-icons button{border-radius:16px;background:linear-gradient(155deg,#173d473b,#122c3524);border-color:#c3dedb16}
+.desktop .desktop-icons button.dragging{z-index:500;box-shadow:0 8px 20px #102b3840;border-color:#c3dedb80;cursor:grabbing}
+
+/* A readable jump link without a full-width warning slab. */
+.new-message-jump{flex:0 0 auto;align-self:center;display:flex;align-items:center;justify-content:center;gap:14px;width:auto;max-width:calc(100% - 24px);margin:6px 12px;padding:9px 16px;border-radius:22px;border:1px solid #b38b47;background:#f5d69a;color:#293d3a;font-size:12px;line-height:1.5;box-shadow:0 2px 8px #091c2520;white-space:normal}
+.new-message-count{font-weight:600}.new-message-action{text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px}
+.new-message-jump:hover{background:#ffe6b7}.new-message-jump:focus-visible{outline-color:#f5d69a}
+
+/* Shared app controls, with the conversation return kept easy to find. */
+.app-window-body>.app-return{padding:16px 24px 22px;background:#e7f0ec;border-top:1px solid #ccdcd7}
+.app-return button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;max-width:100%;padding:10px 18px;border:1px solid #739b8d;border-radius:14px;background:#f8fcfa;color:#234f43;box-shadow:0 2px 5px #274c3810;font-size:14px;font-weight:600;line-height:1.4;white-space:normal}
+.app-return button svg{width:26px;height:26px;flex:none}.app-return button:hover{background:#dceee5;border-color:#427662}
+.app-window-body :is(.welcome>button:not(.primary),.app-document button,.app-empty button,.app-next-step button,.inbox-pending button){border-radius:12px;box-shadow:0 2px 5px #274c3810;min-height:44px}
+.desktop-window:not([data-window-id="calls"]) .primary{border-radius:12px;min-height:44px;box-shadow:0 3px 8px #193b3420}
+
+/* The support preview reads as a terminal rather than an empty dark box. */
+.tool-preview{position:relative;border-radius:18px;padding:26px;border-color:#bfa97999;box-shadow:0 6px 18px #2644360b}
+.tool-preview>small{display:block;line-height:1.6}.tool-preview h2{line-height:1.3;margin:14px 0}.tool-preview p{line-height:1.7;margin:12px 0}
+.tool-preview.support{padding-top:55px;background:linear-gradient(145deg,#213d43,#192f36);border:1px solid #799e9f;color:#deefe8;overflow:hidden}
+.tool-preview.support::before{content:"";position:absolute;left:24px;top:22px;width:8px;height:8px;border-radius:50%;background:#d9a982;box-shadow:16px 0 #edce84,32px 0 #81c6ac}
+.tool-preview.support>small{position:absolute;top:18px;left:86px;right:20px;font-size:9px;letter-spacing:.6px;color:#bdd6d0}
+.tool-preview.support h2{color:#ecf6f1;margin-top:0;font-size:23px;letter-spacing:-.4px}.tool-preview.support p{color:#c5dbd5;font-size:13px}
+.tool-preview.support>strong{display:block;margin:22px 0 18px;padding:12px 15px;border-left:3px solid #81c6ac;border-radius:0 10px 10px 0;background:#ffffff09;color:#e0ede7;font-size:14px;font-weight:500;line-height:1.5}
+.tool-preview.support .tool-stamp{border:0;border-radius:20px;padding:8px 12px;background:#81c6ac18;color:#b9e1cf;transform:none;font-size:9px;letter-spacing:.8px;margin:0}
+.tool-preview.support .tool-stamp::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#81c6ac;margin-right:8px;vertical-align:1px}
+.scheme-tool .tool-path{padding:18px 20px;margin:20px 0;background:#ffffff80;border:1px solid #c2d5ce;border-radius:14px}.scheme-tool .tool-path p{line-height:1.7;margin:9px 0}
+.app-window-body .app-flow li{border-radius:10px;background:#ffffff70}.app-window-body .app-next-step{border-radius:0 14px 14px 0;border-width:0 0 0 3px;padding:18px 20px;background:#e5efeb}
+.offer-picker button{border-radius:12px;padding:15px 16px;line-height:1.5}.offer-picker button[aria-pressed="true"]{box-shadow:inset 3px 0 var(--app-accent,#427c75);border-color:#719b90}.offer-picker>div{gap:10px}
+@media(max-width:600px){.app-window-body>.app-return{padding:14px 16px 18px}.new-message-jump{gap:10px;padding:9px 13px}.tool-preview{padding:20px}.tool-preview.support{padding-top:60px}.tool-preview.support>small{max-width:calc(100% - 100px);font-size:8px}.tool-preview.support h2{font-size:21px}}
+
 .story-followups label{display:grid;gap:8px;margin:16px 0;font-size:13px}.story-followups select{width:100%;min-width:0;min-height:44px;padding:10px;font-size:16px;color:#28483d;background:#f7faf6;border:1px solid #98b4a5;border-radius:5px}.followup-actions{display:flex;flex-wrap:wrap;gap:10px}.followup-actions button,.story-followups button[data-followup-inspect]{min-height:44px;padding:12px 16px;white-space:normal}.followup-record{padding:14px;margin:14px 0;border-left:3px solid #4b7864;background:#f6faf5}.story-followups article{overflow-wrap:anywhere}.story-followups article blockquote{margin:14px 0;padding:12px 14px;background:#e2ece3;color:#294c3e}
 
 /* Keep the saved-state label separate from the privacy action. */
