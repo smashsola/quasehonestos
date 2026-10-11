@@ -26,12 +26,20 @@ export function statedFacts(text){
   const origin=originClaim(c);if(origin)facts.origin=origin;
   if(/\bnao (?:precisa|precisamos|pede|pedimos) (?:de |do |dos )?(?:dados|cartao|senha|codigo)\b/.test(c))facts.data='sem pedido de dados';
   else if(/\b(?:precisamos|precisa|pedimos) (?:do|de|da|dos) (?:cartao|senha|codigo|dados)\b/.test(c))facts.data='com pedido de dados';
+  const request=c.match(/\b(?:(?:precisamos|precisa|pedimos) (?:do|de|da|dos|das)|(?:me )?(?:manda|mande|envia|envie|passa|passe|forneca))\s+(?:o |a |os |as |seu |sua |seus |suas )?(cartao|senha|codigo|dados|perfil|contato|rotina|passe|sessao)\b/);
+  if(request&&!/\b(?:nao|nunca|nem)\b/.test(c.slice(0,request.index))){facts.data='com pedido de dados';facts.requestedData=[...new Set([...(facts.requestedData?.split(', ')||[]),request[1]])].sort().join(', ');}
+  if(!/\b(?:nao|nunca|nem)\b/.test(c)){
+   const benefit=c.match(/\b(?:o beneficio (?:e|sera)|voce (?:vai receber|recebera|vai ganhar|ganhara))\s+(.{1,100})$/);
+   if(benefit&&!/^(?:gratis|gratuit[oa]|sem custo)\b/.test(benefit[1]))facts.benefit=benefit[1].replace(/[.!;]+$/,'').trim();
+   const deadline=c.match(/\b(?:o prazo (?:e|sera)|valido ate|valida ate|vale ate)\s+(.{1,60})$/);
+   if(deadline)facts.deadline=deadline[1].replace(/[.!;]+$/,'').trim();
+  }
  }
  return facts;
 }
 export function memoryConflict(a,text){
  const next=statedFacts(text),old=a.facts?.claims||{};
- for(const [key,value] of Object.entries(next)){const previous=old[key]||(key==='price'&&a.memory?.free?'gratuito':null);if(previous&&previous!==value)return {key,previous,current:value};}
+ for(const [key,value] of Object.entries(next)){if(key==='requestedData')continue;const previous=old[key]||(key==='price'&&a.memory?.free?'gratuito':null);if(previous&&previous!==value)return {key,previous,current:value};}
  return null;
 }
 export function questionTopics(text,scheme){
@@ -71,7 +79,7 @@ export function rememberConversation(a,text,intent,stage,analysis=a.lastAnalysis
  const next=statedFacts(text),conflict=intent==='contradiction'?memoryConflict(a,text):null;
  const informative=['pitch','answer','chat','question','correction','unclear','doubt'].includes(intent);
  if(intent==='correction'){m.corrections??=[];m.corrections.push({turn,previous:{...m.claims},current:next});m.corrections=m.corrections.slice(-8);}
- if(informative)for(const [key,value]of Object.entries(next)){if(!m.claims[key]||intent==='correction')m.claims[key]=value;}
+ if(informative)for(const [key,value]of Object.entries(next)){if(key==='requestedData')m.claims[key]=[...new Set([...(m.claims[key]?.split(', ')||[]),...value.split(', ')])].sort().join(', ');else if(!m.claims[key]||intent==='correction')m.claims[key]=value;}
  if(intent==='correction'&&m.claims.price){a.memory??={};a.memory.free=m.claims.price==='gratuito';}
  m.events.push({turn,type:intent,...(conflict?{conflict}:{}),stage:stage||'pitch',shared:!!a.item,...(analysis?{analysis:{...analysis}}:{})});m.events=m.events.slice(-24);m.provenance='afirmações da conversa, não verificação independente';
  if(a.stage==='question'){const question=pendingQuestion(a);if(question)m.question={...question,status:'asked'};}
@@ -82,7 +90,7 @@ export function rememberConversation(a,text,intent,stage,analysis=a.lastAnalysis
  if(intent==='refusal')m.refused=true;
 }
 export function continuityReply(a,conflict){
- const label={price:'o custo',origin:'a organização',data:'o pedido de dados'}[conflict.key];
+ const label={price:'o custo',origin:'a organização',data:'o pedido de dados',benefit:'o benefício prometido',deadline:'o prazo'}[conflict.key];
  const fact=`Antes você disse “${conflict.previous}”; agora, “${conflict.current}”.`;
  const voices={nino:`Ué, ${label} mudou? ${fact} Minha batata perdeu o fio. Explica essa mudança.`,olga:`Meu bem, ${fact} Quero entender a mudança antes de decidir.`,davi:`As condições divergem sobre ${label}. ${fact} Qual informação está valendo?`,yara:`Preciso passar a condição certa para a turma. ${fact} O que mudou?`,pri:`Comparei as duas condições. ${fact} Elas não correspondem.`,bento:`O roteiro mudou no meio. ${fact} Qual versão é a de agora?`};return voices[a.caller];
 }

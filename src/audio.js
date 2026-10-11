@@ -1,3 +1,4 @@
+import {localStore as localStorage} from './safe-storage.js';
 import {speechTiming} from './speech-timing.js';
 let ctx,fanGain;
 // Cartoon syllables: each caller has a different pitch, pace and vowel color.

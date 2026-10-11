@@ -1,3 +1,4 @@
+import {localStore as localStorage,sessionStore as sessionStorage} from './safe-storage.js';
 import {dialogueModel} from './dialogue-config.js';
 import {privacyVersion,exportLocalData,clearLocalData} from './privacy-data.js';
 let dialog,previousFocus,first=false;
@@ -22,4 +23,4 @@ function mount(){const bar=document.querySelector('.taskbar');if(bar&&!bar.query
 new MutationObserver(mount).observe(document.querySelector('#app'),{childList:true,subtree:true});mount();
 document.addEventListener('click',e=>{if(e.target.closest('[data-privacy-open]'))openPrivacy();});
 const firstNotice=()=>{if(localStorage.getItem('qh-privacy-notice')!==privacyVersion)openPrivacy(true);};
-if(document.querySelector('#os-boot'))document.addEventListener('qh-boot-ready',firstNotice,{once:true});else firstNotice();
+if(document.querySelector('#os-boot')&&!document.documentElement.dataset.bootReady)document.addEventListener('qh-boot-ready',firstNotice,{once:true});else firstNotice();

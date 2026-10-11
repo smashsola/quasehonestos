@@ -6,6 +6,7 @@ const shiftNotes=[
  'Último turno: termine o atendimento e revise o que aconteceu nos Resultados.'
 ];
 
+const setText=(element,text)=>{if(element&&element.textContent!==text)element.textContent=text;};
 function shiftNumber(root){
  const text=root.querySelector('.shift')?.textContent||root.querySelector('.desktop-top span')?.textContent||'';
  const match=text.match(/Turno\s+(\d+)/i);
@@ -16,21 +17,21 @@ export function applySupervisorRole(root=document){
  const boss=root.querySelector('.boss');
  if(boss){
   const small=boss.querySelector('small'),title=boss.querySelector('h2'),body=boss.querySelector('p:not(.scribble)'),scribble=boss.querySelector('.scribble');
-  if(small)small.textContent='RECADO DO SUPERVISOR';
-  if(title)title.textContent='Supervisor de turno.';
-  if(body)body.textContent=shiftNotes[shiftNumber(root)-1];
-  if(scribble)scribble.textContent='“Vai por etapas.”';
+  setText(small,'RECADO DO SUPERVISOR');
+  setText(title,'Supervisor de turno.');
+  setText(body,shiftNotes[shiftNumber(root)-1]);
+  setText(scribble,'“Vai por etapas.”');
  }
  const onboarding=root.querySelector('.welcome.onboarding');
  if(onboarding){
   const intro=onboarding.querySelector('.intro-copy p');
-  if(intro)intro.textContent='O café é duvidoso. O treinamento também. Seu computador já está ligado e a primeira chamada está esperando.';
+  setText(intro,'O café é duvidoso. O treinamento também. Seu computador já está ligado e a primeira chamada está esperando.');
   const note=onboarding.querySelector('.first-day-note');
   if(note){
    const label=note.querySelector('div > small'),message=note.querySelector('div > p'),signature=note.querySelector('div > span');
-   if(label)label.textContent='RECADO DO SUPERVISOR';
-   if(message)message.textContent='“Eu te mostro o caminho no primeiro atendimento. A conversa é sua.”';
-   if(signature)signature.textContent='— Supervisor';
+   setText(label,'RECADO DO SUPERVISOR');
+   setText(message,'“Eu te mostro o caminho no primeiro atendimento. A conversa é sua.”');
+   setText(signature,'— Supervisor');
   }
  }
 }
