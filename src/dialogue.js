@@ -1,5 +1,5 @@
 import {interpretMessage} from './message-interpretation.js';
-import {normalizeMessage,negatedRequest} from './language.js';
+import {normalizeMessage,negatedRequest,weatherSmalltalk} from './language.js';
 const normalize=normalizeMessage;
 const topics={link:/pontos|resgate|vale.?lanche|cadastro|formulario|link|pagina|batatapay/,prize:/premio|batata|trofeu|concurso/,support:/suporte|computador|paoos|torradeira|assistencia/,club:/clube|colher|associacao|convite|talher/,update:/skin|changer|blaster|visual|cosmica|atualiz|anexo|arquivo|pacote|instal/};
 export function readMessage(text,scheme,stage,context={}){return interpretMessage(text,{...context,scheme,stage},()=>lexicalIntent(text,scheme,stage));}
@@ -9,6 +9,7 @@ function lexicalIntent(text,scheme,stage){
  if(/idiota|\bburr[oa]\b|otario|cala a boca|imbecil|trouxa|te odeio|seu (?:merda|bosta)|sua (?:merda|bosta)|(?:vim|vou|quero).*\b(?:roubar|robar)\b/.test(t))return 'hostile';
  if(/desculp|foi mal|perdao/.test(t))return 'apology';
  if(negatedRequest(text))return 'uncertain';
+ if(weatherSmalltalk(text))return 'smalltalk';
  if(/como (?:voce esta|vai)|como foi (?:seu|o seu) dia|(?:seu|o) cafe|sua batata|seus memes|o que voce gosta/.test(t))return 'smalltalk';
  if(/nao sei|sei la|tanto faz|esquece|mudei de ideia|nao tenho certeza/.test(t))return 'uncertain';
  if(/sem pressa|com calma|pode (conferir|verificar|pensar)|consulte|confira no|verifique no/.test(t))return 'wait';

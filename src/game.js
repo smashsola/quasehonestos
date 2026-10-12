@@ -19,7 +19,7 @@ import {walletAccountPanel} from './prize-wallet.js';
 import {characterOpening} from './character-openings.js';
 import {officeIcon} from './office-icons.js';
 import {nextObjective} from './conversation-context.js';
-import {analyzeMessage,polishReply} from './ai-dialogue.js';
+import {analyzeTurn as analyzeMessage,polishReply} from './ai-dialogue.js';
 import {fitWindow,resizeWindow} from './window-geometry.js';
 import {desktopIconPosition,initialDesktopIcons} from './desktop-icons.js';
 import {resultImpact,consequenceCard,resultReport} from './result-impact.js';

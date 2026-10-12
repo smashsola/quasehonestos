@@ -50,7 +50,7 @@ export async function workersReply(config,body){
  const requested=Number(body.generationConfig?.temperature);
  const temperature=Number.isFinite(requested)?Math.max(.2,Math.min(.65,requested)):.55;
  try{return await Promise.race([
-  config.binding.run(config.model,{messages:body.messages||[{role:'system',content:body.systemInstruction.parts.map(p=>p.text).join('\n')},{role:'user',content:body.contents[0].parts.map(p=>p.text).join('\n')+'\n/no_think'}],max_tokens:512,temperature,response_format:{type:'json_schema',json_schema:jsonSchema(body.generationConfig.responseSchema)}}),
+  config.binding.run(config.model,{messages:body.messages||[{role:'system',content:body.systemInstruction.parts.map(p=>p.text).join('\n')},{role:'user',content:body.contents[0].parts.map(p=>p.text).join('\n')+'\n/no_think'}],max_tokens:Math.max(128,Math.min(512,Number(body.generationConfig?.maxOutputTokens)||512)),temperature,response_format:{type:'json_schema',json_schema:jsonSchema(body.generationConfig.responseSchema)}}),
   new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),deadline(body));})
  ]);}finally{clearTimeout(timer);}
 }

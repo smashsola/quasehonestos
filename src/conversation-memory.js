@@ -21,8 +21,8 @@ export function statedFacts(text){
  for(const clause of messageClauses(text)){
   const c=clause.split(/\s*,?\s+(?:porque|pois|ja que)\s+/)[0];
   if(isQuestionClause(c)||isReportedSpeech(c)||isHypotheticalClause(c))continue;
-  const negatedFree=/\b(?:nao|nunca) (?:e |era |foi |sera )?(?:gratis|gratuit[oa]|sem custo|sem taxa)\b/.test(c);
-  const free=!negatedFree&&/\b(?:gratis|gratuito|gratuita|sem custo|sem taxa|sem cobranca|nao (?:tem|ha|existe|tera|havera) (?:mais |uma )?(?:taxa|cobranca|custo)|nao (?:precisa|vai|tem que) pagar|(?:retirei|retiramos|cancelei|cancelamos) a (?:taxa|cobranca))\b/.test(c);
+  const negatedFree=/\b(?:nao|nunca) (?:e |era |foi |sera )?(?:gratis|gratuit[oa]|de graca|sem custo|sem taxa)\b/.test(c);
+  const free=!negatedFree&&/\b(?:gratis|gratuito|gratuita|de graca|sem custo|sem taxa|sem cobranca|nao (?:tem|ha|existe|tera|havera) (?:mais |uma )?(?:taxa|cobranca|custo)|nao (?:precisa|vai|tem que) pagar|(?:retirei|retiramos|cancelei|cancelamos) a (?:taxa|cobranca))\b/.test(c);
   const paid=negatedFree||/\b(?:precisa pagar|tem que pagar|pague|custa|cobramos|ha uma taxa|tem uma taxa|taxa de)\b/.test(c)&&!free;
   const delivery=/\b(?:entrega|frete|envio)\b/.test(c);
   const amount=c.match(/\bc\$\s*(\d{1,6}(?:[.,]\d{1,2})?)/);

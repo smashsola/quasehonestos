@@ -130,7 +130,7 @@ function applyTypedMoveLocal(state,_id,text,analysis){
  if(a.scheme==='link'&&a.linkOpened&&intent==='request'&&!/preench|cadastr|envie|enviar/.test(text.toLowerCase()))return say(contextualReply(a,'opened'),'A página foi aberta novamente; nenhum dado foi enviado.');
  if(intent==='wrong-item')return say(nextAction[a.scheme],'O pedido era de outro app. Nenhum item, permissão ou crédito foi liberado.');
  if(intent==='apology'){a.irritation=Math.max(0,a.irritation-1);return say(livingReply(a,'repair'),'O pedido de desculpas reduziu a irritação, sem comprovar a proposta.');}
- if(intent==='smalltalk'){a.asides=(a.asides||0)+1;return say(a.asides%2?livingReply(a,'aside'):livingReply(a,'repeat'),'A conversa pessoal não liberou itens ou créditos.');}
+ if(intent==='smalltalk'){a.asides=(a.asides||0)+1;return say(a.asides%2?livingReply(a,'aside',text):livingReply(a,'repeat',text),'A conversa pessoal não liberou itens ou créditos.');}
  if(intent==='hostile'||intent==='uncertain'||intent==='contradiction'){
   if(intent!=='uncertain')a.suspicion++;if(intent==='hostile')a.irritation+=2;
   const reply=intent==='hostile'?characterReply(c.id,'hostile'):intent==='contradiction'?(factConflict?continuityReply(a,factConflict):'Pera, você mudou de proposta. Quero entender a anterior antes de seguir.'):'Vamos esclarecer essa dúvida antes de continuar.';

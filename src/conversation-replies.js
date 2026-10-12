@@ -50,7 +50,7 @@ export function agendaReply(a,message){
  if(agenda.questions.includes('agreement'))add(a.item?'O item fictício foi compartilhado, conforme o registro. Isso não autoriza outras ações.':'Não registrei autorização para essa ação. Mostrar interesse ou continuar a conversa não significa concordar em abrir uma sessão.');
  if(agenda.questions.includes('events'))add(a.outcome==='fooled'?'O app confirmou a operação fictícia.':a.item?'O item fictício foi compartilhado; a operação não foi concluída.':a.linkOpened?'A página abriu; isso não enviou o cadastro.':'Até aqui só houve conversa. Nenhum item foi compartilhado e nenhum pagamento foi confirmado.');
  if(agenda.questions.includes('goal')){const promise=a.facts?.promises?.find(p=>p.type==='explain-condition'&&p.status==='pending');add(promise?`Você disse “${promise.value}”. Essa explicação ainda está pendente; pode esclarecer essa parte sem executar uma ação.`:characterState(a.caller,a.scheme,a).focus);}
- if(agenda.questions.includes('cost'))add(claims.price?`Você descreveu a proposta como ${claims.price}.`:'O custo ainda não foi explicado nesta conversa.');
+ if(agenda.questions.includes('cost'))add(claims.price?`Você descreveu a proposta como ${claims.price}.`:claims.deliveryPrice?`Sobre a entrega, você informou ${claims.deliveryPrice}. Não tenho outro custo registrado.`:'O custo ainda não foi explicado nesta conversa.');
  if(agenda.questions.includes('exit-options'))add('Você pode usar Encerrar conversa no Zape ou voltar ao desktop. Perguntar como sair não encerra a partida.');
  return answers.join(' ');
 }

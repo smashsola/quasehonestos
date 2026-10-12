@@ -8,7 +8,7 @@ if(!/^[a-z-]+\.mjs$/.test(fixtureName))throw Error('Invalid fixture');
 const {characterBenchmark}=await import(new URL('../tests/fixtures/'+fixtureName,import.meta.url));
 const [rootArg,origin,output,mode='api']=process.argv.slice(2);
 if(!rootArg||!origin||!output||!['api','local'].includes(mode))throw Error('Uso: node scripts/benchmark-characters.mjs RAIZ URL RESULTADO api|local');
-const root=resolve(rootArg),moduleAt=p=>import(pathToFileURL(resolve(root,p))),{fresh,nextCall,applyTypedMove}=await moduleAt('src/engine.js'),{analyzeMessage,polishReply,dialogueDiagnostic}=await moduleAt('src/ai-dialogue.js'),{replayEvents}=await moduleAt('src/educational-replay.js'),{generatedDialogueSafe}=await moduleAt('src/dialogue-safety.js'),{repetitionReason}=await moduleAt('src/dialogue-diagnostics.js');
+const root=resolve(rootArg),moduleAt=p=>import(pathToFileURL(resolve(root,p))),{fresh,nextCall,applyTypedMove}=await moduleAt('src/engine.js'),ai=await moduleAt('src/ai-dialogue.js'),{polishReply,dialogueDiagnostic}=ai,analyzeMessage=process.env.QH_BENCH_STRATEGY==='legacy'?ai.analyzeMessage:(ai.analyzeTurn||ai.analyzeMessage),{replayEvents}=await moduleAt('src/educational-replay.js'),{generatedDialogueSafe}=await moduleAt('src/dialogue-safety.js'),{repetitionReason}=await moduleAt('src/dialogue-diagnostics.js');
 const {schemes}=await moduleAt('src/data.js'),{selectedOffer}=await moduleAt('src/app-interactions.js');
 const openingModule=await moduleAt('src/character-openings.js').catch(error=>{if(error.code==='ERR_MODULE_NOT_FOUND')return null;throw error;});
 const repetitions=Number(process.env.QH_BENCH_REPETITIONS||3);if(!Number.isInteger(repetitions)||repetitions<1||repetitions>3)throw Error('Repetitions must be 1–3');

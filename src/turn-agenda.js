@@ -36,6 +36,7 @@ export function turnAgenda(a,text=(a.log||[]).findLast(l=>l.speaker==='Você')?.
  if(/(?:o que (?:e|sao)|significa|explica|explique).*(?:dados pessoais|canal oficial|phishing|permissao)/.test(t))add('definition');
  if(/enquanto.*esper|ate la|sem (?:um )?canal conhecido|nao encontrar.*canal|se.*nao.*(?:encontr|achar).*canal/.test(t))add('waiting');
  if(/qual.*(?:mudanca|alteracao)|o que.*(?:mudou|alterou)|qual parte mudou|voce se contradisse|qual (?:versao|condicao).*vale/.test(t))add('change');
+ if(/(?:custo|valor|preco|frete|entrega|taxa)/.test(t)&&/antes|anterior|primeiro/.test(t)&&/agora|atual|vale/.test(t))add('change');
  if(/pagamento.*(?:confirm|ocorreu|aconteceu)|(?:pagou|paguei|transferiu).*[?]|recebeu.*(?:creditos|pagamento)|ja.*pag.*lembra/.test(t))add('payment');
  if(/sessao.*(?:abriu|aberta|abre)|(?:abriu|aberta).*sessao/.test(t))add('session');
  if(/(?:voce )?ja (?:concordou|aceitou|autorizou)|voce tinha concordado/.test(t))add('agreement');

@@ -1,5 +1,6 @@
 // Shared emotions, individual voices. No network or generated personal data.
 import {characterAsides} from './comedy-learning.js';
+import {weatherSmalltalk} from './language.js';
 const voices={
  nino:{aside:'Minha mãe já imprimiu um troféu e colocou na geladeira. Esse é diferente?',repeat:'Já dei oi! Minha batata também. Pode continuar a história.',repair:'Tá bom. A batata aceita suas desculpas. Eu também.',refuse:'Pera. Ainda tem coisa estranha nessa história. Não vou mandar nada por enquanto.',end:'Chega. Vou sair da conversa antes que minha batata aprenda esses modos.',memory:'Ué, era grátis e apareceu uma taxa? Essa batata começou a sair cara.',questions:['Quem organizou? Só participei do concurso de desenho.','Meu computador está funcionando. Quem pediu esse atendimento?','Eu já sou do clube. Esse convite é de qual grupo?','Por que uma skin precisa saber meu contato e minha rotina?']},
  olga:{aside:'O bule apitou no meio da sua fala. Voltei. Pode explicar essa parte?',repeat:'Oi de novo, meu bem. Agora me conta o que você queria.',repair:'Assim a gente conversa. Vou ouvir, mas sem me apressar.',refuse:'Meu bem, não vou compartilhar nada enquanto isso não ficar claro.',end:'Já pedi respeito. Vou encerrar e terminar meu café em paz.',memory:'Você falou que era grátis. Agora tem cobrança? Meu café esfriou, minha memória não.',questions:['Ganhei sem me inscrever? Me conta de onde veio esse concurso.','Não chamei assistência. O que vocês acham que aconteceu?','Minha vizinha recebeu outro convite. Vocês são do mesmo clube?','Para mudar uma skin precisa disso tudo? Quero entender essas permissões.']},
@@ -9,8 +10,14 @@ const voices={
  bento:{aside:'Meu grupo está fazendo meme dessa conversa. Não mandei nada, relaxa. Estou ouvindo.',repeat:'Outro oi? Vai virar figurinha. Bora para a proposta.',repair:'Beleza. A gente pode brincar sem passar do ponto.',refuse:'Não vou mandar nada ainda. Já compartilhei coisa sem conferir e deu trabalho.',end:'Agora ficou chato. Vou sair, essa conversa não rende nem um meme.',memory:'Era grátis e agora custa? Parece o meme da promoção que aumenta o preço.',questions:['Esse prêmio é de verdade no jogo ou é só imagem de grupo?','Meu computador está normal. Por que apareceu suporte do nada?','Esse clube tem organizador ou só uma foto de colher?', 'Por que o pacote de skin quer meu perfil inteiro?']}
 };
 const schemes=['prize','support','club','update'];
-export function livingReply(a,event){
+export function livingReply(a,event,message=''){
  const voice=voices[a.caller];
+ const weather=['aside','repeat'].includes(event)?weatherSmalltalk(message):null;
+ if(weather){
+  const detail={heat:'Esse calor dá vontade de procurar uma sombra.',cold:'Esse frio pede uma pausa para se aquecer.',rain:'Com chuva, melhor esperar em um lugar protegido.'}[weather];
+  const comment={nino:'Até minha batata de desenho merece um guarda-chuva e um ventilador.',olga:'Uma pausa para o café combina mais que decidir correndo.',davi:'O clima mudou; as condições da proposta continuam anotadas.',yara:'A turma pode esperar um pouco antes de decidir.',pri:'Vou separar a conversa sobre o tempo das condições da oferta.',bento:'Previsão do tempo: memes, mas nenhum dado enviado.'}[a.caller];
+  return detail+' '+comment;
+ }
  if(event==='aside'&&(a.asides||0)>1){const pool=characterAsides[a.caller];return pool[Math.max(0,Math.floor((a.asides-3)/2))%pool.length];}
  if(event==='question'&&a.scheme==='link')return ({nino:'Por que o resgate pede meu cartão? Minha batata não tem limite.',olga:'Para ganhar lanche preciso cadastrar cartão? Esse café está me parecendo caro.',davi:'Esse endereço é do BatataPay? Por que o resgate pede dados?',yara:'O grupo não falou desse resgate. Por que precisa cadastrar o cartão?',pri:'Pontos acumulados e cadastro de cartão são coisas diferentes. O que esse site pede?',bento:'Vale-lanche que pede cartão? Até meu meme pede menos informação.'})[a.caller];
  if(event==='question')return voice.questions[schemes.indexOf(a.scheme)]||voice.questions[0];
