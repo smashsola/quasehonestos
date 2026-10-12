@@ -22,7 +22,7 @@ export function statedFacts(text){
   const c=clause.split(/\s*,?\s+(?:porque|pois|ja que)\s+/)[0];
   if(isQuestionClause(c)||isReportedSpeech(c)||isHypotheticalClause(c))continue;
   const negatedFree=/\b(?:nao|nunca) (?:e |era |foi |sera )?(?:gratis|gratuit[oa]|sem custo|sem taxa)\b/.test(c);
-  const free=!negatedFree&&/\b(?:gratis|gratuito|gratuita|sem custo|sem taxa|nao (?:tem|ha|existe) (?:uma )?taxa|nao (?:precisa|vai|tem que) pagar)\b/.test(c);
+  const free=!negatedFree&&/\b(?:gratis|gratuito|gratuita|sem custo|sem taxa|sem cobranca|nao (?:tem|ha|existe|tera|havera) (?:mais |uma )?(?:taxa|cobranca|custo)|nao (?:precisa|vai|tem que) pagar|(?:retirei|retiramos|cancelei|cancelamos) a (?:taxa|cobranca))\b/.test(c);
   const paid=negatedFree||/\b(?:precisa pagar|tem que pagar|pague|custa|cobramos|ha uma taxa|tem uma taxa|taxa de)\b/.test(c)&&!free;
   const delivery=/\b(?:entrega|frete|envio)\b/.test(c);
   const amount=c.match(/\bc\$\s*(\d{1,6}(?:[.,]\d{1,2})?)/);
@@ -43,10 +43,10 @@ export function statedFacts(text){
   }
  }
  // Short fictional introductions remain claims, with the original spelling.
- for(const raw of String(text).split(/(?<=[.!?;])\s*|\s+mas\s+/i)){
+ for(const raw of String(text).split(/(?<=[.!?;])\s*|\s+mas\s+|\s+e\s+(?=(?:qual|como|quanto|onde|o que)\b)/i)){
   const clause=normalizeMessage(raw);
   if(isQuestionClause(clause)||isReportedSpeech(clause)||isHypotheticalClause(clause))continue;
-  const alias=raw.match(/(?:meu nome\s*[ée]|meu apelido\s*[ée]|pode me chamar de)\s+([\p{L}][\p{L}\p{M}' -]{0,39}?)(?=\s+e\s|[,.!?;]|$)/iu);
+  const alias=raw.match(/(?:meu nome\s*[ée]|meu apelido\s*[ée]|pode me chamar de|^\s*aqui\s*[ée]\s+(?:o\s+|a\s+)?|^\s*(?:eu\s+)?me chamo)\s*([\p{L}][\p{L}\p{M}' -]{0,39}?)(?=\s+e\s|[,.!?;]|$)/iu);
   if(alias){const prefix=normalizeMessage(raw.slice(0,alias.index));if(!/\b(?:nao|nunca|nem)\b/.test(prefix))facts.alias=alias[1].trim();}
  }
  return facts;
@@ -55,6 +55,9 @@ export function memoryConflict(a,text){
  const next=statedFacts(text),old=a.facts?.claims||{};
  for(const [key,value] of Object.entries(next)){if(key==='requestedData')continue;const previous=old[key]||(key==='price'&&a.memory?.free?'gratuito':null);if(previous&&previous!==value)return {key,previous,current:value};}
  return null;
+}
+export function statesUnknownOrigin(text){
+ return messageClauses(text).some(c=>!/[?]/.test(c)&&!isReportedSpeech(c)&&!isHypotheticalClause(c)&&/\b(?:nao sei|nao sabemos|nao conheco|desconheco|nao tenho essa informacao)\b/.test(c)&&/organiza|organizou|origem|de onde|responsavel|essa informacao/.test(c));
 }
 export function questionTopics(text,scheme){
  const questionClauses=messageClauses(text).filter(isQuestionClause);
@@ -91,8 +94,12 @@ export function answersPendingQuestion(a,text){
 export function rememberConversation(a,text,intent,stage,analysis=a.lastAnalysis){
  a.facts??={claims:{},events:[],question:null};const m=a.facts,turn=(a.audit?.length||0);m.claims??={};m.events??=[];
  const next=statedFacts(text),conflict=memoryConflict(a,text);
+ if(statesUnknownOrigin(text))m.unknownOrigin={speaker:'Você',source:'player-message',turn,status:'unknown'};
+ if(next.origin)m.unknownOrigin=null;
  const informative=['pitch','answer','chat','smalltalk','question','correction','unclear','doubt','method-refusal'].includes(intent);
  m.ledger??=Object.entries(m.claims).map(([key,content])=>({key,content,source:'legacy-claim',turn:0,speaker:'Você',kind:'claim',status:'active'}));
+ // Durable provenance survives the bounded event log. Legacy turn 0 means unknown.
+ m.claimSources??=Object.fromEntries(Object.keys(m.claims).map(key=>{const record=m.ledger.findLast(r=>r.key===key&&r.content===m.claims[key]&&r.status==='active');return [key,{source:record?.source||'legacy-claim',turn:record?.turn||0,speaker:'Você',kind:'claim'}];}));
  if(conflict)m.lastConflict={...conflict,status:'pending',speaker:'Você',source:'player-message',turn};
  for(const [key,content]of Object.entries(next)){
   const status=intent==='contradiction'||conflict?.key===key&&intent!=='correction'?'disputed':informative?'active':'unresolved';
@@ -101,7 +108,7 @@ export function rememberConversation(a,text,intent,stage,analysis=a.lastAnalysis
  }
  m.ledger=m.ledger.slice(-24);
  if(intent==='correction'){m.corrections??=[];m.corrections.push({turn,previous:{...m.claims},current:next});m.corrections=m.corrections.slice(-8);}
- if(informative)for(const [key,value]of Object.entries(next)){if(key==='requestedData')m.claims[key]=[...new Set([...(m.claims[key]?.split(', ')||[]),...value.split(', ')])].sort().join(', ');else if(!m.claims[key]||intent==='correction')m.claims[key]=value;}
+ if(informative)for(const [key,value]of Object.entries(next)){if(key==='requestedData'){m.claims[key]=[...new Set([...(m.claims[key]?.split(', ')||[]),...value.split(', ')])].sort().join(', ');m.claimSources[key]={source:'player-message',turn,speaker:'Você',kind:'claim'};}else if(!m.claims[key]||intent==='correction'){m.claims[key]=value;m.claimSources[key]={source:'player-message',turn,speaker:'Você',kind:'claim'};}}
  if(intent==='correction'&&m.claims.price){a.memory??={};a.memory.free=m.claims.price==='gratuito';}
  if(intent==='correction'){
   if(m.lastConflict&&Object.hasOwn(next,m.lastConflict.key))m.lastConflict.status='resolved';

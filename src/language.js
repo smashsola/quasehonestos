@@ -24,11 +24,12 @@ function oneEdit(a,b){
 function repairWord(word){if(word.length<5||semanticVocabulary.includes(word)||semanticVocabulary.some(candidate=>candidate.endsWith('r')&&candidate.slice(0,-1)===word))return word;const candidates=semanticVocabulary.filter(candidate=>oneEdit(word,candidate));return candidates.length===1?candidates[0]:word;}
 words.vo='vou';words.oqe='o que';words.gratiz='gratis';words.msm='mesmo';words.tu='voce';words.organizo='organizou';
 export function messageClauses(text){
- return normalizeMessage(text).replace(/\bnum (?=(?:vou|quero|pretendo|posso|mand|envi|pass|verific|confer|confirm)\w*\b)/g,'nao ').split(/(?<=[.!?;])\s*|,\s*(?=(?:entendeu|ne|certo|ok)\?)|\s*,?\s+mas\s+|\s+e\s+(?=(?:eu |vou |nao |me |confira|verifique|confirme|consulte|procure|mande|envie|compartilhe|libere|instale|preencha))/).map(clause=>clause.trim()).filter(Boolean);
+ return normalizeMessage(text).replace(/\bnum (?=(?:vou|quero|pretendo|posso|mand|envi|pass|verific|confer|confirm)\w*\b)/g,'nao ').split(/(?<=[.!?;])\s*|,\s*(?=(?:entendeu|ne|certo|ok)\?)|\s*,?\s+mas\s+|\s+e\s+(?=(?:qual\b|como\b|quanto\b|onde\b|o que\b|eu |vou |nao |me |confira|verifique|confirme|consulte|procure|mande|envie|compartilhe|libere|instale|preencha))/).map(clause=>clause.trim()).filter(Boolean);
 }
 export function isQuestionClause(text){
  const t=normalizeMessage(text).replace(/^(?:(?:oxe|ue|mano|vei|po|entao|ta|esta|mas|tipo|assim|pode pa|slk|meu deus)[, ]+)+/,'');
- return /\?/.test(t)||/^(?:quem|qual|como|onde|quando|porque|por que|o que|que que|sera que|tem como|da para)\b/.test(t)||/\b(?:me )?(?:explica|explique|esclareca|me diz|me diga|me conta|me conte)\b/.test(t)||/\b(?:de onde|(?:confiar|acreditar).*porque|quem (?:organizou|organiza)|voce quer o que)\b/.test(t);
+ if(!/\?/.test(t)&&/^(?:eu )?nao (?:sei|sabemos|conheco) (?:quem|de onde)\b/.test(t))return false;
+ return /\?/.test(t)||/^(?:quem|qual|como|onde|quando|porque|por que|o que|que que|que nome|que apelido|sera que|tem como|da para)\b/.test(t)||/\b(?:pode|poderia|consegue) (?:me )?(?:responder|lembrar|relembrar)\b/.test(t)||/\b(?:me )?(?:explica|explique|esclareca|me diz|me diga|me conta|me conte)\b/.test(t)||/\b(?:de onde|(?:confiar|acreditar).*porque|quem (?:organizou|organiza)|voce quer o que)\b/.test(t);
 }
 export function isHypotheticalClause(text){
  const t=normalizeMessage(text);
@@ -37,6 +38,8 @@ export function isHypotheticalClause(text){
 export function isReportedSpeech(text){return reportedSpeech.test(normalizeMessage(text));}
 export function negatedRequest(text){
  const t=normalizeMessage(text).replace(/\bnum (?=(?:vou|vo|quero|pretendo|posso|mando|envio|passo|compartilho|instalo|abro|preencho|clico|uso|participo|continuo)\b)/g,'nao ');
+ // "O envio não tem taxa" uses a noun, not the first-person verb "envio".
+ if(/^(?:o )?envio nao (?:tem|tera|custa|exige|precisa|e|sera)\b/.test(t))return false;
  if(directRefusal.test(t)||offerRefusal.test(t)||postposedRefusal.test(t))return true;
  if(/\bnao rola\s+/.test(t)&&refusalAction.test(t))return true;
  if(/\b(?:nao (?:vou|vo|quero|pretendo|posso)|prefiro nao|melhor nao|acho melhor nao|nao preciso)\s+/.test(t)){

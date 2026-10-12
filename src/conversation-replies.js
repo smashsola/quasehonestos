@@ -1,15 +1,31 @@
 // Authored, local replies selected from the actual conversation state.
 // Variation changes the wording only; it cannot grant access or create data.
 import {normalizeMessage,isReportedSpeech} from './language.js';
-import {pendingQuestion,statedFacts,memoryConflict} from './conversation-memory.js';
+import {pendingQuestion,statedFacts,memoryConflict,statesUnknownOrigin} from './conversation-memory.js';
 import {presentedOffer} from './app-interactions.js';
-import {turnAgenda} from './turn-agenda.js';
-import {characterState} from './conversation-context.js';
+import {turnAgenda,attributionRepair} from './turn-agenda.js';
+import {characterState,conversationContext} from './conversation-context.js';
+import {replyAnswersCurrentQuestion} from './dialogue-model-rules.js';
+import {educationalDefinition,riskExplanation} from './youth-dialogue.js';
+export function completeLocalReply(a,message,candidate){
+ if(a.outcome||['refusal','exit','protect','hostile','rule-instruction','confession'].includes(a.lastIntent))return {text:candidate,repair:null};
+ const agenda=turnAgenda(a,message);if(!agenda.questions.length)return {text:candidate,repair:null};
+ const context=conversationContext(a),conflict=memoryConflict(a,message);
+ context.agenda=agenda;context.facts={...context.facts,claims:{...context.facts?.claims,...statedFacts(message)},...(conflict?{lastConflict:{...conflict,status:'pending'}}:{})};
+ if(replyAnswersCurrentQuestion(candidate,[{speaker:'Você',text:message}],context))return {text:candidate,repair:null};
+ const planned=agendaReply(a,message);
+ return {text:planned||'Qual parte da proposta você quer esclarecer? Não vou executar uma ação enquanto isso não estiver claro.',repair:'unanswered-question'};
+}
 export function agendaReply(a,message){
  const agenda=turnAgenda(a,message),claims={...a.facts?.claims,...statedFacts(message)},answers=[];
  const add=line=>{if(line&&!answers.includes(line))answers.push(line);};
+ const change=memoryConflict(a,message)||a.facts?.lastConflict;
+ if(change?.key==='deliveryPrice'&&statedFacts(message).deliveryPrice&&!agenda.questions.includes('delivery')&&!agenda.questions.includes('change'))add(`Você atualizou a entrega de ${change.previous} para ${change.current}; isso é uma condição declarada, ainda sem confirmação.`);
+ if(/deixou de responder|faltou.*(?:responder|nome)|nao respondeu/.test(normalizeMessage(message)))add('Vamos retomar a parte que você pediu.');
  if(agenda.questions.includes('legitimacy'))add('Não. A proposta apareceu na conversa, mas isso não comprova o prêmio ou convite. Eu precisaria conferir a origem por um canal já conhecido.');
- if(agenda.questions.includes('alias'))add(claims.alias?`Você se apresentou como ${claims.alias}.`:'Você ainda não me disse como quer ser chamado nesta conversa; não vou adivinhar.');
+ if(agenda.questions.includes('alias'))add(claims.alias?({nino:`${claims.alias}, foi assim que você se apresentou.`,olga:`Você pediu para eu chamar você de ${claims.alias}.`,davi:`Você se identificou como ${claims.alias}.`,yara:`Você se apresentou como ${claims.alias}.`,pri:`O nome que você informou foi ${claims.alias}.`,bento:`Você pediu o apelido ${claims.alias}.`})[a.caller]:'Você ainda não me disse como quer ser chamado nesta conversa; não vou adivinhar.');
+ if(agenda.questions.includes('definition'))add(educationalDefinition(message));
+ if(agenda.questions.includes('risk'))add(riskExplanation(a.scheme,a.caller));
  if(agenda.questions.includes('opening')){const offer=presentedOffer(a);add(offer?`Na abertura você apresentou “${offer.name}”: ${offer.detail}`:'Não apareceu um certificado ou convite identificado na abertura desta conversa.');}
  if(agenda.questions.includes('delivery')){const pending=a.facts?.lastConflict,price=statedFacts(message).deliveryPrice||(pending?.key==='deliveryPrice'&&pending.status==='pending'?pending.current:claims.deliveryPrice);add(price?`Você declarou a entrega ${price==='grátis'?'grátis':'por '+price}.${pending?.key==='deliveryPrice'&&pending.status==='pending'?' Essa é a nova condição que você apresentou; a mudança ainda precisa ser esclarecida.':''}`:'Você ainda não informou o custo da entrega nesta conversa.');}
  if(agenda.questions.includes('origin'))add(claims.origin?`Você disse que foi ${claims.origin}, mas não confirmei essa informação por outro canal.`:'Você ainda não informou quem organiza; eu não vou inventar um responsável.');
@@ -22,7 +38,10 @@ export function agendaReply(a,message){
  if(agenda.questions.includes('verification')){
   if(claims.origin&&!agenda.questions.includes('origin'))add(`Você mencionou ${claims.origin}, mas isso ainda é uma afirmação.`);
   const plans={nino:'Eu buscaria um canal do concurso que já conheça; se não encontrar, pediria ajuda a um adulto de confiança.',olga:'Eu procuraria um canal já conhecido fora desta conversa, sem pressa para decidir.',davi:'Eu buscaria um registro ou canal já conhecido para comparar, sem usar o contato recebido.',yara:'Eu procuraria confirmação com a turma por um canal que já usamos, sem encaminhar os dados.',pri:'Eu buscaria as condições num canal já conhecido para comparar; uma promessa nesta conversa não confirma a oferta.',bento:'Eu procuraria um canal que já conheça ou pediria ajuda a um adulto de confiança, sem instalar só pela promessa.'};
-  add(count===0?plans[a.caller]:count===1?'Eu ainda não fiz uma consulta. Buscaria o canal por conta própria, sem usar o link recebido.':'A confirmação precisa vir de fora desta conversa, por um canal que eu já conheça. Se não houver um, pediria ajuda em vez de decidir no chute.');add(waiting);
+  add(plans[a.caller]);
+  // Explain the next step when the player already said the source is unknown.
+  if(a.facts?.unknownOrigin)add('Como você disse que não sabe quem organiza, eu não usaria seu contato como confirmação.');
+  add(waiting);
  }else if(agenda.questions.includes('waiting'))add('Se eu não tiver um canal conhecido, posso pedir ajuda a um adulto de confiança. '+waiting);
  if(agenda.questions.includes('alternative'))add(({update:'Podemos conferir a origem e as permissões na loja fictícia antes de instalar; não preciso instalar para continuar a conversa.',support:'Podemos esclarecer o problema e a origem do pedido sem abrir uma sessão remota.',link:'Podemos conferir o resgate no app conhecido, sem abrir o link recebido.',prize:'Podemos conferir o concurso antes de compartilhar o cartão fictício.',club:'Podemos entender o convite e conferir a organização antes de passar o passe.'})[a.scheme]);
  if(agenda.questions.includes('change')){const conflict=memoryConflict(a,message)||a.facts?.lastConflict;add(conflict?`Você mudou ${conflict.key==='deliveryPrice'?'o custo da entrega':conflict.key==='alias'?'o nome apresentado':'essa condição'} de “${conflict.previous}” para “${conflict.current}”. ${conflict.status==='resolved'?'Sua correção já foi reconhecida.':'Quero entender qual versão está valendo.'}`:'Não encontrei duas versões diferentes dessa condição. Qual informação você quer comparar?');}
@@ -56,6 +75,7 @@ export function contextualReply(a,event,fallback='',message=''){
  // A relevant question remains relevant during uncertainty or a contradiction.
  // Answer it without changing the motor's consequence or accepting the claim.
  if(event!=='question'&&!a.outcome&&!['correction','rule-instruction','hostile','state-conflict'].includes(a.lastIntent)&&turnAgenda(a,message).questions.length){const planned=agendaReply(a,message);if(planned)return planned;}
+ if(!a.outcome&&['correction','state-conflict'].includes(a.lastIntent)&&turnAgenda(a,message).questions.length){const planned=agendaReply(a,message);if(planned){if(a.lastIntent==='correction'&&memoryConflict(a,message)&&!attributionRepair(a,message))return 'Entendi a correção. '+planned;return fallback+' '+planned;}}
  if(event==='question'){
   const planned=agendaReply(a,message);if(planned)return planned;
   const t=normalizeMessage(message);
@@ -94,6 +114,10 @@ export function contextualReply(a,event,fallback='',message=''){
  if(event==='unclear'){
   let missing=presentedOffer(a)?characterState(a.caller,a.scheme,a).focus:'Qual é a oferta que você está trazendo?';
   if(a.stage==='question')missing=currentQuestionText(a);
+  if((a.facts?.unknownOrigin||statesUnknownOrigin(message))&&!a.facts?.claims?.origin){
+   if(a.facts?.unknownOrigin)return ({nino:'Essa lacuna continua. Meu desenho espera; eu manteria o cartão comigo até ter uma confirmação independente.',olga:'Certo, essa informação continua em aberto. Não preciso decidir agora: primeiro uma confirmação por fora, depois a oferta.',davi:'A informação segue pendente. Sem um registro independente, eu manteria o acesso fechado e suspenderia a decisão.',yara:'Então continua sem confirmação. Eu aguardaria antes de envolver o passe ou encaminhar a proposta para a turma.',pri:'A condição não mudou: origem desconhecida. A decisão continua suspensa até uma evidência independente.',bento:'Beleza, ainda falta essa confirmação. Sem novidade, eu deixaria a oferta em espera e meus dados comigo.'})[a.caller];
+   return ({nino:'Se você não sabe quem organizou, não precisa chutar. Eu procuraria as regras num canal do concurso que já conheço antes de passar o cartão.',olga:'Então vamos deixar o organizador em aberto. Prefiro procurar um canal já conhecido, sem depender deste contato; meu café aguenta esperar.',davi:'A origem segue desconhecida. Eu compararia o pedido com um registro ou canal que já uso, sem tomar sua declaração como confirmação.',yara:'A origem ficou em aberto. Eu perguntaria à turma por um canal que já usamos antes de envolver o passe do clube.',pri:'Falta confirmar a origem. Eu buscaria as condições fora desta conversa, mantendo essa informação como desconhecida.',bento:'Sem organizador conhecido, nada de preencher a lacuna no chute. Eu buscaria outro canal ou ajuda antes de passar dados.'})[a.caller];
+  }
   if(a.stage==='request'){
    missing=a.scheme==='update'?'Você está pedindo para eu instalar o arquivo?':`Você está pedindo ${item}?`;
    if(a.scheme==='link')missing=!a.linkSent?'Qual página? Ainda não recebi o link.':a.linkOpened?'A página abriu. Você está pedindo que eu envie o cadastro?':'Você quer que eu abra a página que mandou?';
@@ -106,13 +130,14 @@ export function contextualReply(a,event,fallback='',message=''){
    if(previous===1)return a.facts?.claims?.origin?`Ouvi que seria ${a.facts.claims.origin}. Pedir confiança outra vez não confirma essa origem; falta uma forma de conferir fora deste contato.`:'Esse pedido de confiança já chegou. Ainda não veio uma explicação que eu possa conferir fora deste contato.';
    return 'Continuo sem confirmação independente. Eu aguardaria sem enviar dados e buscaria ajuda ou um canal já conhecido; repetir a promessa não resolve essa falta.';
   }
-  if(facts.alias||facts.deliveryPrice){const added=[facts.alias?'você se apresenta como '+facts.alias:null,facts.deliveryPrice?'a entrega seria '+facts.deliveryPrice:null].filter(Boolean);return `Entendi: ${added.join(' e ')}. ${missing}`;}
+  if(facts.alias||facts.deliveryPrice){const added=[facts.alias?'você se apresenta como '+facts.alias:null,facts.deliveryPrice?'a entrega seria '+facts.deliveryPrice:null].filter(Boolean);if(presentedOffer(a)&&a.scheme==='prize'&&a.caller==='nino')missing='A promessa já chegou. Quero entender as condições antes de passar o cartão.';if(a.caller==='olga'&&(facts.deliveryPrice||a.facts?.claims?.deliveryPrice)&&a.stage!=='question')missing='O frete ficou explicado como uma alegação. Falta entender o que a proposta pede de mim.';const start={nino:'Anotei',olga:'Certo, vou guardar essa informação',davi:'Registro sua declaração',yara:'Certo, para acompanhar a conversa',pri:'Essa é a condição que você informou',bento:'Saquei'}[a.caller];return `${start}: ${added.join(' e ')}. ${missing}`;}
   if(facts.benefit||facts.deadline){const added=[facts.benefit?'o benefício seria '+facts.benefit:null,facts.deadline?'o prazo seria '+facts.deadline:null].filter(Boolean).join(' e ');return `Anotei sua explicação: ${added}. ${a.stage==='question'?currentQuestionText(a):characterState(a.caller,a.scheme,a).focus}`;}
   if(a.stage==='question'&&pendingQuestion(a)?.topic==='origem'&&facts.price)return `${facts.price==='gratuito'?'Entendi que você diz que é gratuito.':'Anotei que há cobrança.'} Isso explica o custo, mas falta quem organiza.`;
   if(isReportedSpeech(t))return `Você trouxe o relato de outra pessoa. Isso ainda não é uma confirmação por outro canal. ${missing}`;
   return variedReply(a,'unclear-'+a.stage,[`Me perdi nessa parte. ${missing}`,`Essa parte não ficou clara. ${missing}`,`Explica só isso para mim: ${missing}`]);
  }
  if(event==='doubt'){
+  if(statesUnknownOrigin(message)||a.facts?.unknownOrigin)return contextualReply(a,'unclear','',message);
   const facts=statedFacts(message);
   if(facts.alias||facts.deliveryPrice)return `Anotei sua explicação: ${[facts.alias?'você se apresenta como '+facts.alias:null,facts.deliveryPrice?'a entrega seria '+facts.deliveryPrice:null].filter(Boolean).join(' e ')}. ${characterState(a.caller,a.scheme,a).focus}`;
   return variedReply(a,'doubt-'+a.stage,[`Tudo bem ter dúvida. ${currentQuestionText(a)}`,`Não vou completar a história no chute. ${currentQuestionText(a)}`,`Podemos esclarecer sem passar nada novo. ${currentQuestionText(a)}`]);

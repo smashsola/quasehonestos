@@ -11,6 +11,15 @@ const terms=[
  ['verific','Verificar é comparar a mensagem com outra informação confiável. Você pode usar um canal que já conhece, pedir ajuda a um adulto de confiança ou esperar uma confirmação.'],
  ['cpf','CPF é um número que identifica uma pessoa. O jogo não precisa do seu: use apenas os códigos fictícios da história.']
 ];
+export function educationalDefinition(message){
+ const t=normalizeMessage(message);
+ return terms.filter(([key])=>t.includes(key)&&/o que (?:e|sao)|significa|explica|explique/.test(t)&&(key!=='verific'||/significa verific|o que e verific/.test(t))).map(([,text])=>text).join(' ');
+}
+export function riskExplanation(scheme,caller){
+ const risk={prize:'O identificador BatataPay pode ser usado na Carteira para retirar créditos da minha conta. Ter um prêmio anunciado não prova quem está pedindo o cartão.',link:'Essa página pode entregar os dados do cartão para quem a montou e permitir retirar créditos. Um resgate prometido não confirma que o pedido veio do BatataPay.',support:'Abrir a sessão permite ver arquivos e o app de pagamento do meu computador. Uma alegação de defeito não comprova quem oferece o suporte.',update:'Instalar o pacote permite acessar perfil, contato e rotina. Trocar uma skin não exige conhecer esses dados.',club:'O passe dá acesso ao clube. Um convite bonito não comprova quem está pedindo esse acesso.'}[scheme];
+ const own={nino:scheme==='prize'?'Meu desenho pode ganhar prêmio sem meu cartão virar ingresso. ':'',olga:'Eu separaria as coisas: ',davi:'O risco concreto é este: ',yara:'Isso também envolve a turma: ',pri:'Uma coisa não comprova a outra: ',bento:'A vantagem prometida não explica esse acesso. '};
+ return (own[caller]||'')+risk;
+}
 export function youthResponse(message,scheme){
  const t=normalizeMessage(message);
  const fiction=/\b(?:personagem|na simulacao|no jogo)\b/.test(t)&&!/\b(?:fora do jogo|na vida real|comigo de verdade)\b/.test(t);

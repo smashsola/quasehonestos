@@ -1,0 +1,77 @@
+/* Office palette: workstation green, paper white, brass actions, red alerts. */
+:root{--office-ink:#183b3b;--office-paper:#f5f7f0;--office-muted:#47645d;--office-rule:#bbcbc3;--office-action:#176e5a;--office-label:#e3c17c}
+body,button,input,textarea,select{font-family:"Segoe UI",system-ui,sans-serif}
+h1,h2,h3{font-family:inherit;letter-spacing:-.025em}
+code,.tool-stamp,.desktop-top small,.desktop-window>.windowbar{font-family:Consolas,"Courier New",monospace}
+.desktop-top{background:#183d3c;color:#eaf0e9;border-bottom:1px solid #698c7b;letter-spacing:.02em}.desktop-top strong small{color:#d9c493;letter-spacing:.11em}
+.desktop-wallpaper small{letter-spacing:.13em;font-size:10px}
+.desktop-window{border:1px solid #73978b;border-radius:8px;box-shadow:0 12px 28px #112d3545,0 2px 3px #112d352b;overflow:hidden}
+.desktop-window>.windowbar{background:#214d46;color:#edf4e9;border-bottom:1px solid #6e9883;min-height:36px;letter-spacing:.03em}.desktop-window>.windowbar strong{font-weight:600;font-size:12px}
+.desktop-window>.windowbar button{border-radius:0;background:transparent;color:#eaf1e9}.desktop-window>.windowbar button:hover{background:#ffffff18}.desktop-window>.windowbar button[data-window="close"]:hover{background:#994a39}
+.desktop-icons button{border:1px solid transparent;border-radius:8px;background:#193b3d30;color:#fff7df;text-shadow:0 1px 2px #183735;line-height:1.3}.desktop-icons button:hover,.desktop-icons button:focus-visible{background:#244c4a80;border-color:#d9c493}.desktop-icons svg{filter:drop-shadow(0 2px 1px #112d3540)}
+.os-start button{display:flex;align-items:center;gap:12px;text-align:left}.os-start .office-icon{width:27px;height:27px;flex-shrink:0}
+.taskbar{background:#193b3c;border-top:1px solid #83a096}.taskbar button.active{background:#365d53;border-bottom:3px solid #e3c17c}
+.app-window-body{background:var(--office-paper);color:var(--office-ink)}.app-window-body p,.app-window-body small,.app-window-body label{color:var(--office-muted)}.app-window-body :is(h1,h2,h3,strong){color:var(--office-ink)}
+.app-window-body :is(button,.primary){border-radius:6px;min-height:44px;padding:10px 16px;border:1px solid #7da397;background:#e7eee7;color:var(--office-ink);font-weight:600;line-height:1.4}.app-window-body :is(button,.primary):hover{background:#d8e7da;border-color:#4b7f6c}.app-window-body .primary,.app-window-body [data-execute],.app-window-body [data-open-operation]{background:var(--office-action);color:#fff;border-color:var(--office-action)}
+.app-window-body .app-return{border-top:1px solid var(--office-rule);background:transparent}.app-window-body .app-return button{background:#f5f7f0;color:#214d46;border-color:#7da397;box-shadow:none}
+.scheme-tool>.tool-preview{border-radius:8px;box-shadow:none}.offer-picker>div{gap:0;border:1px solid var(--office-rule);border-radius:8px;overflow:hidden}.offer-picker button{border:0;border-bottom:1px solid var(--office-rule);border-radius:0;background:#fff;box-shadow:none;text-align:left}.offer-picker button:last-child{border-bottom:0}.offer-picker button[aria-pressed="true"]{background:#e1ede4;box-shadow:inset 4px 0 #397f66}
+.tool-preview:not(.support){background:#e3eee5;border:1px solid #8fac99;color:var(--office-ink)}.tool-preview .tool-stamp{display:inline-block;width:auto;transform:none;border:1px solid #66937c;border-radius:3px;background:transparent;color:#376852;font-weight:600;letter-spacing:.07em;padding:6px 9px}.scheme-tool .tool-path{border-radius:6px;background:#fff;box-shadow:none}
+.debrief{background:var(--office-paper);color:var(--office-ink);padding:20px}.debrief p,.debrief small{color:var(--office-muted)}.debrief :is(h2,h3,strong){color:var(--office-ink)}.debrief>small:first-child{display:inline-block;border-bottom:2px solid #b29962;padding-bottom:6px;letter-spacing:.1em}.debrief :is(button,select,input){min-height:44px;border-radius:6px}
+.call-window-body .contact{padding:10px 16px;gap:12px;background:#203c3c;border-bottom:1px solid #48665d}.call-window-body .contact .avatar,.call-window-body .contact .avatar img{width:58px;height:58px;min-width:58px;flex-basis:58px;border-radius:9px}.call-window-body .contact h1{font-size:24px;line-height:1.15;margin:0 0 5px}.call-window-body .contact p{font-size:12px;margin:0;color:#c5d8cc}.call-window-body .portrait-emotion{display:none}
+.call-window-body .chat-toolbar{padding:6px 14px;min-height:44px}.call-window-body .context{padding:5px 16px;margin:0;font-size:11px;color:#c6d8ce}.call-window-body .trust-card{margin:6px 14px;padding:9px 12px;border-radius:6px;background:#183432;border-color:#4c7568}.call-window-body .trust-footer{font-size:11px}
+.call-window-body .conversation{padding:14px;scroll-padding-bottom:12px;overscroll-behavior:contain}.call-window-body .bubble{border-radius:8px;line-height:1.6;padding:12px 15px;margin-bottom:12px;border:1px solid #45625f;background:#284444;color:#edf3ec;box-shadow:none}.call-window-body .bubble.own{background:#365d50;border-color:#5e8a72}.call-window-body .bubble>small{color:#d8bf82;font-weight:600}
+.call-window-body .choices:has(.message-compose){padding:10px 14px;border-top:1px solid #52766b;background:#203c3c}.message-compose textarea{border:1px solid #82aa95;border-radius:7px;background:#193332;color:#f3f6f0;line-height:1.5;padding:12px}.message-compose textarea::placeholder{color:#b7c9be}.message-compose button[type="submit"]{border-radius:6px;background:#d6bd7d;color:#213d35;border:1px solid #e7ce96;padding:10px 20px;min-height:44px;font-weight:700}.message-compose .compose-help{margin:4px 0 8px}.message-compose .compose-help summary{font-size:12px;color:#d8d9c1}
+.call-window-body .conversation-stage{font-size:10px;letter-spacing:.09em;color:#bcd0c3;margin-top:10px}.call-window-body .quiet{border-radius:6px;background:transparent;border-color:#bd8171;color:#f4cabc;min-height:44px;padding:10px 14px}
+.new-message-jump{border:1px solid #e3c17c;background:#e3c17c;color:#183b3b;box-shadow:0 3px 9px #102d3433}.new-message-action{text-decoration:underline;text-underline-offset:3px}
+button:focus-visible,a:focus-visible,summary:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #c79938;outline-offset:3px}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window{border-radius:0;box-shadow:none}.desktop-window>.windowbar{min-height:36px}.call-window-body .contact{padding:8px 14px}.call-window-body .contact .avatar,.call-window-body .contact .avatar img{width:46px;height:46px;min-width:46px;flex-basis:46px}.call-window-body .contact h1{font-size:21px}.call-window-body .contact p{font-size:11px}
+ .call-window-body .conversation{padding:12px}.call-window-body .bubble{padding:10px 12px;max-width:94%}.call-window-body .trust-card{padding:6px 10px;margin:4px 12px}.call-window-body .trust-footer{display:none}.call-window-body .choices:has(.message-compose){padding:8px 12px}.message-compose textarea{font-size:16px;resize:none}
+ .mobile-dock{background:#183b3b;border-top:1px solid #6b9881}.mobile-dock button[aria-current="page"]{border-top:3px solid #e3c17c;background:#365d53}.mobile-app-switcher{background:#f0f4ec;color:#183b3b}.mobile-app-switcher>div button{background:#e1ebe2;border:1px solid #9db6a7;border-radius:8px;color:#183b3b;text-shadow:none}.debrief{padding:16px}.keyboard-open .contact p{display:none}
+}
+@media(prefers-reduced-motion:reduce){.desktop-window,.bubble,.desktop-icons button{animation:none;transition:none}}
+/* No second scrollbar in the composer; the message list owns chat scrolling. */
+.desktop-window[data-window-id="calls"] .call-window-body:has(.message-compose){overflow:hidden!important;min-height:0}
+.desktop-window[data-window-id="calls"] .choices:has(.message-compose){flex:0 0 auto!important;max-height:none!important;overflow:visible!important;padding:8px 12px!important}
+.desktop-window[data-window-id="calls"] .conversation:not(:empty){flex:1 1 0!important;min-height:0!important;max-height:none!important}
+.desktop-window[data-window-id="calls"] .message-compose textarea{height:64px!important;min-height:48px!important;margin:6px 0!important;resize:none}
+.desktop-window[data-window-id="calls"] .message-compose>div{display:flex;align-items:center;flex-wrap:wrap;gap:8px;justify-content:space-between}
+.desktop-window[data-window-id="calls"] .message-compose>div small{flex:1;min-width:120px;line-height:1.4;font-size:10px;color:#c3d2c9}
+.desktop-window[data-window-id="calls"] .message-compose .quiet{min-height:44px;margin:0;font-size:12px;padding:8px 12px}
+.desktop-window[data-window-id="calls"] .conversation-stage{display:none}
+.desktop-window[data-window-id="calls"] .contact .avatar,.desktop-window[data-window-id="calls"] .contact .avatar img{width:52px!important;height:52px!important;min-width:52px!important;flex-basis:52px!important}
+.desktop-window[data-window-id="calls"] .trust-card{padding:6px 10px!important;margin:4px 12px!important}.desktop-window[data-window-id="calls"] .trust-footer{display:none}
+.desktop-window[data-window-id="calls"] .compose-help[open] p{max-height:48px;overflow:auto;margin:4px 0}
+.app-window-body .offer-picker>div button{border-radius:0;border:0;border-bottom:1px solid var(--office-rule);background:#fff;box-shadow:none}.app-window-body .offer-picker>div button:last-child{border-bottom:0}.app-window-body .offer-picker>div button[aria-pressed="true"]{background:#e1ede4;box-shadow:inset 4px 0 #397f66}
+.app-window-body .app-flow li{background:transparent;border:0;border-bottom:2px solid #c1cec6;border-radius:0;padding:8px 4px;line-height:1.4}.app-window-body .app-flow li.current{background:#e5ece2;border-bottom-color:#947131;color:#4d3b1d}.app-window-body .app-flow li.done{border-bottom-color:#387b65}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"] .contact .avatar,.desktop-window[data-window-id="calls"] .contact .avatar img{width:42px!important;height:42px!important;min-width:42px!important;flex-basis:42px!important}
+ .desktop-window[data-window-id="calls"] .message-compose>div small{display:none}.message-compose>div .quiet{margin-right:auto}
+}
+@container chat-window (max-height:420px){
+ .desktop-window[data-window-id="calls"] .call-window-body:has(.message-compose){overflow:auto!important}
+ .desktop-window[data-window-id="calls"] .conversation:not(:empty){flex:0 0 auto!important;min-height:100px!important;overflow:visible!important}
+ .desktop-window[data-window-id="calls"] .choices:has(.message-compose){flex:0 0 auto!important}
+}
+.keyboard-open .desktop-window[data-window-id="calls"] .call-window-body:has(.message-compose){overflow:hidden!important}
+.keyboard-open .desktop-window[data-window-id="calls"] .conversation:not(:empty){flex:1 1 0!important;min-height:0!important;overflow:auto!important}
+
+.certificate-title{display:flex;align-items:center;justify-content:center;gap:12px}.certificate-title .office-icon{width:36px;height:36px;flex-shrink:0}
+.desktop-window[data-window-id="calls"] .message-compose button[type="submit"]{margin-left:auto;border-radius:6px!important;background:#d6bd7d!important;color:#213d35!important;border:1px solid #e7ce96!important}
+
+.app-window-body .scheme-tool .tool-path{border:0;border-left:2px solid #9ab2a2;border-radius:0;background:transparent;padding:4px 0 4px 18px}
+
+.new-message-jump{min-height:44px}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){.compose-help summary{min-height:44px;display:flex;align-items:center}}
+
+/* Compact secondary status without shrinking the message field or touch actions. */
+.desktop-window[data-window-id="calls"] .contact{padding:6px 12px!important}
+.desktop-window[data-window-id="calls"] .chat-toolbar{min-height:32px;padding:3px 12px}
+.desktop-window[data-window-id="calls"] .context{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 12px!important;flex-wrap:wrap}
+.context .dialogue-local-status{display:inline-block;order:2;margin-left:auto;padding:0;color:#bfd2c6;font-size:10px}
+.desktop-window[data-window-id="calls"] .trust-caption b{font-size:18px!important;line-height:20px}
+.desktop-window[data-window-id="calls"] .trust-track{height:6px!important;margin:4px 0 0!important}
+.desktop-window[data-window-id="calls"] .message-compose{margin:0!important;padding:0!important;gap:0!important}
+.desktop-window[data-window-id="calls"] .compose-help{margin:3px 0!important}
+.desktop-window[data-window-id="calls"] .compose-help summary{min-height:24px;padding:3px 0;line-height:18px}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){.desktop-window[data-window-id="calls"] .chat-toolbar{min-height:44px}.desktop-window[data-window-id="calls"] .compose-help summary{min-height:44px; padding:0}}

@@ -3,18 +3,22 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
-import {characterBenchmark} from '../tests/fixtures/journey-benchmark.mjs';
+const fixtureName=process.argv[6]||'journey-benchmark.mjs';
+if(!/^[a-z-]+\.mjs$/.test(fixtureName))throw Error('Invalid fixture');
+const {characterBenchmark}=await import(new URL('../tests/fixtures/'+fixtureName,import.meta.url));
 const [rootArg,origin,output,mode='api']=process.argv.slice(2);
 if(!rootArg||!origin||!output||!['api','local'].includes(mode))throw Error('Uso: node scripts/benchmark-characters.mjs RAIZ URL RESULTADO api|local');
 const root=resolve(rootArg),moduleAt=p=>import(pathToFileURL(resolve(root,p))),{fresh,nextCall,applyTypedMove}=await moduleAt('src/engine.js'),{analyzeMessage,polishReply,dialogueDiagnostic}=await moduleAt('src/ai-dialogue.js'),{replayEvents}=await moduleAt('src/educational-replay.js'),{generatedDialogueSafe}=await moduleAt('src/dialogue-safety.js'),{repetitionReason}=await moduleAt('src/dialogue-diagnostics.js');
 const {schemes}=await moduleAt('src/data.js'),{selectedOffer}=await moduleAt('src/app-interactions.js');
+const openingModule=await moduleAt('src/character-openings.js').catch(error=>{if(error.code==='ERR_MODULE_NOT_FOUND')return null;throw error;});
+const repetitions=Number(process.env.QH_BENCH_REPETITIONS||3);if(!Number.isInteger(repetitions)||repetitions<1||repetitions>3)throw Error('Repetitions must be 1–3');
 const names={nino:'Nino',olga:'Olga',davi:'Davi',pri:'Pri',yara:'Yara',bento:'Bento'},hash=createHash('sha256');
 for(const file of ['src/engine.js','src/conversation-memory.js','src/conversation-context.js','src/conversation-replies.js','functions/api/dialogue.js'])hash.update(await readFile(resolve(root,file)));
 const runs=[];
-for(let repetition=1;repetition<=3;repetition++){
+for(let repetition=1;repetition<=repetitions;repetition++){
  for(const fixture of characterBenchmark){
   const s=fresh();nextCall(s);Object.assign(s.active,{caller:fixture.caller,scheme:fixture.scheme,prepared:true,stage:'question',trust:35,log:[{speaker:'Você',text:'Tenho uma proposta.'},{speaker:names[fixture.caller],text:fixture.scheme==='update'?'Por que o pacote pede acesso ao perfil?':'Quem organizou?'}]});
-  if(fixture.opening){s.active.stage='pitch';s.active.offer=fixture.offer;const scheme=schemes.find(v=>v.id===fixture.scheme),offer=selectedOffer(s.active);s.active.log=[{speaker:'Você',text:scheme.opening+(offer?' Proposta: '+offer.name+'. '+offer.detail:'')},{speaker:names[fixture.caller],text:scheme.response}];} const trace=[];
+  if(fixture.opening){s.active.stage='pitch';s.active.offer=fixture.offer;const scheme=schemes.find(v=>v.id===fixture.scheme),offer=selectedOffer(s.active);s.active.log=[{speaker:'Você',text:scheme.opening+(offer?' Proposta: '+offer.name+'. '+offer.detail:'')},{speaker:names[fixture.caller],text:openingModule?.characterOpening(fixture.caller,fixture.scheme)||scheme.response}];} const trace=[];
   for(const step of fixture.turns){
    if(s.active.outcome){trace.push({input:step.text,skipped:true,checks:Object.keys(step.checks).filter(k=>step.checks[k] instanceof RegExp||['continue','exit','noAction','memory','repair','correction','contradiction','appropriate'].includes(k)).map(key=>({key,pass:false}))});continue;}
    if(step.injectWrongAttribution)s.active.log.push({speaker:names[fixture.caller],text:'Você disse que já pagou.'});
@@ -46,5 +50,5 @@ for(let repetition=1;repetition<=3;repetition++){
 const turns=runs.flatMap(r=>r.trace),executed=turns.filter(t=>!t.skipped),latencies=executed.map(t=>t.elapsedMs).sort((a,b)=>a-b),checks=turns.flatMap(t=>t.checks),byCheck={};
 for(const c of checks){byCheck[c.key]??={passed:0,total:0};byCheck[c.key].total++;if(c.pass)byCheck[c.key].passed++;}
 const sources={},reasons={};for(const t of executed){sources[t.source]=(sources[t.source]||0)+1;if(t.reason)reasons[t.reason]=(reasons[t.reason]||0)+1;}
-const requests=executed.flatMap(t=>t.requests),real=requests.filter(r=>!r.simulated),summary={mode,scenarios:12,repetitions:3,runs:runs.length,plannedTurns:turns.length,executedTurns:executed.length,skippedTurns:turns.length-executed.length,checks:byCheck,sources,reasons,semanticRepeats:{count:executed.filter(t=>t.semanticRepeat).length,total:executed.length},replay:{matches:executed.filter(t=>t.replayMatches).length,total:executed.length},apiRequests:real.length,simulatedFailures:requests.length-real.length,requestsPerExecutedTurn:real.length/executed.length,contextChars:real.reduce((sum,r)=>sum+r.chars,0),latency:{p50:latencies[Math.floor(latencies.length*.5)],p95:latencies[Math.min(latencies.length-1,Math.floor(latencies.length*.95))]},models:[...new Set(real.map(r=>r.model).filter(Boolean))],limits:'Synthetic lexical checks and reviewed traces; not student learning or a universal naturalness score. Context characters are a size proxy, not billed tokens.'};
+const requests=executed.flatMap(t=>t.requests),real=requests.filter(r=>!r.simulated),summary={mode,scenarios:characterBenchmark.length,repetitions,runs:runs.length,plannedTurns:turns.length,executedTurns:executed.length,skippedTurns:turns.length-executed.length,checks:byCheck,sources,reasons,semanticRepeats:{count:executed.filter(t=>t.semanticRepeat).length,total:executed.length},replay:{matches:executed.filter(t=>t.replayMatches).length,total:executed.length},apiRequests:real.length,simulatedFailures:requests.length-real.length,requestsPerExecutedTurn:real.length/executed.length,contextChars:real.reduce((sum,r)=>sum+r.chars,0),latency:{p50:latencies[Math.floor(latencies.length*.5)],p95:latencies[Math.min(latencies.length-1,Math.floor(latencies.length*.95))]},models:[...new Set(real.map(r=>r.model).filter(Boolean))],limits:'Synthetic lexical checks and reviewed traces; not student learning or a universal naturalness score. Context characters are a size proxy, not billed tokens.'};
 await mkdir(resolve(output,'..'),{recursive:true});await writeFile(output,JSON.stringify({revision:hash.digest('hex'),summary,runs},null,2));console.log(JSON.stringify(summary,null,2));

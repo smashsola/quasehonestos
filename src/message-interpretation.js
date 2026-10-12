@@ -77,12 +77,13 @@ export function interpretMessage(text,a={},fallback=()=> 'unclear'){
  const checking=directClauses.some(c=>verification.test(c)&&independent.test(c)&&!verificationIsNegated(c)&&!deferredVerification.test(c)&&!isHypotheticalClause(c)&&!declaredPastCheck.test(c)&&!selfSuppliedChannel.test(c));
  const requesting=directClauses.some(c=>!/\b(?:nao|nunca|nem)\b/.test(c)&&sensitive.test(c)&&/\b(?:me (?:manda|passe|passa|envie)|(?:envie|mande|compartilhe|libere|instale|preencha))\b/.test(c));
  const explicitRefusal=directClauses.some(c=>negatedRequest(c)||refusalPhrase.test(c));
+ const explicitCorrection=/\b(?:corrigindo|correcao|me enganei|quis dizer)\b/.test(t)&&Object.keys(statedFacts(text)).length>0;
  const reported=clauses.some(c=>isReportedSpeech(c));
  const reportedEvidence=clauses.some(c=>isReportedSpeech(c)&&(verification.test(c)||reportedClaim.test(c)||sensitive.test(c)));
  if(reportedEvidence&&!checking&&!protectedData&&!explicitRefusal&&!clauses.some(isQuestionClause))return result('unclear','Uma fala relatada ou boato não é verificação independente nem autoriza uma decisão.',true);
  if(uncertainVerification.test(t)||directClauses.some(c=>verification.test(c)&&isHypotheticalClause(c)&&!/\?/.test(c)))return result('doubt','A verificação foi apresentada como possibilidade, não como decisão protetiva já tomada.',true);
- if(!explicitRefusal&&verification.test(t)&&directClauses.some(isQuestionClause))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
- if(!explicitRefusal&&informalQuestion.test(t))return result('question','Pergunta informal identificada pelo sentido da frase.');
+ if(!explicitRefusal&&!explicitCorrection&&verification.test(t)&&directClauses.some(isQuestionClause))return result('question','Pergunta sobre como verificar, sem afirmar que uma verificação já aconteceu.');
+ if(!explicitRefusal&&!explicitCorrection&&informalQuestion.test(t))return result('question','Pergunta informal identificada pelo sentido da frase.');
  if(socialAcknowledgement.test(t))return result('smalltalk','Anuência ou marcador curto de conversa; mantém o turno sem autorizar ação sensível.');
  if(directClauses.some(c=>claimedActionMismatch(a,c)))return result('state-conflict','A fala afirma uma ação que não está registrada na partida.',true);
  if(directClauses.some(c=>checksInClause(c)&&declaredPastCheck.test(c))&&!checking)return result('unclear','A fala relata uma checagem; o texto não registra confirmação independente no jogo.',true);

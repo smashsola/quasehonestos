@@ -6,7 +6,7 @@ import {memoryConflict,rememberConversation,continuityReply,repeatedMeaning,stat
 import {turnAgenda,attributionRepair,reconsideredMethod} from './turn-agenda.js';
 import {semanticSignals} from './semantic-contract.js';
 import {cloneReceipt} from './clone-card.js';
-import {contextualReply,agendaReply} from './conversation-replies.js';
+import {contextualReply,agendaReply,completeLocalReply} from './conversation-replies.js';
 import {repeatedPlayerMessage} from './dialogue-model-rules.js';
 import {operationReady,selectedOffer} from './app-interactions.js';
 import {livingReply} from './living-dialogue.js';
@@ -51,11 +51,13 @@ export function applyTypedMove(state,id,text,semantic=null){
  const retainGameIntent=['exit','method-refusal','protect','refusal','confession','contradiction','state-conflict','rule-instruction','correction'].includes(parsed.intent);
  const special=guidance?.pause?guidance:cleaned.redacted||text.includes('[dado removido]')?{kind:'privacy',text:'Retirei um dado que parece pessoal. Use só informações inventadas; não precisa repetir esse dado.'}:guidance?.kind==='explanation'&&retainGameIntent?null:guidance;
  if(special){
+  if(special.kind==='explanation'){const answers=agendaReply(a,text);if(answers)special.text=answers;}
   const c=callers.find(c=>c.id===a.caller),saved=special.savedText||text;
   a.log.push({speaker:'Você',text:saved,localOnly:true},{speaker:c.name,text:special.text,localOnly:true,replyOrigin:'local'});
   const reason={support:'A conversa foi pausada para oferecer apoio, sem encerrar a partida.',privacy:'Um formato de dado pessoal foi removido; nenhuma operação foi liberada.',boundary:'O pedido foi redirecionado para a simulação educativa, sem liberar operações.',explanation:'O termo ou a proposta foi explicado, sem alterar confiança ou permissões.'}[special.kind];
   a.audit??=[];a.audit.push({text:saved,intent:special.kind,reason,reaction:special.text,beforeStage:a.stage,afterStage:a.stage,before:a.trust,after:a.trust,trustDelta:0,trustSource:'local-rules',interpretationSource:'local'});
  if(special.pause){a.supportPaused=true;a.expression='neutral';}
+  if(special.kind==='explanation'){a.lastIntent='question';rememberConversation(a,text,'question',a.stage);}
   return true;
  }
  const remote=semanticSignals(semantic);
@@ -103,7 +105,7 @@ function applyTypedMoveLocal(state,_id,text,analysis){
  a.irritation??=0;
  const factConflict=memoryConflict(a,text);
  a.audit??=[];a.suspicion??=0;a.steps??=[];
- const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,text:contextualReply(a,intent==='unclear'?'unclear':intent==='chat'?'repeat':intent==='after'?'after':null,line,text)});a.audit.push({text,reason,signal,intent,reaction:a.log.at(-1).text,evidence:analysis.evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);if(a.outcome)recordEnding(a,'character',({protect:'protection',refusal:'refusal',wait:'verification',hostile:'hostility',confession:'confession'})[intent]||'suspicion');return true;};
+ const say=(line,reason,signal='')=>{a.lastIntent=intent;a.expression=reactionFor(a,intent,text);a.log.push({speaker:'Você',text},{speaker:c.name,...completeLocalReply(a,text,contextualReply(a,intent==='unclear'?'unclear':intent==='chat'?'repeat':intent==='after'?'after':null,line,text))});a.audit.push({text,reason,signal,intent,reaction:a.log.at(-1).text,evidence:analysis.evidence,beforeStage:stage,afterStage:a.stage,before,after:a.trust||0});rememberConversation(a,text,intent,stage);if(a.outcome)recordEnding(a,'character',({protect:'protection',refusal:'refusal',wait:'verification',hostile:'hostility',confession:'confession'})[intent]||'suspicion');return true;};
  if(intent==='exit'){a.outcome='closed';a.stage='done';recordEnding(a,'player','message');return say('Tudo bem, encerrando como você pediu. Nenhum item novo ou crédito foi liberado.','O jogador pediu para sair pela mensagem, sem concluir uma nova operação.');}
  if(intent==='method-refusal'){
   const refusal=turnAgenda(a,text).method;a.rejectedMethods??=[];if(refusal?.method&&!a.rejectedMethods.includes(refusal.method))a.rejectedMethods.push(refusal.method);

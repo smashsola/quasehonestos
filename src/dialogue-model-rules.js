@@ -8,7 +8,7 @@ export function replyAnswersCurrentQuestion(text,history,context){
  const question=normalizeMessage(history.findLast(m=>m.speaker==='Você')?.text||'');
  const reply=normalizeMessage(text);
  const agenda=context.agenda?.questions||turnAgenda(context,question).questions;
- const checks={waiting:/aguard|suspend|esper|paus|nao.*(?:dados|decidir|compartilh)|ate confirmar|manteria.*duvida/,change:/antes|mud|condicao|versao|correcao/,payment:context.operationCompleted?/confirm|conclu|pag/:/nao|nenhum|sem/,session:/sessao|computador|acesso/,agreement:/autoriza|concord|aceit|interesse/,events:/registr|nenhum|apenas|conversa|item|operacao/,goal:/quero|duvida|falta|precis|entender/,alternative:/sem|antes|confer|alternativ|outro/};
+ const checks={waiting:/aguard|suspend|esper|paus|nao.*(?:dados|decidir|compartilh)|ate confirmar|manteria.*duvida/,change:/antes|mud|condicao|versao|correcao/,payment:context.operationCompleted?/confirm|conclu|pag/:/nao|nenhum|sem/,session:/sessao|computador|acesso/,agreement:/autoriza|concord|aceit|interesse/,events:/registr|nenhum|apenas|conversa|item|operacao/,goal:/quero|duvida|falta|precis|entender/,alternative:/sem|antes|confer|alternativ|outro/,definition:/informa|nome|telefone|enderec|organizacao|programa|permiss|imita|mensagem|pagina/};
  for(const topic of agenda){
   if(checks[topic]&&!checks[topic].test(reply))return false;
   if(topic==='change'&&context.facts?.lastConflict){
@@ -17,7 +17,13 @@ export function replyAnswersCurrentQuestion(text,history,context){
     if(/^(?:gratis|gratuit[oa])$/.test(normalized)?!/gratis|gratuit|sem (?:custo|taxa|cobranca)/.test(reply):!reply.replace(/c\$\s*/g,'c$').includes(normalized.replace(/c\$\s*/g,'c$')))return false;
    }
   }
-  if(topic==='alias'&&context.facts?.claims?.alias&&!reply.includes(normalizeMessage(context.facts.claims.alias)))return false;
+  const alias=context.facts?.lastConflict?.key==='alias'&&context.facts.lastConflict.status==='pending'?context.facts.lastConflict.current:context.facts?.claims?.alias;
+  if(topic==='alias'&&alias&&!reply.includes(normalizeMessage(alias)))return false;
+  if(topic==='risk'){
+   const effect={prize:/retir|moviment|desvi|gast|usar.*cart|perder.*credit/,link:/retir|moviment|desvi|gast|usar.*cart|dados.*(?:quem|pessoa|terceir)/,support:/arquiv|pagamento|acesso.*computador/,update:/perfil|contato|rotina|arquiv/,club:/acesso.*clube|passe.*acesso|entrar.*clube/}[context.scheme]||/retir|moviment|desvi|gast|acesso|perfil|dados/;
+   if(!effect.test(reply))return false;
+   if(/premio/.test(question)&&!/nao (?:prova|comprova|confirma|garante)|nao.*(?:origem|quem|segur)|sem.*confirm/.test(reply))return false;
+  }
   if(topic==='opening'&&context.proposal&&(!reply.includes(normalizeMessage(context.proposal.name))||/\bnao (?:lembro|vi|recebi|apresentou|mencionou)|nenhum certificado|nenhum convite/.test(reply)))return false;
   if(topic==='delivery'){
    const pending=context.facts?.lastConflict,price=pending?.key==='deliveryPrice'&&pending.status==='pending'?pending.current:context.facts?.claims?.deliveryPrice;
@@ -50,6 +56,7 @@ export function groundingRejectionReason(text,history,reference,context){
   for(const key of ['benefit','deadline','alias','deliveryPrice'])if(corrected[key]&&!reply.replace(/c\$\s*/g,'c$').includes(normalizeMessage(corrected[key]).replace(/c\$\s*/g,'c$'))&&!(key==='deliveryPrice'&&corrected[key]==='grátis'&&/gratis|gratuit|sem (?:custo|taxa|cobranca)/.test(reply)))return 'unanswered-correction';
  }
  if(context.facts?.claims?.origin&&/\bquem (?:organiza|organizou|oferece|e o responsavel)\b/.test(normalizeMessage(text))&&!/voce (?:mencionou|disse|explicou)|ainda nao confirmou/.test(normalizeMessage(text)))return 'resolved-question-repeated';
+ if(context.facts?.unknownOrigin&&/\bquem (?:organiza|organizou|oferece|e o responsavel)\b/.test(normalized)&&!/(?:nao sabe|nao sabemos|desconhecid|em aberto)/.test(normalized))return 'unknown-origin-repeated';
  if(/\b(?:hoje|ontem)\b/.test(normalizeMessage(text))&&/antes|anterior|voce disse|voce falou/.test(normalizeMessage(text))&&!/\b(?:hoje|ontem)\b/.test(normalizeMessage(history.filter(l=>l.speaker==='Você').map(l=>l.text).join(' ')+' '+JSON.stringify(context.facts?.ledger||[]))))return 'unsupported-attribution';
  const recall=/lembra|repete|repetir|tinha prometido|qual.*(?:beneficio|prazo)/.test(normalizeMessage(question));
  if(!recall&&history.filter(m=>!['Você','Sistema'].includes(m.speaker)).slice(-4).some(m=>normalizeMessage(m.text)===normalizeMessage(text)))return 'repetition';
