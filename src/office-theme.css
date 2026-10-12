@@ -75,3 +75,20 @@ button:focus-visible,a:focus-visible,summary:focus-visible,textarea:focus-visibl
 .desktop-window[data-window-id="calls"] .compose-help{margin:3px 0!important}
 .desktop-window[data-window-id="calls"] .compose-help summary{min-height:24px;padding:3px 0;line-height:18px}
 @media(max-width:600px),(pointer:coarse) and (max-width:1000px){.desktop-window[data-window-id="calls"] .chat-toolbar{min-height:44px}.desktop-window[data-window-id="calls"] .compose-help summary{min-height:44px; padding:0}}
+
+/* Disabled means unavailable, not unreadable. Never fade its entire label. */
+.desktop-window:not([data-window-id="calls"])>.windowbar button{color:#24463f}
+.desktop-window:not([data-window-id="calls"])>.windowbar button:hover{background:#d5e4dc;color:#183b3b}
+.desktop-window:not([data-window-id="calls"])>.windowbar button[data-window="close"]{color:#9a382e}
+.desktop-window:not([data-window-id="calls"])>.windowbar button[data-window="close"]:hover{background:#9a382e;color:#fff}
+.desktop-window .app-window-body button:disabled,.desktop-window .debrief button:disabled{opacity:1!important;filter:none!important;color:#42534c!important;background:#e0e6e0!important;border:1px solid #8d9e92!important;box-shadow:none!important;text-shadow:none;cursor:not-allowed}
+.desktop-window .app-window-body .offer-picker button[aria-pressed="true"]:disabled{color:#183b3b!important;background:#d5e7d9!important;border-color:#60816c!important}
+.desktop-window .message-compose button:disabled,.desktop-window .choices .quiet:disabled{opacity:1!important;color:#d4e1d9!important;background:#354d47!important;border:1px solid #7c9a8b!important;cursor:wait}
+.desktop-window .app-window-body input,.desktop-window .app-window-body textarea,.desktop-window .app-window-body select,.desktop-window .debrief select{color:#183b3b;background:#fff;border-color:#82998b}
+.desktop-window .app-window-body input::placeholder,.desktop-window .app-window-body textarea::placeholder{color:#52665b;opacity:1}
+.desktop-window .app-window-body button:disabled :is(span,small,strong,b,em){color:inherit!important;opacity:1!important}
+.desktop-window .app-window-body .app-flow li{color:#43594e;opacity:1}
+.desktop-window .app-window-body .app-flow li.complete{color:#285c43}
+.desktop-window .app-window-body .skin-catalog button:not(:disabled){background:#203b35;color:#f0f6ef;border-color:#83a798}
+.desktop-window .app-window-body .skin-catalog button:not(:disabled) :is(small,strong,span){color:#e3eee4}
+.desktop-window .app-window-body .skin-catalog button[aria-pressed="true"]:not(:disabled){border:2px solid #e3c17c;background:#29483d}
