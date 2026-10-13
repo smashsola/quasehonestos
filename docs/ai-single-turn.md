@@ -1,10 +1,10 @@
-# IA de uma chamada — implementação local, validação remota pendente
+# IA de uma chamada — histórico e verificação remota
 
-## Diagnóstico observado
+## Diagnóstico inicial (antes da virada de período)
 
 Consulta de métricas da conta em 12/10/2026 às 02:30 UTC (11/10 à noite no Brasil): grupos adaptativos de Workers AI mostravam erros 4006. Um único teste real controlado do Qwen recebeu HTTP 429, código 4006 e mensagem explícita de esgotamento da alocação diária de 10.000 neurons. Duração: 4.258 ms. O parser anterior conhecia 3036, mas não reconhecia esse texto; por isso exibia provider-unavailable. Não foram realizadas novas inferências depois dessa confirmação.
 
-Os agregados do período UTC anterior continham aproximadamente 38.855,86 neurons, 7.308.744 tokens de entrada e 165.907 de saída; o período UTC novo mostrava zero tokens e somente falhas na consulta. São grupos adaptativos da conta, sem atribuição garantida ao jogo ou a uma etapa; não são uma fatura. A divergência com a recusa após a virada UTC permanece sem explicação comprovada. Os códigos 5026/8007 históricos não foram atribuídos a cota ou timeout sem evidência específica. A API remota ainda não respondeu com sucesso nesta tarefa.
+Os agregados do período UTC anterior continham aproximadamente 38.855,86 neurons, 7.308.744 tokens de entrada e 165.907 de saída; o período UTC novo mostrava zero tokens e somente falhas na consulta. São grupos adaptativos da conta, sem atribuição garantida ao jogo ou a uma etapa; não são uma fatura. A divergência com a recusa após a virada UTC permanece sem explicação comprovada. Os códigos 5026/8007 históricos não foram atribuídos a cota ou timeout sem evidência específica. Naquela tentativa a API não respondeu. A seção seguinte registra a retomada real após a virada UTC.
 
 ## Fluxo novo
 
@@ -48,3 +48,17 @@ Logs do servidor contêm somente fase, modelo, chamadas, duração, caracteres, 
 Quando houver disponibilidade, executar `scripts/check-remote-turn.mjs` com `CLOUDFLARE_ACCOUNT_ID` da conta autorizada e login Wrangler existente. Máximo três chamadas, interrompe na primeira cota, salva somente metadados, sai com erro se não houver três respostas remotas aceitas. Não executado novamente durante a cota confirmada. Antes de publicar, revisar falas e consumo com conversas remotas completas; esse probe curto não substitui o teste de qualidade extenso.
 
 [Qwen e parâmetros suportados](https://developers.cloudflare.com/workers-ai/models/qwen3-30b-a3b-fp8/) · [Erros Cloudflare](https://developers.cloudflare.com/workers-ai/platform/errors/)
+
+## Retomada real — 12/10/2026 após 21h de Brasília
+
+O Qwen voltou a responder. Probe inicial: três chamadas reais, uma fala aceita; falhas de contrato e cobertura motivaram as correções. Rodada inicial completa com Nino/Olga/Davi: 21 chamadas, zero candidatas aceitas, 25.244 tokens de entrada e 3.647 de saída, 227,90 neurons estimados. O backend removia minimum/maximum de rapport; o modelo também confundia intenção do jogador com a reação do personagem e citava índices inválidos.
+
+O contrato agora define os campos, usa enum para rapport e ancora evidence na mensagem atual. Uma prévia descartável do motor fornece intenção, decisão e reação contextual para a redação; a partida real permanece intacta até aplicar o motor após a análise. A candidata continua validada contra esse resultado, não contra a prévia. Não há retry nem segunda inferência. /no_think fica na última mensagem user. O teto de saída passou de 384 para 448 tokens após truncamentos observados; não é uma cobrança fixa.
+
+Corrigimos falso positivo de “compartilhou” como “comparar”, papel do nome apresentado, citações históricas de preço, comentários fora do assunto, falta de confirmação e marcadores sociais que escondiam a primeira pergunta. Falas com instruções do prompt visíveis são rejeitadas. A correção de condição deixa de pedir a mesma correção novamente.
+
+Rodada inédita candidata à publicação: 21 inferências reais, 19 falas aceitas e duas reservas locais (pergunta incompleta/repetição), 33.793 tokens de entrada, 3.494 de saída, 262,77 neurons estimados. Os diálogos incluíram apresentações diferentes, perguntas compostas com gírias, correção de gratuidade para C$19, chuva, origem desconhecida, lembrança de valor antigo e recusa. A inspeção mostrou recuperação dos nomes, comparação de condições e explicações do risco sem inventar pagamento. Nino relacionou ao desenho, Olga ao café e Davi ao registro. Algumas falas ainda reproduzem a referência local quase literalmente; aceitação não é uma medida universal de naturalidade. As rejeições permanecem contextuais e sem segunda chamada.
+
+Consumo estimado usa tokens reais de usage e a tabela oficial; não substitui a fatura/agregados da conta. Os arquivos de QA contêm somente diálogos sintéticos, ficam ignorados pelo Git e não integram métricas de produção. `scripts/check-remote-conversations.mjs --public` permite repetir o percurso no endpoint publicado com limite de 24 chamadas e parada imediata na primeira cota explícita.
+
+Desktop: soltura encaixa em células de 110 × 102 px, evita célula ocupada e mantém posição após reload; arraste permanece livre somente durante o movimento. Saves anteriores são alinhados sem apagar progresso.

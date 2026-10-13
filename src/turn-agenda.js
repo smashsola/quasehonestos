@@ -41,7 +41,7 @@ export function turnAgenda(a,text=(a.log||[]).findLast(l=>l.speaker==='Você')?.
  if(/sessao.*(?:abriu|aberta|abre)|(?:abriu|aberta).*sessao/.test(t))add('session');
  if(/(?:voce )?ja (?:concordou|aceitou|autorizou)|voce tinha concordado/.test(t))add('agreement');
  if(/qual acao.*registr|o que.*(?:aconteceu|confirmado|registrado)/.test(t))add('events');
- if(/o que.*(?:quer entender|continua faltando|falta esclarecer)|qual.*(?:duvida|objetivo)|proximo passo/.test(t))add('goal');
+ if(/o que.*(?:quer entender|continua faltando|falta esclarecer|(?:ainda )?falta confirmar)|qual.*(?:duvida|objetivo)|proximo passo/.test(t))add('goal');
  if(/(?:o que|como).*sem instalar|outro metodo|outra opcao|outro jeito|alternativa/.test(t))add('alternative');
  if(/quem.*(?:organiza|organizou|responsavel)|de onde.*(?:proposta|convite|premio)/.test(t))add('origin');
  if(/\bquanto\b|qual custo|qual valor/.test(t)&&!topics.includes('delivery'))add('cost');

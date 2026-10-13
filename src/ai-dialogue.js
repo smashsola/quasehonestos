@@ -14,6 +14,7 @@ import {simpleLocalMessage,validateTurn,turnRequestContext} from './dialogue-tur
 import {recordRequestMetric,recordDisplayMetric} from './dialogue-metrics.js';
 import {createQuotaCircuit} from './dialogue-quota.js';
 import {localStore} from './safe-storage.js';
+import {previewDialogue} from './dialogue-preview.js';
 const diagnostics=new WeakMap(),pendingReplies=new WeakMap(),pendingAnalysis=new WeakMap(),candidates=new WeakMap();
 const quotaCircuit=createQuotaCircuit(localStore);
 export const dialogueDiagnostic=value=>diagnostics.get(value)||null;
@@ -59,7 +60,7 @@ async function analyzeOnce(active,text,fetcher,mode){
  if(redactSensitiveText(text).redacted||text.includes('[dado removido]')||youthResponse(text,active.scheme)||active.supportPaused){diagnose(active,'fallback','local',null,'interpret',{calls:0,durationMs:0,reason:'local-protection'});return null;}
  if((!publicDialogueAI&&fetcher===fetch)||!remoteDialogueAllowed(text)||active.log.some(m=>!m.localOnly&&!remoteDialogueAllowed(m.text))){diagnose(active,'fallback','local-or-filtered',null,'interpret',{calls:0,durationMs:0,reason:'local-or-filtered'});return null;}
  const history=mode==='turn'?turnHistory(active.log,7,names[active.caller]):dialogueHistory(active.log,11,names[active.caller]);history.push({speaker:'Você',text:text.slice(0,400)});
- const context=conversationContext(active),before=snapshot(active),result=await request(active,mode,{mode,caller:active.caller,scheme:active.scheme,history,reference:'Interprete apenas a fala do jogador, sem calcular consequências.',context:redactDialogueObject(mode==='turn'?turnRequestContext(context):context)},fetcher,mode==='turn'?7000:5000);
+ const context=conversationContext(active),before=snapshot(active),result=await request(active,mode,{mode,caller:active.caller,scheme:active.scheme,history,reference:'Interprete apenas a fala do jogador, sem calcular consequências.',...(mode==='turn'?{preview:redactDialogueObject(previewDialogue(active,text))}:{}),context:redactDialogueObject(mode==='turn'?turnRequestContext(context):context)},fetcher,mode==='turn'?7000:5000);
  if(!result)return null;if(snapshot(active)!==before)return reject(active,'interpret','stale');
  if(mode==='turn'){const turn=validateTurn(result,history);if(!turn)return reject(active,'turn','validation');candidates.set(active,{candidate:turn.candidate,history:JSON.stringify(history),caller:active.caller,scheme:active.scheme});return turn.analysis;}
  const analysis=validateSemanticAnalysis(result,history);return analysis||reject(active,'interpret','validation');

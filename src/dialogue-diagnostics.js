@@ -8,7 +8,7 @@ export function failureMetadata(error){
  return {code,reason:code===3036||quotaMessage?'quota':code===3040?'capacity':[3007,3008].includes(code)||error?.name==='TimeoutError'||error?.message==='timeout'?'timeout':error?.name==='AbortError'?'aborted':'provider-unavailable'};
 }
 export function repetitionReason(text,history,lastQuestion=''){
- if(/lembra|repita|repete|qual.*(?:beneficio|prazo|certificado|nome|apelido|frete|entrega)|como me apresentei|(?:responder|respondeu|responda).*nome|(?:o que|como).*sem instalar/i.test(lastQuestion))return null;
+ if(/lembra|repita|repete|qual.*(?:beneficio|prazo|certificado|nome|apelido|frete|entrega|custo|valor|preco)|como me apresentei|(?:responder|respondeu|responda).*nome|(?:o que|como).*sem instalar/i.test(lastQuestion))return null;
  const tokens=t=>new Set(String(t).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').match(/[a-z0-9]+/g)||[]),current=tokens(text);
  for(const previous of history.filter(m=>m.speaker!=='Você'&&m.speaker!=='Sistema').slice(-4)){
   const old=tokens(previous.text),same=[...current].filter(t=>old.has(t)).length;

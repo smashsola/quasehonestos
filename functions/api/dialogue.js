@@ -37,7 +37,8 @@ export async function onRequestPost({request,env}){
  const last=data.history.findLastIndex(m=>m.speaker==='Você');
  if((interpret||grounded||data.mode==='turn')&&last<0)return json({error:'input'},400);
  const context=conversationContext({...data.context,caller:person.id,scheme:scheme.id,log:data.history,item:data.context?.shared?{token:data.context.itemToken}:null,memory:{free:data.context?.promisedFree}}),decision=replyDecision(context);
- const sentStrings=[data.reference,...data.history.map(m=>m.text),...strings(context)];
+ if(data.preview!==undefined&&data.preview!==null&&(!data.preview||Array.isArray(data.preview)||typeof data.preview!=='object'||Object.keys(data.preview).some(k=>!['intent','decision','reference'].includes(k))||!semanticSchema.properties.intent.enum.includes(data.preview.intent)||!['clarify','consider','shared','ended'].includes(data.preview.decision)||typeof data.preview.reference!=='string'||data.preview.reference.length>700))return json({error:'input'},400);
+ const sentStrings=[data.reference,...data.history.map(m=>m.text),...strings(context),...strings(data.preview||{})];
  if(sentStrings.some(looksPersonal))return json({error:'personal-data'},400);
  if(youthResponse(data.history[last]?.text||'',scheme.id))return json({error:'local-protection'},400);
  if(sentStrings.some(text=>!remoteDialogueAllowed(text)))return json({error:'unsafe-input'},400);

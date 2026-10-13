@@ -7,7 +7,7 @@ import {serverQuotaRemaining,confirmServerQuota} from './dialogue-quota.js';
 import {nextQuotaReset} from '../src/dialogue-quota.js';
 const json=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'no-store'}});
 export async function singleTurn(data,context,config){
- const started=Date.now(),body=buildTurnRequest(context,data.history);let calls=0,tokens={},reason=null,code=null;
+ const started=Date.now(),body=buildTurnRequest(context,data.history,data.preview);let calls=0,tokens={},reason=null,code=null;
  const finish=(value,status,source)=>finishMetric(json(value,status),{model:config.model,phase:'turn',calls,durationMs:Date.now()-started,source,reason,code,inputChars:body.messages.reduce((n,m)=>n+m.content.length,0),...tokens});
  const fail=(why,status=503,extra={})=>{reason=why;return finish({error:'unavailable',diagnostic:why,code,...extra},status,'fallback');};
  if(config.provider!=='workers-ai')return fail('provider-mismatch');

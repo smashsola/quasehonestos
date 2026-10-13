@@ -144,7 +144,7 @@ app.addEventListener('pointerdown',e=>{
   ghost.hidden=!fromBar&&!nearBar;
   el.classList.toggle('pin-preview',!fromBar&&nearBar);
   bar.classList.toggle('pin-drop',nearBar);
-  if(!fromBar){const p=desktopIconPosition({x:rect.left+ev.clientX-sx,y:rect.top+ev.clientY-sy},{width:innerWidth,height:innerHeight});el.style.left=p.x+'px';el.style.top=p.y+'px';el.classList.add('dragging');}
+  if(!fromBar){const p=desktopIconPosition({x:rect.left+ev.clientX-sx,y:rect.top+ev.clientY-sy},{width:innerWidth,height:innerHeight},{snap:false});el.style.left=p.x+'px';el.style.top=p.y+'px';el.classList.add('dragging');}
  };
  const finish=ev=>{el.removeEventListener('pointermove',move);el.removeEventListener('pointerup',finish);el.removeEventListener('pointercancel',finish);ghost?.remove();bar.classList.remove('pin-drop');el.classList.remove('dragging','pin-preview');if(!moved)return;
   suppressIconClick=true;setTimeout(()=>suppressIconClick=false,350);
@@ -152,7 +152,7 @@ app.addEventListener('pointerdown',e=>{
   if(ev.clientY>=bar.getBoundingClientRect().top){const siblings=[...bar.querySelectorAll('[data-task-app]')].filter(button=>button.dataset.taskApp!==id);let index=siblings.filter(button=>ev.clientX>button.getBoundingClientRect().left+button.offsetWidth/2).length;pinApp(id,Math.min(index,pinnedApps.length));}
   else if(fromBar){pinnedApps=pinnedApps.filter(appId=>appId!==id);savePins();}
   else{
-   iconPositions[id]=desktopIconPosition({x:rect.left+ev.clientX-sx,y:rect.top+ev.clientY-sy},{width:innerWidth,height:innerHeight});localStorage.setItem('qh-desktop-icons',JSON.stringify(iconPositions));
+   iconPositions[id]=desktopIconPosition({x:rect.left+ev.clientX-sx,y:rect.top+ev.clientY-sy},{width:innerWidth,height:innerHeight},{occupied:Object.entries(iconPositions).filter(([other])=>other!==id).map(([,p])=>p)});localStorage.setItem('qh-desktop-icons',JSON.stringify(iconPositions));
   }
   render();
  };

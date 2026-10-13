@@ -57,7 +57,7 @@ export function memoryConflict(a,text){
  return null;
 }
 export function statesUnknownOrigin(text){
- return messageClauses(text).some(c=>!/[?]/.test(c)&&!isReportedSpeech(c)&&!isHypotheticalClause(c)&&/\b(?:nao sei|nao sabemos|nao conheco|desconheco|nao tenho essa informacao)\b/.test(c)&&/organiza|organizou|origem|de onde|responsavel|essa informacao/.test(c));
+ return messageClauses(text).some(c=>!/[?]/.test(c)&&!isReportedSpeech(c)&&!isHypotheticalClause(c)&&/\b(?:nao sei|nao sabemos|nao conheco|desconheco|nao tenho essa informacao|sei la)\b/.test(c)&&/organiza|organizou|origem|de onde|responsavel|essa informacao|quem.*(?:fez|preparou|enviou)/.test(c));
 }
 export function questionTopics(text,scheme){
  const questionClauses=messageClauses(text).filter(isQuestionClause);

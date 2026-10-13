@@ -32,7 +32,7 @@ test('Memória compacta preserva fatos antigos com fonte, sem ledger duplicado',
  const s=active();applyTypedMove(s,'typed','Pode me chamar de Lia. O envio custa C$23.');for(let i=0;i<12;i++)applyTypedMove(s,'typed','Pode confiar.');
  const context=conversationContext(s.active),wire=turnRequestContext(context);assert.equal(wire.facts.claims.alias,'Lia');assert.equal(wire.facts.ledger,undefined);
  const history=[s.active.log[0],s.active.log[1],{speaker:'Você',text:'Qual nome eu disse e como verificaria?'}],body=buildTurnRequest(context,history),system=body.messages[0].content;
- assert.match(system,/Lia/);assert.match(system,/player-message/);assert.match(system,/claim/);assert.equal(body.messages.at(-1).role,'user');assert.equal(body.messages.filter(m=>m.content===history.at(-1).text).length,1);assert.equal(body.generationConfig.maxOutputTokens,384);
+ assert.match(system,/Lia/);assert.match(system,/player-message/);assert.match(system,/claim/);assert.equal(body.messages.at(-1).role,'user');assert.equal(body.messages.filter(m=>m.content===history.at(-1).text+'\n/no_think').length,1);assert.equal(body.generationConfig.maxOutputTokens,448);
 });
 test('Erros confirmados e ambiguidades do provedor continuam distintos',()=>{
  assert.equal(failureMetadata({code:3036}).reason,'quota');assert.equal(failureMetadata({code:4006,message:'AiError: you have used up your daily free allocation of 10,000 neurons'}).reason,'quota');assert.equal(failureMetadata({code:4006,message:'unknown provider failure'}).reason,'provider-unavailable');assert.equal(failureMetadata({code:3040}).reason,'capacity');assert.equal(failureMetadata({name:'TimeoutError'}).reason,'timeout');assert.equal(failureMetadata({name:'AbortError'}).reason,'aborted');

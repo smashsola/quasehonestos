@@ -1,7 +1,7 @@
 import {groundingRejectionReason} from './dialogue-model-rules.js';
 import {replyDecision} from './conversation-context.js';
 import {expressions} from './mood.js';
-export const replyRejectionCodes=['empty-text','text-limit','unknown-fields','decision-mismatch','emotion-mismatch','intent-mismatch','missing-evidence','current-message-not-cited','invalid-evidence','unsafe-language','repetition','semantic-repetition','player-echo','resolved-question-repeated','unknown-origin-repeated','unsupported-memory-denial','presented-proposal-ignored','unsupported-attribution','unanswered-correction','unanswered-question','state-or-fact-conflict'];
+export const replyRejectionCodes=['instruction-leak','empty-text','text-limit','unknown-fields','decision-mismatch','emotion-mismatch','intent-mismatch','missing-evidence','current-message-not-cited','invalid-evidence','unsafe-language','repetition','semantic-repetition','player-echo','resolved-question-repeated','unknown-origin-repeated','unsupported-memory-denial','presented-proposal-ignored','unsupported-attribution','unanswered-correction','unanswered-question','state-or-fact-conflict'];
 // The model cites player turns and describes the already authorized decision.
 // Semantic validation is deliberately conservative; rejected text keeps local speech.
 export function validStructuredReply(reply,history,reference,context){
