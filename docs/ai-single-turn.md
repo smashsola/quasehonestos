@@ -62,3 +62,9 @@ Rodada inédita candidata à publicação: 21 inferências reais, 19 falas aceit
 Consumo estimado usa tokens reais de usage e a tabela oficial; não substitui a fatura/agregados da conta. Os arquivos de QA contêm somente diálogos sintéticos, ficam ignorados pelo Git e não integram métricas de produção. `scripts/check-remote-conversations.mjs --public` permite repetir o percurso no endpoint publicado com limite de 24 chamadas e parada imediata na primeira cota explícita.
 
 Desktop: soltura encaixa em células de 110 × 102 px, evita célula ocupada e mantém posição após reload; arraste permanece livre somente durante o movimento. Saves anteriores são alinhados sem apagar progresso.
+
+### Conferência no site publicado
+
+Em 12/10/2026, às 21:35 de Brasília, o endpoint público respondeu com Qwen real: 21 chamadas, 20 candidatas aceitas e uma reserva local por repetição. Usage: 33.799 tokens de entrada e 3.490 de saída; estimativa de 262,68 neurons pela tabela oficial. Duração da mensagem completa: mediana 1.445 ms, p95 2.187 ms. Nenhum item ou crédito foi fabricado; as três conversas terminaram na recusa. Todos os arquivos e o desktop publicado foram conferidos; arraste/encaixe/persistência também foram verificados localmente.
+
+Esse conjunto usa situações sintéticas específicas, não demonstra qualidade universal, eficácia com alunos ou garantia de disponibilidade diária. A naturalidade continua limitada: várias respostas seguem a referência local de perto. O único fallback publicado manteve uma resposta pertinente, sem retry. A nova referência aumenta um pouco o contexto comparado à primeira versão de uma chamada (227,90 → 262,68 neurons nas rodadas de 21 turnos); essa troca foi medida e mantém uma chamada por turno, com redução forte em relação aos payloads antigos de duas etapas.
