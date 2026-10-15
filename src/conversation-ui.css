@@ -41,7 +41,7 @@
 .desktop-window[data-window-id="calls"] .dialogue-option:disabled{opacity:.5;cursor:wait}
 .guided-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;color:#72867a;font-size:10px}
 .desktop-window[data-window-id="calls"] .guided-footer button{font-size:10px;background:transparent;color:#775a4b;border:0;padding:6px 0;min-height:28px;text-decoration:underline;text-underline-offset:3px}
-@media(max-width:767px){
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
  .desktop-window{border-radius:0}
  .desktop-window[data-window-id="calls"] .choices:has(.guided-compose){padding:10px 12px max(10px,env(safe-area-inset-bottom));max-height:51dvh;overflow:auto}
  .dialogue-options{grid-template-columns:1fr;gap:7px}
@@ -59,7 +59,7 @@
 .desktop-window[data-window-id="calls"] .conversation-stage{color:#698074;margin:9px 0 0;font-size:9px}
 
 .choices:has(.guided-compose)>.received-item{display:none}
-@media(max-width:767px){
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
  .desktop-window[data-window-id="calls"] .trust-card{margin:4px 12px;padding:7px 10px}
  .desktop-window[data-window-id="calls"] .trust-footer{display:none}
  .desktop-window[data-window-id="calls"] .bubble p{font-size:14px}
@@ -67,13 +67,13 @@
 
 .choices:has(.guided-compose)>.conversation-stage{display:none}
 
-@media(max-width:767px){.call-window-body:has(.guided-compose) .first-call-guide:not(.guide-collapsed){max-height:120px;overflow:auto;flex:0 0 auto}}
-@media(max-width:767px){
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){.call-window-body:has(.guided-compose) .first-call-guide:not(.guide-collapsed){max-height:120px;overflow:auto;flex:0 0 auto}}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
  .desktop-window[data-window-id="calls"] .choices:has(.guided-compose){max-height:40dvh!important;overflow-y:auto}
  .desktop-window[data-window-id="calls"] .call-window-body>.conversation:not(:empty){min-height:120px!important;flex:1 1 auto!important}
  .desktop-window[data-window-id="calls"] .choices:has(.guided-compose)>.conversation-stage{display:none!important}
 }
-@media(max-width:767px) and (max-height:640px){.dialogue-options{grid-template-columns:1fr 1fr}.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{font-size:12px}}
+@media(max-width:600px) and (max-height:640px),(pointer:coarse) and (max-width:1000px) and (max-height:640px){.dialogue-options{grid-template-columns:1fr 1fr}.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{font-size:12px}}
 .desktop-window[data-window-id="calls"] .choices:has(.guided-compose)>.conversation-stage{display:none!important}
 /* Chat-first layout: stronger surfaces, compact quick replies, shared person/tools row. */
 .call-person-header{flex:0 0 auto;background:#dcebe4}
@@ -92,7 +92,7 @@
 .reply-wait{padding:12px;color:#37584b;font-size:12px;min-height:44px;background:#e8efe9}
 @keyframes choice-arrive{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .mobile-return-chat{position:sticky;top:0;z-index:4;display:block;min-height:44px;background:#215d51!important;color:#fff!important;border:1px solid #113d33!important;padding:10px 16px;margin:0 0 12px}
-@media(max-width:767px){
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
  .call-person-header{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;border-bottom:1px solid #acc4b6}
  .desktop-window[data-window-id="calls"] .contact{padding:8px 10px;gap:9px;border:0;min-width:0}
  .desktop-window[data-window-id="calls"] .contact .avatar{width:62px!important;height:62px!important;min-width:62px;flex:0 0 62px;border-width:2px}
@@ -119,9 +119,97 @@
  .desktop-window[data-window-id="calls"] .bubble p{line-height:1.5}
 }
 @media(prefers-reduced-motion:reduce){.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{animation:none}}
-@media(max-width:767px){
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
  .desktop-window[data-window-id="calls"] .contact .avatar{min-width:62px!important;max-width:62px!important;flex-basis:62px!important}
  .desktop-window[data-window-id="calls"] .trust-card .trust-caption{grid-column:1;grid-row:1;margin:0!important}
  .desktop-window[data-window-id="calls"] .trust-card .trust-track{grid-column:2;grid-row:1;width:100%!important;margin:0!important;min-height:5px}
  .desktop-window[data-window-id="calls"] .trust-card .trust-footer{display:none!important}
+}
+/* App surfaces share the same green office paper as Zape, with real control hierarchy. */
+.desktop-window:not([data-window-id="calls"])>.windowbar{background:#234d49;color:#f3f7eb;border-color:#638980}
+.desktop-window:not([data-window-id="calls"]) .app-window-body{background:#dce7df;color:#1c3934;scroll-padding-top:62px;overscroll-behavior:contain}
+.desktop-window:not([data-window-id="calls"]) .app-window-body>.welcome{background:transparent;color:#1c3934}
+.desktop-window:not([data-window-id="calls"]) .app-window-body .welcome :is(h1,h2,h3,strong,label,summary){color:#23473c}
+.desktop-window:not([data-window-id="calls"]) .app-window-body .welcome :is(p,li,dd){color:#345649}
+.desktop-window:not([data-window-id="calls"]) .app-window-body .welcome small{color:#456958}
+.desktop-window:not([data-window-id="calls"]) .app-window-body :is(input,textarea,select){background:#f6f9f1;color:#183b30;border:1px solid #829f8c;border-radius:9px;font-size:16px}
+.desktop-window:not([data-window-id="calls"]) .app-window-body button:not(:disabled){min-height:44px}
+.desktop-window:not([data-window-id="calls"]) .app-window-body :is(button.primary,.app-return button){background:#215d51;color:#fff;border-color:#174237;border-radius:12px}
+.desktop-window:not([data-window-id="calls"]) .app-flow{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0;padding:0;list-style:none}
+.desktop-window:not([data-window-id="calls"]) .app-flow li{display:flex;align-items:center;gap:7px;flex:1 1 100px;min-height:46px;padding:7px 10px;border:1px solid #b1c5b8;border-radius:12px;background:#cbded2;color:#355b4c;font-size:11px;text-align:left}
+.desktop-window:not([data-window-id="calls"]) .app-flow li.current{background:#f2e5b9;border-color:#bda569;color:#574824;box-shadow:none}
+.desktop-window:not([data-window-id="calls"]) .app-flow li.complete{background:#b9d5c1;color:#24543c}
+.desktop-window:not([data-window-id="calls"]) .app-flow b{margin:0;flex:0 0 22px;display:grid;place-items:center;width:22px;height:22px;background:#f3f7ee;border:0;border-radius:50%;color:inherit}
+.desktop-window:not([data-window-id="calls"]) :is(.app-step-note,.app-empty,.app-next-step,.source-record,.app-document,.exposed-data article){border:1px solid #aec5b4;border-radius:12px;background:#edf3e8;box-shadow:none}
+.desktop-window:not([data-window-id="calls"]) .app-step-note{border-left:4px solid #3d7d63;padding:14px;line-height:1.55}
+.desktop-window:not([data-window-id="calls"]) .app-step-note strong{color:#204d3e}
+.desktop-window:not([data-window-id="calls"]) .app-step-note p{color:#345649}
+.desktop-window:not([data-window-id="calls"]) .offer-picker{border-color:#9bb6a3}
+.desktop-window:not([data-window-id="calls"]) .offer-picker button{border-radius:9px;background:#eaf2e7;border-color:#a3bdac;color:#23473c}
+.desktop-window:not([data-window-id="calls"]) .offer-picker button[aria-pressed="true"]{background:#bfdcc9;border-color:#4e866c;box-shadow:inset 4px 0 #397357}
+.defense-entrance{margin:20px 0;padding:18px;background:#dceadf;border:1px solid #a9c6b2;border-radius:14px;color:#294e3e}
+.defense-entrance h3{color:#214d39;font-size:20px;margin:8px 0}.defense-entrance p{color:#355b47}.defense-entrance small{color:#466b53}
+.desktop-window .defense-entrance button{min-height:44px;border-radius:12px;background:#215d51;color:white}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window:not([data-window-id="calls"]) .app-window-body>.welcome{padding:20px 14px 26px}
+ .desktop-window:not([data-window-id="calls"]) .app-window-body h1{font-size:26px;line-height:1.15}
+ .desktop-window:not([data-window-id="calls"]) .app-window-body .app-flow{gap:5px}
+ .desktop-window:not([data-window-id="calls"]) .app-flow li{flex-basis:100px;font-size:10px;padding:6px;min-height:42px}
+ .desktop-window:not([data-window-id="calls"]) .app-window-body :is(button,summary){touch-action:manipulation}
+ .desktop-window:not([data-window-id="calls"]) .app-window-body :is(p,dd,code,strong){overflow-wrap:anywhere}
+ .desktop-window:not([data-window-id="calls"]) .source-record dl>div{display:block}
+ .desktop-window:not([data-window-id="calls"]) .source-record dd{margin:4px 0 12px}
+ .desktop-window:not([data-window-id="calls"]) .exposed-data article{grid-template-columns:1fr;gap:10px}
+ .desktop-window:not([data-window-id="calls"]) .remote-session{flex-wrap:wrap}
+ .desktop-window:not([data-window-id="calls"]) .remote-app-window{min-width:0;max-width:100%}
+ .desktop-window:not([data-window-id="calls"]) .mobile-return-chat{width:100%;border-radius:0;box-shadow:0 2px 6px #133e3020;margin-bottom:0}
+ .desktop-window[data-window-id="calls"] .debrief{scroll-padding-top:12px}
+ .desktop-window[data-window-id="calls"] .defense-investigation :is(select,button){min-height:44px;font-size:16px}
+ .desktop-window[data-window-id="calls"] .defense-entrance{padding:16px;margin:14px 0}
+}
+@media(max-width:600px) and (max-height:550px),(pointer:coarse) and (max-width:1000px) and (max-height:550px){
+ .desktop-window[data-window-id="calls"] .call-person-header .avatar{min-width:44px!important;max-width:44px!important;width:44px!important;height:44px!important;flex-basis:44px!important}
+ .desktop-window[data-window-id="calls"] .contact{padding-block:4px}
+ .desktop-window[data-window-id="calls"] .contact p,.desktop-window[data-window-id="calls"] .context,.desktop-window[data-window-id="calls"] .first-call-guide{display:none}
+ .desktop-window[data-window-id="calls"] .call-window-body>.conversation:not(:empty){min-height:90px!important}
+ .desktop-window[data-window-id="calls"] .choices:has(.guided-compose){max-height:43dvh!important}
+ .desktop-window[data-window-id="calls"] .guided-heading,.desktop-window[data-window-id="calls"] .guided-footer{display:none}
+}
+.desktop-window:not([data-window-id="calls"]) .welcome .tool-preview.support{background:#173e3d;border:1px solid #5c8c77;border-radius:16px;box-shadow:inset 0 3px #76ad89}
+.desktop-window:not([data-window-id="calls"]) .welcome .tool-preview.support :is(h2,p,strong,small){color:#d6eddb}
+.desktop-window:not([data-window-id="calls"]) .welcome .tool-preview.support .tool-stamp{color:#b4d7a3;border-color:#83b38c}
+.desktop-window:not([data-window-id="calls"]) .welcome .operation-total{background:#234d45;color:#f0f7e9;border-radius:12px;padding:14px}
+.desktop-window:not([data-window-id="calls"]) .welcome .operation-total :is(span,strong){color:#f0f7e9}
+.desktop-window:not([data-window-id="calls"]) .shop-product{background:#edf3e8;border:1px solid #adc3b2;border-radius:16px;box-shadow:0 2px 4px #284c3810;padding:16px}
+.desktop-window:not([data-window-id="calls"]) .shop-product .shop-art{border-radius:12px;background:#d2e3d4}
+.desktop-window:not([data-window-id="calls"]) .wallet{background:#234d45;color:#eef7e6;border-radius:14px;border:1px solid #547f65}
+.desktop-window:not([data-window-id="calls"]) .welcome .wallet :is(strong,small){color:#eef7e6}
+.desktop-window:not([data-window-id="calls"]) .app-window-body button:disabled{opacity:1;background:#d2ded2;color:#536658;border-color:#a7b9aa;cursor:default}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window>.windowbar button{min-height:44px!important;min-width:44px!important;color:#f3f7eb!important;background:transparent;border:0}
+ .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{font-size:13px}
+}
+.desktop-window:not([data-window-id="calls"]) .welcome .skin-changer :is(header strong,.skin-stage strong,.skin-stage small){color:#e2e9fa}
+.desktop-window:not([data-window-id="calls"]) .welcome .skin-changer .skin-catalog button{background:#253348;color:#edf0ff;border:1px solid #5c6f8b;opacity:1}
+.desktop-window:not([data-window-id="calls"]) .welcome .skin-changer .skin-catalog button :is(strong,small){color:#e2e9fa}
+.desktop-window:not([data-window-id="calls"]) .welcome .skin-changer .skin-catalog button[aria-pressed="true"]{background:#423960;border:2px solid #ad9ae8}
+.desktop-window:not([data-window-id="calls"]) .app-window-body .offer-picker>div{gap:8px;border:0;background:transparent;overflow:visible}
+.desktop-window:not([data-window-id="calls"]) .app-window-body .offer-picker>div button{border:1px solid #a3bdac;border-radius:12px;padding:13px;background:#eaf2e7}
+.desktop-window:not([data-window-id="calls"]) .app-window-body .offer-picker>div button span{color:#3a5b4a}
+.desktop-window[data-window-id="calls"] .defense-investigation{border:1px solid #acc5b2;border-radius:16px;background:#e9f1e4;color:#294c3a}
+.desktop-window[data-window-id="calls"] .defense-investigation :is(h3,label){color:#244b35}
+.desktop-window[data-window-id="calls"] .defense-investigation :is(blockquote,select){border-radius:10px;border-color:#9cb7a4}
+.desktop-window[data-window-id="calls"] .defense-investigation :is(.defense-evidence button,.defense-decisions button){border-radius:12px;background:#f4f8ee;border:1px solid #98b4a0;color:#284d38;min-height:44px}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"] .call-person-header .contact{display:flex}
+}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"] .call-window-body>.conversation{overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain}
+ .desktop-window[data-window-id="calls"] .conversation>.bubble{flex-shrink:0}
+}
+@media(max-width:600px) and (max-height:550px),(pointer:coarse) and (max-width:1000px) and (max-height:550px){
+ .desktop-window[data-window-id="calls"] .trust-card{display:none!important}
+}
+@media(max-width:600px) and (min-height:551px) and (max-height:720px),(pointer:coarse) and (max-width:1000px) and (min-height:551px) and (max-height:720px){
+ .desktop-window[data-window-id="calls"] .call-window-body>.conversation:not(:empty){min-height:90px!important}
 }

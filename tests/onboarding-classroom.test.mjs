@@ -21,12 +21,11 @@ test('Correio deixa desempenho para o fechamento e não mostra Chefia durante o 
  assert.match(html,/fechamento do expediente/);
 });
 
-test('Manual descreve Workers AI e não promete diálogo totalmente local',()=>{
- const html=helpContent(fresh(),esc,false);
- assert.match(html,/Cloudflare Workers AI/);
- assert.match(html,/Até 12 falas fictícias recentes/);
- assert.match(html,/resposta local/);
- assert.doesNotMatch(html,/sem enviar suas falas a uma IA externa/i);
+test('Manual descreve as quatro escolhas locais e controles de cada dispositivo',()=>{
+ const html=helpContent(fresh(),esc,false),mobile=helpContent(fresh(),esc,true);
+ assert.match(html,/falas são roteirizadas/);assert.match(html,/quatro falas/);assert.match(html,/Tab e Enter/);
+ assert.match(mobile,/Aplicativos na barra inferior/);assert.doesNotMatch(mobile,/Enter envia|Enter pula|toque em Enviar/);
+ assert.doesNotMatch(html,/Cloudflare Workers AI|Até 12 falas|serviço falhar/);
 });
 
 test('Validação em sala separa porcentagem da avaliação de aprendizagem',()=>{
