@@ -15,8 +15,8 @@ for(const c of callers)for(const scheme of schemes)test(`${c.id}/${scheme.id}: q
 test('Piada não altera confiança nem compartilha item, inclusive quando repetida',()=>{
  const s=setup();for(let i=0;i<8;i++){const joke=dialogueOptions(s.active).find(o=>o.action==='joke');assert.ok(applyDialogueOption(s,joke.key));}assert.equal(s.active.trust,0);assert.equal(s.credits,0);assert.ok(!s.active.item);assert.equal(s.active.stage,'pitch');
 });
-test('Conferir a origem encerra com ator real e save retoma escolhas sem apagar progresso',()=>{
- const s=setup('olga','club');s.credits=321;const before=JSON.stringify(s),options=dialogueOptions(s.active);assert.equal(JSON.stringify(s),before);assert.ok(applyDialogueOption(s,options[3].key));assert.equal(s.active.outcome,'blocked');assert.equal(s.active.ending.actor,'character');assert.equal(s.active.ending.cause,'verification');assert.equal(s.credits,321);
+test('Pressão não é orientação de defesa e save mantém ator real e save retoma escolhas sem apagar progresso',()=>{
+ const s=setup('olga','club');s.credits=321;const before=JSON.stringify(s),options=dialogueOptions(s.active);assert.equal(JSON.stringify(s),before);assert.ok(applyDialogueOption(s,options[3].key));assert.equal(s.active.suspicion,1);assert.equal(s.active.ending.actor,'character');assert.equal(s.active.ending.cause,'suspicion');assert.ok(!options.some(o=>o.move==='wait'));assert.equal(s.credits,321);
  const resumed=load({getItem:()=>before});assert.equal(resumed.credits,321);assert.equal(dialogueOptions(resumed.active).length,4);assert.ok(applyDialogueOption(resumed,dialogueOptions(resumed.active)[0].key));
 });
 test('Escolha antiga não é aplicada depois de mudar de etapa',()=>{
