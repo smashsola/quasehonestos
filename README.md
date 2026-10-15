@@ -2,11 +2,13 @@
 
 Jogo educativo de comédia para o TeenTech 2026, categoria **Prevenção à Violência**. O Trambique OS preserva desktop, aplicativos, personagens e salvamentos. O diferencial é relacionar a conversa às consequências registradas e praticar proteção numa situação nova, incluindo exposição e constrangimento num grupo.
 
+> **Versão de 15/10:** conversas por opções, sem chamadas a modelos e sem binding Workers AI. A antiga rota `/api/dialogue` responde 410. As seções e ferramentas de IA abaixo descrevem o protótipo anterior, preservado para consulta; não são requisitos para jogar.
+
 ## Funcionamento atual
 
-- Seis personagens e cinco propostas cenográficas; conversa digitada, expressões e humor brasileiro.
+- Seis personagens e cinco propostas cenográficas; conversa por quatro opções a cada etapa, expressões e humor brasileiro. De uma a duas opções trazem humor.
 - Interpretação separada das regras da partida e da redação da resposta. Proteção, recusa, dúvida, assunto solto e conflito com o estado têm tratamento próprio.
-- Receber link, abrir página, enviar cadastro e executar o app são eventos distintos. O modelo não cria itens, permissões ou pagamentos.
+- Receber link, abrir página, enviar cadastro e executar o app são eventos distintos. Somente o motor local cria itens, permissões ou pagamentos. A conversa atual não usa IA.
 - Replay: fala relevante, reação, consequência registrada, risco e proteção. Registros antigos continuam acessíveis.
 - Investigação pelos registros de Loja, Fichas, Correio e Resultados: situações fraudulentas, legítimas e inconclusivas. Decidir cedo é permitido; fonte pertinente distingue decisão sustentada de palpite. Não paga créditos.
 - Memória de condições declaradas, perguntas, correções, promessas, recusas e contradições; repetir explicações equivalentes não aumenta confiança. Confiança usa pontos de 0–100 e pesos próprios para os personagens, separados da expressão atual.

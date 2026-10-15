@@ -2,12 +2,14 @@
   "name": "quasehonestos",
   "main": "worker/index.js",
   "compatibility_date": "2026-10-05",
-  "ai": {"binding": "Workers_AI"},
-  "vars": {"DIALOGUE_AI_ENABLED": "true", "DIALOGUE_PROVIDER": "workers-ai"},
-  "previews": {
-    "ai": {"binding": "Workers_AI"},
-    "vars": {"DIALOGUE_AI_ENABLED": "true", "DIALOGUE_PROVIDER": "workers-ai"}
+  "build": {
+    "command": "npm run build"
   },
-  "build": {"command": "npm run build"},
-  "assets": {"directory": "./dist", "binding": "ASSETS", "run_worker_first": ["/api/*"]}
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  }
 }

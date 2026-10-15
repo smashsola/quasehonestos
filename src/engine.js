@@ -176,12 +176,12 @@ export function availableMoves(state){
  const ids=a.stage==='request'?['request','wait','pressure']:a.stage==='question'?['answer','wait','pressure']:['chat','pitch','pressure','wait'];
  return interactionMoves.filter(m=>ids.includes(m.id)&&!a.used.includes(m.id));
 }
-function blockInteraction(state,a,c,line){a.log.push({speaker:c.name,text:line||verificationReply(c.id,a.scheme)});a.outcome='blocked';a.stage='done';recordEnding(a,'character','suspicion');if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
+function blockInteraction(state,a,c,line,cause='suspicion'){a.log.push({speaker:c.name,text:line||verificationReply(c.id,a.scheme)});a.outcome='blocked';a.stage='done';recordEnding(a,'character',cause);if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
 function applyInteraction(state,id,analysis=null){
  const a=state.active;if(!a||a.outcome||!a.prepared||!a.log.length||!availableMoves(state).some(m=>m.id===id))return false;
  const c=callers.find(c=>c.id===a.caller),m=interactionMoves.find(m=>m.id===id),item=schemeItems[a.scheme];a.used.push(id);a.steps??=[];a.suspicion??=0;
  a.log.push({speaker:'Você',text:id==='request'?item.request:m.reply});
- if(id==='wait'){blockInteraction(state,a,c,verificationReply(c.id,a.scheme));return true;}
+ if(id==='wait'){blockInteraction(state,a,c,verificationReply(c.id,a.scheme),'verification');return true;}
  if(id==='pressure'){if(!analysis)a.trust=trustChange(a,{intent:'pressure'}).after;a.suspicion++;if(c.defense==='pause'||a.suspicion>=2){blockInteraction(state,a,c);return true;}a.stage='question';a.log.push({speaker:c.name,text:characterReply(c.id,'pressure')});return true;}
  if(id==='request'){
   if(a.rejectedMethods?.length){a.log.push({speaker:c.name,text:'Esse método foi recusado. Podemos esclarecer a proposta sem executar a ação; nenhum item novo foi compartilhado.'});a.used=a.used.filter(move=>move!=='request');return true;}

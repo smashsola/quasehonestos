@@ -1,5 +1,5 @@
-export const privacyVersion='2026-10-11';
-export const publicDialogueAI=true;
+export const privacyVersion='2026-10-15';
+export const publicDialogueAI=false;
 
 const email=/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i;
 const cpf=/\b\d{3}[.\s-]?\d{3}[.\s-]?\d{3}[\s-]?\d{2}\b/;

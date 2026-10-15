@@ -1,7 +1,7 @@
 // Operational guidance belongs to the Supervisor. The Chef only appears in the
 // end-of-shift report rendered by shift-ending.js.
 const shiftNotes=[
- 'Primeiro turno: conheça a interface, converse do seu jeito e use só dados fictícios.',
+ 'Primeiro turno: conheça a interface, escolha entre as quatro falas e use só dados fictícios.',
  'Segundo turno: confira o contexto antes de pedir qualquer item da proposta.',
  'Último turno: termine o atendimento e revise o que aconteceu nos Resultados.'
 ];

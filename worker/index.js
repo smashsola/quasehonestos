@@ -1,4 +1,3 @@
-import {onRequestPost} from '../functions/api/dialogue.js';
 
 const securityHeaders={
   'X-Content-Type-Options':'nosniff',
@@ -21,7 +20,7 @@ export default {
     const pathname=new URL(request.url).pathname;
     if(pathname==='/api/dialogue'){
       if(request.method!=='POST')return harden(new Response('Method not allowed',{status:405,headers:{Allow:'POST'}}));
-      return harden(await onRequestPost({request,env}));
+      return harden(Response.json({error:'retired',mode:'scripted-choices'},{status:410,headers:{'Cache-Control':'no-store'}}));
     }
     if(pathname.startsWith('/api/'))return harden(new Response('Not found',{status:404}));
     return harden(await env.ASSETS.fetch(request));
