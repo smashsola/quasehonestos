@@ -41,7 +41,7 @@ O [diagnóstico TeenTech](docs/AVALIACAO-TEENTECH.md) compara evidências implem
 
 ## Publicar
 
-A melhoria solicitada não publica nem altera a hospedagem. A configuração existente usa `npm run deploy:worker`; confirme a conta e o destino antes de publicar em outra tarefa.
+O Worker de produção é publicado com `npm run deploy:worker`, usando o projeto Cloudflare configurado em `wrangler.jsonc`. A publicação de Pages é separada e usa `npm run deploy:pages`.
 
 ## Referências
 
