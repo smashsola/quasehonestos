@@ -544,7 +544,7 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 }
 @media (max-width:600px), (pointer:coarse) and (max-width:1000px){
  .mobile-dock{gap:10px;padding:5px 14px calc(5px + env(safe-area-inset-bottom));background:#152c35f5;border-top:1px solid #739c96;box-shadow:0 -3px 12px #0c23252b}
- .mobile-dock button{gap:4px;font-size:14px;border-radius:8px;color:#d5e5df}.mobile-dock button>svg{width:27px;height:27px;filter:drop-shadow(0 2px 2px #071a2366)}.mobile-dock button>span{font-size:12px;font-weight:600;letter-spacing:.1px}
+ .mobile-dock button{gap:4px;font-size:14px;border-radius:8px;color:#d5e5df}.mobile-dock button>svg{width:27px;height:27px;filter:none}.mobile-dock button>span{font-size:12px;font-weight:600;letter-spacing:.1px}
  .mobile-dock button[aria-current="page"]{background:#39584f;box-shadow:inset 0 1px #a3c4ad33,inset 0 -2px #a4d4af}
  .mobile-app-switcher{background:linear-gradient(#17333ae8,#17333aef),url('/src/desktop-landscape.svg') center/cover}.mobile-app-switcher [data-app]{background:#2a4b4dcc;border-color:#789b9566;border-radius:8px}
  .desktop-window>.windowbar [data-window="close"]{background:transparent;color:inherit;border:0;border-radius:5px}.desktop-window>.windowbar [data-window="close"]:active{background:#943b3b;color:#fff}
