@@ -12,13 +12,13 @@ test('Worker entrega assets e mantém API separada do HTML',async()=>{
 
 test('Endereços de versões antigas chegam à versão atual sem redirecionar a si mesmos',async()=>{
  const requested=[];const env={ASSETS:{fetch:async request=>{requested.push(new URL(request.url).pathname);return new Response('<!doctype html>',{headers:{'Content-Type':'text/html'}});}}};
- for(const version of ['f','g','h','i']){
+ for(const version of ['f','g','h','i','j']){
   const response=await worker.fetch(new Request(`https://example.com/index-v20261015${version}`),env);
   assert.equal(response.status,200);
-  assert.equal(requested.at(-1),'/index-v20261015j.html');
+  assert.equal(requested.at(-1),'/index-v20261015k.html');
  }
- await worker.fetch(new Request('https://example.com/index-v20261015j'),env);
- assert.equal(requested.at(-1),'/index-v20261015j');
+ await worker.fetch(new Request('https://example.com/index-v20261015k'),env);
+ assert.equal(requested.at(-1),'/index-v20261015k');
 });
 
 test('Endpoint aposentado não consulta binding mesmo que um ambiente antigo ainda o ofereça',async()=>{

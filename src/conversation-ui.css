@@ -417,7 +417,6 @@
  .incoming-message.mobile-inline .incoming-results p,.incoming-message.mobile-inline .incoming-results small{color:#304d40!important;font-size:13px!important;line-height:1.55}
 
  /* O ponto era aviso de recado novo; nomeamos o estado e prendemos à caixa do Correio. */
- .desktop .desktop-icons button.has-unread::after{content:"NOVO"!important;position:absolute;top:5px;right:6px;width:auto;height:auto;padding:3px 5px;border:1px solid #fff2cf;border-radius:999px;background:#a63f35;color:#fff!important;font-size:8px;font-weight:800;line-height:1;letter-spacing:.06em;box-shadow:0 1px 3px #102b3066}
 
  /* As dicas do Supervisor ficam em papel claro no celular, com leitura imediata. */
  .first-call-guide{top:auto!important;right:10px!important;bottom:calc(72px + env(safe-area-inset-bottom))!important;width:calc(100% - 20px)!important;max-height:min(58%,470px)!important;padding:0!important;border:1.5px solid #698c78!important;border-radius:14px!important;background:#f3f7f1!important;color:#173a30!important;box-shadow:0 12px 30px #071b2180!important}
@@ -439,9 +438,6 @@
 }
 
 /* O aviso fica legível e ancorado no aplicativo tanto no desktop quanto no celular. */
-.desktop-icons button.has-unread{position:relative}
-.desktop-icons button.has-unread::after{content:"NOVO";position:absolute;top:5px;right:5px;width:auto;height:auto;padding:3px 5px;border:1px solid #fff2cf;border-radius:999px;background:#a63f35;color:#fff;font-size:8px;font-weight:800;line-height:1;letter-spacing:.06em;box-shadow:0 1px 3px #102b3066;pointer-events:none}
-.taskbar button.has-unread::after{content:"NOVO";position:absolute;top:2px;right:2px;width:auto;height:auto;padding:2px 4px;border:1px solid #fff2cf;border-radius:999px;background:#a63f35;color:#fff;font-size:7px;font-weight:800;line-height:1;letter-spacing:.04em;pointer-events:none}
 
 /* O replay não herda o cartão escuro do terminal; o encerramento ganha hierarquia. */
 .desktop-window[data-window-id="calls"] .debrief .educational-replay{background:#f3f7f3!important;color:#203d32!important;border:1px solid #9db6a5!important;border-radius:12px!important;overflow:hidden}
@@ -467,4 +463,26 @@
  .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{min-height:76px;padding:13px 15px;font-size:15px}
  .desktop-window[data-window-id="calls"] .contact p,.desktop-window[data-window-id="calls"] .chat-toolbar{color:#35574b!important;font-size:13px}
  .desktop-window[data-window-id="calls"] .trust-card :is(small,span){color:#315c47!important;font-size:12px}
+}
+
+/* Atalhos alinhados; estado do Correio anunciado no rótulo, sem ponto sobre o ícone. */
+.desktop-icons button{display:grid!important;grid-template-columns:42px minmax(0,1fr);align-items:center;justify-items:start;gap:9px;min-width:0;line-height:1.35}
+.desktop-icons button>span{display:grid!important;place-items:center;width:40px;height:40px;min-width:40px;margin:0!important;line-height:1!important}
+.desktop-icons button>span svg{display:block;width:32px;height:32px;max-width:100%}
+.desktop-icons button[data-icon="boss"].has-unread::after,.taskbar button[data-task-app="boss"].has-unread::after{content:"";position:absolute;top:8px;right:9px;width:9px;height:9px;border:2px solid #edf4e9;border-radius:50%;background:#dc7862;box-shadow:0 0 0 1px #193a35;pointer-events:none}
+.first-call-guide .guide-actions button:last-child{align-self:stretch!important;min-height:44px!important;padding:10px 14px!important;border:1px solid #9ab4a5!important;border-radius:8px!important;background:#f4f8f3!important;color:#214b3a!important;font-size:13px!important;font-weight:700!important;text-decoration:none!important}
+.first-call-guide .guide-actions button:last-child:hover{background:#e1eee4!important;color:#173b2e!important;text-decoration:underline!important;text-underline-offset:3px}
+.first-call-guide .guide-actions button:last-child:focus-visible{outline:3px solid #b47b23!important;outline-offset:3px}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop .desktop-icons{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(72px,auto)!important;gap:9px!important;padding-inline:8px!important}
+ .desktop .desktop-icons button{grid-template-columns:38px minmax(0,1fr)!important;min-height:72px!important;gap:9px!important;padding:10px!important;text-align:left!important;overflow-wrap:anywhere}
+ .desktop .desktop-icons button>span{width:38px!important;height:38px!important;min-width:38px!important;margin:0!important}
+ .desktop .desktop-icons button>span svg{width:34px!important;height:34px!important}
+ .mobile-app-switcher>div button{display:grid!important;grid-template-columns:38px minmax(0,1fr);align-items:center;justify-items:start;gap:10px;min-width:0;text-align:left;overflow-wrap:anywhere}
+ .mobile-app-switcher>div button svg{display:block;width:34px;height:34px;flex:0 0 34px}
+ .desktop-window>.windowbar{min-height:50px!important;padding:3px 8px 3px 14px!important}
+ .desktop-window>.windowbar>div{height:auto!important;min-height:44px;align-items:center;gap:6px}
+ .desktop-window>.windowbar button[data-window="close"]{display:grid!important;place-items:center;width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;padding:0!important;border:1px solid #b77b70!important;border-radius:12px!important;background:#f6e4df!important;color:#762f27!important;font-size:24px!important;font-weight:700!important;line-height:1!important}
+ .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active{background:#913e35!important;border-color:#762f27!important;color:#fff!important}
+ .desktop-window>.windowbar button[data-window="minimize"]{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;border-radius:10px!important;background:#ffffff12!important;color:inherit!important}
 }
