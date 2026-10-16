@@ -15,14 +15,14 @@ test('Endereços de versões antigas chegam à versão atual sem redirecionar a 
  for(const version of ['f','g','h','i','j','k','l']){
   const response=await worker.fetch(new Request(`https://example.com/index-v20261015${version}`),env);
   assert.equal(response.status,200);
-  assert.equal(requested.at(-1),'/index-v20261016m.html');
+  assert.equal(requested.at(-1),'/index-v20261016n.html');
  }
- for(const path of ['/index-v20261015l','/index-v20261016l.html']){
+ for(const path of ['/index-v20261015l','/index-v20261016l.html','/index-v20261016m','/index-v20261016m.html']){
   await worker.fetch(new Request(`https://example.com${path}`),env);
-  assert.equal(requested.at(-1),'/index-v20261016m.html');
+  assert.equal(requested.at(-1),'/index-v20261016n.html');
  }
- await worker.fetch(new Request('https://example.com/index-v20261016m'),env);
- assert.equal(requested.at(-1),'/index-v20261016m');
+ await worker.fetch(new Request('https://example.com/index-v20261016n'),env);
+ assert.equal(requested.at(-1),'/index-v20261016n.html');
 });
 
 test('Endpoint aposentado não consulta binding mesmo que um ambiente antigo ainda o ofereça',async()=>{

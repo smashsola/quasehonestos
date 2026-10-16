@@ -487,3 +487,32 @@
  .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active{background:#913e35!important;border-color:#762f27!important;color:#fff!important}
  .desktop-window>.windowbar button[data-window="minimize"]{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;border-radius:10px!important;background:#ffffff12!important;color:inherit!important}
 }
+
+/* Retratos usam um enquadramento quadrado único; preserve mostra o SVG inteiro. */
+.desktop-window[data-window-id="calls"] .call-person-header .contact .avatar{
+ box-sizing:border-box!important;aspect-ratio:1/1!important;display:grid!important;place-items:center!important;overflow:hidden!important;padding:3px!important;border:2px solid #8fcdb1!important;border-radius:16px!important;background:#173f47!important
+}
+.desktop-window[data-window-id="calls"] .call-person-header .contact .avatar img{
+ display:block!important;width:100%!important;height:100%!important;min-width:0!important;max-width:none!important;aspect-ratio:1/1!important;object-fit:contain!important;object-position:center!important;border:0!important;border-radius:10px!important
+}
+img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:center}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"] .call-person-header .contact .avatar{width:88px!important;height:88px!important;min-width:88px!important;max-width:88px!important;flex:0 0 88px!important;border-radius:15px!important}
+}
+@media(max-width:600px) and (max-height:520px),(pointer:coarse) and (max-width:1000px) and (max-height:520px){
+ .desktop-window[data-window-id="calls"] .call-person-header .contact .avatar{width:72px!important;height:72px!important;min-width:72px!important;max-width:72px!important;flex-basis:72px!important}
+}
+
+/* Barra rápida com três áreas do mesmo peso e estado ativo bem marcado. */
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .mobile-dock{height:calc(74px + env(safe-area-inset-bottom))!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;padding:6px 10px calc(6px + env(safe-area-inset-bottom))!important;background:#123731!important;border-top:2px solid #87b9a2!important;box-shadow:0 -5px 18px #0a25243d!important}
+ .mobile-dock button{position:relative!important;display:flex!important;min-width:0!important;min-height:58px!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;padding:4px 3px!important;border:1px solid transparent!important;border-radius:10px!important;background:transparent!important;color:#f4f7ef!important;font-size:12px!important;font-weight:700!important;line-height:1.15!important;white-space:nowrap}
+ .mobile-dock button>svg{display:block!important;width:25px!important;height:25px!important;filter:none!important}
+ .mobile-dock button>span{max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:12px!important;font-weight:700!important;letter-spacing:0!important}
+ .mobile-dock button[aria-current="page"]{border-color:#8abda5!important;background:#315e50!important;color:#fff!important;box-shadow:inset 0 2px #e7c47d,inset 0 -2px #84c6a4!important}
+ .mobile-dock button[data-mobile-apps][aria-expanded="true"]{border-color:#b6d6c1!important;background:#254a43!important;box-shadow:inset 0 0 0 1px #b6d6c144!important}
+ .mobile-dock button[data-mobile-inbox][aria-label*="mensagem nova"]::after{content:"";position:absolute;top:6px;right:calc(50% - 23px);width:10px;height:10px;border:2px solid #123731;border-radius:50%;background:#e78368;box-shadow:0 0 0 1px #f3d6ae;pointer-events:none}
+ .mobile-dock button:focus-visible{outline:3px solid #f1c267!important;outline-offset:-3px!important}
+ .desktop-window:not([data-window-id="calls"])>.windowbar button[data-window="close"]{background:#7f302c!important;border:2px solid #f6d2c1!important;border-radius:10px!important;color:#fff!important;font-size:23px!important;font-weight:800!important;line-height:1!important;box-shadow:0 2px 0 #431c1b!important}
+ .desktop-window:not([data-window-id="calls"])>.windowbar button[data-window="close"]:hover,.desktop-window:not([data-window-id="calls"])>.windowbar button[data-window="close"]:active{background:#a23e36!important;color:#fff!important}
+}
