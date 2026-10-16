@@ -558,6 +558,12 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .desktop-window[data-window-id="calls"] .guided-footer button{font-size:12px}
 }
 
+/* Deixe o fechar fácil de localizar na barra de título do PC, sem mudar os outros controles. */
+@media(min-width:1001px) and (pointer:fine){
+ .desktop-window>.windowbar button[data-window="close"]{background:#963d35!important;border-left:1px solid #d99b8e!important;color:#fff!important;font-size:22px!important;font-weight:800!important;text-shadow:0 1px 1px #521b17!important}
+ .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active{background:#b52e23!important;color:#fff!important}
+}
+
 /* Mobile app-switcher tiles reorder only within their two-column snap grid. */
 @media(max-width:600px),(pointer:coarse) and (max-width:1000px){
  .mobile-app-switcher>div{touch-action:pan-y}
