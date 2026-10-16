@@ -23,6 +23,7 @@ import {callers,moves,defenseTriggers,conversations,schemes,interactionMoves,sch
 import {defensePeople,startDefenseCall} from './defense-round.js';
 export const KEY='quase-honestos-v1';
 export const fresh=()=>({version:1,trustScale:100,shift:0,cursor:0,credits:0,history:[],discovered:[],decor:[],mode:'solo',active:null,finished:false});
+export function migrateToDefense(state){if(state.mode==='defense')return false;state.previousCampaign={mode:state.mode,cursor:state.cursor,shift:state.shift,active:state.active,finished:state.finished,incoming:state.incoming};state.migratedToDefense=!!(state.cursor||state.active||state.finished||state.history.length);state.mode='defense';state.cursor=0;state.shift=0;state.active=null;state.finished=false;state.incoming=null;state.tutorial='defense';return true;}
 export function load(storage){
  const recover=()=>{storage.preserve?.(KEY);return fresh();};
  try{
