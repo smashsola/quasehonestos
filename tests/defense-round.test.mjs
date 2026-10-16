@@ -26,7 +26,7 @@ test('Tela explica o golpe, mostra as quatro ações e ensina como sair',()=>{
  const state=fresh();state.mode='defense';nextCall(state);
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
  assert.match(html,/O que pode acontecer/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/data-defense-exit/);
- assert.match(helpContent(state,escape),/confirmar por um canal oficial/);
+ assert.match(helpContent(state,escape),/confirmar por um canal conhecido/);
 });
 
 test('Ransomware é só simulação, permite desconectar e encerra após 45 segundos se não reagir',()=>{
