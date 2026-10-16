@@ -181,7 +181,7 @@ app.addEventListener('pointerdown',e=>{
 app.addEventListener('pointerdown',e=>{
  if(!isMobile()||e.button!==0)return;
  const icon=e.target.closest('.mobile-app-switcher>div [data-app],.desktop-icons [data-icon]');if(!icon)return;
- const grid=icon.closest('.mobile-app-switcher>div,.desktop-icons'),scrollBox=icon.closest('.mobile-app-switcher')||grid,startX=e.clientX,startY=e.clientY,startScroll=scrollBox.scrollTop,id=icon.dataset.icon||icon.dataset.app;
+ const grid=icon.closest('.mobile-app-switcher>div,.desktop-icons'),scrollBox=grid,startX=e.clientX,startY=e.clientY,startScroll=scrollBox.scrollTop,id=icon.dataset.icon||icon.dataset.app;
  let armed=e.pointerType!=='touch',moved=false,scrolling=false,target=icon;
  if(armed){icon.classList.add('mobile-drag-source');grid.classList.add('mobile-grid-dragging');}
  const hold=armed?null:setTimeout(()=>{armed=true;icon.classList.add('mobile-drag-source');grid.classList.add('mobile-grid-dragging');},280);
