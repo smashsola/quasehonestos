@@ -64,6 +64,12 @@ button:focus-visible,a:focus-visible,summary:focus-visible,textarea:focus-visibl
 .new-message-jump{min-height:44px}
 @media(max-width:600px),(pointer:coarse) and (max-width:1000px){.compose-help summary{min-height:44px;display:flex;align-items:center}}
 
+/* The first-day card must remain scrollable on short phones, with the clock-in action easy to reach. */
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"].welcome-window>.call-window-body{overflow-y:auto!important;overscroll-behavior:contain}
+ .desktop-window[data-window-id="calls"].welcome-window .start-shift{position:sticky;bottom:8px;z-index:2;box-shadow:0 3px 12px #102d3444}
+}
+
 /* Compact secondary status without shrinking the message field or touch actions. */
 .desktop-window[data-window-id="calls"] .contact{padding:6px 12px!important}
 .desktop-window[data-window-id="calls"] .chat-toolbar{min-height:32px;padding:3px 12px}
