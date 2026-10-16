@@ -474,8 +474,9 @@
 .first-call-guide .guide-actions button:last-child:hover{background:#e1eee4!important;color:#173b2e!important;text-decoration:underline!important;text-underline-offset:3px}
 .first-call-guide .guide-actions button:last-child:focus-visible{outline:3px solid #b47b23!important;outline-offset:3px}
 @media(max-width:600px),(pointer:coarse) and (max-width:1000px){
- .desktop .desktop-icons{grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(72px,auto)!important;gap:9px!important;padding-inline:8px!important}
- .desktop .desktop-icons button{grid-template-columns:38px minmax(0,1fr)!important;min-height:72px!important;gap:9px!important;padding:10px!important;text-align:left!important;overflow-wrap:anywhere}
+ .desktop .desktop-icons{grid-auto-flow:row!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-rows:minmax(72px,auto)!important;gap:9px!important;padding-inline:8px!important}
+ .desktop .desktop-icons button{position:static!important;left:auto!important;top:auto!important;grid-column:auto!important;grid-row:auto!important;order:initial!important;grid-template-columns:38px minmax(0,1fr)!important;min-height:72px!important;gap:9px!important;padding:10px!important;text-align:left!important;overflow-wrap:anywhere}
+ .desktop .desktop-icons button.has-unread{position:relative!important}
  .desktop .desktop-icons button>span{width:38px!important;height:38px!important;min-width:38px!important;margin:0!important}
  .desktop .desktop-icons button>span svg{width:34px!important;height:34px!important}
  .mobile-app-switcher>div button{display:grid!important;grid-template-columns:38px minmax(0,1fr);align-items:center;justify-items:start;gap:10px;min-width:0;text-align:left;overflow-wrap:anywhere}

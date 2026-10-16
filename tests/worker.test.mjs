@@ -12,13 +12,17 @@ test('Worker entrega assets e mantém API separada do HTML',async()=>{
 
 test('Endereços de versões antigas chegam à versão atual sem redirecionar a si mesmos',async()=>{
  const requested=[];const env={ASSETS:{fetch:async request=>{requested.push(new URL(request.url).pathname);return new Response('<!doctype html>',{headers:{'Content-Type':'text/html'}});}}};
- for(const version of ['f','g','h','i','j','k']){
+ for(const version of ['f','g','h','i','j','k','l']){
   const response=await worker.fetch(new Request(`https://example.com/index-v20261015${version}`),env);
   assert.equal(response.status,200);
-  assert.equal(requested.at(-1),'/index-v20261015l.html');
+  assert.equal(requested.at(-1),'/index-v20261016m.html');
  }
- await worker.fetch(new Request('https://example.com/index-v20261015l'),env);
- assert.equal(requested.at(-1),'/index-v20261015l');
+ for(const path of ['/index-v20261015l','/index-v20261016l.html']){
+  await worker.fetch(new Request(`https://example.com${path}`),env);
+  assert.equal(requested.at(-1),'/index-v20261016m.html');
+ }
+ await worker.fetch(new Request('https://example.com/index-v20261016m'),env);
+ assert.equal(requested.at(-1),'/index-v20261016m');
 });
 
 test('Endpoint aposentado não consulta binding mesmo que um ambiente antigo ainda o ofereça',async()=>{
