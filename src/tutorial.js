@@ -1,6 +1,6 @@
 import {schemeItems} from './data.js';
 
-export const tutorialStory='Você começou hoje na Quase Honestos, uma firma fictícia que vive de propostas absurdas no Trambique OS. Seu trabalho é conduzir os atendimentos; o Supervisor acompanha só este primeiro caso.';
+export const tutorialStory='No Trambique OS, você acompanha propostas suspeitas e pratica como se proteger. O Supervisor acompanha seu primeiro caso na Quase Honestos.';
 
 const examples={
  link:{pitch:'Seus pontos do BatataPay renderam um vale-lanche.',answer:'O cadastro da página pede o titular e o cartão do jogo para registrar o resgate.',request:'Pode abrir a página de resgate?'},
@@ -14,7 +14,7 @@ export function tutorialStep(state){
  if(state.finished||state.cursor!==0||(state.history?.length||0)>0)return null;
  if(!a)return {number:1,title:'Pode bater o ponto',text:'Abra o Zape Zape 2 e comece o expediente. Este tutorial acompanha só o primeiro atendimento e mostra onde clicar sem decidir por você.',app:'calls'};
  if(a.outcome)return {number:8,title:'Leia o que aconteceu',text:'O resultado explica o que foi exposto e qual defesa poderia interromper a tentativa. Mesmo uma recusa faz parte do jogo. Depois, continue para o próximo atendimento.',app:'calls'};
- if(!a.scheme)return {number:2,title:'Qual vai ser a proposta?',text:'Escolha uma proposta no Zape. No prêmio, você conversa, pede o cartão fictício e usa a Carteira. As outras propostas usam outros apps.',app:'calls'};
+ if(!a.scheme)return {number:2,title:'Qual vai ser a proposta?',text:'Escolha uma situação fictícia no Zape. Observe o pedido de dados ou acesso e as alternativas. Depois, o jogo mostra as consequências e você pode praticar a defesa.',app:'calls'};
  if(!a.prepared)return {number:3,title:'Prepare o app da proposta',text:'Escolha a oferta e clique no botão de preparar. Isso começa o papo; não dá dinheiro nem libera os dados do personagem.',app:a.scheme==='prize'?'prize':schemeItems[a.scheme].app};
  if(a.scheme==='link'&&a.prepared&&a.stage==='request')return {number:6,title:!a.linkSent?'Envie a página':!a.linkOpened?'A página chegou':'Abrir não é preencher',text:!a.linkSent?'Escolha Enviar a página de resgate no Zape.':!a.linkOpened?'Escolha a fala sobre abrir a página. O personagem ainda pode recusar.':'O cadastro está vazio. O personagem precisa decidir se preenche e envia os dados fictícios.',example:a.linkSent?(a.linkOpened?'Pode preencher e enviar o cadastro do resgate?':'Pode abrir a página de resgate?'):null,app:'calls'};
  if(a.stage==='ready'&&a.scheme==='link')return {number:7,title:'Confira o cadastro recebido',text:'O retorno da página está no chat. Abra Clona Cartão, confira o cadastro e veja o débito antes de confirmar.',app:'link'};
@@ -25,7 +25,7 @@ export function tutorialStep(state){
  }
  if(a.stage==='request'&&a.scheme==='update'&&!a.fileSent)return {number:6,title:'Envie o arquivo da história',text:'Escolha Enviar o pacote fictício no Zape. Enviar não significa instalar: depois, o personagem ainda precisa concordar.',app:'calls'};
  const phase=a.stage==='question'?'answer':a.stage==='request'?'request':'pitch';
- return {number:phase==='pitch'?4:phase==='answer'?5:6,title:phase==='pitch'?'Explique sua proposta':phase==='answer'?'Responda à dúvida':'Peça a ação certa',text:phase==='pitch'?'Escolha uma das quatro falas para apresentar a proposta. Uma ou duas opções trazem o humor da firma; elas continuam seguindo as regras da história.':phase==='answer'?'Leia a última pergunta e escolha uma resposta. A opção muda conforme a etapa; uma brincadeira sozinha não libera dados.':'Peça somente o item ou a permissão dessa proposta. Cartão não instala arquivo, e passe do clube não abre computador.',example:examples[a.scheme]?.[phase],app:'calls'};
+ return {number:phase==='pitch'?4:phase==='answer'?5:6,title:phase==='pitch'?'Explique sua proposta':phase==='answer'?'Responda à dúvida':'Peça a ação certa',text:phase==='pitch'?'Escolha entre avançar na simulação, perguntar sobre o risco, brincar ou pausar para buscar confirmação por outro canal. Uma ou duas opções trazem o humor da firma.':phase==='answer'?'Leia a última pergunta e escolha uma resposta. A opção muda conforme a etapa; uma brincadeira sozinha não libera dados.':'Você pode interromper e buscar confirmação por outro canal. Receber um item não conclui uma operação; cada app tem uma etapa separada.',example:examples[a.scheme]?.[phase],app:'calls'};
 }
 export function tutorialPanel(state,esc,mobile=false){
  const step=tutorialStep(state);if(!step||['skipped','completed'].includes(state.tutorial))return '';

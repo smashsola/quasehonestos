@@ -1,23 +1,25 @@
-# Pitch de 3 minutos — Quase Honestos
+# Roteiro de demonstração — até 3 minutos
 
-## 0:00–0:25 — Problema e proposta
+Este roteiro apresenta o funcionamento atual do Quase Honestos. Ele não substitui o vídeo de pitch exigido pelo regulamento nem afirma resultados com estudantes.
 
-“A violência digital pode começar com um pedido aparentemente banal: um código, uma foto ou um acesso. Quase Honestos é uma comédia educativa no Trambique OS. O humor chama atenção; as consequências e a prática de defesa ajudam a discutir proteção sem culpar quem foi enganado.”
+## 0:00–0:30 — Problema e proposta
 
-## 0:25–1:10 — Mostrar uma consequência concreta
+“Uma oferta inesperada pode juntar promessa, urgência e pedido de acesso ou dados. Quase Honestos é um jogo narrativo no Trambique OS que deixa o estudante observar esses sinais, escolher como responder e ver consequências fictícias sem expor dados reais.”
 
-Na prévia local, inicie Nino com a proposta de prêmio. Apresente a oferta e responda à pergunta sobre sua origem. Peça o identificador fictício BatataPay. Mostre que a conversa só compartilha um item: os créditos ainda não chegaram. Abra a Carteira, confira o código QH-DEMO recebido e confirme a operação cenográfica. Mostre o replay aberto: fala do jogador, resposta, consequência registrada e uma atitude de proteção. A comparação hipotética usa a regra real do motor, sem apagar a exposição ocorrida. O dado inventado nunca sai do jogo como um cartão real.
+## 0:30–1:20 — Escolha e consequência
 
-## 1:10–1:45 — Contrastar com proteção
+Abra uma conversa do Nino ou Davi. Mostre as quatro opções roteirizadas: avanço da simulação, humor, pergunta sobre risco e pausa protetiva. Escolha **Pausar e buscar confirmação por um canal conhecido**. O personagem interrompe o contato; a tela explica que a partida registrou a intenção de confirmar, não uma consulta concluída. Mostre que saldo e itens não mudaram.
 
-Em outro atendimento, use: “Você tem razão em desconfiar. Confira a premiação no canal oficial e não compartilhe seus dados.” O personagem decide conferir; nada novo é liberado e o saldo não cresce. Explique que o motor diferencia proteção, recusa, dúvida e pressão. Recusar por irritação não é o mesmo que conferir a origem; encerrar após exposição não apaga dados já compartilhados.
+Se a banca quiser ver o caminho de exposição, use um perfil de demonstração separado. Mostre que receber um link, abrir uma página, enviar um cadastro e movimentar créditos são etapas diferentes. Explique o risco e o que a pausa anterior poderia mudar. Não use os dados de uma partida pessoal.
 
-## 1:45–2:20 — Defender e investigar
+## 1:20–2:10 — Defesa e evidências
 
-Mostre o recado neutro sobre uma oficina no resultado de Olga. Abra o Correio, consulte o mural conhecido e só então confirme a participação. Uma fonte pertinente basta; um palpite correto fica distinto. No caso de Yara, as fontes estão desatualizadas: buscar outra confirmação é válido. Nem toda mensagem é golpe. Cite também a situação do grupo que pede foto e contato de um colega para humilhá-lo: recusar, não ampliar a exposição, denunciar e buscar ajuda. Esse vínculo torna explícita a categoria Prevenção à Violência.
+Abra a rodada de defesa. Consulte um pedido e compare com um registro do app existente. Relacione a decisão a um trecho específico. Mostre também um caso legítimo e um inconclusivo: a confirmação pode autorizar uma ação necessária; uma fonte desatualizada não prova que a mensagem é falsa.
 
-## 2:20–3:00 — Diferencial, validação e honestidade
+## 2:10–3:00 — Diferencial, viabilidade e limite
 
-“Nosso diferencial é ver o que aconteceu naquela conversa e praticar a proteção numa situação nova. Créditos mostram desempenho na ficção; não certificam conhecimento. O motor local mantém regras verificáveis para dados, acesso e dinheiro e funciona sem uma API paga. Usamos IA como apoio ao desenvolvimento; não treinamos um modelo de terceiros. No celular, alternamos apps sem perder o rascunho. Temos testes de regressão e uma atividade no Manual com avaliação piloto antes/depois com situações diferentes e sem identificação pessoal. Ainda não aplicamos o piloto, portanto não afirmamos resultados de aprendizagem.”
+“Nosso diferencial é conectar escolha, consequência e defesa numa mesma história brasileira, com humor da firma e personagens que mantêm memória. O motor é determinístico e a partida não depende de IA generativa. No Manual há uma atividade antes/depois com situações diferentes, pedindo ação e evidência e exportando códigos localmente. Ainda não aplicamos com estudantes: não alegamos eficácia. O próximo passo é revisar o instrumento com educadores e fazer um piloto anônimo.”
 
-Preparação: deixe a prévia iniciada, o tutorial recolhido e um resultado anterior disponível. Para o palco, use duas partidas de demonstração em navegadores/perfis locais separados; não apague o progresso pessoal do usuário. Não dependa de rede externa ou de uma chamada a modelo.
+## Preparação
+
+Use uma sessão de demonstração separada, carregada no navegador local. Deixe um atendimento seguro e um resultado de exposição preparados em perfis separados. Não apague o salvamento pessoal nem dependa de uma API de IA. O regulamento prevê um vídeo de pitch de até 3 minutos; a apresentação final pode ter dinâmica própria conforme a organização comunicar.

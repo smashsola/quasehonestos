@@ -3,8 +3,8 @@ import {resultImpact} from './result-impact.js';
 export function registerFollowup(state,a){
  const impact=resultImpact(a);if(!impact)return;
  state.followups??=[];const key=state.cursor+'-'+a.caller;if(state.followups.some(e=>e.id===key))return;
- const body=impact.exposed?'Chegou outra abordagem citando o atendimento anterior. O registro mostra o que foi compartilhado. A responsabilidade por enganar é de quem enganou, não de quem acreditou.':impact.verified?'Reconheci o pedido de conferir a origem na conversa anterior. Agora chegou uma oferta parecida; este novo contato ainda não foi verificado.':'Guardei a conversa. Agora chegou outro convite, mas o atendimento anterior não confirma quem está escrevendo desta vez.';
- state.followups.push({id:key,caller:a.caller,sourceTurn:state.history.length,availableAfter:state.cursor+1,kind:impact.exposed?'support':impact.verified?'recognition':'verification',body});
+ const body=impact.exposed?'Chegou outra abordagem citando o atendimento anterior. O registro mostra o que foi compartilhado. A responsabilidade por enganar é de quem enganou, não de quem acreditou.':impact.protectionChosen?'Na conversa anterior, a pessoa pausou para buscar confirmação. Agora chegou uma oferta parecida; a pausa anterior não confirma este novo contato.':'Guardei a conversa. Agora chegou outro convite, mas o atendimento anterior não confirma quem está escrevendo desta vez.';
+ state.followups.push({id:key,caller:a.caller,sourceTurn:state.history.length,availableAfter:state.cursor+1,kind:impact.exposed?'support':impact.protectionChosen?'recognition':'verification',body});
 }
 const available=(state,id)=>(state.followups||[]).find(e=>e.id===id&&e.availableAfter<=state.cursor);
 function originalRecord(state,e){const index=e.sourceTurn??Number.parseInt(e.id,10),record=state.history[index];return record?.caller===e.caller?record:e.sourceTurn===undefined?state.history.find(h=>h.caller===e.caller)||null:null;}

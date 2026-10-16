@@ -89,6 +89,9 @@
 .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option:nth-child(4){animation-delay:150ms}
 .option-number{background:transparent;border-radius:50%;width:18px;flex-basis:18px;color:#466a57}
 .desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-witty{background:#f5efd9;border-color:#c9bb8b}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-protective{background:#e5f1e8;border-color:#6f9d7b;box-shadow:inset 3px 0 #3f7958}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-protective .option-number{background:#d2e6d6;color:#315e43}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-protective:hover:not(:disabled){background:#d8eadc;border-color:#3f7958}
 .reply-wait{padding:12px;color:#37584b;font-size:12px;min-height:44px;background:#e8efe9}
 @keyframes choice-arrive{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .mobile-return-chat{position:sticky;top:0;z-index:4;display:block;min-height:44px;background:#215d51!important;color:#fff!important;border:1px solid #113d33!important;padding:10px 16px;margin:0 0 12px}
@@ -168,7 +171,7 @@
  .desktop-window[data-window-id="calls"] .defense-entrance{padding:16px;margin:14px 0}
 }
 @media(max-width:600px) and (max-height:550px),(pointer:coarse) and (max-width:1000px) and (max-height:550px){
- .desktop-window[data-window-id="calls"] .call-person-header .avatar{min-width:44px!important;max-width:44px!important;width:44px!important;height:44px!important;flex-basis:44px!important}
+ .desktop-window[data-window-id="calls"] .call-person-header .avatar{min-width:64px!important;max-width:64px!important;width:64px!important;height:64px!important;flex-basis:64px!important}
  .desktop-window[data-window-id="calls"] .contact{padding-block:4px}
  .desktop-window[data-window-id="calls"] .contact p,.desktop-window[data-window-id="calls"] .context,.desktop-window[data-window-id="calls"] .first-call-guide{display:none}
  .desktop-window[data-window-id="calls"] .call-window-body>.conversation:not(:empty){min-height:90px!important}
@@ -212,4 +215,212 @@
 }
 @media(max-width:600px) and (min-height:551px) and (max-height:720px),(pointer:coarse) and (max-width:1000px) and (min-height:551px) and (max-height:720px){
  .desktop-window[data-window-id="calls"] .call-window-body>.conversation:not(:empty){min-height:90px!important}
+}
+
+/* Respostas rápidas: texto primeiro, etiquetas pequenas e estados consistentes. */
+.desktop-window[data-window-id="calls"] .choices:has(.guided-compose){background:#e8efe9;padding:14px 16px;border-top:1px solid #c9d8cf}
+.guided-heading{display:block;margin:0 0 10px}
+.guided-heading small{display:block;color:#527363;font-size:9px;letter-spacing:.12em;font-weight:700}
+.guided-heading h2{margin:3px 0 0;color:#203e37;font-size:15px;line-height:1.3;letter-spacing:-.01em}
+.guided-heading>span{display:none}
+.dialogue-options{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{position:relative;display:grid;grid-template-columns:25px minmax(0,1fr);align-items:center;gap:10px;min-width:0;min-height:68px;padding:11px 13px 11px 11px;border:1px solid #bfd0c6;border-left:3px solid #638a77;border-radius:12px;background:#fbfcfa;color:#243f37;box-shadow:0 2px 5px #153e2b0a;font-size:13px;font-weight:550;line-height:1.45;transition:transform .14s ease,border-color .14s ease,background-color .14s ease,box-shadow .14s ease;animation:none}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option>span:not(.option-number){min-width:0}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option>.option-number{display:grid;place-items:center;width:24px;height:24px;flex:none;border-radius:8px;background:#e5eee8;color:#3b6754;font-size:11px;font-weight:750;font-variant-numeric:tabular-nums}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-witty{background:#fffaf1;border-color:#ddd0af;border-left-color:#b58b45;color:#3f3a2d}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-witty>.option-number{background:#f1e7cf;color:#785f30}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-protective{background:#edf6ef;border-color:#b5cfba;border-left-color:#3f7958;color:#244734;box-shadow:none}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-protective>.option-number{background:#d8eadb;color:#315e43}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option:hover:not(:disabled){transform:translateY(-1px);border-color:#6c9d82;background:#f0f7f1;box-shadow:0 4px 10px #153e2b12}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-witty:hover:not(:disabled){border-color:#b58b45;background:#f8f0dc}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-protective:hover:not(:disabled){border-color:#3f7958;background:#e1f0e4}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option:active:not(:disabled){transform:translateY(0);box-shadow:inset 0 1px 2px #153e2b16}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option:focus-visible{outline:3px solid #c18a32;outline-offset:2px;z-index:1}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option:disabled{opacity:.58;cursor:wait;transform:none;box-shadow:none}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"] .choices:has(.guided-compose){padding:8px 10px max(8px,env(safe-area-inset-bottom))}
+ .dialogue-options{grid-template-columns:minmax(0,1fr);gap:6px}
+ .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{grid-template-columns:24px minmax(0,1fr);min-height:50px;padding:8px 11px;gap:9px;font-size:13px;line-height:1.35}
+ .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option>.option-number{width:23px;height:23px}
+ .guided-heading{margin-bottom:7px}
+ .guided-heading h2{font-size:14px}
+}
+@media(max-width:600px) and (max-height:640px),(pointer:coarse) and (max-width:1000px) and (max-height:640px){
+ .dialogue-options{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{min-height:56px;padding:7px;font-size:12px;line-height:1.3;gap:6px}
+ .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option>.option-number{width:21px;height:21px}
+}
+@media(prefers-reduced-motion:reduce){.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{transition:none}}
+
+/* Retratos maiores para dar presença aos personagens sem cortar o cabeçalho. */
+.desktop-window[data-window-id="calls"] .call-person-header .contact .avatar{width:96px!important;height:96px!important;min-width:96px!important;max-width:96px!important;flex:0 0 96px!important;overflow:hidden;border-radius:20px}
+.desktop-window[data-window-id="calls"] .call-person-header .contact .avatar img{display:block;width:100%!important;height:100%!important;min-width:0!important;max-width:none!important;object-fit:cover}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"] .call-person-header .contact .avatar{width:80px!important;height:80px!important;min-width:80px!important;max-width:80px!important;flex:0 0 80px!important;border-radius:17px}
+}
+@media(max-width:600px) and (max-height:640px),(pointer:coarse) and (max-width:1000px) and (max-height:640px){
+ .desktop-window[data-window-id="calls"] .call-person-header .contact .avatar{width:72px!important;height:72px!important;min-width:72px!important;max-width:72px!important;flex-basis:72px!important}
+}
+@media(max-width:600px) and (max-height:520px),(pointer:coarse) and (max-width:1000px) and (max-height:520px){
+ .desktop-window[data-window-id="calls"] .call-person-header .contact .avatar{width:64px!important;height:64px!important;min-width:64px!important;max-width:64px!important;flex-basis:64px!important}
+}
+
+/* O retrato do perfil acompanha o destaque do cabeçalho em todos os personagens. */
+.chat-profile>img{width:112px!important;height:112px!important;min-width:112px!important;object-fit:cover;border-radius:20px}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .chat-profile>img{width:96px!important;height:96px!important;min-width:96px!important}
+}
+
+/* A lista recolhida do replay deve parecer um controle, não uma linha solta. */
+.replay-more{display:block;margin:16px 16px 20px!important;border:1px solid #9db8a7!important;border-radius:13px!important;background:#eef5ef!important;overflow:hidden;box-shadow:0 3px 0 #d6e4d8}
+.replay-more>summary{position:relative;display:flex!important;align-items:center;gap:10px;min-height:54px;padding:12px 48px 12px 16px!important;list-style:none!important;background:linear-gradient(110deg,#edf5ed,#e5efe6)!important;color:#234b3b!important;font-size:14px!important;font-weight:650!important;line-height:1.4;cursor:pointer;transition:background-color .15s ease,color .15s ease}
+.replay-more-label{flex:1}
+.replay-count{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 8px;border-radius:9px;background:#d2e4d6;color:#254d3b;font-size:13px;font-weight:750;line-height:1}
+.investigation-records>.investigation-back{display:block;width:fit-content;max-width:100%;margin:20px 0 10px;padding:12px 16px;border-radius:9px;text-align:center;white-space:normal;line-height:1.4}
+.investigation-records>.investigation-disclaimer{display:block;max-width:42rem;margin:0;padding:9px 0 2px;border-top:1px solid #c8d7cc;color:#526c5e;font-size:12px;line-height:1.55;letter-spacing:.01em}
+.desktop-window[data-window-id="calls"] .defense-investigation>small:first-child{display:inline-flex;align-items:center;gap:8px;min-height:34px;margin:0 0 8px;padding:7px 11px;border:1px solid #16483d;border-radius:7px;background:#215d51;color:#fff!important;font-size:12px;font-weight:750;letter-spacing:.09em;line-height:1.2}
+.desktop-window[data-window-id="calls"] .defense-investigation>small:first-child::before{content:"";width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#f1c267;box-shadow:0 0 0 3px #ffffff22}
+.replay-more>summary::-webkit-details-marker{display:none!important}
+.replay-more>summary::marker{content:''!important;display:none!important}
+.replay-more>summary::after{content:'';position:absolute;right:18px;top:50%;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-70%) rotate(45deg);transition:transform .16s ease}
+.replay-more[open]>summary::after{transform:translateY(-25%) rotate(225deg)}
+.replay-more>summary:hover{background:#dceade!important;color:#1e4936!important}
+.replay-more>summary:focus-visible{outline:3px solid #b77e30;outline-offset:-3px}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){.replay-more{margin:14px 10px 18px!important}.replay-more>summary{min-height:54px;padding:12px 44px 12px 14px!important;font-size:14px!important}.investigation-records>.investigation-back{width:100%;margin-top:18px}.investigation-records>.investigation-disclaimer{margin-top:4px;font-size:12px}.desktop-window[data-window-id="calls"] .defense-investigation>small:first-child{min-height:36px;font-size:12px}}
+@media(prefers-reduced-motion:reduce){.replay-more>summary,.replay-more>summary::after{transition:none}}
+
+/* Contraste revisado para que o conteúdo continue legível em telas e luzes diferentes. */
+.desktop-window[data-window-id="calls"] .choices:has(.scheme-options),
+.desktop-window[data-window-id="calls"] .choices:has(.dialogue-options){background:#eef4ef!important;color:#183a30!important;border-top:1px solid #8da99a!important}
+.desktop-window[data-window-id="calls"] .choices>small,
+.desktop-window[data-window-id="calls"] .choices .call-start-note,
+.desktop-window[data-window-id="calls"] .choices .guided-heading :is(small,h2),
+.desktop-window[data-window-id="calls"] .choices .conversation-stage{color:#23483a!important;opacity:1!important}
+.desktop-window[data-window-id="calls"] .choices .call-start-note{font-size:16px;line-height:1.5}
+.desktop-window[data-window-id="calls"] .choices>small{font-size:12px;font-weight:750;letter-spacing:.09em}
+.desktop-window[data-window-id="calls"] .choices .scheme-options button{background:#fff!important;color:#17382f!important;border:1.5px solid #5e806b!important;border-radius:12px!important;box-shadow:0 2px 0 #c7d7ca!important}
+.desktop-window[data-window-id="calls"] .choices .scheme-options button :is(strong,span,em){color:#17382f!important;opacity:1!important}
+.desktop-window[data-window-id="calls"] .choices .scheme-options button em{font-weight:700}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{background:#fff!important;color:#142f27!important;border:1.5px solid #5a7b67!important;border-left:4px solid #47755b!important;font-size:15px;font-weight:600;line-height:1.45;box-shadow:0 2px 0 #d2dfd5!important}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option>span{color:inherit!important;opacity:1!important}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option>.option-number{background:#dbe9df!important;color:#183f2e!important;font-weight:800}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-witty{background:#fff4d6!important;color:#342b18!important;border-color:#927238!important;border-left-color:#805d1e!important}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-witty>.option-number{background:#ead9ae!important;color:#4b3511!important}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-protective{background:#e2f0e5!important;color:#153c29!important;border-color:#4a805a!important;border-left-color:#28623d!important}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.option-protective>.option-number{background:#c8e2cf!important;color:#17432b!important}
+.desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option:disabled{opacity:1!important}
+.desktop-window[data-window-id="calls"] .contact p,.desktop-window[data-window-id="calls"] .chat-toolbar{color:#35574b!important}
+.desktop-window[data-window-id="calls"] .trust-card{color:#25483b!important}
+.desktop-window[data-window-id="calls"] .trust-card :is(small,span){color:#365d4c!important;opacity:1!important}
+.desktop-window[data-window-id="calls"] .debrief{background:#f0f4ed!important;color:#183a30!important}
+.desktop-window[data-window-id="calls"] .debrief :is(p,small,dt,dd,label){color:#304d40!important;opacity:1!important}
+
+/* Legibilidade também no PC: o jogo não pode depender de texto minúsculo ou cinza. */
+.desktop-window[data-window-id="calls"] .choices:has(.scheme-options){background:#f1f6f1!important;color:#183a30!important}
+.desktop-window[data-window-id="calls"] .choices:has(.scheme-options)>small{display:block;color:#23483a!important;font-size:12px!important;font-weight:800!important;letter-spacing:.09em;line-height:1.5;opacity:1!important}
+.desktop-window[data-window-id="calls"] .choices .call-start-note{margin:8px 0 14px;padding:11px 14px;border-left:4px solid #39745a;border-radius:0 9px 9px 0;background:#dcebe0;color:#183b2d!important;font-size:16px!important;font-weight:600;line-height:1.55}
+.desktop-window[data-window-id="calls"] .choices .scheme-options button{background:#fff!important;color:#183a30!important;border:1.5px solid #6d8d76!important;box-shadow:0 2px 0 #d2dfd5!important}
+.desktop-window[data-window-id="calls"] .choices .scheme-options button :is(strong,span,em){color:#183a30!important;opacity:1!important}
+.desktop-window[data-window-id="calls"] .choices .scheme-options button strong{font-size:15px;line-height:1.4}
+.desktop-window[data-window-id="calls"] .choices .scheme-options button span{font-size:14px;line-height:1.55}
+.desktop-window[data-window-id="calls"] .choices .scheme-options button em{font-size:12px;font-weight:700}
+.desktop-window[data-window-id="calls"] .conversation{background:#e7efea!important}
+.desktop-window[data-window-id="calls"] .bubble{max-width:84%;padding:13px 16px!important;border:1px solid #9ab4a5!important;border-radius:4px 14px 14px!important;background:#fff!important;color:#18382f!important}
+.desktop-window[data-window-id="calls"] .bubble.own{background:#dcebe1!important;border-color:#82a994!important;color:#18382f!important}
+.desktop-window[data-window-id="calls"] .bubble p{font-size:15px!important;line-height:1.6!important;color:#18382f!important}
+.desktop-window[data-window-id="calls"] .bubble small{font-size:11px!important;color:#365c48!important}
+.desktop-window[data-window-id="calls"] .message-meta{font-size:10px!important;color:#496b58!important}
+.desktop-window[data-window-id="calls"] .contact p{font-size:13px!important;color:#d8e8df!important}
+.desktop-window[data-window-id="calls"] .context{font-size:12px!important;color:#345c4b!important}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"] .choices .call-start-note{font-size:15px!important;margin:6px 0 10px;padding:9px 11px}
+ .desktop-window[data-window-id="calls"] .choices .scheme-options button strong{font-size:15px}
+ .desktop-window[data-window-id="calls"] .choices .scheme-options button span{font-size:14px;line-height:1.5}
+ .desktop-window[data-window-id="calls"] .bubble{max-width:92%;padding:11px 13px!important}
+ .desktop-window[data-window-id="calls"] .bubble p{font-size:15px!important}
+}
+
+/* Resultado, defesa e conversa são páginas distintas do mesmo atendimento. */
+.desktop-window[data-window-id="calls"] .result-tabs{display:flex;flex:0 0 auto;gap:8px;padding:9px 12px;background:#173a3c;border-bottom:1px solid #628478}
+.desktop-window[data-window-id="calls"] .result-tabs button{flex:1 1 0;min-width:0;min-height:46px;padding:9px 12px;border:1px solid #74958a;border-radius:10px;background:#244c49;color:#f2f7ef;font-size:13px;font-weight:700;line-height:1.3;white-space:normal}
+.desktop-window[data-window-id="calls"] .result-tabs button[aria-pressed="true"]{background:#e4efe5;color:#183c31;border:2px solid #40755c;box-shadow:inset 0 -3px #40755c}
+.desktop-window[data-window-id="calls"] .debrief>[hidden]{display:none!important}
+.desktop-window[data-window-id="calls"] .result-content,.desktop-window[data-window-id="calls"] .defense-content{min-width:0}
+.desktop-window[data-window-id="calls"] .choices:has(.reply-wait){background:#eef4ef!important;color:#183a30!important;border-top:1px solid #8da99a!important}
+.desktop-window[data-window-id="calls"] .choices .reply-wait{display:flex;align-items:center;min-height:54px;padding:12px 14px;border-left:4px solid #39745a;border-radius:0 9px 9px 0;background:#dcebe0;color:#183b2d!important;font-size:14px;font-weight:650;line-height:1.5}
+.desktop-window[data-window-id="calls"] .choices:has(.reply-wait)>.conversation-stage{display:none!important}
+.desktop-window[data-window-id="calls"] .call-window-body:has(.result-tabs)>.conversation{min-height:110px;flex:0 1 180px!important}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window[data-window-id="calls"] .result-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:7px 8px}
+ .desktop-window[data-window-id="calls"] .result-tabs button{min-height:48px;padding:7px 5px;font-size:12px;border-radius:9px}
+ .desktop-window[data-window-id="calls"] .call-window-body:has(.result-tabs)>.conversation{flex:0 1 140px!important;min-height:90px!important}
+}
+
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ /* Quando nenhuma janela está aberta, o papel de parede vira uma tela inicial útil. */
+ .desktop .desktop-icons{position:absolute!important;inset:calc(42px + env(safe-area-inset-top)) 10px calc(64px + env(safe-area-inset-bottom));z-index:2;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(66px,auto);align-content:start;gap:9px;padding:12px 8px;overflow:auto}
+ .desktop:has(.desktop-window) .desktop-icons{display:none!important}
+ .desktop .desktop-icons::before{content:"APLICATIVOS DA FIRMA";grid-column:1/-1;padding:4px 2px;color:#f2f5ee;font-size:12px;font-weight:800;letter-spacing:.1em;text-shadow:0 1px 3px #102b30}
+ .desktop .desktop-icons button{position:static!important;width:100%!important;height:auto!important;min-height:68px!important;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:11px;padding:10px!important;border:1.5px solid #a1c3b3!important;border-radius:12px!important;background:#173f42f2!important;color:#fff!important;font-size:14px!important;font-weight:700!important;line-height:1.35;text-align:left;text-shadow:none!important;box-shadow:0 2px 5px #071f2833;touch-action:manipulation}
+ .desktop .desktop-icons button>span{display:grid!important;place-items:center;width:36px!important;height:36px!important;flex:0 0 36px;margin:0!important;font-size:28px!important;filter:none!important}
+ .desktop .desktop-icons button>span svg{width:34px!important;height:34px!important}
+ .desktop .desktop-icons button:focus-visible,.desktop .desktop-icons button:active{outline:3px solid #f1c267!important;outline-offset:1px;background:#24594f!important}
+
+ /* O alternador tem uma base clara e textos escuros, com botões fortes e legíveis. */
+ .mobile-app-switcher{background:#edf3ec!important;color:#173b32!important;border-top:2px solid #245b4d;box-shadow:0 -6px 24px #0a252d40}
+ .mobile-app-switcher header{width:100%;max-width:none;margin:0;gap:12px}
+ .mobile-app-switcher header strong{color:#173b32!important;font-size:20px;font-weight:800;letter-spacing:-.02em}
+ .mobile-app-switcher header button{background:#20584a!important;color:#fff!important;border:1px solid #164638!important;border-radius:9px;font-weight:700}
+ .mobile-app-switcher p{margin:10px 0 14px;padding:10px 12px;border-left:4px solid #2d7057;border-radius:6px;background:#d7e6d9;color:#1d4033!important;font-size:14px;font-weight:600;line-height:1.45}
+ .mobile-app-switcher>div{gap:9px}
+ .mobile-app-switcher [data-app]{min-height:72px;background:#fff!important;border:1.5px solid #5a7b67!important;border-radius:11px!important;color:#17382f!important;font-size:14px;font-weight:700;line-height:1.35;box-shadow:0 2px 0 #d0dfd3}
+ .mobile-app-switcher [data-app] svg{width:34px;height:34px;flex:0 0 34px}
+ .mobile-app-switcher [data-app][aria-current="page"]{background:#d9ebdc!important;border:2px solid #286544!important;box-shadow:inset 4px 0 #286544,0 2px 0 #c5d9c8}
+ .mobile-app-switcher .mobile-utilities{gap:8px;padding:14px 0}
+ .mobile-app-switcher .mobile-utilities button{min-height:46px;background:#20584a!important;color:#fff!important;border:1.5px solid #174839!important;border-radius:8px;font-size:13px;font-weight:700}
+
+ /* Rótulos e opções da conversa usam tinta escura em papel claro; humor continua marcado em dourado. */
+ .desktop-window[data-window-id="calls"] .choices:has(.scheme-options),
+ .desktop-window[data-window-id="calls"] .choices:has(.dialogue-options){padding:12px!important}
+ .desktop-window[data-window-id="calls"] .choices .dialogue-options{gap:9px}
+ .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{min-height:58px;padding:10px 12px;font-size:14px;line-height:1.45}
+ .desktop-window[data-window-id="calls"] .choices .scheme-options{gap:9px}
+ .desktop-window[data-window-id="calls"] .choices .scheme-options button{padding:13px!important}
+ .desktop-window[data-window-id="calls"] .choices .scheme-options button :is(span,em){font-size:13px;line-height:1.5}
+ .desktop-window[data-window-id="calls"] .call-start-note{font-size:16px!important;color:#1b3b30!important}
+ .desktop-window[data-window-id="calls"] .choices>small{font-size:12px!important;color:#254a3b!important}
+ .desktop-window[data-window-id="calls"] .bubble{font-size:15px;color:#142f27;background:#fff;border-color:#71917c}
+ .desktop-window[data-window-id="calls"] .bubble p{font-size:15px;line-height:1.6}
+ .desktop-window[data-window-id="calls"] .bubble small{font-size:11px;color:#315f48}
+ .desktop-window[data-window-id="calls"] .contact p{color:#d8e7df!important;font-size:13px}
+ .desktop-window[data-window-id="calls"] .context{color:#e6eee8!important}
+ .desktop-window[data-window-id="calls"] .chat-toolbar{background:#f7faf6!important;color:#294b3d!important}
+ .desktop-window[data-window-id="calls"] .trust-card{background:#fff!important;color:#1e4536!important;border:1px solid #71917c!important}
+ .desktop-window[data-window-id="calls"] .trust-card :is(small,span){color:#315c47!important}
+ .desktop-window[data-window-id="calls"] .debrief{background:#f1f5ef!important;color:#183a30!important}
+ .desktop-window[data-window-id="calls"] .debrief :is(p,small,dt,dd,label){color:#304d40!important}
+
+ /* Recados e textos auxiliares do sistema deixam de depender de cinzas miúdos. */
+ .desktop-window:not([data-window-id="calls"]) .app-window-body{background:#f2f5ee!important;color:#173a31!important}
+ .desktop-window:not([data-window-id="calls"]) .app-window-body :is(p,small,label,dt,dd){color:#314d41;opacity:1}
+ .desktop-window:not([data-window-id="calls"]) .app-window-body small{font-size:12px;line-height:1.5;letter-spacing:.04em}
+ .incoming-message.mobile-inline{background:#f4f7f1!important;color:#173a30!important;border:1.5px solid #5d7e69!important;border-radius:12px;box-shadow:0 2px 0 #c4d6c8}
+ .incoming-message.mobile-inline>header{background:#174b42!important;color:#fff!important;padding:13px 14px}
+ .incoming-message.mobile-inline>header small{color:#e1eee5!important;font-size:10px;letter-spacing:.12em}
+ .incoming-message.mobile-inline>header strong{color:#fff!important;font-size:14px}
+ .incoming-message.mobile-inline>header button{color:#fff!important;min-width:44px;min-height:44px}
+ .incoming-message.mobile-inline :is(.unknown-sender,.incoming-body>p,.incoming-body>small){color:#304d40!important;font-size:13px;line-height:1.55;opacity:1}
+ .incoming-message.mobile-inline .incoming-body>blockquote{background:#fffaf0;color:#392f20;border:1px solid #a98e5b;font-size:14px;line-height:1.65}
+ .incoming-message.mobile-inline .incoming-open{background:#dcebe0;color:#173f32;border:1.5px solid #52775f;font-size:14px;font-weight:700}
+ .incoming-message.mobile-inline .incoming-results summary{color:#173f32;font-size:14px}
+ .incoming-message.mobile-inline .incoming-results p,.incoming-message.mobile-inline .incoming-results small{color:#304d40!important;font-size:13px!important;line-height:1.55}
+}
+
+/* No computador, a área da conversa e as respostas ganham tinta mais escura e um pouco mais de corpo. */
+@media(min-width:601px) and (pointer:fine){
+ .desktop-window[data-window-id="calls"] .bubble{font-size:15px;line-height:1.65}
+ .desktop-window[data-window-id="calls"] .bubble p{font-size:15px}
+ .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{min-height:76px;padding:13px 15px;font-size:15px}
+ .desktop-window[data-window-id="calls"] .contact p,.desktop-window[data-window-id="calls"] .chat-toolbar{color:#35574b!important;font-size:13px}
+ .desktop-window[data-window-id="calls"] .trust-card :is(small,span){color:#315c47!important;font-size:12px}
 }

@@ -5,26 +5,26 @@ import {selectedOffer} from './app-interactions.js';
 import {rememberConversation} from './conversation-memory.js';
 import {reactionFor} from './mood.js';
 import {sceneHumor,jokeReaction} from './scripted-humor.js';
-const proposals={prize:'É o prêmio do concurso de desenho da Batata Cósmica.',support:'A proposta é um atendimento para o PãoOS dentro deste computador de jogo.',club:'O convite é para a associação do Clube VIP da Colher.',update:'O pacote promete skins para o blaster da Batata Cósmica.',link:'A página promete um vale-lanche em troca dos pontos BatataPay.'};
-const explanations={prize:'O contato diz ser da organização do concurso. É uma afirmação da proposta, não uma confirmação por fora.',support:'O serviço foi oferecido pela firma; você não abriu um chamado. A sessão daria acesso ao computador fictício.',club:'A firma oferece a associação e pede o passe do clube. Esse convite ainda não foi conferido com a turma.',update:'O instalador pede perfil, contato e rotina. Essas permissões vão além de mudar a aparência do blaster.',link:'O cadastro pede o cartão fictício e um código de resgate. A promessa de lanche não confirma quem fez a página.'};
-const risks={prize:'O identificador BatataPay permite movimentar os créditos fictícios pela Carteira. Receber um certificado não comprova quem pede esse dado.',support:'Uma sessão remota permite acessar o computador fictício. Ela não confirma a identidade de quem oferece suporte.',club:'O passe dá acesso à associação fictícia. O convite recebido não confirma quem está organizando.',update:'O pacote pede perfil, contato e rotina. Uma skin não precisa conhecer sua agenda.',link:'Abrir a página não envia os dados. Preencher e enviar o cadastro expõe o cartão fictício; a promessa de lanche não prova a origem.'};
+const proposals={prize:'É o prêmio do concurso de desenho da Batata.',support:'É suporte para o PãoOS deste computador fictício.',club:'É um convite para o Clube VIP da Colher.',update:'O pacote promete skins para o blaster da Batata.',link:'A página promete vale-lanche pelos pontos BatataPay.'};
+const explanations={prize:'Diz ser do concurso. Falta confirmar por outro canal.',support:'A firma oferece suporte sem chamado. A sessão acessa o PC do jogo.',club:'A firma oferece o convite. Falta saber quem organiza.',update:'O pacote pede perfil, contato e rotina para instalar skins.',link:'A página pede cartão e código por um vale-lanche.'};
+const risks={prize:'O identificador BatataPay pode movimentar créditos do jogo. O certificado não confirma quem pediu o dado.',support:'Uma sessão remota dá acesso ao computador do jogo, mas não confirma quem oferece suporte.',club:'O passe libera acesso ao clube. O convite não confirma quem está organizando.',update:'O pacote pede perfil, contato e rotina. Uma skin não precisa da sua agenda.',link:'Abrir não envia nada. Preencher e enviar expõe o cartão do jogo; o vale-lanche não confirma a origem.'};
 
 function phase(a){return a.stage==='request'&&a.scheme==='update'&&!a.fileSent?'attachment':a.stage==='request'&&a.scheme==='link'&&!a.linkSent?'link':a.stage;}
 export function dialogueOptions(a){
  if(!a?.prepared||!a.log?.length||a.outcome||a.supportPaused||!schemeItems[a.scheme])return [];
  const step=phase(a),item=schemeItems[a.scheme],offer=selectedOffer(a),main=step==='question'?'answer':step==='request'?'request':'pitch';
  const choice=(id,label,action,extra={})=>({key:`${a.caller}:${step}:${!!a.linkOpened}:${id}`,label,action,...extra});
- const humor=sceneHumor(a,step),pressure=choice('pressure','Precisamos resolver agora. O chefe está cobrando.','move',{move:'pressure'});
- if(step==='ready')return [choice('open',`Vou abrir ${item.tool} para conferir o que chegou.`,'open',{app:item.app}),choice('receipt',humor.main,'joke',{funny:true}),choice('risk','O que esse item permite fazer?','info'),choice('close','Vou encerrar este contato sem concluir a operação.','close')];
- if(step==='attachment'||step==='link')return [choice('send',step==='attachment'?'Enviar o pacote fictício de skins.':'Enviar a página fictícia de resgate.',step),choice('send-joke',humor.main,step,{funny:true}),choice('risk','Antes: o que esse pedido pode expor?','info'),pressure];
+ const humor=sceneHumor(a,step),protect=choice('protect','Pausar e confirmar em outro canal, sem enviar dados.','move',{move:'wait',protective:true});
+ if(step==='ready')return [choice('open',`Abrir ${item.tool} e conferir.`,'open',{app:item.app}),choice('receipt',humor.main,'joke',{funny:true}),choice('risk','O que esse item permite fazer?','info'),protect];
+ if(step==='attachment'||step==='link')return [choice('send',step==='attachment'?'Enviar o pacote de skins.':'Enviar a página de resgate.',step),choice('send-joke',humor.main,step,{funny:true}),choice('risk','O que esse pedido pode expor?','info'),protect];
  const detail=(a.guidedAnswers||0)>0;
  const normal=step==='question'?(detail?risks[a.scheme]:explanations[a.scheme]):step==='request'?a.scheme==='link'&&a.linkOpened?'Você quer preencher e enviar o cadastro fictício da página?':item.request:proposals[a.scheme]+(offer?' A oferta é “'+offer.name+'”.':'');
- if(step==='question'&&(a.guidedAnswers||0)>=2)return [choice('risk','O que continua em risco?','info'),choice('joke',humor.main,'joke',{funny:true}),choice('joke-two',humor.aside,'joke',{funny:true}),pressure];
+ if(step==='question'&&(a.guidedAnswers||0)>=2)return [choice('risk','O que continua em risco?','info'),choice('joke',humor.main,'joke',{funny:true}),choice('joke-two',humor.aside,'joke',{funny:true}),protect];
 
- const requestLabel=({prize:'Você quer compartilhar o cartão fictício?',support:'Vamos abrir a sessão do PãoOS?',club:'Quer usar seu passe do clube?',update:'Quer instalar o pacote do jogo?',link:a.linkOpened?'Quer enviar o cadastro fictício?':'Quer abrir a página de resgate?'})[a.scheme];
- const normalLabel=step==='question'?(detail?'Vamos falar do acesso que esse item permite.':'O contato diz ser da proposta. Ainda falta conferir a origem.'):step==='request'?requestLabel:proposals[a.scheme];
+ const requestLabel=({prize:'Compartilhar o cartão do jogo?',support:'Abrir a sessão do PãoOS?',club:'Usar seu passe do clube?',update:'Instalar o pacote de skins?',link:a.linkOpened?'Enviar o cadastro do jogo?':'Abrir a página de resgate?'})[a.scheme];
+ const normalLabel=step==='question'?(detail?'Vamos falar do acesso que esse item permite.':'Diz ser da proposta; ainda falta confirmar.'):step==='request'?requestLabel:proposals[a.scheme];
  const funnyLabel=humor.main;
- return [choice('main',normalLabel,'move',{move:main,speech:normal}),choice('funny-main',funnyLabel,'move',{move:main,funny:true,speech:normal+' '+funnyLabel}),step==='request'?choice('risk','O que pode acontecer se esse item for compartilhado?','info'):choice('joke',humor.aside,'joke',{funny:true}),pressure];
+ return [choice('main',normalLabel,'move',{move:main,speech:normal}),choice('funny-main',funnyLabel,'move',{move:main,funny:true,speech:normal+' '+funnyLabel}),step==='request'?choice('risk','O que pode acontecer se esse item for compartilhado?','info'):choice('joke',humor.aside,'joke',{funny:true}),protect];
 }
 export function applyDialogueOption(state,key){
  const a=state.active,option=dialogueOptions(a).find(o=>o.key===key);if(!option)return false;
@@ -48,7 +48,7 @@ export function applyDialogueOption(state,key){
  }
  a.dialogueMode='choices';a.lastIntent=intent;a.expression=reactionFor(a,intent,option.label);
  const reply=a.log.slice(start).findLast(m=>m.speaker===caller.name);if(reply)reply.replyOrigin='scripted';
- a.audit??=[];a.audit.push({text:speech,reaction:reply?.text||'Contato encerrado pelo jogador.',intent,before,after:a.trust||0,trustDelta:(a.trust||0)-before,beforeStage:stage,afterStage:a.stage,trustScale:100,trustSource:'local-rules',interpretationSource:'authored-choice',choice:option.key,reason:option.action==='joke'?'A brincadeira não liberou itens nem alterou confiança.':option.action==='info'?'A explicação apresentou o risco sem executar a operação.':'Uma escolha roteirizada aplicou as regras da partida.'});
+ a.audit??=[];a.audit.push({text:speech,reaction:reply?.text||'Contato encerrado pelo jogador.',intent,before,after:a.trust||0,trustDelta:(a.trust||0)-before,beforeStage:stage,afterStage:a.stage,trustScale:100,trustSource:'local-rules',interpretationSource:'authored-choice',choice:option.key,reason:option.protective?'A pessoa pausou a proposta para buscar confirmação independente; nenhuma consulta concluída foi registrada. Nenhum dado novo ou crédito foi liberado.':option.action==='joke'?'A brincadeira não liberou itens nem alterou confiança.':option.action==='info'?'A explicação apresentou o risco sem executar a operação.':'Uma escolha roteirizada aplicou as regras da partida.'});
  rememberConversation(a,speech,intent,stage);
  return {changed:true};
 }

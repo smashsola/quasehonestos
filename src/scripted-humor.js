@@ -16,7 +16,7 @@ const scenes={
  },
  club:{
   pitch:['O clube é VIP. O garfo ainda está na fila.','Convite exclusivo! A concha entrou por indicação da panela.'],
-  question:['É o Clube da Colher. A assembleia do garfo foi adiada por falta de sopa.','A firma oferece o convite. A colher ainda não assinou a ata.'],
+  question:['Clube da Colher. O garfo adiou a reunião por causa da sopa.','A colher ainda não assinou a ata.'],
   detail:['O passe dá acesso à associação. O guardanapo não serve como procuração.','É uma credencial, não um cupom de sobremesa. Até a colher quer saber disso.'],
   request:['Manda o passe fictício? A catraca não aceita sopa.','Vamos usar o passe? A fila VIP está dando volta no escorredor.'],
   ready:['O passe chegou. Vou ao clube antes que o garfo ocupe minha cadeira.','Papelada recebida. A primeira reunião podia ser um almoço, né?'],

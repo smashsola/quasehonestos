@@ -18,7 +18,7 @@ function assertPlayback(s,start){
 }
 test('Encerrar pelo botão e interrupção pelo personagem mostram a última mensagem antes do replay',()=>{
  const button=setup(),start=button.active.log.length;closeCall(button);assertPlayback(button,start);
- const pressure=setup();applyDialogueOption(pressure,dialogueOptions(pressure.active)[3].key);const end=pressure.active.log.length;applyDialogueOption(pressure,dialogueOptions(pressure.active)[3].key);assert.ok(pressure.active.outcome);assertPlayback(pressure,end);
+ const protective=setup(),end=protective.active.log.length;applyDialogueOption(protective,dialogueOptions(protective.active).find(o=>o.protective).key);assert.ok(protective.active.outcome);assertPlayback(protective,end);
 });
 for(const scheme of schemes)test(`${scheme.id}: operação concluída só apresenta resultado depois da fala final`,()=>{
  const s=setup(scheme.id);while(s.active.stage!=='ready')applyDialogueOption(s,dialogueOptions(s.active)[0].key);

@@ -31,7 +31,7 @@ test('Manual descreve as quatro escolhas locais e controles de cada dispositivo'
 test('Validação em sala separa porcentagem da avaliação de aprendizagem',()=>{
  const html=classroomPanel(fresh(),esc);
  assert.match(html,/Antes → jogo → depois/);
- assert.match(html,/ação escolhida e a evidência/);
+ assert.match(html,/ação combina com a situação/);
  assert.match(html,/porcentagem de confiança/);
  assert.match(html,/não entram na avaliação/);
 });

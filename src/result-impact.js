@@ -17,18 +17,18 @@ export function resultImpact(a){
  const person=callers.find(c=>c.id===a?.caller);if(!person||!a.outcome)return null;
  const incident=incidents[a.scheme],audit=a.audit||[],last=audit.at(-1);
  const shared=!!a.item||(a.steps||[]).includes('Item fictício compartilhado')||(a.steps||[]).some(s=>s.startsWith('Dado exposto:'));
- const verified=a.outcome==='blocked'&&(last?.intent==='protect'||!!last?.reason?.includes('verificação independente'));
+ const protectionChosen=a.outcome==='blocked'&&['protect','wait'].includes(last?.intent);
  const received=Number.isFinite(a.earned)?Math.max(0,a.earned):0;
  let title,summary;
  if(a.outcome==='fooled'){title='A proposta passou. Quem pagou a conta?';summary=incident?.summary(received)||`A proposta foi aceita. C$ ${received} recebidos pela firma.`;}
  else if(shared){title='Sem pagamento. Mas houve exposição.';summary=incident?.exposed||'Um item foi compartilhado antes do encerramento. Nenhum crédito foi recebido.';}
- else if(verified){title='A conferência interrompeu a tentativa.';summary='A orientação para conferir por um canal conhecido interrompeu a conversa antes da operação. Nenhum crédito foi recebido.';}
+ else if(protectionChosen){title='A proposta foi pausada para conferência.';summary='A pessoa decidiu buscar confirmação por outro canal antes de continuar. Esta partida não registra uma consulta concluída; nenhum crédito foi recebido.';}
  else if(a.outcome==='blocked'){title='Ele encerrou. O motivo também importa.';summary=endingSummary(a)+' O registro não mostra uma verificação independente.';}
  else{title='Conversa encerrada, operação incompleta.';summary=endingSummary(a)+' Nenhum crédito foi recebido; isso não comprova a origem da proposta.';}
  const signaled=[...audit].reverse().find(e=>e.signal&&e.text);
  const presented=shared||a.outcome==='fooled'||(a.steps||[]).includes('Proposta apresentada')||audit.some(e=>e.signal==='Oferta inesperada.');
- return {title,summary,received,exposed:shared,verified,
-  cue:verified?signaled?.signal||'Orientação para conferir a origem por um canal conhecido.':presented&&incident?incident.cue:signaled?.signal||'O atendimento terminou sem um sinal de risco registrado no replay.',
+ return {title,summary,received,exposed:shared,protectionChosen,
+  cue:protectionChosen?signaled?.signal||'Decisão de pausar e buscar confirmação por um canal conhecido.':presented&&incident?incident.cue:signaled?.signal||'O atendimento terminou sem um sinal de risco registrado no replay.',
   evidence:signaled?{text:signaled.text,reason:signaled.reason}:null,
   principle:principles[a.scheme]||'Confirme identidade, necessidade e origem antes de agir ou compartilhar dados.',
   prevention:incident?.prevention||'Confirme a identidade e a proposta por um canal que você já conhece.',
@@ -39,7 +39,7 @@ export function resultImpact(a){
 
 export function consequenceCard(a,esc){
  const r=resultImpact(a);if(!r)return '';
- return `<section class="consequence-card" data-outcome="${esc(a.outcome)}" aria-label="Consequências do atendimento"><small>O QUE FICOU DESSA CONVERSA</small><h3>${esc(r.title)}</h3><p class="consequence-summary">${esc(r.summary)}</p><p class="consequence-joke">${esc(r.joke)}</p><details class="learning-replay consequence-protection"><summary>${r.verified?'Por que conferir fez diferença':'Como essa história poderia mudar?'}</summary><div class="consequence-detail"><h4>O sinal para prestar atenção</h4><p>${esc(r.cue)}</p>${r.evidence?`<blockquote><small>Uma fala desta partida</small><p>“${esc(r.evidence.text)}”</p><span>${esc(r.evidence.reason)}</span></blockquote>`:''}<h4>Princípio de segurança</h4><p>${esc(r.principle)}</p><h4>Uma atitude que protege</h4><p>${esc(r.prevention)}</p>${r.recovery?`<h4>Se algo assim já aconteceu fora do jogo</h4><p>${esc(r.recovery)}</p>`:''}<small>Aqui, os dados e C$ são fictícios. Ganhar créditos não mede aprendizado.</small><a href="https://cartilha.cert.br/dicas-rapidas/" target="_blank" rel="noopener noreferrer">Ler dicas do CERT.br</a></div></details></section>`;
+ return `<section class="consequence-card" data-outcome="${esc(a.outcome)}" aria-label="Consequências do atendimento"><small>O QUE FICOU DESSA CONVERSA</small><h3>${esc(r.title)}</h3><p class="consequence-summary">${esc(r.summary)}</p><p class="consequence-joke">${esc(r.joke)}</p><details class="learning-replay consequence-protection"><summary>${r.protectionChosen?'O que a pausa protegeu?':'Como essa história poderia mudar?'}</summary><div class="consequence-detail"><h4>O sinal para prestar atenção</h4><p>${esc(r.cue)}</p>${r.evidence?`<blockquote><small>Uma fala desta partida</small><p>“${esc(r.evidence.text)}”</p><span>${esc(r.evidence.reason)}</span></blockquote>`:''}<h4>Princípio de segurança</h4><p>${esc(r.principle)}</p><h4>Uma atitude que protege</h4><p>${esc(r.prevention)}</p>${r.recovery?`<h4>Se algo assim já aconteceu fora do jogo</h4><p>${esc(r.recovery)}</p>`:''}<small>Aqui, os dados e C$ são fictícios. Ganhar créditos não mede aprendizado.</small><a href="https://cartilha.cert.br/dicas-rapidas/" target="_blank" rel="noopener noreferrer">Ler dicas do CERT.br</a></div></details></section>`;
 }
 
 export function resultReport(a){

@@ -172,7 +172,7 @@ export function equipWallpaper(state,id){if(id==='default'){state.wallpaper=id;r
 
 export function availableMoves(state){
  const a=state.active;if(!a||a.outcome||!a.scheme)return moves;
- if(a.stage==='ready')return [];
+ if(a.stage==='ready')return a.item?interactionMoves.filter(m=>m.id==='wait'&&!a.used.includes(m.id)):[];
  const ids=a.stage==='request'?['request','wait','pressure']:a.stage==='question'?['answer','wait','pressure']:['chat','pitch','pressure','wait'];
  return interactionMoves.filter(m=>ids.includes(m.id)&&!a.used.includes(m.id));
 }

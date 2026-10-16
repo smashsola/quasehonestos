@@ -1,2 +1,12 @@
-import {cp,mkdir} from 'node:fs/promises';import {fileURLToPath} from 'node:url';
-const root=new URL('../',import.meta.url),dist=new URL('../dist/',import.meta.url);await mkdir(dist,{recursive:true});for(const entry of ['index.html','src'])await cp(fileURLToPath(new URL(entry,root)),fileURLToPath(new URL(entry,dist)),{recursive:true});console.log('Protótipo pronto em dist/');
+import {cp,mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';import {fileURLToPath} from 'node:url';
+const root=new URL('../',import.meta.url),dist=new URL('../dist/',import.meta.url);await mkdir(dist,{recursive:true});for(const entry of ['index.html','src'])await cp(fileURLToPath(new URL(entry,root)),fileURLToPath(new URL(entry,dist)),{recursive:true});
+// Static asset paths are cache keys at the edge. Version the files changed in a
+// release so browsers cannot keep an older conversation UI after deployment.
+const version='v20261015i',srcDir=fileURLToPath(new URL('../src/',import.meta.url)),distSrc=fileURLToPath(new URL('../dist/src/',import.meta.url));
+for(const name of ['game.js','dialogue-options.js','scripted-humor.js','tutorial.js','educational-replay.js','defense-investigation.js']){const target=`${distSrc}${name.replace(/\.js$/i,`-${version}.js`)}`;await copyFile(`${srcDir}${name}`,target);await writeFile(target,`${await readFile(target,'utf8')}\n// release ${version}\n`);}
+const versionedCss=`${distSrc}qh-interface-${version}.css`;await copyFile(`${srcDir}conversation-ui.css`,versionedCss);await writeFile(versionedCss,`${await readFile(versionedCss,'utf8')}\n/* release ${version} */\n`);
+const versionedGame=`${distSrc}game-${version}.js`,versionedOptions=`${distSrc}dialogue-options-${version}.js`;
+let game=await readFile(versionedGame,'utf8');game=game.replaceAll("'./tutorial.js'",`'./tutorial-${version}.js'`).replaceAll("'./dialogue-options.js'",`'./dialogue-options-${version}.js'`).replaceAll("'./educational-replay.js'",`'./educational-replay-${version}.js'`).replaceAll("'./defense-investigation.js'",`'./defense-investigation-${version}.js'`);await writeFile(versionedGame,game);
+let options=await readFile(versionedOptions,'utf8');options=options.replaceAll("'./scripted-humor.js'",`'./scripted-humor-${version}.js'`);await writeFile(versionedOptions,options);
+const indexFile=fileURLToPath(new URL('../dist/index.html',import.meta.url));let html=await readFile(indexFile,'utf8');html=html.replace(/\/src\/conversation-ui[^" ]*\.css/g,`/src/qh-interface-${version}.css`).replace(/\/src\/game[^" ]*\.js/g,`/src/game-${version}.js`);await writeFile(indexFile,html);await writeFile(fileURLToPath(new URL(`../dist/index-${version}.html`,import.meta.url)),`<!-- release ${version} -->\n${html}`);
+console.log(`Protótipo pronto em dist/ (${version}).`);

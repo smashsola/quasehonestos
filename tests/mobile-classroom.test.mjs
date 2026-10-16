@@ -33,23 +33,27 @@ test('Alternador expõe aplicativos e mensagens novas com nomes acessíveis',()=
 });
 test('Atividade explica o fluxo da turma e separa confiança do resultado',()=>{
  const html=classroomPanel(fresh(),String);
- assert.match(html,/Antes → jogo → depois/);assert.match(html,/quatro situações antes/);assert.match(html,/ação escolhida/);assert.match(html,/porcentagem de confiança/);assert.match(html,/não entram na avaliação/);
+ assert.match(html,/Antes → jogo → depois/);assert.match(html,/Quatro situações antes/);assert.match(html,/ação combina com a situação/);assert.match(html,/porcentagem de confiança/);assert.match(html,/não entram na avaliação/);
 });
 test('Hipótese usa a regra protetiva sem apagar exposição nem alterar saldo ou fatos reais',()=>{
  const s=start();applyTypedMove(s,'typed','Tenho um prêmio do concurso');applyTypedMove(s,'typed','A equipe do concurso organizou a premiação');applyTypedMove(s,'typed','Me passa seu cartão');
  assert.ok(s.active.item);verifyOperationCode(s,'wallet',s.active.item.token);executeScheme(s,'wallet');
  const before=JSON.stringify(s),comparison=replayComparison(s.active);assert.match(comparison.hypothesis,/antes de compartilhar/);assert.match(comparison.timing,/não apaga/);assert.equal(JSON.stringify(s),before);
 });
-test('Continuação vem depois e cita apoio ou reconhecimento observados; não duplica',()=>{
- const s=start();applyTypedMove(s,'typed','Confira no canal oficial');registerFollowup(s,s.active);assert.equal(followupPanel(s,String),'');finishCall(s);assert.equal(s.followups.length,1);assert.match(followupPanel(s,String),/Reconheci o pedido/);
+test('Continuação vem depois e cita apoio ou decisão de pausar; não duplica',()=>{
+ const s=start();applyTypedMove(s,'typed','Confira no canal oficial');registerFollowup(s,s.active);assert.equal(followupPanel(s,String),'');finishCall(s);assert.equal(s.followups.length,1);assert.match(followupPanel(s,String),/pausou para buscar confirmação/);assert.match(followupPanel(s,String),/não confirma este novo contato/);
  const exposed=start();Object.assign(exposed.active,{outcome:'closed',item:{name:'Inventado'}});finishCall(exposed);assert.match(followupPanel(exposed,String),/não de quem acreditou/);assert.equal(load({getItem:()=>JSON.stringify(exposed)}).followups[0].kind,'support');
 });
 test('Atividade antes/depois retoma progresso e mede ação + evidência em situações diferentes',()=>{
  const s=start();s.credits=55;assert.equal(beginClassSession(s,1000),true);assert.equal(beginClassSession(s,2000),false);assert.equal(answerClassAssessment(s,answers('A')),true);
- const restored=load({getItem:()=>JSON.stringify(s)});applyTypedMove(restored,'typed','Confira no canal oficial');inspectDefense(restored,'order');resolveDefense(restored,'verify','order','conflicts');assert.equal(finishClassPlay(restored),true);finishCall(restored);
+ const restored=load({getItem:()=>JSON.stringify(s)});applyTypedMove(restored,'typed','Confira no canal oficial');assert.equal(finishClassPlay(restored),false);inspectDefense(restored,'order');resolveDefense(restored,'verify','order','conflicts');assert.equal(finishClassPlay(restored),true);finishCall(restored);
  assert.equal(answerClassAssessment(restored,answers('B'),61000),true);assert.equal(restored.classSession.elapsedSeconds,60);assert.equal(restored.credits,55);assert.equal(restored.cursor,1);
  assert.ok(restored.classSession.post.every(r=>r.supported));assert.notEqual(assessmentForms.A[0].prompt,assessmentForms.B[0].prompt);
  const wrongEvidence=answers('B');wrongEvidence[0].evidence=0;assert.equal(evaluateAssessment('B',wrongEvidence)[0].supported,false);
+});
+test('Comparação final separa ação, evidência e princípio sem chamar o resultado de nota',()=>{
+ const s=start();beginClassSession(s,1000);answerClassAssessment(s,answers('A'),2000);s.classSession.phase='post';answerClassAssessment(s,answers('B'),3000);
+ const html=classroomPanel(s,String);assert.match(html,/Decisões sustentadas: 4\/4 antes · 4\/4 depois/);assert.match(html,/Ação coerente/);assert.match(html,/Evidência pertinente/);assert.match(html,/não é uma nota/);assert.match(html,/Nem todo aviso é golpe/);
 });
 test('Exportação padrão não inclui nomes, dinheiro, anotações ou conversas completas',()=>{
  const s=start();s.notes={nino:'Texto particular'};s.active.log.push({speaker:'Você',text:'Texto de conversa particular'});closeCall(s);inspectDefense(s,'order');resolveDefense(s,'verify','order','conflicts');finishCall(s);

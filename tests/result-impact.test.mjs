@@ -10,12 +10,12 @@ function obtain(s){
  applyTypedMove(s,'typed',lines[0]);applyTypedMove(s,'typed',lines[1]);if(s.active.scheme==='update')sendUpdateFile(s);applyTypedMove(s,'typed',lines[2]);assert.ok(s.active.item);
 }
 
-test('O resultado diferencia encerramento por irritação de verificação independente',()=>{
+test('O resultado distingue pausa protetiva de consulta efetivamente registrada',()=>{
  const angry=start('prize');applyTypedMove(angry,'typed','te odeio');applyTypedMove(angry,'typed','cala a boca');
- assert.equal(angry.active.outcome,'blocked');assert.equal(resultImpact(angry.active).verified,false);assert.match(resultImpact(angry.active).summary,/não mostra uma verificação/);
- const checked=start('prize');applyTypedMove(checked,'typed','Pode conferir com calma');
- assert.equal(checked.active.outcome,'blocked');assert.equal(resultImpact(checked.active).verified,true);
- finishCall(checked);assert.equal(resultImpact(checked.history[0]).verified,true);
+ assert.equal(angry.active.outcome,'blocked');assert.equal(resultImpact(angry.active).protectionChosen,false);assert.match(resultImpact(angry.active).summary,/não mostra uma verificação/);
+ const paused=start('prize');applyTypedMove(paused,'typed','Pode conferir com calma');
+ assert.equal(paused.active.outcome,'blocked');assert.equal(resultImpact(paused.active).protectionChosen,true);assert.match(resultImpact(paused.active).summary,/não registra uma consulta concluída/);assert.doesNotMatch(resultImpact(paused.active).summary,/conferência interrompeu/);
+ finishCall(paused);assert.equal(resultImpact(paused.history[0]).protectionChosen,true);
 });
 
 test('Encerrar sem pagamento não apaga cartão, passe, sessão ou perfil compartilhados',()=>{

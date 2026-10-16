@@ -28,7 +28,7 @@ test('Recados surpresa não interrompem a primeira conversa guiada, voltam na se
  const s=fresh();nextCall(s);s.active.log=[{speaker:'Você',text:'Oi'}];s.tutorial='active';assert.equal(checkIncoming(s,0),false);assert.equal(s.incoming,undefined);
  s.cursor=1;checkIncoming(s,0,()=>0);assert.ok(s.incoming);assert.equal(checkIncoming(s,35000,()=>0),true);
 });
-test('Fim do expediente separa item compartilhado de verificação e recusa por irritação',()=>{
- const s={...fresh(),finished:true,tutorial:'completed',history:[{item:{token:'QH-DEMO'},audit:[]},{item:null,audit:[{reason:'Uma verificação independente interrompeu a tentativa.'}]},{item:null,audit:[{reason:'O tom agressivo reduziu a confiança.'}]}]};
- assert.deepEqual(shiftLearning(s),{shared:1,verified:1,withoutSharing:2});assert.match(shiftEnding(s,String),/Primeira conversa guiada concluída/);
+test('Fim do expediente separa item compartilhado, pausa protetiva e recusa por irritação',()=>{
+ const s={...fresh(),finished:true,tutorial:'completed',history:[{item:{token:'QH-DEMO'},audit:[]},{item:null,audit:[{intent:'wait'}]},{item:null,audit:[{intent:'hostile'}]}]};
+ assert.deepEqual(shiftLearning(s),{shared:1,paused:1,withoutSharing:2});assert.match(shiftEnding(s,String),/Primeira conversa guiada concluída/);assert.match(shiftEnding(s,String),/Pausar também não significa que a fonte já foi consultada/);
 });

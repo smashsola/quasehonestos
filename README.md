@@ -1,26 +1,22 @@
 # Quase Honestos
 
-Jogo educativo de comédia para o TeenTech 2026, categoria **Prevenção à Violência**. O Trambique OS preserva desktop, aplicativos, personagens e salvamentos. O diferencial é relacionar a conversa às consequências registradas e praticar proteção numa situação nova, incluindo exposição e constrangimento num grupo.
+Quase Honestos é uma comédia interativa no Trambique OS sobre golpes, pressão e exposição no ambiente digital. O projeto se relaciona à categoria oficial **Prevenção à Violência** ao dar prática de pausa, checagem independente, proteção de dados e busca de apoio — sem alegar que o jogo já provou eficácia com estudantes.
 
-> **Versão de 15/10:** conversas por opções, sem chamadas a modelos e sem binding Workers AI. A antiga rota `/api/dialogue` responde 410. As seções e ferramentas de IA abaixo descrevem o protótipo anterior, preservado para consulta; não são requisitos para jogar.
+## Versão atual
 
-## Funcionamento atual
+- Seis personagens, cinco situações fictícias e quatro escolhas roteirizadas por turno. Há uma alternativa explícita para pausar e buscar confirmação por outro canal em cada etapa; uma ou duas opções mantêm o humor da firma.
+- O motor local controla confiança, encerramento, permissões, itens, créditos e progresso. Falas geradas não tomam decisões porque o fluxo principal não usa um modelo de IA.
+- Pausar para buscar confirmação fica registrado como intenção protetiva; o jogo não afirma que uma fonte foi consultada quando isso não aconteceu.
+- Resultados e replay distinguem o que ocorreu, o risco observado e uma hipótese de proteção. Compartilhamentos anteriores continuam visíveis.
+- A rodada de defesa integra fichas, correio, pedidos e outros registros do próprio jogo. Casos podem ser legítimos, fraudulentos ou inconclusivos.
+- O Manual oferece uma atividade opcional com situações A/B, cada uma pedindo ação e evidência. A exportação é local, codificada e não inclui conversas por padrão. **Ainda não foi aplicada nem validada com estudantes.**
+- O progresso fica neste navegador. No celular, a navegação mostra um app por vez; no desktop, o Trambique OS mantém suas janelas.
 
-- Seis personagens e cinco propostas cenográficas; conversa por quatro opções a cada etapa, expressões e humor brasileiro. De uma a duas opções trazem humor.
-- Interpretação separada das regras da partida e da redação da resposta. Proteção, recusa, dúvida, assunto solto e conflito com o estado têm tratamento próprio.
-- Receber link, abrir página, enviar cadastro e executar o app são eventos distintos. Somente o motor local cria itens, permissões ou pagamentos. A conversa atual não usa IA.
-- Replay: fala relevante, reação, consequência registrada, risco e proteção. Registros antigos continuam acessíveis.
-- Investigação pelos registros de Loja, Fichas, Correio e Resultados: situações fraudulentas, legítimas e inconclusivas. Decidir cedo é permitido; fonte pertinente distingue decisão sustentada de palpite. Não paga créditos.
-- Memória de condições declaradas, perguntas, correções, promessas, recusas e contradições; repetir explicações equivalentes não aumenta confiança. Confiança usa pontos de 0–100 e pesos próprios para os personagens, separados da expressão atual.
-- Consequências reaparecem no Correio e replay compara o ocorrido com uma hipótese calculada pelas regras, sem apagar exposição.
-- Atividade curta no Manual: avaliação antes/depois, um atendimento e defesa; relatório local codificado, sem nomes ou conversas por padrão.
-- Objetivo visível, esperas menores, redimensionamento por teclado e uma janela por vez no celular, com alternador ao alcance do toque, rascunho e leitura preservados. Teclado móvel usa botão Enviar; Enter insere linha.
+Todos os nomes, códigos, itens e créditos da simulação são inventados. Não use informações pessoais reais. A hospedagem pública ainda depende da disponibilidade do serviço Cloudflare; a partida não chama um provedor de IA.
 
-Créditos mostram desempenho na ficção, **não conhecimento de segurança**. Dados QH-DEMO, anexos, computadores e transações não têm valor fora do jogo. Não há captura de dados reais ou acesso remoto externo.
+## Executar e verificar
 
-## Executar e testar
-
-Node.js 22 ou mais recente:
+Requer Node.js 22 ou mais recente:
 
 ```sh
 npm ci
@@ -29,55 +25,28 @@ npm test
 npm run build
 ```
 
-O servidor usa a porta 4180; `PORT` define outra. O build gera `dist/`. O código atual está em `src/`, `functions/`, `worker/`, `scripts/` e `tests/`; o ZIP antigo do repositório não é a fonte atual. A cópia local pode conter mudanças ainda não publicadas.
+O servidor local abre em `http://127.0.0.1:4180` (`PORT` permite escolher outra porta). O build gera `dist/`. Código principal: `src/`, Worker estático: `worker/`, testes: `tests/`.
 
-## IA e privacidade
+O endpoint legado `/api/dialogue` responde HTTP 410. Há arquivos de protótipos anteriores no histórico do repositório, mas eles não estão no fluxo do jogo. Não configure chaves ou bindings de IA para jogar.
 
-O Cloudflare Workers AI (Qwen3 30B A3B) pode interpretar a fala com um contrato semântico e redigir a reação após a decisão. O motor local mantém autoridade sobre confiança, permissões, itens, créditos e encerramento. Proteção, repetição, fatos registrados e sinais locais inequívocos têm precedência sobre análises remotas incompatíveis. Existe interpretação e resposta autoral de reserva para falhas ou saídas rejeitadas. **Não é um LLM treinado pela equipe.** IA generativa foi usada como apoio ao desenvolvimento, pesquisa e revisão; a equipe deve documentar esse uso.
+## Privacidade e limites
 
-O Worker usa DIALOGUE_PROVIDER=workers-ai, DIALOGUE_AI_ENABLED=true e o binding Workers_AI. O Gemini permanece fora do fluxo público. Os [termos do Gemini](https://ai.google.dev/gemini-api/terms) restringem apps destinados ou provavelmente acessados por menores de 18 anos. A idade da conta não resolve essa restrição sobre o público. Não ativar no TeenTech apenas configurando uma chave.
+A partida, o histórico e as preferências ficam no armazenamento do navegador. A atividade em sala exporta apenas códigos de decisões/evidências e tempo da sessão; não envia resultados ao servidor. A hospedagem Cloudflare pode processar metadados técnicos de conexão conforme sua política. O filtro local reduz formatos comuns de dados pessoais, mas não detecta todas as informações identificáveis.
 
-O adaptador usa o binding no servidor, limita contexto, valida respostas e usa timeout/fallback. Há testes com respostas simuladas e uma verificação real de interpretação e redação, detalhada em [Conversa gradual](docs/CONVERSA-GRADUAL.md). Isso não comprova a qualidade de toda conversa em produção. Nenhuma dependência paga foi adicionada. Uma alternativa futura exige melhora demonstrada, revisão do público permitido, tratamento de dados, retenção, custos e limites. Segredos nunca devem ir para `vars`, HTML ou Git.
+O aviso não constitui certificação jurídica nem afirma conformidade integral com a LGPD. Antes de uso em sala, a equipe e a escola devem revisar a atividade, combinar o tratamento dos arquivos locais e testar com estudantes voluntários sem recolher nomes ou relatos pessoais.
 
-O jogo mantém aviso de privacidade e bloqueio de formatos comuns de dados reais. O bloqueio não detecta toda informação pessoal. Instrua estudantes a escrever somente sobre a ficção, sem relatos identificáveis.
+## Avaliação do projeto
 
-## Material da apresentação
-
-- [Revisão local de inicialização e continuidade](docs/REVISAO-INICIALIZACAO-E-CONTINUIDADE.md): reprodução do loop, 427 testes, chamadas reais à IA e limites da verificação móvel; ainda sem publicação deste lote.
-- [Avaliação antes/depois](docs/AVALIACAO-APRENDIZAGEM.md): situações distintas, gabarito e registro agregado sem identificação. **Ainda não aplicada.**
-- [Sessão curta em sala](docs/SESSOES-EM-SALA.md): começo, fim e estimativa provisória baseada no percurso técnico.
-- [Validação de celular](docs/VALIDACAO-MOBILE.md): telas verificadas, percurso e limites do teste sem aparelho real.
-- [Pitch de 3 minutos](docs/PITCH-3-MINUTOS.md): roteiro do diferencial educativo.
-- [Privacidade e edital](docs/PRIVACIDADE-E-EDITAL.md): funcionamento e pendências formais.
-- [Próxima atualização](docs/PROXIMA-ATUALIZACAO.md): lote local e histórico das mudanças.
-
-Testes do programa não comprovam eficácia educacional. O instrumento piloto é autoral, ainda sem validação com estudantes.
+O [diagnóstico TeenTech](docs/AVALIACAO-TEENTECH.md) compara evidências implementadas com as categorias e a rubrica do regulamento oficial. O [protocolo da atividade piloto](docs/AVALIACAO-APRENDIZAGEM.md) explica as versões antes/depois e as limitações. O [roteiro de demonstração](docs/PITCH-3-MINUTOS.md) usa funcionalidades existentes. Resultados de testes de software não são evidência de impacto educacional.
 
 ## Publicar
 
-`wrangler.jsonc` serve `dist/` por `worker/index.js`; `npm run deploy:worker` executa o build e implanta. A configuração Pages está separada em `wrangler.pages.jsonc`; `npm run deploy:pages` usa o projeto Pages existente. Instalação reproduzível: `npm ci`.
-
-Publicação é uma ação separada. O pedido de melhoria não implica push ou deploy.
+A melhoria solicitada não publica nem altera a hospedagem. A configuração existente usa `npm run deploy:worker`; confirme a conta e o destino antes de publicar em outra tarefa.
 
 ## Referências
 
-Inspirado na organização de conversas e apps fictícios de Scam With Your Friends, com conteúdo, personagens e assets próprios, sem vínculo com os criadores.
+- [Regulamento oficial TeenTech 2026](https://teentech.teckids.org.br/regulamento) — PDF com critérios de avaliação, seções 6.1, 8 e 12.
+- [CERT.br — dicas rápidas](https://cartilha.cert.br/dicas-rapidas/).
+- [Privacidade da Cloudflare](https://www.cloudflare.com/privacypolicy/).
 
-- [CERT.br — fascículos](https://cartilha.cert.br/fasciculos/)
-- [Regulamento TeenTech](https://teentech.teckids.org.br/regulamento)
-- [Gemini — termos](https://ai.google.dev/gemini-api/terms)
-
-## Revisão de diálogo e investigação
-Veja [a revisão técnica anterior](docs/REVISAO-DIALOGO.md) e [a conversa gradual de 10/10/2026](docs/CONVERSA-GRADUAL.md). O motor local reconhece correções e mantém memória das declarações; declarações não equivalem a verificação. A defesa relaciona a decisão a um registro consultado, sem exigir todas as fontes. Replay e conversa têm visualizações separadas. O adaptador opcional fornece sinais semânticos limitados e redige a reação após as regras; não calcula créditos. Rode node scripts/evaluate-dialogue.mjs para a bateria local. O modo --live exige configuração e pode consumir cota; não é executado por padrão.
-
-### Workers AI em produção
-Modelo configurado: `@cf/qwen/qwen3-30b-a3b-fp8`, da Qwen, centralizado em `src/dialogue-config.js`. Até duas chamadas por mensagem: interpretação antes das regras e redação após a decisão. Cada chamada tem limite de 512 tokens de saída; o cliente espera até 5 segundos pela interpretação e 7 pela redação. Falhas mantêm o caminho local. Não há gravação de conversas no servidor deste projeto. O aviso de privacidade informa o envio de até 12 falas e estado da simulação; filtros de dados pessoais não identificam todos os casos.
-
-Verificação desta revisão: **414 testes aprovados**, build concluído e auditoria sem vulnerabilidades. A prévia do binding remoto retornou HTTP 200 para interpretação e redação no caso de Olga: a pergunta não encerrou a conversa, não liberou item e não mudou créditos ou confiança. Os diagnósticos agregados ficam em `docs/CONVERSA-GRADUAL-API.json`, sem falas. Não houve teste com alunos ou comparação de eficácia.
-
-Não foi contratado plano nem ativada cobrança. A Cloudflare oferece franquia diária de 10.000 Neurons; no Workers Paid excedentes são cobrados, portanto acompanhe o painel da conta. Quota ou indisponibilidade acionam a reserva local. Referências: https://developers.cloudflare.com/workers-ai/platform/pricing/ e https://developers.cloudflare.com/workers-ai/platform/data-usage/ . O servidor estático local de desenvolvimento não executa o binding: teste IA no site publicado ou via Wrangler.
-
-## Histórico — Olga, Qwen e investigação
-Os documentos da revisão de Olga registram verificações anteriores. A configuração atual usa Qwen e o contrato de conversa gradual descrito acima. Gemini e Claude continuam como adaptadores experimentais selecionáveis explicitamente com autorização de configuração adicional; não são fallbacks automáticos. O fallback atual é o diálogo autoral local.
-
-Veja docs/REVISAO-OLGA-QWEN.md e docs/QWEN-VALIDACAO.json. Diagnósticos em desenvolvimento registram somente origem API/fallback, status, identificador do modelo e tamanho/formato da resposta, sem textos ou chaves. A prévia Wrangler usa o binding remoto e não modifica a implantação pública.
+Conteúdo, personagens e assets são próprios. A referência de gênero e interface não implica vínculo com outros jogos.
