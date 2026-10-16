@@ -20,13 +20,14 @@ import {updateProfiles} from './update-profiles.js';
 import {skinCatalog,selectedSkin} from './skin-changer.js';
 import {furniture} from './data.js';
 import {callers,moves,defenseTriggers,conversations,schemes,interactionMoves,schemeItems} from './data.js';
+import {defensePeople,startDefenseCall} from './defense-round.js';
 export const KEY='quase-honestos-v1';
 export const fresh=()=>({version:1,trustScale:100,shift:0,cursor:0,credits:0,history:[],discovered:[],decor:[],mode:'solo',active:null,finished:false});
 export function load(storage){
  const recover=()=>{storage.preserve?.(KEY);return fresh();};
  try{
   const raw=storage.getItem(KEY);if(raw===null)return fresh();
-  const s=JSON.parse(raw),valid=new Set(callers.map(c=>c.id));
+  const s=JSON.parse(raw),valid=new Set([...callers,...defensePeople].map(c=>c.id));
   if(s?.version!==1||!Array.isArray(s.history)||s.history.some(h=>!valid.has(h?.caller)||!['blocked','fooled','closed'].includes(h.outcome)))return recover();
   if(!Number.isInteger(s.cursor)||s.cursor<0||s.cursor>callers.length||!Number.isFinite(s.credits)||s.credits<0)return recover();
   const rows=value=>Array.isArray(value)?value:[];
@@ -34,7 +35,7 @@ export function load(storage){
   return {...fresh(),...s,...(Object.hasOwn(s,'notes')?{notes:redactDialogueObject(s.notes)}:{}),trustScale:100,history:s.history.map(a=>migrateTrust(conversation(a))),discovered:rows(s.discovered).filter(id=>valid.has(id)),decor:rows(s.decor).filter(id=>furniture.some(item=>item.id===id)),followups:rows(s.followups).filter(e=>e&&typeof e.id==='string'&&valid.has(e.caller)),active:s.active&&valid.has(s.active.caller)?migrateTrust(repairPendingExchange(conversation(s.active,true))):null};
  }catch{return recover();}
 }
-export function nextCall(state){if(state.active||state.cursor>=callers.length)return false;const c=callers[state.cursor];state.active={caller:c.id,trust:0,trustScale:100,used:[],log:[],outcome:null,expression:'neutral'};return true;}
+export function nextCall(state){if(state.active||state.cursor>=(state.mode==='defense'?defensePeople.length:callers.length))return false;if(state.mode==='defense'){state.active=startDefenseCall(state.cursor);return !!state.active;}const c=callers[state.cursor];state.active={caller:c.id,trust:0,trustScale:100,used:[],log:[],outcome:null,expression:'neutral'};return true;}
 export function applyMove(state,id,analysis=null){if(state.active?.scheme){const changed=applyInteraction(state,id,analysis);if(changed)state.active.expression=reactionFor(state.active,id);return changed;}const a=state.active,m=moves.find(m=>m.id===id);if(!a||a.outcome||!m||a.used.includes(id))return false;const c=callers.find(c=>c.id===a.caller);a.used.push(id);a.log.push({speaker:'Você',text:m.reply});
  const warned=state.history.some(h=>h.outcome==='blocked');
  if(defenseTriggers[c.defense].includes(id)||(warned&&id==='claim')){a.log.push({speaker:c.name,text:c.line});a.outcome='blocked';recordEnding(a,'character','suspicion');if(!state.discovered.includes(c.id))state.discovered.push(c.id);}
@@ -166,7 +167,7 @@ export function answerDefense(state,choiceId){
  const scene=defenseScenes[a.scheme]||defenseScenes.prize,choice=scene.choices.find(c=>c.id===choiceId);if(!choice)return false;
  a.defenseRound={choice:choice.id,label:choice.label,safe:choice.safe,feedback:choice.feedback,signal:scene.signal};return true;
 }
-export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=callers.find(c=>c.id===a.caller);registerFollowup(state,a);state.history.push({caller:c.id,trustScale:100,trust:a.trust,outcome:a.outcome,ending:a.ending||null,scheme:a.scheme||null,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],offer:a.offer||null,diagnostic:a.diagnostic||null,defenseRound:a.defenseRound||null,learningDefense:a.learningDefense||null,facts:a.facts||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(state.cursor===callers.length)state.finished=true;return true;}
+export function finishCall(state){const a=state.active;if(!a?.outcome)return false;const c=(a.mode==='defense'?defensePeople:callers).find(c=>c.id===a.caller);if(a.mode!=='defense')registerFollowup(state,a);state.history.push({caller:c.id,trustScale:100,trust:a.trust,outcome:a.outcome,ending:a.ending||null,scheme:a.scheme||null,caseId:a.caseId||null,choice:a.choice||null,feedback:a.feedback||null,gameOver:!!a.gameOver,earned:a.earned||0,item:a.item||null,steps:a.steps||[],audit:a.audit||[],offer:a.offer||null,diagnostic:a.diagnostic||null,defenseRound:a.defenseRound||null,learningDefense:a.learningDefense||null,facts:a.facts||null,moves:[...a.used],log:[...a.log]});state.cursor++;state.shift=Math.min(2,Math.floor(state.cursor/2));state.active=null;if(a.gameOver||state.cursor===(state.mode==='defense'?defensePeople.length:callers.length))state.finished=true;return true;}
 export function buy(state,item){const product=furniture.find(product=>product.id===item?.id);if(!product||state.decor.includes(product.id)||state.credits<product.price)return false;state.credits-=product.price;state.decor.push(product.id);if(product.type==='wallpaper')state.wallpaper=product.id;return true;}
 export function equipWallpaper(state,id){if(id==='default'){state.wallpaper=id;return true;}if(!state.decor.includes(id)||!furniture.some(item=>item.id===id&&item.type==='wallpaper'))return false;state.wallpaper=id;return true;}
 
