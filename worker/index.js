@@ -18,7 +18,7 @@ function harden(response){
 export default {
   async fetch(request,env){
     const pathname=new URL(request.url).pathname;
-    if(pathname==='/'||pathname==='/index.html'||/^\/index-v20261015[efghijkl](?:\.html)?$/.test(pathname)||/^\/index-v20261016[lm](?:\.html)?$/.test(pathname)||pathname==='/index-v20261016n'){
+    if(pathname==='/'||pathname==='/index.html'||/^\/index-v20261015[efghijkl](?:\.html)?$/.test(pathname)||/^\/index-v20261016[lm](?:\.html)?$/.test(pathname)){
       const target=new URL(request.url);target.pathname='/index-v20261016n.html';
       const response=await env.ASSETS.fetch(new Request(target,request));
       const headers=new Headers(response.headers);headers.set('Cache-Control','no-store');

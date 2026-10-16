@@ -22,6 +22,8 @@ test('Endereços de versões antigas chegam à versão atual sem redirecionar a 
   assert.equal(requested.at(-1),'/index-v20261016n.html');
  }
  await worker.fetch(new Request('https://example.com/index-v20261016n'),env);
+ assert.equal(requested.at(-1),'/index-v20261016n');
+ await worker.fetch(new Request('https://example.com/index-v20261016n.html'),env);
  assert.equal(requested.at(-1),'/index-v20261016n.html');
 });
 
