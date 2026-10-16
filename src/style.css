@@ -654,3 +654,22 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 }
 .desktop-icons button[data-icon="boss"],.taskbar button[data-task-app="boss"]{position:relative}
 .desktop-icons button[data-icon="boss"].has-unread::after,.taskbar button[data-task-app="boss"].has-unread::after{content:"";position:absolute;width:10px;height:10px;right:9px;top:8px;border:2px solid #e7efe5;border-radius:50%;background:#d95f52;box-shadow:0 1px 3px #142a2f66;pointer-events:none}
+
+/* Janelas desktop podem ser redimensionadas; o conteúdo acompanha a largura real. */
+@media (min-width:781px) and (pointer:fine){
+ .desktop-window{container-type:inline-size}
+ .desktop-window>.app-window-body,.desktop-window>.call-window-body{width:100%;min-width:0;max-width:100%;overflow-x:hidden;overscroll-behavior:contain}
+ .desktop-window>.app-window-body{overflow-y:auto;flex:1 1 0%}
+ .desktop-window>.call-window-body{overflow-y:auto}
+ .desktop-window .app-window-body :where(*){min-width:0;max-width:100%;overflow-wrap:anywhere}
+ .desktop-window .app-window-body :where(img,svg,video,canvas,iframe){height:auto;max-width:100%}
+ .desktop-window .app-window-body :where(input,select,textarea){width:100%;min-width:0;max-width:100%}
+ .desktop-window .app-window-body :where(table){display:block;width:max-content;max-width:100%;overflow-x:auto}
+ .desktop-window .app-window-body :where(pre,code){white-space:pre-wrap;overflow-wrap:anywhere}
+}
+@container (max-width:460px){
+ .desktop-window .app-window-body :where(.scheme-options,.shop-catalog,.skin-catalog,.dialogue-options,.app-flow,.exposed-data,.followup-actions){grid-template-columns:minmax(0,1fr)!important}
+ .desktop-window .app-window-body :where(.app-flow,.followup-actions){display:grid!important}
+ .desktop-window .app-window-body :where(.classroom-panel,.story-followups,.investigation-records){margin:10px!important;padding:12px!important}
+ .desktop-window .app-window-body :where(.app-return){padding-inline:12px}
+}
