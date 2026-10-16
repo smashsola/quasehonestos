@@ -18,8 +18,8 @@ function harden(response){
 export default {
   async fetch(request,env){
     const pathname=new URL(request.url).pathname;
-    if(pathname==='/'||pathname==='/index.html'||/^\/index-v20261015[efghijkl](?:\.html)?$/.test(pathname)||/^\/index-v20261016[lmno](?:\.html)?$/.test(pathname)){
-      const target=new URL(request.url);target.pathname='/index-v20261016p.html';
+    if(pathname==='/'||pathname==='/index.html'||/^\/index-v20261015[efghijkl](?:\.html)?$/.test(pathname)||/^\/index-v20261016[lmnop](?:\.html)?$/.test(pathname)){
+      const target=new URL(request.url);target.pathname='/index-v20261016q.html';
       const response=await env.ASSETS.fetch(new Request(target,request));
       const headers=new Headers(response.headers);headers.set('Cache-Control','no-store');
       return harden(new Response(response.body,{status:response.status,statusText:response.statusText,headers}));

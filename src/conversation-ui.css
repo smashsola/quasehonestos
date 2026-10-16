@@ -564,6 +564,12 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active{background:#b52e23!important;color:#fff!important}
 }
 
+/* No celular, todos os X usam a mesma cor forte e a mesma caixa de toque. */
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window>.windowbar button[data-window="close"],.incoming-message>header button,.mobile-app-switcher>header button[aria-label="Fechar alternador"]{display:grid!important;place-items:center!important;box-sizing:border-box!important;flex:0 0 44px!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;margin:0!important;padding:0!important;border:2px solid #f6d2c1!important;border-radius:10px!important;background:#7f302c!important;color:#fff!important;font:800 24px/1 'Segoe UI',Tahoma,Arial,sans-serif!important;text-shadow:0 1px 1px #431c1b!important;box-shadow:0 2px 0 #431c1b!important}
+ .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active,.incoming-message>header button:hover,.incoming-message>header button:active,.mobile-app-switcher>header button[aria-label="Fechar alternador"]:hover,.mobile-app-switcher>header button[aria-label="Fechar alternador"]:active{background:#a23e36!important;color:#fff!important}
+}
+
 /* Mobile app-switcher tiles reorder only within their two-column snap grid. */
 @media(max-width:600px),(pointer:coarse) and (max-width:1000px){
  .mobile-app-switcher>div{touch-action:pan-y}

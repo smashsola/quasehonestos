@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fresh,nextCall,load,KEY} from '../src/engine.js';
-import {checkIncoming,answerIncoming,dismissIncoming,snoozeIncoming} from '../src/incoming.js';
+import {checkIncoming,markIncomingSeen,answerIncoming,dismissIncoming,snoozeIncoming} from '../src/incoming.js';
 import {incomingScenes,incomingScene,refreshIncoming,incomingReport} from '../src/incoming-scenes.js';
 function start(){const s=fresh();nextCall(s);s.active.log=[{speaker:'Nino',text:'Oi'}];return s;}
 test('A mensagem chega após intervalo variável, sem depender de resultado de atendimento',()=>{
@@ -21,6 +21,11 @@ test('Eventos variam, não se repetem e param ao concluir o expediente',()=>{
 });
 test('Ver depois recolhe a mensagem sem registrar uma resposta',()=>{
  const s=start();checkIncoming(s,0,()=>0);checkIncoming(s,35000,()=>0);s.incoming.pending.open=true;assert.equal(snoozeIncoming(s),true);assert.equal(s.incoming.pending.open,false);assert.ok(s.incoming.pending.snoozedUntil>Date.now());assert.equal(s.incoming.history.length,0);
+});
+
+test('Abrir o Correio marca o recado como visto e remove o aviso persistido',()=>{
+ const s=start();checkIncoming(s,0,()=>0);checkIncoming(s,35000,()=>0);assert.equal(s.incoming.pending.seen,undefined);assert.equal(markIncomingSeen(s),true);assert.equal(markIncomingSeen(s),false);
+ const restored=load({getItem:()=>JSON.stringify(s)});assert.equal(restored.incoming.pending.seen,true);
 });
 
 test('Cada escolha arriscada desconta uma vez, sobrevive ao salvamento e preserva o NPC',()=>{

@@ -28,8 +28,10 @@ test('Viewport distingue redução por teclado de zoom, sem alterar partida',()=
 });
 test('Alternador expõe aplicativos e mensagens novas com nomes acessíveis',()=>{
  const html=mobileNavigation([['calls','', 'Zape'],['boss','','Correio'],['files','','Fichas']],'files',{expanded:true,pending:true,unread:2});
- assert.match(html,/aria-modal="true"/);assert.match(html,/data-app="files" aria-current="page"/);assert.match(html,/mensagens novas/);assert.match(html,/Correio · mensagem nova/);
+ assert.match(html,/aria-modal="true"/);assert.match(html,/data-app="files"[^>]*aria-current="page"/);assert.match(html,/mensagens novas/);assert.match(html,/Correio · mensagem nova/);
  assert.match(html,/<svg class="os-app-grid"/);assert.doesNotMatch(html,/▦/);
+ const seen=mobileNavigation([['calls','', 'Zape'],['boss','','Correio']],'boss',{expanded:true,pending:false});
+ assert.match(seen,/data-mobile-inbox aria-label="Correio"/);assert.doesNotMatch(seen,/Correio · mensagem nova|Correio · novo recado/);
 });
 test('Atividade explica o fluxo da turma e separa confiança do resultado',()=>{
  const html=classroomPanel(fresh(),String);

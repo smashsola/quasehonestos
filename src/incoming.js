@@ -11,6 +11,10 @@ export function checkIncoming(state,now=Date.now(),random=Math.random){
  const scene=candidates[Math.floor(random()*candidates.length)];
  inbox.pending={id:scene+'-'+now,scene,variant:'office',sender:incomingScenes[scene].sender,arrivedAt:now,open:false,result:null};inbox.seen.push(scene);return true;
 }
+export function markIncomingSeen(state){
+ const pending=state.incoming?.pending;if(!pending||pending.seen)return false;
+ pending.seen=true;return true;
+}
 export function answerIncoming(state,choiceId){
  const pending=state.incoming?.pending;if(!pending||pending.result)return false;
  const scene=incomingScene(pending),choice=scene?.choices.find(c=>c.id===choiceId);if(!choice)return false;
