@@ -4,11 +4,18 @@ import {defensePeople,defenseCases,startDefenseCall,decideDefense,stopRansomware
 import {fresh,nextCall,finishCall,migrateToDefense} from '../src/engine.js';
 import {defenseView} from '../src/defense-view.js';
 import {helpContent} from '../src/app-content.js';
+import {expressions} from '../src/mood.js';
+import {voiceProfiles} from '../src/speech-timing.js';
+import {readFile} from 'node:fs/promises';
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 test('Cada golpista tem uma fala engraçada e uma segunda ação classificada sem apontar a resposta certa',()=>{
- assert.equal(defensePeople.length,6);
+ assert.equal(defensePeople.length,10);
  for(const person of defensePeople){const scenario=defenseCases[person.caseId],witty=scenario.choices.filter(choice=>choice.witty),classified=scenario.choices.filter(choice=>choice.classification);assert.ok(person.name);assert.ok(scenario.technique);assert.equal(scenario.choices.length,4);assert.ok(scenario.choices.every(choice=>choice.label.startsWith('AÇÃO — ')));assert.equal(witty.length,1,`${person.name} deve ter exatamente uma opção engraçada`);assert.equal(witty[0].safe,true);assert.equal(classified.length,1,`${person.name} deve ter uma ação classificada`);assert.equal(classified[0].safe,false);}
+});
+
+test('Todos os dez personagens têm retratos com expressão e boca animada para falar',async()=>{
+ for(const person of defensePeople){assert.ok(voiceProfiles[person.id],`voz de ${person.id}`);for(const expression of expressions){const portrait=await readFile(new URL(`../src/portraits/${person.id}-${expression}.svg`,import.meta.url),'utf8');const talking=await readFile(new URL(`../src/portraits/${person.id}-${expression}-talking.svg`,import.meta.url),'utf8');assert.match(portrait,/<svg/);assert.match(talking,/mouth-speaking/);}}
 });
 
 test('Migra uma partida salva para defesa sem apagar o histórico nem a conversa em andamento',()=>{
@@ -17,7 +24,7 @@ test('Migra uma partida salva para defesa sem apagar o histórico nem a conversa
 });
 
 test('Inicia a conversa com a mensagem recebida e registra ação segura',()=>{
- const state=fresh();state.mode='defense';assert.equal(nextCall(state),true);assert.equal(state.active.mode,'defense');assert.equal(state.active.log[0].speaker,'Contato não salvo');
+ const state=fresh();state.mode='defense';assert.equal(nextCall(state),true);assert.equal(state.active.mode,'defense');assert.equal(state.active.log[0].speaker,'Contato não salvo');assert.equal(state.active.chatStage,'typing');assert.equal(state.active.chatVisible,1);assert.equal(state.active.unread,true);
  const scenario=defenseCases[state.active.caseId],safe=scenario.choices.find(choice=>choice.safe);
  assert.equal(decideDefense(state.active,safe.id,1000),true);assert.equal(state.active.outcome,'blocked');assert.equal(state.active.feedback,safe.feedback);
  assert.equal(finishCall(state),true);assert.equal(state.history[0].caseId,'whatsapp');
@@ -30,17 +37,20 @@ test('Pode encerrar qualquer contato e recebe orientação clara se já comparti
 test('Tela explica o golpe, mostra as quatro ações e ensina como sair',()=>{
  const state=fresh();state.mode='defense';nextCall(state);
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(html.includes(defensePeople[0].reaction));assert.doesNotMatch(html,/data-defense-speak|Ouvir fala|defense-message-stamp|>agora</);assert.match(html,/role="log" tabindex="0"/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/Resposta engraçadinha/);assert.match(html,/Pedido de código/);assert.match(html,/Quer interromper por aqui\?/);assert.doesNotMatch(html,/AÇÃO SEGURA/);assert.match(html,/data-defense-exit/);
- const ids=[...html.matchAll(/data-defense-choice="([^"]+)"/g)].map(match=>match[1]),choices=ids.map(id=>defenseCases.whatsapp.choices.find(choice=>choice.id===id));assert.ok(choices.slice(0,2).every(choice=>!choice.witty&&!choice.classification));assert.ok(choices.slice(2).every(choice=>choice.witty||choice.classification));assert.equal(new Set(choices.slice(2).map(choice=>choice.safe)).size,2);
+ assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(!html.includes(defensePeople[0].reaction));assert.doesNotMatch(html,/data-defense-speak|Ouvir fala|defense-message-stamp|>agora</);assert.match(html,/role="log" tabindex="0"/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,0);assert.match(html,/defense-typing/);assert.doesNotMatch(html,/AÇÃO SEGURA/);assert.doesNotMatch(html,/data-defense-exit/);
+ state.active.chatVisible=2;state.active.chatStage='ready';const ready=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.ok(ready.includes(defensePeople[0].reaction));assert.equal((ready.match(/data-defense-choice=/g)||[]).length,4);assert.match(ready,/Quer interromper por aqui\?/);assert.match(ready,/data-defense-exit/);
+ const ids=[...ready.matchAll(/data-defense-choice="([^"]+)"/g)].map(match=>match[1]),choices=ids.map(id=>defenseCases.whatsapp.choices.find(choice=>choice.id===id));assert.ok(choices.slice(0,2).every(choice=>!choice.witty&&!choice.classification));assert.ok(choices.slice(2).every(choice=>choice.witty||choice.classification));assert.equal(new Set(choices.slice(2).map(choice=>choice.safe)).size,2);
  assert.match(helpContent(state,escape),/confirmar por um canal conhecido/);
+ assert.match(helpContent(state,escape),/Golpes incluídos nesta rodada \(10\)/);
 });
 
-test('A conversa mostra pausa de digitação e só revela ações depois da fala do personagem',()=>{
+test('A mensagem chega com três pontos, e as ações só aparecem depois da fala do personagem',()=>{
  const state=fresh();state.mode='defense';nextCall(state);state.active.chatVisible=1;state.active.chatStage='typing';
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(html,/defense-typing/);assert.match(html,/está respondendo/);assert.doesNotMatch(html,/data-defense-choice=/);
+ assert.match(html,/defense-typing/);assert.match(html,/está respondendo/);assert.doesNotMatch(html,/data-defense-choice=/);assert.match(html,/contato não confirmado/);assert.doesNotMatch(html,/no Zape agora/);
  assert.equal((html.match(/<span><\/span>/g)||[]).length,3);assert.doesNotMatch(html,/defense-wait/);
- state.active.chatVisible=2;state.active.chatStage='ready';const ready=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
+ state.active.chatVisible=2;state.active.chatStage='speaking';const speaking=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(speaking,/data-speaking="true"/);assert.match(speaking,/bia-confused-talking\.svg/);assert.match(speaking,/Bia está falando/);
+ state.active.chatStage='ready';const ready=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
  assert.match(ready,/data-defense-choice=/);assert.match(ready,/Bia/);
 });
 

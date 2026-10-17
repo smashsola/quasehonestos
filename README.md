@@ -4,11 +4,12 @@ Quase Honestos é uma comédia interativa no Trambique OS sobre golpes, pressão
 
 ## Versão atual
 
-- Seis personagens, cinco situações fictícias e quatro escolhas roteirizadas por turno. Há uma alternativa explícita para pausar e buscar confirmação por outro canal em cada etapa; uma ou duas opções mantêm o humor da firma.
+- Dez personagens e dez situações fictícias de defesa, com quatro ações concretas por situação. Há alternativas para confirmar por canais conhecidos, interromper o contato ou chamar suporte; cada situação também tem uma resposta engraçada e uma ação de risco classificada.
 - O motor local controla confiança, encerramento, permissões, itens, créditos e progresso. Falas geradas não tomam decisões porque o fluxo principal não usa um modelo de IA.
 - Pausar para buscar confirmação fica registrado como intenção protetiva; o jogo não afirma que uma fonte foi consultada quando isso não aconteceu.
 - Resultados e replay distinguem o que ocorreu, o risco observado e uma hipótese de proteção. Compartilhamentos anteriores continuam visíveis.
 - A rodada de defesa integra fichas, correio, pedidos e outros registros do próprio jogo. Casos podem ser legítimos, fraudulentos ou inconclusivos.
+- As situações de defesa cobrem pedido urgente por WhatsApp, falsa central, comprovante de Pix, boleto/QR adulterado, taxa falsa de entrega, ransomware, falso motoboy, loja/leilão falso, mensagem falsa sobre CPF/benefício e troca de cartão na maquininha. A seleção cobre as modalidades mais citadas no RADAR FEBRABAN de junho de 2025, além de outros exemplos educativos.
 - O Manual oferece uma atividade opcional com situações A/B, cada uma pedindo ação e evidência. A exportação é local, codificada e não inclui conversas por padrão. **Ainda não foi aplicada nem validada com estudantes.**
 - O progresso fica neste navegador. No celular, a navegação mostra um app por vez; no desktop, o Trambique OS mantém suas janelas.
 
@@ -47,6 +48,7 @@ O Worker de produção é publicado com `npm run deploy:worker`, usando o projet
 
 - [Regulamento oficial TeenTech 2026](https://teentech.teckids.org.br/regulamento) — PDF com critérios de avaliação, seções 6.1, 8 e 12.
 - [CERT.br — dicas rápidas](https://cartilha.cert.br/dicas-rapidas/).
+- [FEBRABAN — golpes e tentativas mais citados no RADAR de junho de 2025](https://portal.febraban.org.br/noticia/4324/pt-br/www.febraban.org.br/paginas/).
 - [Privacidade da Cloudflare](https://www.cloudflare.com/privacypolicy/).
 
 Conteúdo, personagens e assets são próprios. A referência de gênero e interface não implica vínculo com outros jogos.

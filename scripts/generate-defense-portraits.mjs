@@ -2,7 +2,7 @@ import {mkdir,writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {speechTiming} from '../src/speech-timing.js';
 const out=fileURLToPath(new URL('../src/portraits/',import.meta.url));await mkdir(out,{recursive:true});
-const people={bia:['#e4a4bd','#a9694f','#422d31','#6042a0'],caio:['#78b9d1','#d6a37b','#302c37','#36748c'],luana:['#dda96c','#f0c39a','#653d30','#517a53'],igor:['#8bc9a9','#905d49','#262c31','#5d5791'],maya:['#b8a3db','#a96f53','#3d282b','#a65678'],leo:['#e38d78','#e0ad84','#59432c','#496f86']};
+const people={bia:['#e4a4bd','#a9694f','#422d31','#6042a0'],caio:['#78b9d1','#d6a37b','#302c37','#36748c'],luana:['#dda96c','#f0c39a','#653d30','#517a53'],igor:['#8bc9a9','#905d49','#262c31','#5d5791'],maya:['#b8a3db','#a96f53','#3d282b','#a65678'],leo:['#e38d78','#e0ad84','#59432c','#496f86'],nina:['#e6c47e','#bd805e','#493332','#466f86'],duda:['#82b6c1','#e6b58c','#5b4438','#825d98'],rafa:['#b9a0cb','#96614c','#372a35','#3f7880'],enzo:['#91b9dc','#c78f6c','#42322f','#46765e']};
 const moods={neutral:'M41 60h14',happy:'M39 59q9 10 18 0',suspicious:'M40 62q8-6 16 0',thinking:'M41 61q8-4 14 0',angry:'M40 62q8-7 16 0',amused:'M38 58q10 13 20 0',confused:'M40 62q8-4 16 1',surprised:'M48 57q7 0 7 6t-7 6q-7 0-7-6t7-6',hurt:'M40 63q8-7 16 0'};
 const brows={neutral:'M32 39h9m14 0h9',happy:'M32 39q5-3 9 0m14 0q5-3 9 0',suspicious:'M32 37l9 2m14 0 9-3',thinking:'M32 39h9m14 0 9-4',angry:'M32 41l9-4m14 4 9-4',amused:'M32 39h9m14 0h9',confused:'M32 38l9 2m14-2 9 2',surprised:'M32 35q5-4 9 0m14 0q5-4 9 0',hurt:'M32 38q5 3 9 1m14-1q5-2 9-1'};
 const expr=Object.keys(moods);
@@ -17,4 +17,4 @@ for(const [id,[bg,skin,hair,shirt]] of Object.entries(people))for(const emotion 
  const talking=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96">${animation}<rect width="96" height="96" rx="16" fill="${bg}"/><circle cx="75" cy="18" r="28" fill="#ffffff25"/><path d="M12 96Q14 70 38 70h20Q82 72 84 96" fill="${shirt}"/><g class="speech-head">${head}<path d="M47 46l-2 9h5" fill="none" stroke="#543a3a55" stroke-width="2"/><g class="mouth-rest"><path d="${mouth}" fill="none" stroke="#713f43" stroke-width="2.2" stroke-linecap="round"/></g><g class="mouth-speaking"><ellipse cx="48" cy="62" rx="7" ry="5.2" fill="#653f3d"/><path d="M44 59h8" stroke="#fff0d5" stroke-width="2"/><path d="M45 65q3-2 6 0" stroke="#d99388" stroke-width="1.5"/></g></g></svg>`;
  await writeFile(`${out}${id}-${emotion}-talking.svg`,talking);
 }
-console.log('Generated six defense characters with nine expressions and speaking portraits.');
+console.log(`Generated ${Object.keys(people).length} defense characters with nine expressions and speaking portraits.`);

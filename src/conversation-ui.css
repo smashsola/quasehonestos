@@ -644,3 +644,62 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .desktop .desktop-icons button>span svg{width:32px!important;height:32px!important;max-width:100%}
 }
 @media(max-width:600px) and (max-height:550px),(pointer:coarse) and (max-width:1000px) and (max-height:550px){.desktop-window[data-window-id="calls"] .first-call-guide{display:block!important;max-height:24dvh!important;overflow:auto!important}}
+
+/* Cartões de decisão ocupam só o espaço do texto, sem linhas esticadas. */
+.defense-action-grid{grid-auto-rows:auto;align-content:start;align-items:start;gap:10px}
+.defense-action-grid button.defense-action-option{min-height:78px;padding:11px 12px;gap:9px;border-radius:12px}
+.defense-action-grid button.defense-action-option:focus-visible{outline-color:#52906f}
+.defense-choice-copy strong{font-size:14px;line-height:1.38}
+.defense-contact .avatar.is-speaking{border-color:#3f805f;box-shadow:0 0 0 3px #75ad832b,0 3px 10px #153c2b20}
+.defense-clues summary:focus-visible{outline:3px solid #6a9d7b;outline-offset:3px;border-radius:6px}
+
+/* O botão de interromper volta ao verde destacado da rodada. */
+.defense-exit{border:2px solid #17483d;background:linear-gradient(135deg,#286b5a,#1d5549);color:#f5fbf5;box-shadow:0 3px 0 #153f35}
+.defense-exit:hover{background:linear-gradient(135deg,#307761,#205c4c);border-color:#123f36;box-shadow:0 4px 9px #193c2e30}
+.defense-exit:active{transform:translateY(1px);box-shadow:0 1px 3px #193c2e30}
+.defense-exit:focus-visible{outline:3px solid #e2bd68;outline-offset:3px}
+.defense-exit-icon{background:#ffffff20;color:#fff}
+.defense-exit-copy small{color:#e0f1e9}
+.defense-exit-arrow{color:#c8e8d7}
+
+/* Correio renovado, mantendo pastas, leitura e fechamento no mesmo lugar. */
+.mail-app-heading{gap:16px;padding:2px 0 15px;border-bottom:1px solid #c6d8cc}
+.mail-app-heading small{color:#467362;font-size:10px;font-weight:800;letter-spacing:.14em}
+.mail-app-heading h1{margin:6px 0 0;color:#234a3e;font-size:26px;letter-spacing:-.035em}
+.mail-app-heading>button{display:grid!important;place-items:center!important;box-sizing:border-box!important;flex:0 0 40px!important;width:40px!important;height:40px!important;padding:0!important;border:1px solid #8caa9b!important;border-radius:9px!important;background:linear-gradient(145deg,#f8fbf8,#e3eee7)!important;color:#254a3d!important;font:600 21px/1 "Segoe UI",Tahoma,Arial,sans-serif!important;box-shadow:0 2px 5px #193c2e1b,inset 0 1px #ffffff!important;transition:transform .15s ease,background .15s ease,border-color .15s ease!important}
+.mail-app-heading>button:hover{transform:translateY(-1px);background:#f4e2db!important;border-color:#b86d61!important;color:#853b32!important}
+.mail-app-heading>button:active{transform:translateY(0)}
+.mail-app-heading>button:focus-visible{outline:3px solid #6da487!important;outline-offset:2px!important}
+.gmail-layout{grid-template-columns:minmax(156px,190px) minmax(0,1fr);gap:18px;margin-top:16px}
+.gmail-layout nav{align-content:start;gap:5px;padding:10px 8px 14px;border-radius:12px;background:linear-gradient(160deg,#e5ede0,#dce7dc)}
+.gmail-layout nav button{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:40px;padding:0 13px;border:1px solid transparent;border-radius:9px 18px 18px 9px;font-size:13px;transition:background .14s ease,border-color .14s ease}
+.gmail-layout nav button:hover{background:#f3f7f1;border-color:#c3d5c8}
+.gmail-layout nav button.selected{background:#cce2d3;border-color:#b4cfbe;color:#174d3a}
+.gmail-layout nav b{font-size:12px}
+.gmail-toolbar{align-items:center;padding:8px 10px 12px;border-color:#c8d8cf;color:#31584a}
+.gmail-row{grid-template-columns:10px minmax(110px,150px) minmax(0,1fr) auto;min-height:58px;padding:10px 12px;border:1px solid #c9d9d0;border-radius:9px;background:#f8fbf8;box-shadow:0 2px 5px #214b3610;transition:background .14s ease,transform .14s ease,box-shadow .14s ease}
+.gmail-row:hover{transform:translateY(-1px);background:#fff;box-shadow:0 5px 12px #214b361b}
+.gmail-row strong{color:#244c3d;font-size:13px}
+.gmail-row>span:not(.gmail-unread-dot){color:#456254;font-size:12px}
+.gmail-unread-dot{box-shadow:0 0 0 3px #d9ebdf}
+.mail-context{margin-top:14px;padding:13px 14px;border:1px solid #d1ded4;border-radius:10px;background:#f0f5ef;color:#506b5d;font-size:12px}
+
+.defense-feedback button.primary{min-height:48px;padding:12px 20px;border:1px solid #95562f;border-radius:8px;background:linear-gradient(135deg,#bd7548,#a85d38);color:#fff8f0;font-weight:800;box-shadow:0 3px 0 #83452f;transition:transform .14s ease,box-shadow .14s ease,filter .14s ease}
+.defense-feedback button.primary:hover{filter:brightness(1.07);transform:translateY(-1px);box-shadow:0 4px 0 #83452f}
+.defense-feedback button.primary:active{transform:translateY(1px);box-shadow:0 1px 0 #83452f}
+.defense-feedback button.primary:focus-visible{outline:3px solid #568a6c;outline-offset:3px}
+
+@media(min-width:1001px) and (pointer:fine){
+ .desktop .desktop-icons button{box-sizing:border-box!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;width:110px!important;max-width:110px!important;height:88px!important;min-height:0!important;padding:4px 5px!important;gap:2px!important;border-radius:10px!important;font-size:10px!important;line-height:1.16!important;text-align:center!important;overflow:hidden!important;overflow-wrap:anywhere}
+ .desktop .desktop-icons button>span{width:35px!important;height:35px!important;min-width:35px!important;margin:0!important}
+ .desktop .desktop-icons button>span svg{width:34px!important;height:34px!important;max-width:100%}
+}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .gmail-layout{grid-template-columns:minmax(0,1fr);gap:10px}
+ .gmail-layout nav{display:flex;gap:6px;overflow-x:auto;padding:7px;border-radius:10px}
+ .gmail-layout nav button{flex:0 0 auto;min-height:36px;padding-inline:11px}
+ .gmail-row{grid-template-columns:10px minmax(82px,1fr) minmax(0,1.5fr);gap:7px;padding:9px}
+ .gmail-row small{display:none}
+ .mail-app-heading h1{font-size:23px}
+ .mail-context{margin-top:10px;padding:11px}
+}
