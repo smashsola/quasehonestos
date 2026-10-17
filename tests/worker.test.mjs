@@ -15,16 +15,16 @@ test('Endereços de versões antigas chegam à versão atual sem redirecionar a 
  for(const version of ['f','g','h','i','j','k','l']){
   const response=await worker.fetch(new Request(`https://example.com/index-v20261015${version}`),env);
   assert.equal(response.status,200);
-  assert.equal(requested.at(-1),'/index-v20261017a.html');
+  assert.equal(requested.at(-1),'/index-v20261017b.html');
  }
- for(const path of ['/index-v20261015l','/index-v20261016l.html','/index-v20261016m','/index-v20261016m.html','/index-v20261016n','/index-v20261016n.html','/index-v20261016o','/index-v20261016o.html','/index-v20261016p','/index-v20261016p.html','/index-v20261016q','/index-v20261016q.html','/index-v20261016r','/index-v20261016r.html','/index-v20261016s','/index-v20261016s.html','/index-v20261016t','/index-v20261016t.html','/index-v20261016u','/index-v20261016u.html','/index-v20261016v','/index-v20261016v.html','/index-v20261016w','/index-v20261016w.html','/index-v20261016x','/index-v20261016x.html','/index-v20261016y','/index-v20261016y.html','/index-v20261016z','/index-v20261016z.html','/index-v20261016aa','/index-v20261016aa.html','/index-v20261016ab','/index-v20261016ab.html','/index-v20261016ac','/index-v20261016ac.html']){
+ for(const path of ['/index-v20261015l','/index-v20261016l.html','/index-v20261016m','/index-v20261016m.html','/index-v20261016n','/index-v20261016n.html','/index-v20261016o','/index-v20261016o.html','/index-v20261016p','/index-v20261016p.html','/index-v20261016q','/index-v20261016q.html','/index-v20261016r','/index-v20261016r.html','/index-v20261016s','/index-v20261016s.html','/index-v20261016t','/index-v20261016t.html','/index-v20261016u','/index-v20261016u.html','/index-v20261016v','/index-v20261016v.html','/index-v20261016w','/index-v20261016w.html','/index-v20261016x','/index-v20261016x.html','/index-v20261016y','/index-v20261016y.html','/index-v20261016z','/index-v20261016z.html','/index-v20261016aa','/index-v20261016aa.html','/index-v20261016ab','/index-v20261016ab.html','/index-v20261016ac','/index-v20261016ac.html','/index-v20261017a','/index-v20261017a.html']){
   await worker.fetch(new Request(`https://example.com${path}`),env);
-  assert.equal(requested.at(-1),'/index-v20261017a.html');
+  assert.equal(requested.at(-1),'/index-v20261017b.html');
  }
- await worker.fetch(new Request('https://example.com/index-v20261017a'),env);
- assert.equal(requested.at(-1),'/index-v20261017a');
- await worker.fetch(new Request('https://example.com/index-v20261017a.html'),env);
- assert.equal(requested.at(-1),'/index-v20261017a.html');
+ await worker.fetch(new Request('https://example.com/index-v20261017b'),env);
+ assert.equal(requested.at(-1),'/index-v20261017b');
+ await worker.fetch(new Request('https://example.com/index-v20261017b.html'),env);
+ assert.equal(requested.at(-1),'/index-v20261017b.html');
 });
 
 test('Endpoint aposentado não consulta binding mesmo que um ambiente antigo ainda o ofereça',async()=>{
