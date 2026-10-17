@@ -19,9 +19,9 @@ export function portraitSource(caller,emotion){
 }
 export function updatePortraits(){
  document.querySelectorAll('.avatar[data-caller]').forEach(avatar=>{
-  const caller=avatar.dataset.caller,emotion=avatar.dataset.expression,img=avatar.querySelector('img');
-  if(img){const source=portraitSource(caller,emotion);if(!img.src.endsWith(source))img.src=source;preload(`/src/portraits/${caller}-${emotion}-talking.svg`);}
-  const talking=speech?.caller===caller&&speech.emotion===emotion;avatar.classList.toggle('is-speaking',talking);
+  const caller=avatar.dataset.caller,emotion=avatar.dataset.expression,img=avatar.querySelector('img'),talking=avatar.dataset.speaking==='true'||speech?.caller===caller&&speech.emotion===emotion;
+  if(img){const source=avatar.dataset.speaking==='true'?`/src/portraits/${caller}-${emotion}-talking.svg`:portraitSource(caller,emotion);if(!img.src.endsWith(source))img.src=source;preload(`/src/portraits/${caller}-${emotion}-talking.svg`);}
+  avatar.classList.toggle('is-speaking',talking);
   const label=avatar.parentElement.querySelector('.portrait-emotion');if(label)label.textContent=talking?'falando…':expressionNames[emotion];
  });
 }
