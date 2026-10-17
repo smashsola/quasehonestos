@@ -42,6 +42,7 @@ refreshIncoming(state);
 if(state.active?.log.length===1&&!state.active.used.length&&!state.active.outcome&&state.active.log[0].speaker!=='Você')state.active.log=[];
 if(state.active&&!state.active.scheme&&!state.active.used.length&&!state.active.outcome)state.active.log=[];
 const legacyLines=['Você tenta encurtar o tempo para decidir.','Você mostra um cargo inventado. O crachá tem um carimbo de batata.','Você usa simpatia para tentar conquistar confiança.','Você apresenta a proposta fictícia e espera uma decisão.'];
+if(state.active?.mode==='defense'&&!state.active.outcome&&state.active.chatStage&&state.active.chatStage!=='ready'){const person=defensePeople.find(p=>p.id===state.active.caller);state.active.chatStage='ready';state.active.chatVisible=2;if(person&&!state.active.log.some(line=>line.speaker===person.name))state.active.log.push({speaker:person.name,text:person.reaction});}
 for(const entry of [state.active,...state.history])for(const line of entry?.log||[]){const index=legacyLines.indexOf(line.text);if(index>=0)line.text=moves[index].reply;}
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const protectivePauses=()=>[...state.history,state.active].filter(h=>resultImpact(h)?.protectionChosen).length;
@@ -85,7 +86,7 @@ function showTurn(active,start,{trust=active.trust,expression=savedExpression(ac
  cancelPlayback();
  const reply=active.log.slice(start).findLast(line=>line.speaker!=='Você');
  cancelPlayback=playConversation({start,total:active.log.length,speaker:reply?.speaker||'Sistema',text:reply?.text||'',ended:!!active.outcome,current:()=>state.active===active,
-  frame:frame=>{typing={...frame,trust:frame.phase==='reading'?active.trust:trust,expression:frame.phase==='reading'?savedExpression(active):expression};render();if(frame.phase==='reading')murmurReply(replyDuration(reply?.text||''));},
+   frame:frame=>{typing={...frame,trust:frame.phase==='reading'?active.trust:trust,expression:frame.phase==='reading'?savedExpression(active):expression};render();if(frame.phase==='reading')murmurReply(replyDuration(reply?.text||''),reply?.text||'');},
   done:()=>{typing=null;render();if(opened==='calls')document.querySelector('[data-window-id="calls"] [data-dialogue-option]:not([disabled])')?.focus({preventScroll:true});celebrateEarnings();}
  });
 }
@@ -117,11 +118,20 @@ function beginConversation(schemeId){
  state.active.log.push({speaker:'Você',text:scheme.opening+(selectedOffer(state.active)?' Proposta: '+selectedOffer(state.active).name+'. '+selectedOffer(state.active).detail:'')},{speaker:caller.name,text:characterOpening(caller.id,scheme.id)});
  showTurn(state.active,0);
 }
-function animateIncoming(){render();}
-function murmurReply(duration){
+let defensePlaybackTimers=[];
+function clearDefensePlayback(){for(const timer of defensePlaybackTimers)clearTimeout(timer);defensePlaybackTimers=[];}
+function speakDefenseLine(active,text){if(!active||!text)return;document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller:active.caller,duration:replyDuration(text),emotion:savedExpression(active),text}}));}
+function animateIncoming(){
+ const active=state.active;if(active?.mode!=='defense'){render();return;}
+ clearDefensePlayback();const person=defensePeople.find(p=>p.id===active.caller);if(!person){render();return;}
+ active.chatVisible=1;active.chatStage='typing';active.expression='confused';active.log=active.log.filter(line=>line.speaker==='Contato não salvo');render();
+ defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatVisible=2;active.chatStage='speaking';active.expression='confused';if(!active.log.some(line=>line.speaker===person.name))active.log.push({speaker:person.name,text:person.reaction});render();speakDefenseLine(active,person.reaction);},850));
+ defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatStage='ready';render();},1900));
+}
+function murmurReply(duration,text=''){
  const a=state.active;if(!a)return;
  document.dispatchEvent(new CustomEvent('qh-message'));
- document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller:a.caller,duration,emotion:savedExpression(a)}}));
+ document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller:a.caller,duration,emotion:savedExpression(a),text}}));
 }
 
 function characterExpression(a){return typing?.expression||savedExpression(a);}
@@ -311,10 +321,10 @@ setInterval(()=>{
 },1000);
 
 app.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.resultView){resultView=b.dataset.resultView;render();return;}if(b.hasAttribute('data-start-defense')){if(defenseLoading||typing||!state.active?.outcome)return;const active=state.active;defenseLoading=true;render();setTimeout(()=>{defenseLoading=false;if(state.active!==active)return;active.defenseOpened=true;resultView='defense';render();const panel=document.querySelector('.defense-investigation');panel?.setAttribute('tabindex','-1');panel?.focus({preventScroll:true});panel?.scrollIntoView({block:'start',behavior:'instant'});},650);return;}if(b.dataset.defenseSource){openSchemeApp(b.dataset.defenseSource);const record=document.querySelector('.investigation-records');if(record){record.closest('.app-window-body').scrollTop=0;record.querySelector('h2').setAttribute('tabindex','-1');record.querySelector('h2').focus({preventScroll:true});}return;}if(b.dataset.defenseInspect){if(inspectDefense(state,b.dataset.defenseInspect)){render();const button=document.querySelector('[data-defense-inspect="'+b.dataset.defenseInspect+'"]');button?.closest('article')?.insertAdjacentHTML('beforeend','<p role="status" tabindex="-1" class="record-noted">Registro anotado. Volte ao recado quando quiser decidir.</p>');document.querySelector('.record-noted')?.focus();}return;}if(b.dataset.defenseResolve){if(resolveDefense(state,b.dataset.defenseResolve,document.querySelector('#defense-citation')?.value||null,document.querySelector('#defense-relation')?.value||null,document.querySelector('#defense-fragment')?.value||null)){render();const verdict=document.querySelector('.defense-verdict');verdict?.setAttribute('tabindex','-1');verdict?.focus();}return;}if(b.hasAttribute('data-send-clone')){if(!typing&&sendCloneLink(state))render();return;}if(b.hasAttribute('data-review-clone')){if(!typing&&reviewClonedCard(state))render();return;}if(b.dataset.equipWallpaper){if(equipWallpaper(state,b.dataset.equipWallpaper))render();return;}if(b.dataset.pickOffer){if(chooseOffer(state,b.dataset.pickOffer))render();return;}if(b.hasAttribute('data-run-diagnostic')){if(!typing&&runRemoteDiagnostic(state))render();return;}if(b.hasAttribute('data-check-club')){checkAppCode('club');return;}if(b.dataset.pickSkin){if(chooseSkin(state,b.dataset.pickSkin))render();return;}if(b.hasAttribute('data-send-update')){if(!typing&&sendUpdateFile(state)){opened='calls';windows.calls??={x:170,y:65};windows.calls.hidden=false;windows.calls.z=++layer;render();}return;}if(b.dataset.reviewUpdate){if(!typing&&reviewUpdateData(state,b.dataset.reviewUpdate))render();return;}if(b.dataset.openOperation){openSchemeApp(b.dataset.openOperation);return;}if(b.dataset.execute){if(typing)return;if(b.dataset.execute==='wallet'){const field=document.querySelector('#demo-card-number');if(!field||!verifyOperationCode(state,'wallet',field.value)){checkAppCode('wallet');return;}}presentOperation(()=>executeScheme(state,b.dataset.execute));return;}if(b.dataset.buy){buy(state,furniture.find(item=>item.id===b.dataset.buy));render();return;}if((!b.dataset.move&&!b.dataset.action&&!b.dataset.scheme&&!b.dataset.prepare&&!b.dataset.defenseChoice&&!b.hasAttribute('data-defense-stop')&&!b.hasAttribute('data-defense-exit'))||typing)return;if(b.dataset.scheme){if(state.active?.log.length)return;state.active.scheme=b.dataset.scheme;openSchemeApp(b.dataset.scheme);return;}if(b.dataset.prepare){if(!state.active||state.active.log.length)return;const id=b.dataset.prepare;state.active.prepared=true;opened='calls';windows.calls??={x:170,y:65};windows.calls.hidden=false;windows.calls.z=++layer;beginConversation(id);return;}
- if(b.dataset.defenseChoice){if(decideDefense(state,b.dataset.defenseChoice))render();return;}if(b.hasAttribute('data-defense-stop')){if(stopRansomware(state.active))render();return;}if(b.hasAttribute('data-defense-exit')){if(endDefenseContact(state.active))render();return;}
+  if(b.dataset.defenseChoice){const active=state.active,scenario=defenseCases[active?.caseId],choice=scenario?.choices.find(item=>item.id===b.dataset.defenseChoice);if(active?.chatStage!=='ready')return;if(decideDefense(active,b.dataset.defenseChoice)){clearDefensePlayback();render();speakDefenseLine(active,choice?.feedback);}return;}if(b.hasAttribute('data-defense-stop')){const active=state.active;if(stopRansomware(active)){clearDefensePlayback();render();speakDefenseLine(active,active.feedback);}return;}if(b.hasAttribute('data-defense-exit')){const active=state.active;if(endDefenseContact(active)){clearDefensePlayback();render();speakDefenseLine(active,active.feedback);}return;}
  if(b.dataset.move){animateMove(b.dataset.move);return;}
  if(b.dataset.action==='greet'){beginConversation();return;}
- if(b.dataset.action==='start'){if(nextCall(state)){if(state.active?.mode==='defense')document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller:state.active.caller,emotion:state.active.expression,duration:3400}}));animateIncoming();return;}}
+  if(b.dataset.action==='start'){if(nextCall(state)){animateIncoming();return;}}
  else if(b.dataset.action==='close'){presentOperation(()=>closeCall(state));return;}
  else if(b.dataset.action==='finish'){if(state.classSession?.phase==='play'&&!state.active?.learningDefense?.result)return;searchTerm='';profileOpen=false;searchOpen=false;messageDraft='';if(state.cursor===0&&state.tutorial==='active')state.tutorial='completed';const classroomDone=finishClassPlay(state);finishCall(state);if(classroomDone){openSchemeApp('help');return;}if(!state.finished&&nextCall(state)){animateIncoming();return;}}
  else if(b.dataset.action==='reset'){cancelPlayback();typing=null;defenseLoading=false;state=fresh();state.mode='defense';state.tutorial='defense';}

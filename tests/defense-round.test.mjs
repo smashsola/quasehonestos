@@ -17,7 +17,7 @@ test('Migra uma partida salva para defesa sem apagar o histórico nem a conversa
 });
 
 test('Inicia a conversa com a mensagem recebida e registra ação segura',()=>{
- const state=fresh();state.mode='defense';assert.equal(nextCall(state),true);assert.equal(state.active.mode,'defense');assert.equal(state.active.log[0].speaker,defensePeople[0].name);
+ const state=fresh();state.mode='defense';assert.equal(nextCall(state),true);assert.equal(state.active.mode,'defense');assert.equal(state.active.log[0].speaker,'Contato não salvo');
  const scenario=defenseCases[state.active.caseId],safe=scenario.choices.find(choice=>choice.safe);
  assert.equal(decideDefense(state.active,safe.id,1000),true);assert.equal(state.active.outcome,'blocked');assert.equal(state.active.feedback,safe.feedback);
  assert.equal(finishCall(state),true);assert.equal(state.history[0].caseId,'whatsapp');
@@ -30,8 +30,16 @@ test('Pode encerrar qualquer contato e recebe orientação clara se já comparti
 test('Tela explica o golpe, mostra as quatro ações e ensina como sair',()=>{
  const state=fresh();state.mode='defense';nextCall(state);
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(html,/O que pode acontecer/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/data-defense-exit/);
+ assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(html.includes(defensePeople[0].reaction));assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/data-defense-exit/);
  assert.match(helpContent(state,escape),/confirmar por um canal conhecido/);
+});
+
+test('A conversa mostra pausa de digitação e só revela ações depois da fala do personagem',()=>{
+ const state=fresh();state.mode='defense';nextCall(state);state.active.chatVisible=1;state.active.chatStage='typing';
+ const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
+ assert.match(html,/defense-typing/);assert.match(html,/está respondendo/);assert.doesNotMatch(html,/data-defense-choice=/);
+ state.active.chatVisible=2;state.active.chatStage='ready';const ready=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
+ assert.match(ready,/data-defense-choice=/);assert.match(ready,/Bia/);
 });
 
 test('Ransomware é só simulação, permite desconectar e encerra após 45 segundos se não reagir',()=>{

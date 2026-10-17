@@ -1,10 +1,10 @@
 export const defensePeople=[
- {id:'bia',name:'Bia',color:'#e4a4bd',role:'Cuida do grupo da família',face:'•',caseId:'whatsapp'},
- {id:'caio',name:'Caio',color:'#78b9d1',role:'Resolve tudo pelo celular',face:'⌁',caseId:'bank-call'},
- {id:'luana',name:'Luana',color:'#dda96c',role:'Vende bolos por encomenda',face:'◒',caseId:'fake-pix'},
- {id:'igor',name:'Igor',color:'#8bc9a9',role:'Organiza as contas da casa',face:'▤',caseId:'boleto'},
- {id:'maya',name:'Maya',color:'#b8a3db',role:'Compra pela internet',face:'✦',caseId:'delivery'},
- {id:'leo',name:'Léo',color:'#e38d78',role:'Estagiário de TI por acidente',face:'⌐',caseId:'ransomware'}
+ {id:'bia',name:'Bia',color:'#e4a4bd',role:'Cuida do grupo da família',face:'•',caseId:'whatsapp',reaction:'Ué, mudou de número e já veio com pressa? Isso me deixou na dúvida.'},
+ {id:'caio',name:'Caio',color:'#78b9d1',role:'Resolve tudo pelo celular',face:'⌁',caseId:'bank-call',reaction:'Esse suposto banco quer um código. Eu nem pedi ajuda.'},
+ {id:'luana',name:'Luana',color:'#dda96c',role:'Vende bolos por encomenda',face:'◒',caseId:'fake-pix',reaction:'A imagem chegou, mas não apareceu nenhum Pix no meu extrato.'},
+ {id:'igor',name:'Igor',color:'#8bc9a9',role:'Organiza as contas da casa',face:'▤',caseId:'boleto',reaction:'Esse boleto veio por outro caminho e ainda estão me apressando.'},
+ {id:'maya',name:'Maya',color:'#b8a3db',role:'Compra pela internet',face:'✦',caseId:'delivery',reaction:'Taxa de entrega? Eu nem estava esperando esse aviso.'},
+ {id:'leo',name:'Léo',color:'#e38d78',role:'Estagiário de TI por acidente',face:'⌐',caseId:'ransomware',reaction:'A nota pede para ativar macros. Isso parece estranho.'}
 ];
 
 export const defenseCases={
@@ -49,7 +49,7 @@ export const defenseCases={
 export function startDefenseCall(cursor){
  const person=defensePeople[cursor],scenario=person&&defenseCases[person.caseId];
  if(!person||!scenario)return null;
- return {mode:'defense',caller:person.id,caseId:person.caseId,trust:0,used:[],log:[{speaker:person.name,text:scenario.message}],outcome:null,expression:'confused'};
+ return {mode:'defense',caller:person.id,caseId:person.caseId,trust:0,used:[],log:[{speaker:'Contato não salvo',text:scenario.message}],outcome:null,expression:'confused',chatVisible:2,chatStage:'ready'};
 }
 export function decideDefense(a,choiceId,now=Date.now()){
  if(a?.mode!=='defense'||a.outcome)return false;
