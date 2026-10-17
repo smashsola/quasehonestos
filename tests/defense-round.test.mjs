@@ -6,9 +6,9 @@ import {defenseView} from '../src/defense-view.js';
 import {helpContent} from '../src/app-content.js';
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-test('Primeira rodada tem uma resposta engraçada e segura por golpista, sempre rotulada como ação',()=>{
+test('Cada golpista tem uma fala engraçada e uma segunda ação classificada sem apontar a resposta certa',()=>{
  assert.equal(defensePeople.length,6);
- for(const person of defensePeople){const scenario=defenseCases[person.caseId],witty=scenario.choices.filter(choice=>choice.witty);assert.ok(person.name);assert.ok(scenario.technique);assert.equal(scenario.choices.length,4);assert.ok(scenario.choices.every(choice=>choice.label.startsWith('AÇÃO — ')));assert.equal(witty.length,1,`${person.name} deve ter exatamente uma opção engraçada`);assert.equal(witty[0].safe,true);}
+ for(const person of defensePeople){const scenario=defenseCases[person.caseId],witty=scenario.choices.filter(choice=>choice.witty),classified=scenario.choices.filter(choice=>choice.classification);assert.ok(person.name);assert.ok(scenario.technique);assert.equal(scenario.choices.length,4);assert.ok(scenario.choices.every(choice=>choice.label.startsWith('AÇÃO — ')));assert.equal(witty.length,1,`${person.name} deve ter exatamente uma opção engraçada`);assert.equal(witty[0].safe,true);assert.equal(classified.length,1,`${person.name} deve ter uma ação classificada`);assert.equal(classified[0].safe,false);}
 });
 
 test('Migra uma partida salva para defesa sem apagar o histórico nem a conversa em andamento',()=>{
@@ -30,7 +30,8 @@ test('Pode encerrar qualquer contato e recebe orientação clara se já comparti
 test('Tela explica o golpe, mostra as quatro ações e ensina como sair',()=>{
  const state=fresh();state.mode='defense';nextCall(state);
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(html.includes(defensePeople[0].reaction));assert.match(html,/data-defense-speak/);assert.match(html,/role="log" tabindex="0"/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/Resposta engraçadinha/);assert.match(html,/AÇÃO SEGURA · Encerrar contato/);assert.match(html,/defense-message-stamp/);assert.match(html,/data-defense-exit/);
+ assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(html.includes(defensePeople[0].reaction));assert.doesNotMatch(html,/data-defense-speak|Ouvir fala|defense-message-stamp|>agora</);assert.match(html,/role="log" tabindex="0"/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/Resposta engraçadinha/);assert.match(html,/Pedido de código/);assert.match(html,/Quer interromper por aqui\?/);assert.doesNotMatch(html,/AÇÃO SEGURA/);assert.match(html,/data-defense-exit/);
+ const ids=[...html.matchAll(/data-defense-choice="([^"]+)"/g)].map(match=>match[1]),choices=ids.map(id=>defenseCases.whatsapp.choices.find(choice=>choice.id===id));assert.ok(choices.slice(0,2).every(choice=>!choice.witty&&!choice.classification));assert.ok(choices.slice(2).every(choice=>choice.witty||choice.classification));assert.equal(new Set(choices.slice(2).map(choice=>choice.safe)).size,2);
  assert.match(helpContent(state,escape),/confirmar por um canal conhecido/);
 });
 
@@ -38,8 +39,15 @@ test('A conversa mostra pausa de digitação e só revela ações depois da fala
  const state=fresh();state.mode='defense';nextCall(state);state.active.chatVisible=1;state.active.chatStage='typing';
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
  assert.match(html,/defense-typing/);assert.match(html,/está respondendo/);assert.doesNotMatch(html,/data-defense-choice=/);
+ assert.equal((html.match(/<span><\/span>/g)||[]).length,3);assert.doesNotMatch(html,/defense-wait/);
  state.active.chatVisible=2;state.active.chatStage='ready';const ready=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
  assert.match(ready,/data-defense-choice=/);assert.match(ready,/Bia/);
+});
+
+test('Bolinha de mensagem nova aparece no Zape, inclusive na barra do celular',async()=>{
+ const {mobileNavigation}=await import('../src/mobile-ui.js');
+ const html=mobileNavigation([['calls','☎','Zape Zape 2']],'calls',{callUnread:true},()=>'<svg></svg>');
+ assert.match(html,/data-app="calls" class="has-unread" aria-label="Zape, mensagem nova"/);
 });
 
 test('Ransomware é só simulação, permite desconectar e encerra após 45 segundos se não reagir',()=>{

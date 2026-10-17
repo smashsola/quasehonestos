@@ -345,7 +345,7 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .call-window-body>.choices:has(.followup-compose:not([open])){max-height:31%;min-height:100px}
 .chat-information dl{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
 
-.first-call-guide{position:absolute;z-index:350;top:60px;right:18px;width:min(330px,calc(100% - 32px));padding:0;background:#1b3036;color:#e5f2ed;border:1px solid #708e88;border-radius:4px;box-shadow:4px 5px 0 #091b2855;max-height:calc(100% - 140px);overflow:auto;box-sizing:border-box}
+.first-call-guide{position:absolute;z-index:350;top:104px;right:18px;width:min(330px,calc(100% - 32px));padding:0;background:#1b3036;color:#e5f2ed;border:1px solid #708e88;border-radius:4px;box-shadow:4px 5px 0 #091b2855;max-height:calc(100% - 140px);overflow:auto;box-sizing:border-box}
 .first-call-guide>small,.guide-heading>small{font-size:9px;letter-spacing:1px;color:#526f5f}
 .first-call-guide h2{font-size:19px;line-height:1.35;margin:12px 0 10px;letter-spacing:-.4px}
 .first-call-guide p{font-size:12px;line-height:1.75;margin:0 0 15px;color:#415b4d}

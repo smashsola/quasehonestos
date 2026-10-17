@@ -11,6 +11,13 @@ const examples={
 };
 export function tutorialStep(state){
  const a=state.active;
+ if(state.mode==='defense'){
+  if(state.finished||state.cursor!==0||['skipped','completed'].includes(state.tutorial))return null;
+  if(!a)return {number:1,total:3,title:'Bata o ponto no Zape',text:'Abra o Zape Zape e bata o ponto para receber o primeiro recado. Este guia acompanha só esta primeira conversa de defesa.',app:'calls'};
+  if(a.outcome)return {number:3,total:3,title:'Veja o que aconteceu',text:'Leia o resultado e a explicação: elas mostram o risco daquela ação e como confirmar por um canal conhecido. Não é uma nota sobre você.',app:'calls'};
+  if(a.chatStage==='typing'||a.chatStage==='speaking')return {number:1,total:3,title:'Uma mensagem nova chegou',text:'O ponto no Zape avisa que chegou um recado. Os três pontos mostram que a pessoa está preparando a resposta; espere a fala e leia a conversa antes de escolher.',app:'calls'};
+  return {number:2,total:3,title:'Leia antes de responder',text:'Confira o pedido e a resposta da pessoa. Abra “O que observar” para ver os sinais do golpe. Depois escolha uma das ações; nenhuma opção vem marcada como certa.',app:'calls'};
+ }
  if(state.finished||state.cursor!==0||(state.history?.length||0)>0)return null;
  if(!a)return {number:1,title:'Pode bater o ponto',text:'Abra o Zape Zape 2 e comece o expediente. Este tutorial acompanha só o primeiro atendimento e mostra onde clicar sem decidir por você.',app:'calls'};
  if(a.outcome)return {number:8,title:'Leia o que aconteceu',text:'O resultado explica o que foi exposto e qual defesa poderia interromper a tentativa. Mesmo uma recusa faz parte do jogo. Depois, continue para o próximo atendimento.',app:'calls'};
@@ -30,15 +37,18 @@ export function tutorialStep(state){
 export function tutorialPanel(state,esc,mobile=false){
  const step=tutorialStep(state);if(!step||['skipped','completed'].includes(state.tutorial))return '';
  const mentor='<div class="guide-mentor"><img src="/src/portraits/supervisor.svg" width="40" height="40" alt="" draggable="false"><div><small>SUPERVISÃO</small><span>Supervisor</span></div><span class="guide-file-number" aria-hidden="true">TREINO / 1</span></div>';
- const progress=`<div class="guide-progress" aria-label="Etapa ${step.number} de 8">${Array.from({length:8},(_,i)=>`<span class="${i+1<step.number?'done':i+1===step.number?'current':''}"></span>`).join('')}</div>`;
- if(state.tutorial!=='active')return `<aside class="first-call-guide guide-invite" aria-label="Tutorial da primeira conversa">${mentor}<div class="guide-body"><small class="guide-eyebrow">SEU PRIMEIRO DIA</small><h2>Primeiro atendimento?</h2><p>${esc(tutorialStory)}</p><p>Eu mostro onde clicar e o objetivo de cada etapa. O papo com o personagem continua sendo seu.</p><p>${mobile?'Use Aplicativos na barra inferior para trocar de app. Toque em uma das quatro falas para responder.':'Use a barra para trocar de janela. Navegue pelas quatro falas com Tab e escolha com Enter.'}</p><div class="guide-actions"><button data-tutorial="start">Começar tutorial</button><button data-tutorial="skip">Jogar sem dicas</button></div><small class="guide-aside">O Supervisor acompanha só este primeiro caso.</small></div></aside>`;
- return `<aside class="first-call-guide ${state.tutorialCollapsed?'guide-collapsed':''}" aria-label="Tutorial da primeira conversa">${mentor}<div class="guide-body"><div class="guide-heading"><small>ATENDIMENTO <b>${step.number} / 8</b></small><button data-tutorial="collapse" aria-expanded="${!state.tutorialCollapsed}">${state.tutorialCollapsed?'Mostrar dicas':'Recolher'}</button></div>${progress}<h2>${esc(step.title)}</h2>${state.tutorialCollapsed?'':`<p>${esc(step.text)}</p>${step.example?`<details class="guide-example"><summary>Ver um exemplo de fala</summary><p>“${esc(step.example)}”</p><small>Procure uma opção que responda à dúvida. Não é preciso digitar.</small></details>`:''}<div class="guide-actions"><button data-app="${step.app}">Abrir ${esc(step.app==='calls'?'Zape Zape 2':step.app==='prize'?'Premia Fácil':schemeItems[state.active.scheme].tool)}</button><button data-tutorial="skip">Pular tutorial</button></div><small class="guide-footnote">Use só os dados inventados do jogo. A confiança é um indicador da simulação, não uma nota de segurança nem de aprendizagem.</small>`}</div></aside>`;
+ const total=step.total||8;
+ const progress=`<div class="guide-progress" aria-label="Etapa ${step.number} de ${total}">${Array.from({length:total},(_,i)=>`<span class="${i+1<step.number?'done':i+1===step.number?'current':''}"></span>`).join('')}</div>`;
+ const started=state.mode==='defense'?state.tutorial==='defense':state.tutorial==='active';
+ if(!started)return `<aside class="first-call-guide guide-invite" aria-label="Tutorial da primeira conversa">${mentor}<div class="guide-body"><small class="guide-eyebrow">SEU PRIMEIRO DIA</small><h2>Primeiro atendimento?</h2><p>${esc(tutorialStory)}</p><p>Eu mostro onde clicar e o objetivo de cada etapa. O papo com o personagem continua sendo seu.</p><p>${mobile?'Use Aplicativos na barra inferior para trocar de app. Toque em uma das quatro falas para responder.':'Use a barra para trocar de janela. Navegue pelas quatro falas com Tab e escolha com Enter.'}</p><div class="guide-actions"><button data-tutorial="start">Começar tutorial</button><button data-tutorial="skip">Jogar sem dicas</button></div><small class="guide-aside">O Supervisor acompanha só este primeiro caso.</small></div></aside>`;
+ const appLabel=step.app==='calls'?'Zape Zape 2':step.app==='prize'?'Premia Fácil':schemeItems[state.active?.scheme]?.tool||step.app;
+ return `<aside class="first-call-guide ${state.tutorialCollapsed?'guide-collapsed':''}" aria-label="Tutorial da primeira conversa">${mentor}<div class="guide-body"><div class="guide-heading"><small>ATENDIMENTO <b>${step.number} / ${total}</b></small><button data-tutorial="collapse" aria-expanded="${!state.tutorialCollapsed}">${state.tutorialCollapsed?'Mostrar dicas':'Recolher'}</button></div>${progress}<h2>${esc(step.title)}</h2>${state.tutorialCollapsed?'':`<p>${esc(step.text)}</p>${step.example?`<details class="guide-example"><summary>Ver um exemplo de fala</summary><p>“${esc(step.example)}”</p><small>Procure uma opção que responda à dúvida. Não é preciso digitar.</small></details>`:''}<div class="guide-actions"><button data-app="${step.app}">Abrir ${esc(appLabel)}</button><button data-tutorial="skip">Pular tutorial</button></div><small class="guide-footnote">Use só os dados inventados do jogo. A confiança é um indicador da simulação, não uma nota de segurança nem de aprendizagem.</small>`}</div></aside>`;
 }
 export function tutorialAction(state,action){
  if(!tutorialStep(state))return false;
  if(action==='start'){state.tutorial='active';state.tutorialCollapsed=false;}
  else if(action==='skip')state.tutorial='skipped';
- else if(action==='collapse'&&state.tutorial==='active')state.tutorialCollapsed=!state.tutorialCollapsed;
+ else if(action==='collapse'&&['active','defense'].includes(state.tutorial))state.tutorialCollapsed=!state.tutorialCollapsed;
  else return false;
  return true;
 }

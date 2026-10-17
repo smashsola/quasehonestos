@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {fresh,nextCall,applyTypedMove,finishCall,closeCall,load} from '../src/engine.js';
+import {fresh,nextCall,applyTypedMove,finishCall,closeCall,load,migrateToDefense} from '../src/engine.js';
 import {tutorialStory,tutorialStep,tutorialPanel,tutorialAction} from '../src/tutorial.js';
 import {checkIncoming} from '../src/incoming.js';
 import {shiftLearning,shiftEnding} from '../src/shift-ending.js';
@@ -23,6 +23,14 @@ test('Guia distingue anexo, permissão e uso no app; some depois da primeira con
  assert.match(tutorialStep(s).title,/Envie/);s.active.fileSent=true;assert.match(tutorialStep(s).example,/instalar/);
  s.active.stage='ready';s.active.item={app:'update'};assert.equal(tutorialStep(s).app,'update');assert.match(tutorialStep(s).text,/3 dados/);
  closeCall(s);assert.equal(tutorialStep(s).number,8);finishCall(s);assert.equal(tutorialStep(s),null);
+});
+test('Tutorial de defesa acompanha só a primeira conversa e fica disponível sem depender do app aberto',()=>{
+ const s=fresh();s.history.push({caller:'nino',outcome:'closed'});migrateToDefense(s);
+ const welcome=tutorialPanel(s,String,true);assert.match(welcome,/Bata o ponto no Zape/);assert.match(welcome,/Etapa 1 de 3/);assert.match(welcome,/data-app="calls"/);assert.doesNotMatch(welcome,/Começar tutorial/);
+ assert.equal(tutorialAction(s,'collapse'),true);assert.match(tutorialPanel(s,String),/Mostrar dicas/);assert.equal(tutorialAction(s,'collapse'),true);
+ nextCall(s);s.active.chatStage='typing';assert.match(tutorialStep(s).title,/mensagem nova/);assert.match(tutorialStep(s).text,/três pontos/);
+ s.active.chatStage='ready';assert.equal(tutorialStep(s).number,2);assert.match(tutorialPanel(s,String),/O que observar/);
+ s.active.outcome='blocked';assert.equal(tutorialStep(s).number,3);finishCall(s);assert.equal(tutorialStep(s),null);assert.equal(tutorialPanel(s,String),'');
 });
 test('Recados surpresa não interrompem a primeira conversa guiada, voltam na seguinte',()=>{
  const s=fresh();nextCall(s);s.active.log=[{speaker:'Você',text:'Oi'}];s.tutorial='active';assert.equal(checkIncoming(s,0),false);assert.equal(s.incoming,undefined);

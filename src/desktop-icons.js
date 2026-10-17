@@ -1,8 +1,8 @@
 // Windows-style shortcut grid. Pointer movement stays free; drops snap into cells.
-const origin={x:18,y:65},step={x:110,y:102};
-function grid(viewport){return {cols:Math.max(1,Math.floor((viewport.width-110-origin.x)/step.x)+1),rows:Math.max(1,Math.floor((viewport.height-163-origin.y)/step.y)+1)};}
+const origin={x:18,y:65},step={x:120,y:102};
+function grid(viewport){return {cols:Math.max(1,Math.floor((viewport.width-110-origin.x)/step.x)+1),rows:Math.max(1,Math.floor((viewport.height-145-origin.y)/step.y)+1)};}
 export function desktopIconPosition(position,viewport,{snap=true,occupied=[]}={}){
- const left=12,top=46,right=Math.max(left,viewport.width-110),bottom=Math.max(top,viewport.height-163);
+ const left=12,top=46,right=Math.max(left,viewport.width-110),bottom=Math.max(top,viewport.height-145);
  const free={x:Math.max(left,Math.min(right,Number.isFinite(position?.x)?position.x:origin.x)),y:Math.max(top,Math.min(bottom,Number.isFinite(position?.y)?position.y:origin.y))};
  if(!snap)return free;
  const {cols,rows}=grid(viewport),target={col:Math.max(0,Math.min(cols-1,Math.round((free.x-origin.x)/step.x))),row:Math.max(0,Math.min(rows-1,Math.round((free.y-origin.y)/step.y)))};

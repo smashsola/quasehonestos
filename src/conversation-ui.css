@@ -598,3 +598,49 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .desktop-window[data-window-id="calls"] .bubble,.desktop-window[data-window-id="calls"] .bubble p{font-size:14px!important}
  .desktop-window[data-window-id="calls"] .choices .dialogue-options button.dialogue-option{font-size:13px!important}
 }
+
+
+/* Fechamento consistente: o X continua fácil de achar sem virar um bloco vermelho. */
+@media(min-width:1001px) and (pointer:fine){
+ .desktop-window>.windowbar button[data-window="close"]{background:#31584f!important;border-left:1px solid #ffffff24!important;color:#f5f7f1!important;font:500 20px/1 "Segoe UI",Tahoma,Arial,sans-serif!important;text-shadow:none!important;box-shadow:none!important}
+ .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active{background:#a5483d!important;color:#fff!important}
+}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window>.windowbar button[data-window="close"],.incoming-message>header button,.mobile-app-switcher>header button[aria-label="Fechar alternador"]{box-sizing:border-box!important;flex:0 0 44px!important;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;border:1px solid #a4baad!important;border-radius:11px!important;background:#e8f0eb!important;color:#294a3e!important;font:500 22px/1 "Segoe UI",Tahoma,Arial,sans-serif!important;text-shadow:none!important;box-shadow:0 2px 5px #09231e25!important}
+ .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active,.incoming-message>header button:hover,.incoming-message>header button:active,.mobile-app-switcher>header button[aria-label="Fechar alternador"]:hover,.mobile-app-switcher>header button[aria-label="Fechar alternador"]:active{background:#f4ddd6!important;border-color:#b86d61!important;color:#853b32!important}
+}
+.desktop-window>.windowbar button[data-window="close"]:focus-visible,.incoming-message>header button:focus-visible,.mobile-app-switcher>header button[aria-label="Fechar alternador"]:focus-visible{outline:3px solid #edc77d!important;outline-offset:2px!important}
+.mail-app-heading>button{display:grid!important;place-items:center!important;box-sizing:border-box!important;flex:0 0 40px!important;width:40px!important;height:40px!important;padding:0!important;border:1px solid #93b3a2!important;border-radius:50%!important;background:#eaf1ec!important;color:#294a3e!important;font:500 21px/1 "Segoe UI",Tahoma,Arial,sans-serif!important;box-shadow:0 1px 3px #193c2e18!important}
+.mail-app-heading>button:hover,.mail-app-heading>button:active{background:#f4e2db!important;border-color:#b86d61!important;color:#853b32!important}
+.mail-app-heading>button:focus-visible{outline:3px solid #b7d2bf!important;outline-offset:2px!important}
+@media(min-width:1001px) and (pointer:fine){.desktop-icons button{box-sizing:border-box;overflow:hidden;overflow-wrap:anywhere}.desktop-icons button>span{min-width:0}.desktop-icons button svg{max-width:100%}}
+.desktop-icons button[data-icon="calls"].has-unread::after,.taskbar button[data-task-app="calls"].has-unread::after,.mobile-dock button[data-app="calls"].has-unread::after{content:"";position:absolute;top:7px;right:9px;width:9px;height:9px;border:2px solid #edf4e9;border-radius:50%;background:#dc7862;box-shadow:0 0 0 1px #193a35;pointer-events:none}
+.mobile-dock button[data-app="calls"]{position:relative}
+
+/* Cartões de ação com hierarquia clara, sem cor que entregue uma resposta. */
+.defense-action-grid{grid-auto-rows:minmax(100px,1fr);gap:12px}
+.defense-action-grid button.defense-action-option{display:grid;grid-template-columns:auto minmax(0,1fr);align-content:start;align-items:start;gap:10px;min-width:0;min-height:100px;padding:14px;border:1px solid #a8c3b2;border-radius:13px;background:linear-gradient(145deg,#fff,#f8fbf8);color:#18372f;text-decoration:none;box-shadow:0 2px 5px #183e3010;transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease}
+.defense-action-grid button.defense-action-option:hover{transform:translateY(-1px);border-color:#477d66;box-shadow:0 5px 12px #183e3018}
+.defense-action-grid button.defense-action-option:focus-visible{outline:3px solid #71aa8a;outline-offset:2px}
+.defense-action-grid button.defense-action-option:active{transform:translateY(0);box-shadow:0 1px 3px #183e3012}
+.defense-action-grid button.defense-action-option:disabled{opacity:.65;transform:none;box-shadow:none}
+.defense-action-grid button.defense-action-option>.defense-action-badge{align-self:start;margin-top:1px}
+.defense-choice-copy{display:flex;flex-direction:column;align-items:flex-start;gap:7px}
+.defense-choice-copy .defense-humor-tag{display:inline-flex;align-items:center;min-height:20px;padding:2px 7px;border:1px solid #c2d5c8;border-radius:999px;background:#eef5ef;color:#3c6250;font-size:11px;font-weight:700;line-height:1.3}
+@media(max-width:600px),(pointer:coarse) and (max-width:1000px){.defense-action-grid{grid-template-columns:minmax(0,1fr);grid-auto-rows:auto;gap:9px}.defense-action-grid button.defense-action-option{min-height:76px;padding:12px}.defense-choice-copy strong{font-size:14px}}
+
+.defense-feedback.contact-paused{border-color:#aebdc1;background:#edf2f3;color:#294248}
+.defense-exit{border:1px solid #9cb2a6;background:linear-gradient(135deg,#f4f7f3,#e9f0eb);color:#294b40;box-shadow:0 2px 5px #193c2e16}
+.defense-exit:hover{background:linear-gradient(135deg,#e8f1e9,#dfece2);border-color:#6e9680;box-shadow:0 4px 9px #193c2e1e}
+.defense-exit:active{transform:translateY(1px);box-shadow:0 1px 3px #193c2e18}
+.defense-exit:focus-visible{outline:3px solid #719c81;outline-offset:3px}
+.defense-exit-icon{background:#dce8df;color:#355a49}
+.defense-exit-copy small{color:#4b6758}
+.defense-exit-arrow{color:#668170}
+
+@media(min-width:1001px) and (pointer:fine){
+ .desktop .desktop-icons button{box-sizing:border-box!important;width:110px!important;max-width:110px!important;height:88px!important;min-height:0!important;padding:4px!important;grid-template-columns:36px minmax(0,1fr)!important;gap:5px!important;font-size:10px!important;line-height:1.2!important;overflow:hidden!important;overflow-wrap:anywhere}
+ .desktop .desktop-icons button>span{width:36px!important;height:36px!important;min-width:36px!important;margin:0!important}
+ .desktop .desktop-icons button>span svg{width:32px!important;height:32px!important;max-width:100%}
+}
+@media(max-width:600px) and (max-height:550px),(pointer:coarse) and (max-width:1000px) and (max-height:550px){.desktop-window[data-window-id="calls"] .first-call-guide{display:block!important;max-height:24dvh!important;overflow:auto!important}}
