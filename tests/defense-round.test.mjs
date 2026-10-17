@@ -30,7 +30,7 @@ test('Pode encerrar qualquer contato e recebe orientação clara se já comparti
 test('Tela explica o golpe, mostra as quatro ações e ensina como sair',()=>{
  const state=fresh();state.mode='defense';nextCall(state);
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(html.includes(defensePeople[0].reaction));assert.match(html,/data-defense-speak/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/data-defense-exit/);
+ assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(html.includes(defensePeople[0].reaction));assert.match(html,/data-defense-speak/);assert.match(html,/role="log" tabindex="0"/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/data-defense-exit/);
  assert.match(helpContent(state,escape),/confirmar por um canal conhecido/);
 });
 
