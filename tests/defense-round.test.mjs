@@ -6,9 +6,9 @@ import {defenseView} from '../src/defense-view.js';
 import {helpContent} from '../src/app-content.js';
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-test('Primeira rodada defensiva oferece seis pessoas e escolhas claramente rotuladas como ações',()=>{
+test('Primeira rodada tem uma resposta engraçada e segura por golpista, sempre rotulada como ação',()=>{
  assert.equal(defensePeople.length,6);
- for(const person of defensePeople){const scenario=defenseCases[person.caseId];assert.ok(person.name);assert.ok(scenario.technique);assert.equal(scenario.choices.length,4);assert.ok(scenario.choices.every(choice=>choice.label.startsWith('AÇÃO — ')));}
+ for(const person of defensePeople){const scenario=defenseCases[person.caseId],witty=scenario.choices.filter(choice=>choice.witty);assert.ok(person.name);assert.ok(scenario.technique);assert.equal(scenario.choices.length,4);assert.ok(scenario.choices.every(choice=>choice.label.startsWith('AÇÃO — ')));assert.equal(witty.length,1,`${person.name} deve ter exatamente uma opção engraçada`);assert.equal(witty[0].safe,true);}
 });
 
 test('Migra uma partida salva para defesa sem apagar o histórico nem a conversa em andamento',()=>{
@@ -30,7 +30,7 @@ test('Pode encerrar qualquer contato e recebe orientação clara se já comparti
 test('Tela explica o golpe, mostra as quatro ações e ensina como sair',()=>{
  const state=fresh();state.mode='defense';nextCall(state);
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(html.includes(defensePeople[0].reaction));assert.match(html,/data-defense-speak/);assert.match(html,/role="log" tabindex="0"/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/data-defense-exit/);
+ assert.match(html,/O que pode acontecer/);assert.match(html,/Contato não salvo/);assert.ok(html.includes(defensePeople[0].reaction));assert.match(html,/data-defense-speak/);assert.match(html,/role="log" tabindex="0"/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,4);assert.match(html,/Resposta engraçadinha/);assert.match(html,/AÇÃO SEGURA · Encerrar contato/);assert.match(html,/defense-message-stamp/);assert.match(html,/data-defense-exit/);
  assert.match(helpContent(state,escape),/confirmar por um canal conhecido/);
 });
 

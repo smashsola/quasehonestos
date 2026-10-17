@@ -706,6 +706,35 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 @keyframes defense-bubble-in{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}@keyframes defense-dot{to{opacity:.3;transform:translateY(-2px)}}
 @media(prefers-reduced-motion:reduce){.defense-chat-bubble,.defense-action-grid button,.defense-typing span,.defense-wait i{animation:none}}
 
+/* A conversa da rodada usa os mesmos balões e cores do Zape Zape do jogo. */
+.defense-chat{gap:12px;min-height:170px;padding:16px;background:linear-gradient(180deg,#f4f8f6,#edf4f0)}
+.defense-chat-bubble{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;column-gap:9px;width:fit-content;max-width:min(90%,620px);padding:10px 12px 7px;border:1px solid #dce8e1;border-radius:3px 14px 14px 14px;background:#fff;color:#233f39;box-shadow:0 2px 5px #183e3008;line-height:1.55}
+.defense-chat-bubble small{grid-column:1/-1;margin:0 0 3px;color:#527a65;font-size:11px;font-weight:700}
+.defense-chat-bubble p{grid-column:1/-1;margin:0;color:inherit;font-size:14px;line-height:1.55;overflow-wrap:anywhere}
+.defense-sender{align-self:flex-start}
+.defense-character{align-self:flex-end;border-color:#215d51;border-radius:14px 3px 14px 14px;background:#215d51;color:#fff;animation-delay:.08s}
+.defense-character small{color:#c7e9d5}
+.defense-message-stamp{grid-column:2;justify-self:end;color:#6a8278;font-size:10px;white-space:nowrap}
+.defense-character .defense-message-stamp{color:#c4ded2}
+.defense-message-stamp b{margin-left:3px;color:#a6e4d5;letter-spacing:-.12em}
+.defense-character .defense-speak-button{grid-column:2;justify-self:end;border-color:#97c8b4;background:#e7f4ec;color:#17483b}
+.defense-action-grid button.witty-choice{border-color:#d7c58f;background:#fffaf0}
+.defense-action-grid button.witty-choice:hover,.defense-action-grid button.witty-choice:focus-visible{border-color:#aa8434;background:#fff5d9}
+.defense-action-grid button .defense-action-badge{flex:none;padding:3px 6px;border-radius:5px;background:#e4f0e8;color:#205441;font-size:11px;font-weight:800;letter-spacing:.04em}
+.defense-choice-copy{display:grid;gap:5px;min-width:0;text-align:left}
+.defense-choice-copy strong{font-size:15px;font-weight:600;line-height:1.45}
+.defense-choice-copy .defense-humor-tag{color:#725c25;font-size:11px;font-weight:700;letter-spacing:0}
+.defense-exit{display:grid;grid-template-columns:38px minmax(0,1fr) 20px;align-items:center;gap:11px;width:100%;min-height:68px;margin:16px 0 4px;padding:10px 15px;border:2px solid #17483d;border-radius:12px;background:#215d51;color:#fff;text-align:left;text-decoration:none;cursor:pointer;box-shadow:0 3px 0 #153f35;transition:background .15s,box-shadow .15s,transform .15s}
+.defense-exit:hover{background:#17483d;box-shadow:0 4px 0 #12372f}
+.defense-exit:active{transform:translateY(2px);box-shadow:0 1px 0 #12372f}
+.defense-exit:focus-visible{outline:3px solid #d2ab55;outline-offset:3px}
+.defense-exit-icon{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#ffffff20;color:#fff;font-size:23px;font-weight:700;line-height:1}
+.defense-exit-copy{display:grid;gap:3px;min-width:0}
+.defense-exit-copy strong{font-size:15px;line-height:1.35}
+.defense-exit-copy small{color:#e0f1e9;font-size:12px;font-weight:500;line-height:1.35;letter-spacing:0}
+.defense-exit-arrow{justify-self:end;color:#c8e8d7;font-size:24px;line-height:1}
+@media(max-width:600px){.defense-chat-bubble{max-width:94%}.defense-exit{grid-template-columns:34px minmax(0,1fr) 16px;gap:9px;padding:10px 12px}.defense-exit-copy strong{font-size:14px}.defense-exit-copy small{font-size:11px}}
+
 /* Role a janela inteira da rodada e mantenha o histórico do chat navegável. */
 .desktop-window:not([data-window-id="calls"])>.app-window-body{box-sizing:border-box;flex:1 1 0%;min-height:0;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:auto;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#628272 #d6e4d9}
 .desktop-window:not([data-window-id="calls"])>.app-window-body::-webkit-scrollbar,.desktop-window[data-window-id="calls"] .call-window-body:has(.defense-round)::-webkit-scrollbar{width:12px}
