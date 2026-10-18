@@ -18,7 +18,7 @@ test('Personagens fazem murmúrio sem narrar o texto em voz alta',async()=>{
  assert.match(audio,/voice\.type=softVoices/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
  assert.match(audio,/qh-speaking-start/);assert.match(audio,/qh-speaking-end/);assert.match(audio,/voice\.stop\(t\+pace\)/);
  assert.match(audio,/softVoices\.has\(caller\)\?'triangle':grittyVoices\.has\(caller\)\?'sawtooth':'square'/);
- assert.match(audio,/linearRampToValueAtTime\(\.23\*characterVolume\/100/);assert.match(audio,/characterVolume=setting\('qh-character-volume',90\)/);
+ assert.match(audio,/linearRampToValueAtTime\(\.3\*characterVolume\/100/);assert.match(audio,/characterVolume=setting\('qh-character-volume',100\)/);
  const layout=await readFile(new URL('../src/style.css',import.meta.url),'utf8');assert.match(layout,/defense-typing-pulse/);assert.match(layout,/border-radius:19px 19px 19px 7px/);assert.match(layout,/linear-gradient\(145deg,#fff 0%,#edf7f0 100%\)/);
 });
 test('Retratos falantes deixam a boca estática aberta para a animação sincronizada pelo áudio',async()=>{

@@ -99,7 +99,7 @@ export function decideDefense(a,choiceId,now=Date.now()){
  const scenario=defenseCases[a.caseId],choice=scenario?.choices.find(c=>c.id===choiceId);
  if(!choice||a.used.includes(choice.id))return false;
  a.used.push(choice.id);a.choice=choice.id;a.log.push({speaker:'Sistema',text:choice.label,action:true});
- if(choice.ransomware){a.ransomwareDeadline=now+45_000;a.ransomwareTriggeredAt=now;a.outcome=null;a.expression='surprised';a.log.push({speaker:'Sistema',text:'ALERTA: a máquina fictícia começou a bloquear arquivos. Você tem 45 segundos para desconectá-la da rede e acionar o suporte. Nada será alterado neste computador.'});}
+ if(choice.ransomware){a.ransomwareDeadline=now+10_000;a.ransomwareTriggeredAt=now;a.outcome=null;a.expression='surprised';a.log.push({speaker:'Sistema',text:'ALERTA: a máquina fictícia começou a bloquear arquivos. Você tem 10 segundos para desconectá-la da rede e acionar o suporte. Nada será alterado neste computador.'});}
  else {a.outcome=choice.safe?'blocked':'fooled';a.reactionTier=choice.safe?'success':'miss';a.feedback=choice.feedback;a.expression=choice.safe?'thinking':'hurt';a.log.push({speaker:'Sistema',text:choice.feedback});}
  return true;
 }
@@ -114,7 +114,7 @@ export function endDefenseContact(a){
 }
 export function expireRansomware(a,now=Date.now()){
  if(a?.mode!=='defense'||!a.ransomwareDeadline||now<a.ransomwareDeadline||a.outcome)return false;
- a.ransomwareDeadline=null;a.outcome='fooled';a.reactionTier='miss';a.gameOver=true;a.expression='hurt';a.feedback='Os arquivos de brincadeira foram bloqueados. Na vida real, isole o dispositivo da rede e contate o suporte de segurança; não pague nem apague evidências sem orientação. O resgate não garante recuperação. Game over: o chefe vai com certeza descontar do seu salário inexistente de estagiário.';a.log.push({speaker:'Sistema',text:a.feedback});return true;
+ a.ransomwareDeadline=null;a.outcome='fooled';a.reactionTier='miss';a.gameOver=true;a.expression='hurt';a.feedback='O tempo acabou e os arquivos simulados foram bloqueados. Isso só aconteceu dentro do jogo: nada mudou no seu computador. Na vida real, desconecte o aparelho da rede e procure o suporte de segurança; não pague o resgate.';a.log.push({speaker:'Sistema',text:a.feedback});return true;
 }
 
 export function finishDefenseMurmur(a){if(!a||a.chatStage!=='speaking')return false;a.chatStage='ready';return true;}

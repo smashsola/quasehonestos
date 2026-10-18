@@ -812,3 +812,20 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .mail-app-heading h1{font-size:23px}
  .mail-context{margin-top:10px;padding:11px}
 }
+
+.pc-crash-screen{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;overflow:auto;padding:24px;background:#020303;color:#ecf1ed;animation:pcBurnout 1.2s steps(1,end) both}
+.pc-crash-screen:before{content:'';position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,#d7f1e10d 0 1px,transparent 1px 4px);opacity:.22;animation:pcStatic .7s steps(2,end) 2}
+.pc-crash-panel{position:relative;width:min(560px,100%);padding:clamp(24px,5vw,42px);border:1px solid #46514b;border-radius:18px;background:#090d0c;box-shadow:0 0 0 1px #121a16,0 22px 70px #000b;opacity:0;animation:pcCrashReveal .4s ease 1.2s forwards}
+.pc-crash-symbol{display:grid;place-items:center;width:64px;height:64px;margin-bottom:18px;border:1px solid #5c5145;border-radius:16px;background:#1d211e;color:#e6ad70;box-shadow:0 0 25px #df9d5130}
+.pc-crash-symbol svg{width:40px;height:40px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.pc-crash-panel>small{color:#e1ad72;font-size:11px;font-weight:800;letter-spacing:.16em}
+.pc-crash-panel h2{margin:10px 0 14px;color:#f5f4ee;font-size:clamp(30px,6vw,46px);line-height:1.05;letter-spacing:-.035em}
+.pc-crash-panel p{margin:10px 0;color:#c5d0c9;font-size:16px;line-height:1.65}
+.pc-crash-panel .pc-crash-lesson{margin:20px 0;padding:14px 16px;border-left:3px solid #e0a768;border-radius:0 10px 10px 0;background:#181c19;color:#e3e8e3;font-size:14px}
+.pc-crash-panel button.primary{min-height:52px;margin-top:8px;padding:12px 24px;border:1px solid #f0bd80;border-radius:12px;background:linear-gradient(135deg,#d88848,#b96435);color:#fff;font-size:16px;font-weight:900;box-shadow:0 4px 0 #85472f;cursor:pointer}
+.pc-crash-panel button.primary:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.pc-crash-panel button.primary:focus-visible{outline:3px solid #f4bd4f;outline-offset:4px}
+@keyframes pcBurnout{0%,7%{background:#101716;transform:none;filter:brightness(1)}10%{background:#dce7e0;transform:translateX(-2px);filter:brightness(1.5)}13%{background:#131819;transform:translateX(2px);filter:brightness(.8)}27%{background:#a3aaa5;transform:translateY(1px);filter:brightness(1.15)}31%,40%{background:#020303;transform:none;filter:brightness(1)}43%{background:#e4ede7;transform:translateX(3px);filter:brightness(1.7)}46%,100%{background:#020303;transform:none;filter:brightness(1)}}
+@keyframes pcStatic{0%,100%{opacity:.05}25%{opacity:.5}50%{opacity:.12}75%{opacity:.35}}
+@keyframes pcCrashReveal{to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.pc-crash-screen{animation:none}.pc-crash-screen:before{animation:none;opacity:.06}.pc-crash-panel{animation:none;opacity:1}}
