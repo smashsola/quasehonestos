@@ -32,7 +32,7 @@ import {checkIncoming,markIncomingSeen,answerIncoming,dismissIncoming,snoozeInco
 import {dialogueHints} from './dialogue.js';
 import {incomingScene,refreshIncoming,incomingReport} from './incoming-scenes.js';
 import {callers,moves,bossLines,schemes,furniture,interactionMoves,schemeItems} from './data.js';
-import {defensePeople,scammerPeople,defenseCases,resumeDefenseCall,decideDefense,stopRansomware,endDefenseContact,expireRansomware} from './defense-round.js';
+import {defensePeople,scammerPeople,defenseCases,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware} from './defense-round.js';
 import {defenseView,defenseCampaignEnding} from './defense-view.js';
 import {load,KEY,nextCall,applyMove,closeCall,finishCall,fresh,migrateToDefense,buy,equipWallpaper,availableMoves,executeScheme,disconnectSession,sendUpdateFile,reviewUpdateData,chooseSkin} from './engine.js';
 const isMobile=()=>compactScreen(innerWidth,innerHeight,matchMedia('(pointer: coarse)').matches);
@@ -119,15 +119,13 @@ function beginConversation(schemeId){
  showTurn(state.active,0);
 }
 let defensePlaybackTimers=[];
-let defenseMurmurLoopTimer;
 let bootReadyWaiting=false;
-function clearDefensePlayback(){for(const timer of defensePlaybackTimers)clearTimeout(timer);defensePlaybackTimers=[];clearTimeout(defenseMurmurLoopTimer);defenseMurmurLoopTimer=null;document.dispatchEvent(new CustomEvent('qh-speaking-stop'));}
+function clearDefensePlayback(){for(const timer of defensePlaybackTimers)clearTimeout(timer);defensePlaybackTimers=[];document.dispatchEvent(new CustomEvent('qh-speaking-stop'));}
 function defenseMurmurDuration(text){return Math.min(4200,Math.max(2800,replyDuration(text)));}
 function speakDefenseLine(active,text,caller,emotion,duration=defenseMurmurDuration(text)){if(!active||!text||!caller)return;document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller,duration,emotion,text}}));}
-function repeatDefenseMurmur(active,scenario){if(state.active!==active||active.outcome||active.chatStage!=='speaking')return;const duration=defenseMurmurDuration(scenario.message);speakDefenseLine(active,scenario.message,active.scammerId,active.scammerExpression,duration);defenseMurmurLoopTimer=setTimeout(()=>repeatDefenseMurmur(active,scenario),duration);}
 function startDefenseMurmur(active,scenario){
  if(!active||state.active!==active||active.mode!=='defense'||active.outcome||!scenario||active.murmurHeard)return;
- clearDefensePlayback();active.chatStage='speaking';active.murmurHeard=true;render();const duration=defenseMurmurDuration(scenario.message);speakDefenseLine(active,scenario.message,active.scammerId,active.scammerExpression,duration);defenseMurmurLoopTimer=setTimeout(()=>repeatDefenseMurmur(active,scenario),duration);
+ clearDefensePlayback();active.chatStage='speaking';active.murmurHeard=true;render();const duration=defenseMurmurDuration(scenario.message);speakDefenseLine(active,scenario.message,active.scammerId,active.scammerExpression,duration);if(active.scammerSpeakingExpression&&active.scammerSpeakingExpression!==active.scammerExpression)defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome||active.chatStage!=='speaking')return;active.scammerExpression=active.scammerSpeakingExpression;render();document.dispatchEvent(new CustomEvent('qh-speaking-expression',{detail:{caller:active.scammerId,emotion:active.scammerExpression}}));},Math.round(duration*.58)));defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome||!finishDefenseMurmur(active))return;document.dispatchEvent(new CustomEvent('qh-speaking-stop'));render();},duration));
 }
 function animateIncoming(){
  const active=state.active;if(active?.mode!=='defense'){render();return;}
@@ -138,7 +136,7 @@ function animateIncoming(){
  if(active.chatVisible>0&&['ready','speaking'].includes(active.chatStage)){if(active.chatStage==='speaking')active.chatStage='ready';if(!active.murmurHeard)startDefenseMurmur(active,defenseCases[active.caseId]);else render();return;}
  clearDefensePlayback();const person=defensePeople.find(p=>p.id===active.caller),scenario=defenseCases[active.caseId],scammer=scammerPeople.find(p=>p.id===active.scammerId)||scammerPeople.find(p=>p.id===person?.scammerId)||scammerPeople[0];if(!person||!scenario||!scammer){render();return;}
  const typingDelay=1100;
- const emotion=person.emotion||'confused',scammerEmotion=active.scammerExpression||scammer.emotion||'confused';active.scammerId=scammer.id;active.unread=true;active.chatVisible=0;active.chatStage='typing';active.expression=emotion;active.scammerExpression=scammerEmotion;active.log=[];render();
+ const emotion=person.emotion||'confused',scammerEmotion=active.scammerExpression||scammer.emotion||'confused';active.scammerId=scammer.id;active.unread=true;active.chatVisible=0;active.chatStage='typing';active.expression=emotion;active.scammerExpression=scammerEmotion;active.scammerSpeakingExpression=scammer.speakingExpression||scammerEmotion;active.log=[];render();
  defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.unread=false;active.chatVisible=1;active.chatStage='ready';active.log.push({speaker:'Contato não salvo',text:scenario.message});startDefenseMurmur(active,scenario);},typingDelay));
 }
 function murmurReply(duration,text=''){

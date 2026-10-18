@@ -31,7 +31,7 @@ test('Rosto abre e fecha a boca enquanto o golpista murmura, persiste após rend
  globalThis.document={hidden:false,addEventListener:(name,cb)=>events[name]=cb,querySelectorAll:()=>[avatar]};globalThis.setTimeout=cb=>{end=cb;return 1;};globalThis.clearTimeout=()=>{};globalThis.setInterval=(cb,delay)=>{assert.ok(delay>=320,`movimento labial legível: ${delay}ms`);animate=cb;return 2;};globalThis.clearInterval=()=>{};
  const {portraitSource,updatePortraits}=await import('../src/portrait-speech.js');
  events['qh-murmur']({detail:{caller:'nino',emotion:'happy',duration:1800}});assert.match(img.src,/happy-talking.svg$/);assert.equal(label.textContent,'falando…');updatePortraits();assert.match(portraitSource('nino','happy'),/-talking/);animate();assert.match(img.src,/nino-happy.svg$/);animate();assert.match(img.src,/happy-talking.svg$/);end();assert.match(img.src,/nino-happy.svg$/);assert.equal(label.textContent,'animado');
- events['qh-murmur']({detail:{caller:'nino',emotion:'happy',duration:1800}});document.hidden=true;events.visibilitychange();assert.doesNotMatch(img.src,/-talking/);
+ events['qh-murmur']({detail:{caller:'nino',emotion:'happy',duration:1800}});avatar.dataset.expression='confused';events['qh-speaking-expression']({detail:{caller:'nino',emotion:'confused'}});assert.match(img.src,/confused-talking.svg$/);assert.match(portraitSource('nino','confused'),/-talking/);document.hidden=true;events.visibilitychange();assert.doesNotMatch(img.src,/-talking/);
  }finally{Object.assign(globalThis,original);}
 });
 

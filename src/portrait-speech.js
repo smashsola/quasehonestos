@@ -26,6 +26,7 @@ export function updatePortraits(){
  });
 }
 function stopSpeech(){clearTimeout(timer);clearInterval(frameTimer);speech=null;updatePortraits();}
+document.addEventListener('qh-speaking-expression',e=>{if(!speech||speech.caller!==e.detail?.caller||!expressions.includes(e.detail?.emotion))return;speech.emotion=e.detail.emotion;updatePortraits();});
 document.addEventListener('qh-murmur',e=>{
  if(document.hidden||!voiceProfiles[e.detail?.caller]||!expressions.includes(e.detail?.emotion))return;
  stopSpeech();speech={caller:e.detail.caller,emotion:e.detail.emotion,mouthOpen:true};updatePortraits();

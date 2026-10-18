@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {defensePeople,scammerPeople,defenseCases,startDefenseCall,resumeDefenseCall,decideDefense,stopRansomware,endDefenseContact,expireRansomware} from '../src/defense-round.js';
+import {defensePeople,scammerPeople,defenseCases,startDefenseCall,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware} from '../src/defense-round.js';
 import {fresh,nextCall,finishCall,migrateToDefense} from '../src/engine.js';
 import {defenseView} from '../src/defense-view.js';
 import {helpContent} from '../src/app-content.js';
@@ -13,6 +13,11 @@ test('Ao voltar para uma conversa salva, o murmúrio do golpista toca de novo',(
  const active=startDefenseCall(2);active.chatVisible=2;active.chatStage='ready';active.murmurHeard=true;
  assert.equal(resumeDefenseCall(active),true);assert.equal(active.chatStage,'typing');assert.equal(active.chatVisible,1);assert.equal(active.unread,true);assert.equal(active.murmurHeard,false);
  const ransomware=startDefenseCall(5);ransomware.ransomwareDeadline=Date.now()+10_000;assert.equal(resumeDefenseCall(ransomware),true);assert.equal(ransomware.chatStage,'ready');assert.equal(ransomware.chatVisible,2);
+});
+
+test('Cada golpista muda de expressão durante uma fala curta e encerra o murmúrio ao terminar',()=>{
+ for(const scammer of scammerPeople){assert.ok(expressions.includes(scammer.emotion));assert.ok(expressions.includes(scammer.speakingExpression));assert.notEqual(scammer.emotion,scammer.speakingExpression);}
+ const active=startDefenseCall(2);assert.equal(active.scammerExpression,'confused');assert.equal(active.scammerSpeakingExpression,'suspicious');active.chatStage='speaking';assert.equal(finishDefenseMurmur(active),true);assert.equal(active.chatStage,'ready');assert.equal(finishDefenseMurmur(active),false);
 });
 
 test('Cada golpista tem uma fala engraçada e uma segunda ação classificada sem apontar a resposta certa',()=>{
