@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {defensePeople,scammerPeople,defenseCases,startDefenseCall,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware} from '../src/defense-round.js';
+import {defensePeople,scammerPeople,defenseCases,defenseMechanics,startDefenseCall,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware,useDefenseMechanic} from '../src/defense-round.js';
 import {fresh,nextCall,finishCall,migrateToDefense} from '../src/engine.js';
 import {defenseView} from '../src/defense-view.js';
 import {helpContent} from '../src/app-content.js';
@@ -23,6 +23,15 @@ test('Cada golpista muda de expressão durante uma fala curta e encerra o murmú
 test('Cada golpista tem uma fala engraçada e uma segunda ação classificada sem apontar a resposta certa',()=>{
  assert.equal(defensePeople.length,10);
  for(const person of defensePeople){const scenario=defenseCases[person.caseId],witty=scenario.choices.filter(choice=>choice.witty),classified=scenario.choices.filter(choice=>choice.classification);assert.ok(person.name);assert.ok(scenario.technique);assert.equal(scenario.choices.length,4);assert.ok(scenario.choices.every(choice=>choice.label.startsWith('AÇÃO — ')));assert.equal(witty.length,1,`${person.name} deve ter exatamente uma opção engraçada`);assert.equal(witty[0].safe,true);assert.equal(classified.length,1,`${person.name} deve ter uma ação classificada`);assert.equal(classified[0].safe,false);}
+});
+
+test('Cada conversa tem uma interação rápida própria, opcional e sem punição',()=>{
+ const mechanics=Object.values(defenseMechanics);assert.equal(mechanics.length,9);assert.equal(new Set(mechanics.map(item=>item.button)).size,9);
+ for(const person of defensePeople){const active=startDefenseCall(defensePeople.indexOf(person));active.chatVisible=1;if(person.caseId==='ransomware'){assert.equal(defenseMechanics[person.caseId],undefined);assert.equal(useDefenseMechanic(active),false);continue;}assert.ok(defenseMechanics[person.caseId]);assert.equal(useDefenseMechanic(active),true);assert.equal(active.mechanicFeedback,defenseMechanics[person.caseId].result);assert.equal(active.outcome,null);assert.equal(useDefenseMechanic(active),false);}
+});
+
+test('Interações rápidas aparecem junto da conversa e o resultado fica visível após tocar',()=>{
+ const active=startDefenseCall(0);active.chatVisible=1;active.chatStage='ready';const view=()=>defenseView({active,cursor:0},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(view(),/data-defense-mechanic/);assert.match(view(),/Conferir o contato/);assert.equal(useDefenseMechanic(active),true);assert.match(view(),/role="status" tabindex="-1" data-mechanic-status/);assert.match(view(),/Este número não está salvo/);assert.doesNotMatch(view(),/data-defense-mechanic/);
 });
 
 test('Cada escolha mostra uma reação grande, com parabéns, quase lá ao pausar ou ops ao errar',async()=>{
@@ -105,6 +114,7 @@ test('Ransomware é só simulação, permite desconectar e encerra após 10 segu
  const b=startDefenseCall(5);decideDefense(b,unsafe.id,2000);assert.equal(expireRansomware(b,12000),true);assert.equal(b.gameOver,true);assert.match(b.feedback,/só aconteceu dentro do jogo/);assert.match(b.feedback,/desconecte o aparelho da rede/);
  const html=defenseView({active:b,cursor:5},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(html,/class="pc-crash-screen"/);assert.match(html,/Tentar novamente/);assert.match(html,/seu aparelho e seus arquivos continuam intactos/);assert.doesNotMatch(html,/class="defense-feedback defense-reaction/);
  const [game,audio,css]=await Promise.all([readFile(new URL('../src/game.js',import.meta.url),'utf8'),readFile(new URL('../src/audio.js',import.meta.url),'utf8'),readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8')]);assert.match(game,/data-retry-ransomware/);assert.match(game,/qh-computer-burnout/);assert.match(game,/const typingDelay=3000/);assert.match(audio,/addEventListener\('qh-computer-burnout'/);assert.match(css,/@keyframes pcBurnout/);assert.match(css,/@keyframes pcStatic/);
+ const alert=startDefenseCall(5);decideDefense(alert,unsafe.id,2000);const alertHtml=defenseView({active:alert,cursor:5},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(alertHtml,/data-defense-stop/);assert.match(alertHtml,/Parar o bloqueio/);assert.match(alertHtml,/Desconectar da rede e chamar o suporte/);assert.match(audio,/Math\.min\(\.9,\.48\*level\)/);assert.match(audio,/Math\.min\(\.9,\.34\*level\)/);assert.match(audio,/staticGain\.connect\(reactionLimiter\)/);
 });
 test('Confetes continuam animados mesmo com movimento reduzido',async()=>{
  const css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
