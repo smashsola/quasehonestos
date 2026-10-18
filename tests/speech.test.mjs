@@ -15,8 +15,9 @@ test('Ritmo e duração acompanham personagem, emoção e tamanho da fala',()=>{
 test('Personagens fazem murmúrio sem narrar o texto em voz alta',async()=>{
  const audio=await readFile(new URL('../src/audio.js',import.meta.url),'utf8');
  assert.doesNotMatch(audio,/SpeechSynthesisUtterance|speechSynthesis|function speakText/);
- assert.match(audio,/voice\.type='sawtooth'/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
+ assert.match(audio,/voice\.type=softVoices/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
  assert.match(audio,/qh-speaking-start/);assert.match(audio,/qh-speaking-end/);assert.match(audio,/voice\.stop\(t\+pace\)/);
+ assert.match(audio,/softVoices\.has\(caller\)\?'triangle':grittyVoices\.has\(caller\)\?'sawtooth':'square'/);
 });
 test('Retratos falantes deixam a boca estática aberta para a animação sincronizada pelo áudio',async()=>{
  for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}-talking.svg`,import.meta.url),'utf8');assert.match(svg,/\.mouth-rest\{opacity:0\}/);assert.match(svg,/\.mouth-speaking\{opacity:1\}/);assert.doesNotMatch(svg,/animation:(?:syllable|nod)/);assert.match(svg,/mouth-speaking/);assert.match(svg,/rx="12" ry="9"/);assert.match(svg,/class="speech-head"/);assert.equal((svg.match(/<g\b/g)||[]).length,(svg.match(/<\/g>/g)||[]).length,`${caller}/${emotion}: SVG com grupos fechados`);}
@@ -27,12 +28,12 @@ test('Luana e o contato da cobrança têm silhuetas bem distintas nos retratos p
  }
 });
 test('Rosto acompanha o ritmo do murmúrio mesmo com movimento reduzido, persiste após render e para ao ocultar a página',async()=>{
- const original={document:globalThis.document,matchMedia:globalThis.matchMedia,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout,setInterval:globalThis.setInterval,clearInterval:globalThis.clearInterval};const events={};let end,animate;
+ const original={document:globalThis.document,matchMedia:globalThis.matchMedia,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout,setInterval:globalThis.setInterval,clearInterval:globalThis.clearInterval};const events={};let end,animate,closeMouth;
  const img={src:''},label={textContent:''},avatar={dataset:{caller:'nino',expression:'happy'},querySelector:()=>img,classList:{toggle(){}},parentElement:{querySelector:()=>label}};
  try{
- globalThis.document={hidden:false,addEventListener:(name,cb)=>events[name]=cb,querySelectorAll:()=>[avatar]};globalThis.matchMedia=()=>({matches:true});globalThis.setTimeout=cb=>{end=cb;return 1;};globalThis.clearTimeout=()=>{};globalThis.setInterval=(cb,delay)=>{assert.equal(delay,150,`movimento labial sincronizado: ${delay}ms`);animate=cb;return 2;};globalThis.clearInterval=()=>{};
+ globalThis.document={hidden:false,addEventListener:(name,cb)=>events[name]=cb,querySelectorAll:()=>[avatar]};globalThis.matchMedia=()=>({matches:true});globalThis.setTimeout=(cb,delay)=>{if(delay===1800)end=cb;else{assert.equal(delay,225,`boca fecha perto do fim da sílaba: ${delay}ms`);closeMouth=cb;}return 1;};globalThis.clearTimeout=()=>{};globalThis.setInterval=(cb,delay)=>{assert.equal(delay,300,`movimento labial segue o ritmo da fala: ${delay}ms`);animate=cb;return 2;};globalThis.clearInterval=()=>{};
  const {portraitSource,updatePortraits}=await import('../src/portrait-speech.js');
- events['qh-murmur']({detail:{caller:'nino',emotion:'happy',duration:1800}});assert.doesNotMatch(img.src,/-talking.svg$/);events['qh-speaking-start']({detail:{caller:'nino',emotion:'happy',duration:1800,pace:.3}});assert.match(img.src,/happy-talking.svg$/);assert.equal(label.textContent,'falando…');updatePortraits();assert.match(portraitSource('nino','happy'),/-talking/);animate();assert.match(img.src,/nino-happy.svg$/);animate();assert.match(img.src,/happy-talking.svg$/);end();assert.match(img.src,/nino-happy.svg$/);assert.equal(label.textContent,'animado');
+ events['qh-murmur']({detail:{caller:'nino',emotion:'happy',duration:1800}});assert.doesNotMatch(img.src,/-talking.svg$/);events['qh-speaking-start']({detail:{caller:'nino',emotion:'happy',duration:1800,pace:.3}});assert.match(img.src,/happy-talking.svg$/);assert.equal(label.textContent,'falando…');updatePortraits();assert.match(portraitSource('nino','happy'),/-talking/);closeMouth();assert.match(img.src,/nino-happy.svg$/);animate();assert.match(img.src,/happy-talking.svg$/);closeMouth();assert.match(img.src,/nino-happy.svg$/);end();assert.match(img.src,/nino-happy.svg$/);assert.equal(label.textContent,'animado');
  events['qh-speaking-start']({detail:{caller:'nino',emotion:'happy',duration:1800,pace:.3}});avatar.dataset.expression='confused';events['qh-speaking-expression']({detail:{caller:'nino',emotion:'confused'}});assert.match(img.src,/confused-talking.svg$/);assert.match(portraitSource('nino','confused'),/-talking/);document.hidden=true;events.visibilitychange();assert.doesNotMatch(img.src,/-talking/);
  }finally{Object.assign(globalThis,original);}
 });

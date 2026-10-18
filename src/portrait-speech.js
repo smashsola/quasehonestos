@@ -1,6 +1,6 @@
 import {expressions,expressionNames} from './mood.js';
 import {voiceProfiles,speechPlan} from './speech-timing.js';
-let speech=null,timer,frameTimer;
+let speech=null,timer,frameTimer,mouthTimer;
 const readyImages=new Map();
 function preload(src){
  if(typeof Image==='undefined')return true;
@@ -25,13 +25,15 @@ export function updatePortraits(){
   const label=avatar.parentElement.querySelector('.portrait-emotion');if(label)label.textContent=talking?'falando…':expressionNames[emotion];
  });
 }
-function stopSpeech(){clearTimeout(timer);clearInterval(frameTimer);speech=null;updatePortraits();}
+function stopSpeech(){clearTimeout(timer);clearTimeout(mouthTimer);clearInterval(frameTimer);speech=null;updatePortraits();}
 document.addEventListener('qh-speaking-expression',e=>{if(!speech||speech.caller!==e.detail?.caller||!expressions.includes(e.detail?.emotion))return;speech.emotion=e.detail.emotion;updatePortraits();});
 document.addEventListener('qh-speaking-start',e=>{
  const {caller,emotion,duration,pace}=e.detail||{};if(document.hidden||!voiceProfiles[caller]||!expressions.includes(emotion))return;
  stopSpeech();speech={caller,emotion,mouthOpen:true};updatePortraits();
  const beat=Number(pace)||speechPlan(caller,emotion,duration).pace;
- frameTimer=setInterval(()=>{if(!speech)return;speech.mouthOpen=!speech.mouthOpen;updatePortraits();},beat*500);
+ const closeMouth=()=>{if(!speech)return;speech.mouthOpen=false;updatePortraits();};
+ mouthTimer=setTimeout(closeMouth,beat*750);
+ frameTimer=setInterval(()=>{if(!speech)return;speech.mouthOpen=true;updatePortraits();clearTimeout(mouthTimer);mouthTimer=setTimeout(closeMouth,beat*750);},beat*1000);
  timer=setTimeout(stopSpeech,Number(duration)||speechPlan(caller,emotion).duration*1000);
 });
 document.addEventListener('qh-murmur',e=>{
