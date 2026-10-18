@@ -98,11 +98,13 @@ test('Bolinha de mensagem nova aparece no Zape, inclusive na barra do celular',a
  assert.match(html,/data-app="calls" class="has-unread" aria-label="Zape, mensagem nova"/);
 });
 
-test('Ransomware é só simulação, permite desconectar e encerra após 45 segundos se não reagir',()=>{
+test('Ransomware é só simulação, permite desconectar e encerra após 10 segundos se não reagir',async()=>{
  const a=startDefenseCall(5),scenario=defenseCases.ransomware,unsafe=scenario.choices.find(choice=>choice.ransomware);
- assert.equal(decideDefense(a,unsafe.id,2000),true);assert.equal(a.ransomwareDeadline,47000);assert.equal(expireRansomware(a,46999),false);
+ assert.equal(decideDefense(a,unsafe.id,2000),true);assert.equal(a.ransomwareDeadline,12000);assert.match(a.log.at(-1).text,/10 segundos/);assert.equal(expireRansomware(a,11999),false);
  assert.equal(stopRansomware(a),true);assert.equal(a.outcome,'blocked');assert.equal(a.ransomwareDeadline,null);
- const b=startDefenseCall(5);decideDefense(b,unsafe.id,2000);assert.equal(expireRansomware(b,47000),true);assert.equal(b.gameOver,true);assert.match(b.feedback,/salário inexistente de estagiário/);
+ const b=startDefenseCall(5);decideDefense(b,unsafe.id,2000);assert.equal(expireRansomware(b,12000),true);assert.equal(b.gameOver,true);assert.match(b.feedback,/só aconteceu dentro do jogo/);assert.match(b.feedback,/desconecte o aparelho da rede/);
+ const html=defenseView({active:b,cursor:5},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(html,/class="pc-crash-screen"/);assert.match(html,/Tentar novamente/);assert.match(html,/seu aparelho e seus arquivos continuam intactos/);assert.doesNotMatch(html,/class="defense-feedback defense-reaction/);
+ const [game,audio,css]=await Promise.all([readFile(new URL('../src/game.js',import.meta.url),'utf8'),readFile(new URL('../src/audio.js',import.meta.url),'utf8'),readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8')]);assert.match(game,/data-retry-ransomware/);assert.match(game,/qh-computer-burnout/);assert.match(audio,/addEventListener\('qh-computer-burnout'/);assert.match(css,/@keyframes pcBurnout/);assert.match(css,/@keyframes pcStatic/);
 });
 test('Confetes continuam animados mesmo com movimento reduzido',async()=>{
  const css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
