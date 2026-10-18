@@ -723,9 +723,6 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .mail-context{border-left:3px solid #80a88e}
 /* The caller label stays readable on narrow and wide layouts. */
 .defense-contact-status{display:inline-flex;align-items:center;align-self:center;flex:none;padding:6px 9px;border:1px solid #c79056;border-radius:999px;background:#fff2dc;color:#67451e;font-size:11px;font-weight:800;line-height:1.2;letter-spacing:.015em}
-.defense-speaking-status{display:flex;align-items:center;gap:8px;margin:-4px 0 10px;padding:8px 11px;border:1px solid #a8d5bc;border-radius:10px;background:#e6f5ec;color:#15583f;font-size:13px;font-weight:800}
-.defense-speaking-status::before{content:'●';color:#26956b;font-size:11px;animation:murmur-bars .46s ease-in-out infinite alternate}
-.defense-murmur-mark{padding:3px 6px;border-radius:8px;background:#1b5648}
 .defense-sender-avatar{width:48px;height:48px;flex:0 0 48px;overflow:hidden;border-radius:12px;background:#e8d8b4;box-shadow:0 0 0 1px #c4d5ca}
 .defense-sender-avatar img{display:block;width:100%;height:100%;object-fit:cover}
 .defense-chat.is-speaking .defense-sender{border-color:#61a184;box-shadow:0 0 0 3px #63ae842b,0 6px 16px #183e3014}
@@ -741,15 +738,10 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-recap-feedback{padding:10px 12px;border-left:3px solid #66a17e;border-radius:0 9px 9px 0;background:#f0f6f1}
 .mail-message-count{display:flex;align-items:center;gap:6px;white-space:nowrap;line-height:1.2}.mail-message-count strong{color:#235640;font-size:13px}.mail-row-wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 40px;align-items:stretch;gap:6px}.mail-star-toggle{display:grid;place-items:center;align-self:center;width:38px;height:38px;padding:0;border:1px solid #d2dfd4;border-radius:11px;background:#f6faf6;color:#718b7b;font-size:20px;cursor:pointer}.mail-star-toggle:hover,.mail-star-toggle:focus-visible{border-color:#bd9a4b;background:#fff8e8;color:#946b17;outline:2px solid #dfc577;outline-offset:2px}.mail-star-toggle.is-starred{border-color:#d6b65e;background:#fff5d5;color:#946b17}
 @media(max-width:600px){.defense-contact-status{padding:5px 7px;font-size:10px}.defense-recap{padding:13px}.defense-recap-heading{grid-template-columns:32px minmax(0,1fr);gap:8px}.defense-recap-heading>b{grid-column:2;justify-self:start}.mail-row-wrap{grid-template-columns:minmax(0,1fr) 36px}.mail-star-toggle{width:34px;height:34px}}
-/* Os personagens fazem murmúrios; os nomes das falas continuam no balão. */
-.defense-murmur-mark{display:inline-flex;align-items:center;gap:2px;height:14px;margin-left:8px;vertical-align:middle}
-.defense-murmur-mark i{display:block;width:3px;height:5px;border-radius:3px;background:#62c9a0;animation:murmur-bars .46s ease-in-out infinite alternate}
-.defense-murmur-mark i:nth-child(2){height:11px;animation-delay:.13s}.defense-murmur-mark i:nth-child(3){height:7px;animation-delay:.26s}
 .defense-chat.is-speaking .defense-sender-avatar,.defense-character.is-murmuring{outline:3px solid #79cba2;outline-offset:3px}
 .defense-contact .avatar.is-speaking,.defense-sender-avatar.is-speaking{animation:defense-speaking-pulse .62s ease-in-out infinite;border-color:#187554;box-shadow:0 0 0 5px #77cba254,0 6px 16px #153c2b35}
-.defense-speech-tone{display:inline-flex;align-items:center;margin-left:7px;padding:3px 7px;border:1px solid #8fc4a6;border-radius:999px;background:#e3f5e9;color:#145b40;font-size:10px;font-weight:800;letter-spacing:.015em;line-height:1.2}
 .defense-chat-bubble.defense-sender.is-speaking{border-color:#32866a;background:linear-gradient(125deg,#f2faf4,#e8f4ed);box-shadow:0 0 0 2px #77cba244,0 8px 20px #153c3220}
-.defense-sender-avatar.is-speaking{width:54px;height:54px;flex-basis:54px;border-width:2px}
+.defense-sender-avatar.is-speaking{width:64px;height:64px;flex-basis:64px;border-width:2px}
 .defense-character.is-murmuring{animation:murmur-bubble .72s ease-in-out infinite alternate}
 @keyframes murmur-bars{to{transform:scaleY(.35);opacity:.55}}
 @keyframes murmur-bubble{from{transform:translateY(0)}to{transform:translateY(-2px)}}
