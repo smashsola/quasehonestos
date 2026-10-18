@@ -708,6 +708,19 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @keyframes defenseReactionBounce{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(8deg) scale(1.13)}}
 @media(max-width:520px){.defense-feedback.defense-reaction{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);padding:22px 18px;border-radius:22px}.defense-reaction-feedback{font-size:14px;max-height:20vh}}
 @media(prefers-reduced-motion:reduce){.defense-reaction-shade,.defense-feedback.defense-reaction,.defense-reaction-burst{animation:none}}
+.defense-confetti{position:fixed;inset:0;z-index:10000;overflow:hidden;pointer-events:none}
+.defense-confetti-corner{position:absolute;width:0;height:0}
+.defense-confetti-corner.top-left{left:0;top:0}
+.defense-confetti-corner.top-right{right:0;top:0}
+.defense-confetti-corner.bottom-left{left:0;bottom:0}
+.defense-confetti-corner.bottom-right{right:0;bottom:0}
+.defense-confetti-corner i{position:absolute;left:0;top:0;width:10px;height:15px;border-radius:3px;background:#f2b84b;opacity:0;animation:defenseConfettiFly 1.55s cubic-bezier(.12,.56,.18,1) calc(.34s + var(--wait)) both}
+.defense-confetti-corner i:nth-child(4n+1){background:#ef7d62;width:8px;height:12px}
+.defense-confetti-corner i:nth-child(4n+2){background:#45a88c;border-radius:50%;width:11px;height:11px}
+.defense-confetti-corner i:nth-child(4n+3){background:#638ad2;width:7px;height:16px}
+.defense-confetti-corner i:nth-child(5n){background:#bd72b6;width:10px;height:10px;border-radius:50%}
+@keyframes defenseConfettiFly{0%{opacity:0;transform:translate(0,0) rotate(0) scale(.3)}12%{opacity:1;transform:translate(calc(var(--dx)*.14),calc(var(--dy)*.14)) rotate(calc(var(--spin)*.2)) scale(1.1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--spin)) scale(.7)}}
+@media(prefers-reduced-motion:reduce){.defense-confetti-corner i{animation:none;opacity:.9;transform:translate(var(--dx),var(--dy)) rotate(var(--spin))}}
 
 /* Sinais mais nítidos na conversa e nas etiquetas, sem colorir as ações inteiras. */
 .defense-chat-bubble.defense-sender{border:1.5px solid #8eae9c;box-shadow:0 0 0 1px #72978024,0 3px 8px #17342e18}

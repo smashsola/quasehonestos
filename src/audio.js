@@ -73,6 +73,18 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panelOpen){panelOpe
 document.addEventListener('qh-tray-open',e=>{if(e.detail!=='sound'&&panelOpen){panelOpen=false;controls();}});
 document.addEventListener('qh-earned',async()=>{if(muted)return;try{await ensureAudio();if(!ctx)return;const now=ctx.currentTime;[1320,1760,2217].forEach((frequency,i)=>{const oscillator=ctx.createOscillator(),gain=ctx.createGain();oscillator.type='sine';oscillator.frequency.value=frequency;gain.gain.setValueAtTime(0,now+i*.065);gain.gain.linearRampToValueAtTime(.08,now+i*.065+.006);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.065+.28);oscillator.connect(gain);gain.connect(ctx.destination);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};oscillator.start(now+i*.065);oscillator.stop(now+i*.065+.3);});}catch{}});
 
+function reactionTone(frequency,start,duration,level,type='sine',endFrequency){
+ const oscillator=ctx.createOscillator(),gain=ctx.createGain();oscillator.type=type;oscillator.frequency.setValueAtTime(frequency,start);if(endFrequency)oscillator.frequency.exponentialRampToValueAtTime(endFrequency,start+duration*.88);gain.gain.setValueAtTime(.0001,start);gain.gain.linearRampToValueAtTime(level*messageVolume/65,start+.012);gain.gain.exponentialRampToValueAtTime(.0001,start+duration);oscillator.connect(gain);gain.connect(ctx.destination);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};oscillator.start(start);oscillator.stop(start+duration+.015);
+}
+document.addEventListener('qh-defense-reaction',async e=>{
+ const tier=e.detail?.tier;if(!['success','almost','miss'].includes(tier)||muted||document.hidden||!messageVolume)return;
+ try{await ensureAudio();if(!ctx||ctx.state!=='running'||muted||document.hidden)return;const start=ctx.currentTime+.34;
+  if(tier==='success')[587.33,739.99,880,1174.66,1479.98].forEach((frequency,i)=>reactionTone(frequency,start+i*.085,.29,.09,'sine'));
+  else if(tier==='almost')[392,493.88,587.33].forEach((frequency,i)=>reactionTone(frequency,start+i*.12,.26,.065,'sine'));
+  else{reactionTone(440,start,.48,.105,'triangle',165);reactionTone(180,start+.34,.18,.065,'sine',240);}
+ }catch{}
+});
+
 
 
 let keyBuffer,lastKeyAt=0;
