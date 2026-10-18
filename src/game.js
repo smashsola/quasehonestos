@@ -129,11 +129,11 @@ function animateIncoming(){
   return;
  }
  clearDefensePlayback();const person=defensePeople.find(p=>p.id===active.caller),scenario=defenseCases[active.caseId],scammer=scammerPeople.find(p=>p.id===active.scammerId)||scammerPeople.find(p=>p.id===person?.scammerId)||scammerPeople[0];if(!person||!scenario||!scammer){render();return;}
- const typingDelay=1650,scammerDuration=replyDuration(scenario.message),replyDelay=720,replyDurationMs=replyDuration(person.reaction);
+ const typingDelay=1650,scammerDuration=replyDuration(scenario.message),replyDelay=720,replyDurationMs=Math.min(9000,Math.max(4200,2200+person.reaction.length*58));
  const emotion=person.emotion||'confused',scammerEmotion=active.scammerExpression||scammer.emotion||'confused';active.scammerId=scammer.id;active.unread=true;active.chatVisible=0;active.chatStage='typing';active.expression=emotion;active.scammerExpression=scammerEmotion;active.log=[];render();
  defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.unread=false;active.chatVisible=1;active.chatStage='speaking';active.log.push({speaker:'Contato não salvo',text:scenario.message});render();speakDefenseLine(active,scenario.message,scammer.id,scammerEmotion);},typingDelay));
- defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatStage='reply-typing';render();},typingDelay+scammerDuration));
- defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatVisible=2;active.chatStage='replying';active.expression=emotion;active.log.push({speaker:person.name,text:person.reaction});render();speakDefenseLine(active,person.reaction,person.id,emotion);},typingDelay+scammerDuration+replyDelay));
+ defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatStage='reply-typing';active.expression=person.replyEmotion||'thinking';render();},typingDelay+scammerDuration));
+ defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatVisible=2;active.chatStage='replying';active.expression=person.replyEmotion||'thinking';active.log.push({speaker:person.name,text:person.reaction});render();speakDefenseLine(active,person.reaction,person.id,active.expression);},typingDelay+scammerDuration+replyDelay));
  defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatStage='ready';render();},typingDelay+scammerDuration+replyDelay+replyDurationMs));
 }
 function murmurReply(duration,text=''){
