@@ -148,7 +148,7 @@ function animateIncoming(){
  }
  if(active.chatVisible>0&&['ready','speaking'].includes(active.chatStage)){if(active.chatStage==='speaking')active.chatStage='ready';if(!active.murmurHeard)startDefenseMurmur(active,defenseCases[active.caseId]);else render();return;}
  clearDefensePlayback();const person=defensePeople.find(p=>p.id===active.caller),scenario=defenseCases[active.caseId],scammer=scammerPeople.find(p=>p.id===active.scammerId)||scammerPeople.find(p=>p.id===person?.scammerId)||scammerPeople[0];if(!person||!scenario||!scammer){render();return;}
- const typingDelay=1100;
+ const typingDelay=3000;
  const emotion=person.emotion||'confused',scammerEmotion=active.scammerExpression||scammer.emotion||'confused';active.scammerId=scammer.id;active.unread=true;active.chatVisible=0;active.chatStage='typing';active.expression=emotion;active.scammerExpression=scammerEmotion;active.scammerSpeakingExpression=scammer.speakingExpression||scammerEmotion;active.log=[];render();
  defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.unread=false;active.chatVisible=1;active.chatStage='ready';active.log.push({speaker:'Contato não salvo',text:scenario.message});startDefenseMurmur(active,scenario);},typingDelay));
 }
