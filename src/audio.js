@@ -79,7 +79,7 @@ function reactionTone(frequency,start,duration,level,type='sine',endFrequency){
 document.addEventListener('qh-defense-reaction',async e=>{
  const tier=e.detail?.tier;if(!['success','almost','miss'].includes(tier)||muted||document.hidden||!messageVolume)return;
  try{await ensureAudio();if(!ctx||ctx.state!=='running'||muted||document.hidden)return;const start=ctx.currentTime+.34;
-  if(tier==='success')[587.33,739.99,880,1174.66,1479.98].forEach((frequency,i)=>reactionTone(frequency,start+i*.085,.29,.09,'sine'));
+  if(tier==='success'){[523.25,659.25,783.99,1046.5].forEach((frequency,i)=>reactionTone(frequency,start+i*.16,.2,.1,'sine'));[659.25,783.99,1046.5].forEach((frequency,i)=>reactionTone(frequency,start+.67,.36,.055,'sine'));}
   else if(tier==='almost')[392,493.88,587.33].forEach((frequency,i)=>reactionTone(frequency,start+i*.12,.26,.065,'sine'));
   else{reactionTone(440,start,.48,.105,'triangle',165);reactionTone(180,start+.34,.18,.065,'sine',240);}
  }catch{}
