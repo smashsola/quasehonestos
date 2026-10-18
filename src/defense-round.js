@@ -83,6 +83,24 @@ export const defenseCases={
  ]}
 };
 
+export const defenseMechanics={
+ whatsapp:{icon:'☎',title:'Número novo',button:'Conferir o contato',result:'Este número não está salvo. Para confirmar a pessoa, use o contato antigo.'},
+ 'bank-call':{icon:'📵',title:'Ligação inesperada',button:'Recusar a chamada',result:'A ligação foi encerrada. Se precisar, abra você mesmo o app oficial do banco.'},
+ 'fake-pix':{icon:'🧾',title:'Comprovante recebido',button:'Conferir o extrato',result:'Comprovante não confirma crédito. Só entregue quando o Pix aparecer no seu extrato.'},
+ boleto:{icon:'▦',title:'QR Code no chat',button:'Conferir os dados',result:'Confira o nome de quem recebe e o valor dentro do app do banco antes de pagar.'},
+ delivery:{icon:'📦',title:'Pacote “retido”',button:'Checar no app da loja',result:'Link inesperado não confirma entrega. Consulte o pedido pelo app ou site que você já conhece.'},
+ 'fake-motoboy':{icon:'🚪',title:'Visita inesperada',button:'Recusar a retirada',result:'Banco não manda buscar cartão. Não entregue cartão ou senha; fale com o banco pelo app oficial.'},
+ 'fake-store':{icon:'🏷️',title:'Oferta com pressa',button:'Deixar a oferta passar',result:'A promoção fictícia expirou. Uma oferta confiável pode esperar enquanto você confere a loja.'},
+ 'fake-government':{icon:'🏛️',title:'Aviso de bloqueio',button:'Fechar o aviso',result:'Não pague taxa nem envie documentos pelo link. Consulte o serviço pelo app ou endereço oficial.'},
+ 'card-swap':{icon:'💳',title:'Cartão devolvido',button:'Conferir o nome',result:'Confira o nome antes de guardar. Se não for seu cartão, não use: bloqueie e avise o banco.'}
+};
+
+export function useDefenseMechanic(a){
+ const mechanic=defenseMechanics[a?.caseId];
+ if(a?.mode!=='defense'||a.outcome||!a.chatVisible||a.ransomwareDeadline||!mechanic||a.mechanicUsed)return false;
+ a.mechanicUsed=true;a.mechanicFeedback=mechanic.result;return true;
+}
+
 export function startDefenseCall(cursor){
  const person=defensePeople[cursor],scenario=person&&defenseCases[person.caseId];
  if(!person||!scenario)return null;
