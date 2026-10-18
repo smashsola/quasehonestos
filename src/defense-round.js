@@ -107,6 +107,49 @@ export const defenseFailures={
  'card-swap':{icon:'💳',title:'A senha foi vista e o cartão pode ter sido trocado',result:'O cartão que ficou com você pode pertencer a outra pessoa. Na vida real, bloqueie seu cartão pelo app do banco e confira as compras recentes.'}
 };
 
+export const defenseActionScenes={
+ 'verify-person':{icon:'📞',title:'Ligando para o contato salvo',detail:'A chamada vai para o número que já estava na agenda.',motion:'call'},
+ 'send-pix':{icon:'💸',title:'Preparando o Pix',detail:'O valor vai para a chave enviada na mensagem.',motion:'send'},
+ 'ask-secret':{icon:'🔐',title:'Pedindo um código',detail:'Um código recebido por SMS é solicitado no chat.',motion:'warn'},
+ 'pause-family':{icon:'📲',title:'Ligando para a pessoa',detail:'A chamada começa pelo contato que você já conhecia.',motion:'call'},
+ 'hangup-official':{icon:'📵',title:'Encerrando a ligação',detail:'A chamada suspeita é fechada antes de compartilhar qualquer dado.',motion:'close'},
+ 'give-code':{icon:'🔢',title:'Informando o código',detail:'O código recebido por SMS é dito durante a chamada.',motion:'send'},
+ 'install-remote':{icon:'🖥️',title:'Instalando o aplicativo',detail:'O acesso remoto indicado por quem ligou é iniciado.',motion:'open'},
+ 'transfer-safe':{icon:'🏦',title:'Transferindo o saldo',detail:'O dinheiro está sendo enviado para a “conta segura” indicada.',motion:'send'},
+ 'check-statement':{icon:'📱',title:'Abrindo o extrato',detail:'O app do banco mostra se o Pix entrou na conta.',motion:'check'},
+ 'deliver-proof':{icon:'🧁',title:'Entregando o pedido',detail:'O bolo sai antes de confirmar o crédito no extrato.',motion:'send'},
+ 'refund-other':{icon:'↩️',title:'Devolvendo o valor',detail:'Uma transferência é preparada para a chave enviada no chat.',motion:'send'},
+ 'wait-settle':{icon:'🏦',title:'Conferindo se o Pix caiu',detail:'O extrato do banco é aberto antes de liberar o pedido.',motion:'check'},
+ 'check-beneficiary':{icon:'🧾',title:'Conferindo quem recebe',detail:'Os dados do boleto são revisados dentro do app do banco.',motion:'check'},
+ 'pay-qr':{icon:'📲',title:'Pagando o QR Code',detail:'O pagamento é confirmado sem revisar o destinatário.',motion:'send'},
+ 'open-known-app':{icon:'🏦',title:'Abrindo o app conhecido',detail:'A cobrança é localizada sem usar o link da mensagem.',motion:'open'},
+ 'send-doc':{icon:'🪪',title:'Enviando o documento',detail:'Uma foto do documento é anexada e enviada no chat.',motion:'send'},
+ 'track-official':{icon:'📦',title:'Consultando o pedido',detail:'A loja ou transportadora é aberta pelo app oficial.',motion:'check'},
+ 'pay-link':{icon:'💳',title:'Preenchendo o cartão',detail:'Os dados do cartão são digitados no link recebido.',motion:'warn'},
+ 'reply-cpf':{icon:'🪪',title:'Respondendo com seus dados',detail:'CPF e endereço são enviados por mensagem.',motion:'send'},
+ 'ask-store':{icon:'🛍️',title:'Conferindo no app da loja',detail:'O pedido é localizado pelo aplicativo que você já conhece.',motion:'check'},
+ 'dont-open-report':{icon:'🛡️',title:'Fechando o anexo',detail:'O arquivo fica fechado enquanto a cobrança é confirmada por outro canal.',motion:'close'},
+ 'open-attachment':{icon:'📎',title:'Abrindo o arquivo',detail:'O anexo inesperado é executado na simulação.',motion:'open'},
+ 'enable-macros':{icon:'⚙️',title:'Ativando o conteúdo',detail:'As macros do documento suspeito são liberadas na simulação.',motion:'warn'},
+ 'ask-it':{icon:'🧑‍💻',title:'Chamando o suporte',detail:'O arquivo fica fechado enquanto o suporte é acionado.',motion:'call'},
+ 'call-bank':{icon:'🏦',title:'Ligando para o banco',detail:'O contato é feito pelo app ou número oficial do cartão.',motion:'call'},
+ 'hand-card':{icon:'💳',title:'Entregando o cartão',detail:'O cartão e a senha são passados para a pessoa na porta.',motion:'send'},
+ 'block-app':{icon:'📱',title:'Bloqueando pelo app',detail:'O cartão é bloqueado e alguém de confiança é avisado.',motion:'check'},
+ 'ask-id':{icon:'🪪',title:'Conferindo o crachá',detail:'A visita mostra um crachá antes de pedir o cartão.',motion:'check'},
+ 'check-platform':{icon:'🛍️',title:'Conferindo o vendedor',detail:'A loja e a oferta são revisadas dentro da plataforma.',motion:'check'},
+ 'pay-direct':{icon:'💸',title:'Fazendo o Pix direto',detail:'O pagamento é enviado para fora da plataforma de compra.',motion:'send'},
+ 'search-official':{icon:'🔎',title:'Procurando a loja oficial',detail:'A oferta é buscada pelo app que você já conhece.',motion:'check'},
+ 'send-document':{icon:'🪪',title:'Enviando seus documentos',detail:'CPF e foto são enviados para reservar o produto.',motion:'send'},
+ 'official-gov':{icon:'🏛️',title:'Consultando o portal oficial',detail:'O serviço é aberto pelo endereço digitado no navegador.',motion:'check'},
+ 'pay-fee':{icon:'💸',title:'Pagando a taxa',detail:'O pagamento é iniciado pelo link da mensagem.',motion:'send'},
+ 'ask-adult':{icon:'🗣️',title:'Pedindo outra opinião',detail:'O aviso é conferido com alguém de confiança.',motion:'call'},
+ 'send-cpf':{icon:'🪪',title:'Enviando dados pessoais',detail:'CPF e data de nascimento são respondidos pelo chat.',motion:'send'},
+ 'watch-card':{icon:'👀',title:'Acompanhando o pagamento',detail:'O valor é conferido e o cartão continua com você.',motion:'check'},
+ 'leave-card':{icon:'💳',title:'Guardando sem conferir',detail:'O cartão devolvido é aceito sem olhar o nome.',motion:'send'},
+ 'use-wallet':{icon:'📲',title:'Pagando por aproximação',detail:'O valor é conferido antes de aproximar o celular.',motion:'check'},
+ 'repeat-pin':{icon:'🔢',title:'Digitando a senha de novo',detail:'A senha é colocada sem cobrir o teclado.',motion:'warn'}
+};
+
 export function useDefenseMechanic(a){
  const mechanic=defenseMechanics[a?.caseId];
  if(a?.mode!=='defense'||a.outcome||!a.chatVisible||a.ransomwareDeadline||!mechanic||a.mechanicUsed)return false;
@@ -121,6 +164,7 @@ export function startDefenseCall(cursor){
 }
 export function resumeDefenseCall(a){
  if(a?.mode!=='defense'||a.outcome)return false;
+ a.actionPending=null;
  if(a.ransomwareDeadline){a.chatStage='ready';a.chatVisible=2;return true;}
  a.chatStage='typing';a.chatVisible=1;a.unread=true;a.murmurHeard=false;return true;
 }

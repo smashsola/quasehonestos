@@ -702,6 +702,31 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-consequence-footnote{max-width:48ch;margin:0;padding:10px 14px;border-radius:12px;background:#f4ded1;color:#6f4438;font-size:13px;line-height:1.5}
 @keyframes defenseConsequenceIcon{from{opacity:0;transform:scale(.55) rotate(-9deg)}to{opacity:1;transform:scale(1) rotate(0)}}
 @media(prefers-reduced-motion:reduce){.defense-action-grid button.defense-action-option.is-picking,.defense-consequence-icon{animation:none}}
+.defense-action-playback-shade{position:fixed;inset:0;z-index:9996;background:radial-gradient(ellipse at center,rgba(13,48,44,.25),rgba(8,25,31,.72));backdrop-filter:blur(3px);animation:defenseActionShade .2s ease-out both}
+.defense-action-playback{position:fixed;inset:0;z-index:9997;display:grid;place-items:center;padding:20px;pointer-events:auto}
+.defense-action-playback-card{width:min(440px,calc(100vw - 36px));padding:clamp(24px,5vw,38px);border:1px solid #9bc3ab;border-radius:24px;background:linear-gradient(145deg,#f7fff8,#e1f0e8);color:#173c32;text-align:center;box-shadow:0 24px 90px #061c1a75;animation:defenseActionCard .24s cubic-bezier(.2,.85,.25,1.15) both}
+.defense-action-playback-icon{display:grid;place-items:center;width:88px;height:88px;margin:0 auto 18px;border:1px solid #a9cbb7;border-radius:28px;background:#fff;color:#185b47;font-size:48px;box-shadow:0 8px 22px #174b321d;animation-duration:.88s;animation-timing-function:ease-in-out;animation-fill-mode:both}
+.defense-action-playback-icon.motion-call{animation-name:defenseActionCall}
+.defense-action-playback-icon.motion-send{animation-name:defenseActionSend}
+.defense-action-playback-icon.motion-warn{animation-name:defenseActionWarn}
+.defense-action-playback-icon.motion-close{animation-name:defenseActionClose}
+.defense-action-playback-icon.motion-open{animation-name:defenseActionOpen}
+.defense-action-playback-icon.motion-check{animation-name:defenseActionCheck}
+.defense-action-playback-card>small{color:#4d7967;font-size:10px;font-weight:900;letter-spacing:.16em}
+.defense-action-playback-card h2{margin:9px 0 10px;color:#173c32;font-size:clamp(24px,5vw,32px);line-height:1.1}
+.defense-action-playback-card p{margin:0 auto;color:#45685b;font-size:15px;line-height:1.55}
+.defense-action-progress{height:5px;margin:24px 0 0;overflow:hidden;border-radius:9px;background:#d0e2d6}
+.defense-action-progress i{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#43a578,#287156);transform:scaleX(0);transform-origin:left;animation:defenseActionProgress .95s linear both}
+@keyframes defenseActionShade{from{opacity:0}to{opacity:1}}
+@keyframes defenseActionCard{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes defenseActionCall{0%,100%{transform:rotate(0) scale(1)}20%{transform:rotate(-15deg) scale(1.05)}42%{transform:rotate(13deg) scale(1.05)}64%{transform:rotate(-9deg)}82%{transform:rotate(6deg)}}
+@keyframes defenseActionSend{0%{transform:translate(0,8px) scale(.8);opacity:.4}45%{transform:translate(-5px,-5px) scale(1.1);opacity:1}100%{transform:translate(4px,-12px) scale(.94);opacity:.85}}
+@keyframes defenseActionWarn{0%,100%{transform:translateX(0)}18%,54%{transform:translateX(-7px) rotate(-4deg)}36%,72%{transform:translateX(7px) rotate(4deg)}}
+@keyframes defenseActionClose{0%{transform:scale(1);opacity:1}45%{transform:scale(.85) rotate(-9deg)}100%{transform:scale(.78);opacity:.68}}
+@keyframes defenseActionOpen{0%{transform:perspective(220px) rotateY(-34deg) scale(.9);opacity:.45}60%{transform:perspective(220px) rotateY(9deg) scale(1.06);opacity:1}100%{transform:perspective(220px) rotateY(0) scale(1)}}
+@keyframes defenseActionCheck{0%,100%{transform:scale(1);box-shadow:0 8px 22px #174b321d}45%{transform:scale(1.09);box-shadow:0 0 0 10px #59a47d20,0 8px 26px #174b3230}}
+@keyframes defenseActionProgress{to{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.defense-action-playback-shade,.defense-action-playback-card,.defense-action-playback-icon,.defense-action-progress i{animation:none}.defense-action-progress i{transform:scaleX(1)}}
 .defense-reaction.is-success{background:linear-gradient(145deg,#fff9d9,#d9f5dd 72%);color:#123f32;border-color:#a3dcad}
 .defense-reaction.is-almost{background:linear-gradient(145deg,#fff9df,#e5f3dc 72%);color:#3a421c;border-color:#e6ca63}
 .defense-reaction.is-miss{background:linear-gradient(145deg,#fff0df,#f8dada 72%);color:#542d27;border-color:#efa18b}
