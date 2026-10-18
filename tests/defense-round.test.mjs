@@ -2,12 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {defensePeople,scammerPeople,defenseCases,defenseMechanics,defenseFailures,defenseActionScenes,defenseActionSounds,startDefenseCall,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware,useDefenseMechanic} from '../src/defense-round.js';
 import {fresh,nextCall,finishCall,migrateToDefense} from '../src/engine.js';
-import {defenseView,defenseActionDemos} from '../src/defense-view.js';
+import {defenseView,defenseCampaignEnding,defenseActionDemos} from '../src/defense-view.js';
 import {helpContent} from '../src/app-content.js';
 import {expressions} from '../src/mood.js';
 import {voiceProfiles} from '../src/speech-timing.js';
 import {readFile} from 'node:fs/promises';
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+test('A rodada encerrada permite voltar ao computador sem reiniciar',()=>{
+ const html=defenseCampaignEnding({history:[]},escape);
+ assert.match(html,/data-show-desktop/);
+ assert.match(html,/Voltar para o computador/);
+ assert.match(html,/data-action="reset"/);
+ assert.match(html,/Começar outra rodada/);
+});
 
 test('Ao voltar para uma conversa salva, o murmúrio do golpista toca de novo',()=>{
  const active=startDefenseCall(2);active.chatVisible=2;active.chatStage='ready';active.murmurHeard=true;active.actionPending='deliver-proof';

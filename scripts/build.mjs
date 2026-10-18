@@ -2,7 +2,7 @@ import {cp,mkdir,copyFile,readFile,writeFile} from 'node:fs/promises';import {fi
 const root=new URL('../',import.meta.url),dist=new URL('../dist/',import.meta.url);await mkdir(dist,{recursive:true});for(const entry of ['index.html','src'])await cp(fileURLToPath(new URL(entry,root)),fileURLToPath(new URL(entry,dist)),{recursive:true});
 // Static asset paths are cache keys at the edge. Version the files changed in a
 // release so browsers cannot keep an older conversation UI after deployment.
-const version='v20261018ah',srcDir=fileURLToPath(new URL('../src/',import.meta.url)),distSrc=fileURLToPath(new URL('../dist/src/',import.meta.url));
+const version='v20261018ai',srcDir=fileURLToPath(new URL('../src/',import.meta.url)),distSrc=fileURLToPath(new URL('../dist/src/',import.meta.url));
 for(const name of ['game.js','engine.js','speech-timing.js','portrait-speech.js','defense-round.js','defense-view.js','mood.js','app-content.js','dialogue-options.js','scripted-humor.js','tutorial.js','educational-replay.js','defense-investigation.js','mobile-icon-grid.js','mobile-ui.js','audio.js']){const target=`${distSrc}${name.replace(/\.js$/i,`-${version}.js`)}`;await copyFile(`${srcDir}${name}`,target);await writeFile(target,`${await readFile(target,'utf8')}\n// release ${version}\n`);}
 const versionedCss=`${distSrc}qh-interface-${version}.css`;await copyFile(`${srcDir}conversation-ui.css`,versionedCss);await writeFile(versionedCss,`${await readFile(versionedCss,'utf8')}\n/* release ${version} */\n`);
 const versionedLayoutCss=`${distSrc}qh-layout-${version}.css`;await copyFile(`${srcDir}style.css`,versionedLayoutCss);await writeFile(versionedLayoutCss,`${await readFile(versionedLayoutCss,'utf8')}\n/* release ${version} */\n`);
