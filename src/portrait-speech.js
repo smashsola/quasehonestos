@@ -18,7 +18,7 @@ export function portraitSource(caller,emotion){
  return preload(base+'.svg')?base+'.svg':`/src/portraits/${caller}-neutral.svg`;
 }
 export function updatePortraits(){
- document.querySelectorAll('.avatar[data-caller]').forEach(avatar=>{
+ document.querySelectorAll('.avatar[data-caller],.defense-sender-avatar[data-caller]').forEach(avatar=>{
   const caller=avatar.dataset.caller,emotion=avatar.dataset.expression,img=avatar.querySelector('img'),talking=avatar.dataset.speaking==='true'||speech?.caller===caller&&speech.emotion===emotion;
   if(img){const source=avatar.dataset.speaking==='true'?`/src/portraits/${caller}-${emotion}-talking.svg`:portraitSource(caller,emotion);if(!img.src.endsWith(source))img.src=source;preload(`/src/portraits/${caller}-${emotion}-talking.svg`);}
   avatar.classList.toggle('is-speaking',talking);

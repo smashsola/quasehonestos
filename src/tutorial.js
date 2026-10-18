@@ -15,7 +15,10 @@ export function tutorialStep(state){
   if(state.finished||state.cursor!==0||['skipped','completed'].includes(state.tutorial))return null;
   if(!a)return {number:1,total:3,title:'Bata o ponto no Zape',text:'Abra o Zape Zape e bata o ponto para receber o primeiro recado. Este guia acompanha só esta primeira conversa de defesa.',app:'calls'};
   if(a.outcome)return {number:3,total:3,title:'Veja o que aconteceu',text:'Leia o resultado e a explicação: elas mostram o risco daquela ação e como confirmar por um canal conhecido. Não é uma nota sobre você.',app:'calls'};
-  if(a.chatStage==='typing'||a.chatStage==='speaking')return {number:1,total:3,title:'Uma mensagem nova chegou',text:'O ponto no Zape avisa que chegou um recado. Os três pontos mostram que a pessoa está preparando a resposta; espere a fala e leia a conversa antes de escolher.',app:'calls'};
+  if(a.chatStage==='typing')return {number:1,total:3,title:'Uma mensagem nova chegou',text:'O aviso no Zape marca o recado. Os três pontos mostram que o contato está digitando; espere a mensagem aparecer e ser falada.',app:'calls'};
+  if(a.chatStage==='speaking')return {number:1,total:3,title:'Ouça a mensagem',text:'O contato não salvo está falando. Depois, a pessoa atendida responde. Leia as duas falas antes de escolher.',app:'calls'};
+  if(a.chatStage==='reply-typing')return {number:1,total:3,title:'A pessoa vai responder',text:'O contato já falou. Agora os três pontos mostram que a pessoa atendida está escrevendo. Espere a resposta aparecer.',app:'calls'};
+  if(a.chatStage==='replying')return {number:1,total:3,title:'Ouça a resposta',text:'A pessoa atendida está falando. Leia as duas falas antes de escolher.',app:'calls'};
   return {number:2,total:3,title:'Leia antes de responder',text:'Confira o pedido e a resposta da pessoa. Abra “O que observar” para ver os sinais do golpe. Depois escolha uma das ações; nenhuma opção vem marcada como certa.',app:'calls'};
  }
  if(state.finished||state.cursor!==0||(state.history?.length||0)>0)return null;
