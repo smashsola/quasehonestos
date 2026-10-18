@@ -1,6 +1,6 @@
 import {localStore as localStorage} from './safe-storage.js';
 import {speechPlan} from './speech-timing.js';
-let ctx,fanGain;
+let ctx,fanGain,reactionLimiter;
 // Cartoon syllables: each caller has a different pitch, pace and vowel color.
 const speakingNodes=new Set();
 let murmurRun=0;
@@ -74,14 +74,14 @@ document.addEventListener('qh-tray-open',e=>{if(e.detail!=='sound'&&panelOpen){p
 document.addEventListener('qh-earned',async()=>{if(muted)return;try{await ensureAudio();if(!ctx)return;const now=ctx.currentTime;[1320,1760,2217].forEach((frequency,i)=>{const oscillator=ctx.createOscillator(),gain=ctx.createGain();oscillator.type='sine';oscillator.frequency.value=frequency;gain.gain.setValueAtTime(0,now+i*.065);gain.gain.linearRampToValueAtTime(.08,now+i*.065+.006);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.065+.28);oscillator.connect(gain);gain.connect(ctx.destination);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};oscillator.start(now+i*.065);oscillator.stop(now+i*.065+.3);});}catch{}});
 
 function reactionTone(frequency,start,duration,level,type='sine',endFrequency){
- const oscillator=ctx.createOscillator(),gain=ctx.createGain();oscillator.type=type;oscillator.frequency.setValueAtTime(frequency,start);if(endFrequency)oscillator.frequency.exponentialRampToValueAtTime(endFrequency,start+duration*.88);gain.gain.setValueAtTime(.0001,start);gain.gain.linearRampToValueAtTime(level*messageVolume/65,start+.012);gain.gain.exponentialRampToValueAtTime(.0001,start+duration);oscillator.connect(gain);gain.connect(ctx.destination);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};oscillator.start(start);oscillator.stop(start+duration+.015);
+ const oscillator=ctx.createOscillator(),gain=ctx.createGain();oscillator.type=type;oscillator.frequency.setValueAtTime(frequency,start);if(endFrequency)oscillator.frequency.exponentialRampToValueAtTime(endFrequency,start+duration*.88);gain.gain.setValueAtTime(.0001,start);gain.gain.linearRampToValueAtTime(Math.min(.9,level*1.5*messageVolume/65),start+.012);gain.gain.exponentialRampToValueAtTime(.0001,start+duration);oscillator.connect(gain);if(!reactionLimiter){reactionLimiter=ctx.createDynamicsCompressor();reactionLimiter.threshold.value=-8;reactionLimiter.knee.value=4;reactionLimiter.ratio.value=12;reactionLimiter.attack.value=.003;reactionLimiter.release.value=.16;reactionLimiter.connect(ctx.destination);}gain.connect(reactionLimiter);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};oscillator.start(start);oscillator.stop(start+duration+.015);
 }
 document.addEventListener('qh-defense-reaction',async e=>{
  const tier=e.detail?.tier;if(!['success','almost','miss'].includes(tier)||muted||document.hidden||!messageVolume)return;
  try{await ensureAudio();if(!ctx||ctx.state!=='running'||muted||document.hidden)return;const start=ctx.currentTime+.34;
-  if(tier==='success'){[523.25,659.25,783.99,1046.5].forEach((frequency,i)=>reactionTone(frequency,start+i*.16,.2,.17,'sine'));[659.25,783.99,1046.5].forEach((frequency,i)=>reactionTone(frequency,start+.67,.36,.09,'sine'));}
-  else if(tier==='almost')[392,493.88,587.33].forEach((frequency,i)=>reactionTone(frequency,start+i*.12,.26,.065,'sine'));
-  else{reactionTone(440,start,.48,.105,'triangle',165);reactionTone(180,start+.34,.18,.065,'sine',240);}
+  if(tier==='success'){[523.25,659.25,783.99,1046.5].forEach((frequency,i)=>{reactionTone(frequency,start+i*.15,.28,.3,'triangle');reactionTone(frequency*2,start+i*.15,.19,.075,'sine');});[523.25,659.25,783.99,1046.5].forEach(frequency=>reactionTone(frequency,start+.72,.68,.18,'sine'));}
+  else if(tier==='almost'){[440,554.37,659.25].forEach((frequency,i)=>reactionTone(frequency,start+i*.14,.24,.2,'triangle'));reactionTone(739.99,start+.52,.38,.12,'sine',698.46);}
+  else{reactionTone(392,start,.58,.3,'triangle',110);reactionTone(146.83,start+.08,.48,.23,'sawtooth',98);reactionTone(164.81,start+.55,.28,.13,'sine',123.47);}
  }catch{}
 });
 
