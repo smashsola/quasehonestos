@@ -29,7 +29,8 @@ test('Tutorial de defesa acompanha só a primeira conversa e fica disponível se
  const welcome=tutorialPanel(s,String,true);assert.match(welcome,/Bata o ponto no Zape/);assert.match(welcome,/Etapa 1 de 3/);assert.match(welcome,/data-app="calls"/);assert.doesNotMatch(welcome,/Começar tutorial/);
  assert.equal(tutorialAction(s,'collapse'),true);assert.match(tutorialPanel(s,String),/Mostrar dicas/);assert.equal(tutorialAction(s,'collapse'),true);
  nextCall(s);s.active.chatStage='typing';assert.match(tutorialStep(s).title,/mensagem nova/);assert.match(tutorialStep(s).text,/três pontos/);
- s.active.chatStage='ready';assert.equal(tutorialStep(s).number,2);assert.match(tutorialPanel(s,String),/O que observar/);
+ s.active.chatStage='speaking';assert.match(tutorialStep(s).text,/murmúrio automaticamente/);
+ s.active.chatStage='ready';s.active.murmurHeard=true;assert.equal(tutorialStep(s).number,2);const clueGuide=tutorialPanel(s,String);assert.match(clueGuide,/O que observar/);assert.match(clueGuide,/data-tutorial-clues/);assert.match(clueGuide,/lógica/);
  s.active.outcome='blocked';assert.equal(tutorialStep(s).number,3);finishCall(s);assert.equal(tutorialStep(s),null);assert.equal(tutorialPanel(s,String),'');
 });
 test('Recados surpresa não interrompem a primeira conversa guiada, voltam na seguinte',()=>{

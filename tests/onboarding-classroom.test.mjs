@@ -21,6 +21,13 @@ test('Correio deixa desempenho para o fechamento e não mostra Chefia durante o 
  assert.match(html,/mail-nav-footer/);assert.match(html,/mail-toolbar-title/);assert.match(html,/Sobre esta caixa/);
 });
 
+test('Correio troca de pasta e permite guardar o recado com estrela',()=>{
+ const state=fresh();state.incoming={pending:{sender:'Entrega Expressa',subject:'Aviso',starred:false}};
+ const inbox=mailContent(state,esc);assert.match(inbox,/data-mail-folder="starred"/);assert.match(inbox,/data-mail-star/);assert.match(inbox,/aria-pressed="false"/);
+ state.incoming.pending.starred=true;state.mailFolder='starred';assert.match(mailContent(state,esc),/data-open-inbox/);assert.match(mailContent(state,esc),/aria-pressed="true"/);
+ for(const folder of ['sent','drafts']){state.mailFolder=folder;const html=mailContent(state,esc);assert.match(html,/gmail-empty/);assert.match(html,/aria-current="page"/);}
+});
+
 test('Manual descreve as quatro escolhas locais e controles de cada dispositivo',()=>{
  const html=helpContent(fresh(),esc,false),mobile=helpContent(fresh(),esc,true);
  assert.match(html,/falas são roteirizadas/);assert.match(html,/quatro falas/);assert.match(html,/Tab e Enter/);
