@@ -8,16 +8,16 @@ export const scammerPeople=[
 ];
 
 export const defensePeople=[
- {id:'bia',name:'Bia',color:'#e4a4bd',role:'Cuida do grupo da família',face:'•',emotion:'suspicious',scammerId:'golpista1',caseId:'whatsapp',reaction:'Ué, mudou de número e já veio com pressa? Isso me deixou na dúvida.'},
- {id:'caio',name:'Caio',color:'#78b9d1',role:'Resolve tudo pelo celular',face:'⌁',emotion:'confused',scammerId:'golpista2',caseId:'bank-call',reaction:'Esse suposto banco quer um código. Eu nem pedi ajuda.'},
- {id:'luana',name:'Luana',color:'#dda96c',role:'Vende bolos por encomenda',face:'◒',emotion:'hurt',scammerId:'golpista3',caseId:'fake-pix',reaction:'A imagem chegou, mas não apareceu nenhum Pix no meu extrato.'},
- {id:'igor',name:'Igor',color:'#8bc9a9',role:'Organiza as contas da casa',face:'▤',emotion:'thinking',scammerId:'golpista4',caseId:'boleto',reaction:'Esse boleto veio por outro caminho e ainda estão me apressando.'},
- {id:'maya',name:'Maya',color:'#b8a3db',role:'Compra pela internet',face:'✦',emotion:'surprised',scammerId:'golpista5',caseId:'delivery',reaction:'Taxa de entrega? Eu nem estava esperando esse aviso.'},
- {id:'leo',name:'Léo',color:'#e38d78',role:'Estagiário de TI por acidente',face:'⌐',emotion:'suspicious',scammerId:'golpista6',caseId:'ransomware',reaction:'A nota pede para ativar macros. Isso parece estranho.'},
- {id:'nina',name:'Nina',color:'#e6c47e',role:'Ajuda a mãe com as compras',face:'▣',emotion:'angry',scammerId:'golpista1',caseId:'fake-motoboy',reaction:'O banco não avisou nada no app. E por que meu cartão iria passear de moto?'},
- {id:'duda',name:'Duda',color:'#82b6c1',role:'Está procurando um notebook usado',face:'⌕',emotion:'thinking',scammerId:'golpista2',caseId:'fake-store',reaction:'O preço está ótimo, mas querem que eu pague fora da plataforma.'},
- {id:'rafa',name:'Rafa',color:'#b9a0cb',role:'Recebe avisos no celular',face:'!',emotion:'confused',scammerId:'golpista3',caseId:'fake-government',reaction:'O link diz ser do governo, mas chegou por mensagem e cobra uma taxa.'},
- {id:'enzo',name:'Enzo',color:'#91b9dc',role:'Ajuda nas compras do mercado',face:'▣',emotion:'surprised',scammerId:'golpista4',caseId:'card-swap',reaction:'A maquininha demorou, e agora devolveram um cartão que nem é meu.'}
+ {id:'bia',name:'Bia',color:'#e4a4bd',role:'Cuida do grupo da família',face:'•',emotion:'suspicious',replyEmotion:'thinking',scammerId:'golpista1',caseId:'whatsapp',reaction:'Ué, mudou de número e já veio com pressa? Isso me deixou na dúvida.'},
+ {id:'caio',name:'Eu',color:'#78b9d1',role:'Resolve tudo pelo celular',face:'⌁',emotion:'confused',replyEmotion:'thinking',scammerId:'golpista2',caseId:'bank-call',reaction:'Esse suposto banco quer um código. Eu nem pedi ajuda.'},
+ {id:'luana',name:'Luana',color:'#dda96c',role:'Vende bolos por encomenda',face:'◒',emotion:'hurt',replyEmotion:'suspicious',scammerId:'golpista3',caseId:'fake-pix',reaction:'A imagem chegou, mas não apareceu nenhum Pix no meu extrato.'},
+ {id:'igor',name:'Igor',color:'#8bc9a9',role:'Organiza as contas da casa',face:'▤',emotion:'thinking',replyEmotion:'suspicious',scammerId:'golpista4',caseId:'boleto',reaction:'Esse boleto veio por outro caminho e ainda estão me apressando.'},
+ {id:'maya',name:'Maya',color:'#b8a3db',role:'Compra pela internet',face:'✦',emotion:'surprised',replyEmotion:'thinking',scammerId:'golpista5',caseId:'delivery',reaction:'Taxa de entrega? Eu nem estava esperando esse aviso.'},
+ {id:'leo',name:'Léo',color:'#e38d78',role:'Estagiário de TI por acidente',face:'⌐',emotion:'suspicious',replyEmotion:'thinking',scammerId:'golpista6',caseId:'ransomware',reaction:'A nota pede para ativar macros. Isso parece estranho.'},
+ {id:'nina',name:'Nina',color:'#e6c47e',role:'Ajuda a mãe com as compras',face:'▣',emotion:'angry',replyEmotion:'suspicious',scammerId:'golpista1',caseId:'fake-motoboy',reaction:'O banco não avisou nada no app. E por que meu cartão iria passear de moto?'},
+ {id:'duda',name:'Duda',color:'#82b6c1',role:'Está procurando um notebook usado',face:'⌕',emotion:'thinking',replyEmotion:'suspicious',scammerId:'golpista2',caseId:'fake-store',reaction:'O preço está ótimo, mas querem que eu pague fora da plataforma.'},
+ {id:'rafa',name:'Rafa',color:'#b9a0cb',role:'Recebe avisos no celular',face:'!',emotion:'confused',replyEmotion:'thinking',scammerId:'golpista3',caseId:'fake-government',reaction:'O link diz ser do governo, mas chegou por mensagem e cobra uma taxa.'},
+ {id:'enzo',name:'Enzo',color:'#91b9dc',role:'Ajuda nas compras do mercado',face:'▣',emotion:'surprised',replyEmotion:'angry',scammerId:'golpista4',caseId:'card-swap',reaction:'A maquininha demorou, e agora devolveram um cartão que nem é meu.'}
 ];
 
 export const defenseCases={
