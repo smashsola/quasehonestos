@@ -123,17 +123,22 @@ let bootReadyWaiting=false;
 function clearDefensePlayback(){for(const timer of defensePlaybackTimers)clearTimeout(timer);defensePlaybackTimers=[];}
 function defenseMurmurDuration(text){return Math.min(7500,Math.max(4500,replyDuration(text)));}
 function speakDefenseLine(active,text,caller,emotion){if(!active||!text||!caller)return;document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller,duration:defenseMurmurDuration(text),emotion,text}}));}
+function startDefenseMurmur(active,scenario){
+ if(!active||state.active!==active||active.mode!=='defense'||active.outcome||!scenario||active.murmurHeard)return;
+ clearDefensePlayback();active.chatStage='speaking';active.murmurHeard=true;render();speakDefenseLine(active,scenario.message,active.scammerId,active.scammerExpression);
+ defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatStage='ready';render();},defenseMurmurDuration(scenario.message)));
+}
 function animateIncoming(){
  const active=state.active;if(active?.mode!=='defense'){render();return;}
  if(document.documentElement.dataset.bootReady!=='true'){
   if(!bootReadyWaiting){bootReadyWaiting=true;document.addEventListener('qh-boot-ready',()=>{bootReadyWaiting=false;if(state.active===active&&!active.outcome&&!active.ransomwareDeadline)animateIncoming();},{once:true});}
   return;
  }
+ if(active.chatVisible>0&&['ready','speaking'].includes(active.chatStage)){if(active.chatStage==='speaking')active.chatStage='ready';if(!active.murmurHeard)startDefenseMurmur(active,defenseCases[active.caseId]);else render();return;}
  clearDefensePlayback();const person=defensePeople.find(p=>p.id===active.caller),scenario=defenseCases[active.caseId],scammer=scammerPeople.find(p=>p.id===active.scammerId)||scammerPeople.find(p=>p.id===person?.scammerId)||scammerPeople[0];if(!person||!scenario||!scammer){render();return;}
- const typingDelay=1100,scammerDuration=defenseMurmurDuration(scenario.message);
+ const typingDelay=1100;
  const emotion=person.emotion||'confused',scammerEmotion=active.scammerExpression||scammer.emotion||'confused';active.scammerId=scammer.id;active.unread=true;active.chatVisible=0;active.chatStage='typing';active.expression=emotion;active.scammerExpression=scammerEmotion;active.log=[];render();
- defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.unread=false;active.chatVisible=1;active.chatStage='speaking';active.log.push({speaker:'Contato não salvo',text:scenario.message});render();speakDefenseLine(active,scenario.message,scammer.id,scammerEmotion);},typingDelay));
- defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatStage='ready';render();},typingDelay+scammerDuration));
+ defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.unread=false;active.chatVisible=1;active.chatStage='ready';active.log.push({speaker:'Contato não salvo',text:scenario.message});startDefenseMurmur(active,scenario);},typingDelay));
 }
 function murmurReply(duration,text=''){
  const a=state.active;if(!a)return;
@@ -376,6 +381,9 @@ app.addEventListener('input',e=>{
 });
 app.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.mailFolder){state.mailFolder=b.dataset.mailFolder;render();return;}
+ if(b.hasAttribute('data-mail-star')&&state.incoming?.pending){state.incoming.pending.starred=!state.incoming.pending.starred;localStorage.setItem(KEY,JSON.stringify(state));render();return;}
+ if(b.hasAttribute('data-tutorial-clues')){const clues=document.querySelector('[data-window-id="calls"] .defense-clues');if(clues){clues.open=true;clues.scrollIntoView({block:'center',behavior:'smooth'});clues.querySelector('summary')?.focus({preventScroll:true});}return;}
  if(b.dataset.tutorial){if(tutorialAction(state,b.dataset.tutorial))render();return;}
  if(b.dataset.bossQuestion&&state.finished&&bossQuestions.some(q=>q.id===b.dataset.bossQuestion)){state.bossReply=b.dataset.bossQuestion;render();document.querySelector(`[data-boss-question="${state.bossReply}"]`)?.focus({preventScroll:true});return;}
  if(b.hasAttribute('data-chat-search')){searchOpen=!searchOpen;render();if(searchOpen)document.querySelector('#chat-search')?.focus();}

@@ -2,6 +2,11 @@
   "name": "quasehonestos",
   "main": "worker/index.js",
   "compatibility_date": "2026-10-05",
+  "previews": {
+    "ai": {
+      "binding": "Workers_AI"
+    }
+  },
   "build": {
     "command": "npm run build"
   },

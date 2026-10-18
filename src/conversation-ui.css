@@ -721,6 +721,26 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .gmail-layout nav{border:1px solid #d3dfd0}
 .gmail-toolbar{min-height:44px;margin-bottom:7px;border-bottom:1px solid #d4e0d8}
 .mail-context{border-left:3px solid #80a88e}
+/* The caller label stays readable on narrow and wide layouts. */
+.defense-contact-status{display:inline-flex;align-items:center;align-self:center;flex:none;padding:6px 9px;border:1px solid #c79056;border-radius:999px;background:#fff2dc;color:#67451e;font-size:11px;font-weight:800;line-height:1.2;letter-spacing:.015em}
+.defense-speaking-status{display:flex;align-items:center;gap:8px;margin:-4px 0 10px;padding:8px 11px;border:1px solid #a8d5bc;border-radius:10px;background:#e6f5ec;color:#15583f;font-size:13px;font-weight:800}
+.defense-speaking-status::before{content:'●';color:#26956b;font-size:11px;animation:murmur-bars .46s ease-in-out infinite alternate}
+.defense-murmur-mark{padding:3px 6px;border-radius:8px;background:#1b5648}
+.defense-sender-avatar{width:48px;height:48px;flex:0 0 48px;overflow:hidden;border-radius:12px;background:#e8d8b4;box-shadow:0 0 0 1px #c4d5ca}
+.defense-sender-avatar img{display:block;width:100%;height:100%;object-fit:cover}
+.defense-chat.is-speaking .defense-sender{border-color:#61a184;box-shadow:0 0 0 3px #63ae842b,0 6px 16px #183e3014}
+.defense-recap{margin:22px 0;padding:20px;border:1px solid #aec8b8;border-radius:18px;background:linear-gradient(145deg,#f4f9f5,#eaf2eb);box-shadow:0 10px 28px #153e2d12}
+.defense-recap>h2{margin:0;color:#173e33;font-size:21px}.defense-recap>p{margin:5px 0 16px;color:#526f60;font-size:13px}
+.defense-recap-list{display:grid;gap:12px}.defense-recap-card{padding:14px;border:1px solid #c8d9cd;border-radius:14px;background:#fff;box-shadow:0 3px 8px #173c3009}
+.defense-recap-heading{display:grid;grid-template-columns:35px minmax(0,1fr) auto;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid #e1eae3}
+.defense-recap-heading>span{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#e5f0e8;color:#285f46;font-size:12px;font-weight:900}
+.defense-recap-heading>div{display:grid;gap:2px;min-width:0}.defense-recap-heading>div strong{color:#1d4939;font-size:14px}.defense-recap-heading>div small{color:#577364;font-size:12px;line-height:1.35}
+.defense-recap-heading>b{padding:5px 8px;border-radius:999px;font-size:10px;white-space:nowrap}.defense-recap-heading .recap-safe{background:#e1f2e7;color:#17643f}.defense-recap-heading .recap-risk{background:#fff0dc;color:#80511d}
+.defense-recap-choice,.defense-recap-feedback{margin-top:10px}.defense-recap-choice>small,.defense-recap-feedback>small{color:#536f60;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.defense-recap-choice p,.defense-recap-feedback p{margin:3px 0 0;color:#2f5142;font-size:13px;line-height:1.5}
+.defense-recap-feedback{padding:10px 12px;border-left:3px solid #66a17e;border-radius:0 9px 9px 0;background:#f0f6f1}
+.mail-message-count{display:flex;align-items:center;gap:6px;white-space:nowrap;line-height:1.2}.mail-message-count strong{color:#235640;font-size:13px}.mail-row-wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 40px;align-items:stretch;gap:6px}.mail-star-toggle{display:grid;place-items:center;align-self:center;width:38px;height:38px;padding:0;border:1px solid #d2dfd4;border-radius:11px;background:#f6faf6;color:#718b7b;font-size:20px;cursor:pointer}.mail-star-toggle:hover,.mail-star-toggle:focus-visible{border-color:#bd9a4b;background:#fff8e8;color:#946b17;outline:2px solid #dfc577;outline-offset:2px}.mail-star-toggle.is-starred{border-color:#d6b65e;background:#fff5d5;color:#946b17}
+@media(max-width:600px){.defense-contact-status{padding:5px 7px;font-size:10px}.defense-recap{padding:13px}.defense-recap-heading{grid-template-columns:32px minmax(0,1fr);gap:8px}.defense-recap-heading>b{grid-column:2;justify-self:start}.mail-row-wrap{grid-template-columns:minmax(0,1fr) 36px}.mail-star-toggle{width:34px;height:34px}}
 /* Os personagens fazem murmúrios; os nomes das falas continuam no balão. */
 .defense-murmur-mark{display:inline-flex;align-items:center;gap:2px;height:14px;margin-left:8px;vertical-align:middle}
 .defense-murmur-mark i{display:block;width:3px;height:5px;border-radius:3px;background:#62c9a0;animation:murmur-bars .46s ease-in-out infinite alternate}
