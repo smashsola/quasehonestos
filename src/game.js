@@ -121,7 +121,8 @@ function beginConversation(schemeId){
 let defensePlaybackTimers=[];
 let bootReadyWaiting=false;
 function clearDefensePlayback(){for(const timer of defensePlaybackTimers)clearTimeout(timer);defensePlaybackTimers=[];}
-function speakDefenseLine(active,text,caller=active?.caller,emotion=savedExpression(active)){if(!active||!text||!caller)return;document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller,duration:replyDuration(text),emotion,text}}));}
+function defenseMurmurDuration(text){return Math.min(7500,Math.max(4500,replyDuration(text)));}
+function speakDefenseLine(active,text,caller=active?.caller,emotion=savedExpression(active)){if(!active||!text||!caller)return;document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller,duration:defenseMurmurDuration(text),emotion,text}}));}
 function animateIncoming(){
  const active=state.active;if(active?.mode!=='defense'){render();return;}
  if(document.documentElement.dataset.bootReady!=='true'){
@@ -129,7 +130,7 @@ function animateIncoming(){
   return;
  }
  clearDefensePlayback();const person=defensePeople.find(p=>p.id===active.caller),scenario=defenseCases[active.caseId],scammer=scammerPeople.find(p=>p.id===active.scammerId)||scammerPeople.find(p=>p.id===person?.scammerId)||scammerPeople[0];if(!person||!scenario||!scammer){render();return;}
- const typingDelay=1650,scammerDuration=replyDuration(scenario.message),replyDelay=720,replyDurationMs=Math.min(9000,Math.max(4200,2200+person.reaction.length*58));
+ const typingDelay=1650,scammerDuration=defenseMurmurDuration(scenario.message),replyDelay=720,replyDurationMs=defenseMurmurDuration(person.reaction);
  const emotion=person.emotion||'confused',scammerEmotion=active.scammerExpression||scammer.emotion||'confused';active.scammerId=scammer.id;active.unread=true;active.chatVisible=0;active.chatStage='typing';active.expression=emotion;active.scammerExpression=scammerEmotion;active.log=[];render();
  defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.unread=false;active.chatVisible=1;active.chatStage='speaking';active.log.push({speaker:'Contato não salvo',text:scenario.message});render();speakDefenseLine(active,scenario.message,scammer.id,scammerEmotion);},typingDelay));
  defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome)return;active.chatStage='reply-typing';active.expression=person.replyEmotion||'thinking';render();},typingDelay+scammerDuration));

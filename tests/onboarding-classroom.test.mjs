@@ -18,7 +18,7 @@ test('Onboarding usa história curta e Supervisor, sem colocar a Chefia no tutor
 test('Correio deixa desempenho para o fechamento e não mostra Chefia durante o turno',()=>{
  const html=mailContent(fresh(),esc);
  assert.doesNotMatch(html,/Chefia|chefe/i);
- assert.match(html,/fechamento do expediente/);
+ assert.match(html,/mail-nav-footer/);assert.match(html,/mail-toolbar-title/);assert.match(html,/Sobre esta caixa/);
 });
 
 test('Manual descreve as quatro escolhas locais e controles de cada dispositivo',()=>{

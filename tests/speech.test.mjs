@@ -11,8 +11,18 @@ test('Ritmo e duração acompanham personagem, emoção e tamanho da fala',()=>{
  for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const pace=speechTiming(caller,emotion).pace;assert.ok(pace>=.25&&pace<=.55,`${caller}/${emotion}: ritmo legível`);}
  assert.equal(speechTiming('nino','happy',999999).duration,7.5);
 });
+test('Personagens fazem murmúrio sem narrar o texto em voz alta',async()=>{
+ const audio=await readFile(new URL('../src/audio.js',import.meta.url),'utf8');
+ assert.doesNotMatch(audio,/SpeechSynthesisUtterance|speechSynthesis|function speakText/);
+ assert.match(audio,/voice\.type='sawtooth'/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
+});
 test('Retratos falantes mantêm emoção, boca articulada e opção de movimento reduzido',async()=>{
  for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}-talking.svg`,import.meta.url),'utf8');assert.match(svg,/mouth-rest/);assert.match(svg,/mouth-speaking/);assert.match(svg,/class="speech-head"/);assert.match(svg,/prefers-reduced-motion/);assert.ok(svg.includes(`syllable ${speechTiming(caller,emotion).pace}s`));}
+});
+test('Luana e o contato da cobrança têm silhuetas bem distintas nos retratos parados e falando',async()=>{
+ for(const caller of ['luana','golpista3'])for(const emotion of expressions)for(const suffix of ['', '-talking']){
+  const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}${suffix}.svg`,import.meta.url),'utf8');assert.match(svg,/M25 27C19 30/);
+ }
 });
 test('Rosto fala apenas durante a fala, persiste após render e para ao ocultar a página',async()=>{
  const original={document:globalThis.document,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout};const events={};let end;
