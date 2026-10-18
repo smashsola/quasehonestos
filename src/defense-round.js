@@ -9,7 +9,7 @@ export const scammerPeople=[
 
 export const defensePeople=[
  {id:'bia',name:'Bia',color:'#e4a4bd',role:'Cuida do grupo da família',face:'•',emotion:'suspicious',replyEmotion:'thinking',scammerId:'golpista1',caseId:'whatsapp',reaction:'Ué, mudou de número e já veio com pressa? Isso me deixou na dúvida.'},
- {id:'caio',name:'Eu',color:'#78b9d1',role:'Resolve tudo pelo celular',face:'⌁',emotion:'confused',replyEmotion:'thinking',scammerId:'golpista2',caseId:'bank-call',reaction:'Esse suposto banco quer um código. Eu nem pedi ajuda.'},
+ {id:'caio',name:'Seu personagem',color:'#78b9d1',role:'Resolve tudo pelo celular',face:'⌁',emotion:'confused',replyEmotion:'thinking',scammerId:'golpista2',caseId:'bank-call',reaction:'Esse suposto banco quer um código. Eu nem pedi ajuda.'},
  {id:'luana',name:'Luana',color:'#dda96c',role:'Vende bolos por encomenda',face:'◒',emotion:'hurt',replyEmotion:'suspicious',scammerId:'golpista3',caseId:'fake-pix',reaction:'A imagem chegou, mas não apareceu nenhum Pix no meu extrato.'},
  {id:'igor',name:'Igor',color:'#8bc9a9',role:'Organiza as contas da casa',face:'▤',emotion:'thinking',replyEmotion:'suspicious',scammerId:'golpista4',caseId:'boleto',reaction:'Esse boleto veio por outro caminho e ainda estão me apressando.'},
  {id:'maya',name:'Maya',color:'#b8a3db',role:'Compra pela internet',face:'✦',emotion:'surprised',replyEmotion:'thinking',scammerId:'golpista5',caseId:'delivery',reaction:'Taxa de entrega? Eu nem estava esperando esse aviso.'},

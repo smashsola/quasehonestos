@@ -3,22 +3,12 @@ import {speechTiming} from './speech-timing.js';
 let ctx,fanGain;
 // Cartoon syllables: each caller has a different pitch, pace and vowel color.
 const speakingNodes=new Set();
-function stopMurmurs(){for(const node of speakingNodes){try{node.stop();}catch{}}speakingNodes.clear();try{window.speechSynthesis?.cancel();}catch{}}
+function stopMurmurs(){for(const node of speakingNodes){try{node.stop();}catch{}}speakingNodes.clear();}
 document.addEventListener('qh-speaking-stop',stopMurmurs);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMurmurs();});
 document.addEventListener('click',e=>{if(e.target.closest('[data-sound-mute]'))stopMurmurs();},true);
-function speakText(detail){
- if(!detail?.text||typeof window.SpeechSynthesisUtterance!=='function'||!window.speechSynthesis)return false;
- try{
-  stopMurmurs();const words=new SpeechSynthesisUtterance(String(detail.text));words.lang='pt-BR';
-  const timing=speechTiming(detail.caller,detail.emotion,detail.duration);words.pitch=Math.max(.72,Math.min(1.3,timing.pitch/155));words.rate=Math.max(.76,Math.min(1.12,timing.pace*2.6));words.volume=Math.max(0,Math.min(1,characterVolume/100));
-  const voices=window.speechSynthesis.getVoices(),voice=voices.find(item=>/^pt[-_]br$/i.test(item.lang))||voices.find(item=>/^pt(?:[-_]|$)/i.test(item.lang));if(voice)words.voice=voice;
-  window.speechSynthesis.speak(words);return true;
- }catch{return false;}
-}
 document.addEventListener('qh-murmur',async e=>{
  if(muted||document.hidden||!characterVolume)return;
- if(speakText(e.detail))return;
  try{
   await ensureAudio();if(!ctx||muted||document.hidden)return;stopMurmurs();
   const {pitch,pace,f1,f2,duration}=speechTiming(e.detail.caller,e.detail.emotion,e.detail.duration),start=ctx.currentTime+.02;
@@ -64,7 +54,7 @@ function controls(){
  const bar=document.querySelector('.taskbar');if(!bar)return;
  let button=bar.querySelector('[data-sound-panel]');if(!button){button=document.createElement('button');button.dataset.soundPanel='true';button.className='sound-toggle';bar.insertBefore(button,bar.querySelector('small'));}
  const title=muted?'Som silenciado · ajustar áudio':'Ajustar áudio';button.textContent=muted?'♪ ×':'♪';button.title=title;button.setAttribute('aria-label',title);button.setAttribute('aria-expanded',String(panelOpen));
- if(panelOpen&&!document.querySelector('.sound-panel')){const panel=document.createElement('section');panel.className='sound-panel';panel.setAttribute('aria-label','Sons do computador');panel.innerHTML=`<div><strong>Sons do computador</strong><button data-sound-close aria-label="Fechar ajustes de áudio">×</button></div><label>Clique do mouse <output>${clickVolume}%</output><input aria-label="Volume do clique do mouse" data-volume="click" type="range" min="0" max="100" value="${clickVolume}"></label><label>Teclado <output>${keyboardVolume}%</output><input aria-label="Volume do teclado" data-volume="keyboard" type="range" min="0" max="100" value="${keyboardVolume}"></label><label>Falas dos personagens <output>${characterVolume}%</output><input aria-label="Volume das falas dos personagens" data-volume="character" type="range" min="0" max="100" value="${characterVolume}"></label><label>Mensagens <output>${messageVolume}%</output><input aria-label="Volume das mensagens" data-volume="message" type="range" min="0" max="100" value="${messageVolume}"></label><label>Ventoinha <output>${fanVolume}%</output><input aria-label="Volume da ventoinha" data-volume="fan" type="range" min="0" max="100" value="${fanVolume}"></label><button data-sound-mute>${muted?'Ativar sons':'Silenciar tudo'}</button>`;document.querySelector('.desktop').append(panel);panel.querySelector('[data-sound-close]').focus({preventScroll:true});}
+ if(panelOpen&&!document.querySelector('.sound-panel')){const panel=document.createElement('section');panel.className='sound-panel';panel.setAttribute('aria-label','Sons do computador');panel.innerHTML=`<div><strong>Sons do computador</strong><button data-sound-close aria-label="Fechar ajustes de áudio">×</button></div><label>Clique do mouse <output>${clickVolume}%</output><input aria-label="Volume do clique do mouse" data-volume="click" type="range" min="0" max="100" value="${clickVolume}"></label><label>Teclado <output>${keyboardVolume}%</output><input aria-label="Volume do teclado" data-volume="keyboard" type="range" min="0" max="100" value="${keyboardVolume}"></label><label>Murmúrio dos personagens <output>${characterVolume}%</output><input aria-label="Volume do murmúrio dos personagens" data-volume="character" type="range" min="0" max="100" value="${characterVolume}"></label><label>Mensagens <output>${messageVolume}%</output><input aria-label="Volume das mensagens" data-volume="message" type="range" min="0" max="100" value="${messageVolume}"></label><label>Ventoinha <output>${fanVolume}%</output><input aria-label="Volume da ventoinha" data-volume="fan" type="range" min="0" max="100" value="${fanVolume}"></label><button data-sound-mute>${muted?'Ativar sons':'Silenciar tudo'}</button>`;document.querySelector('.desktop').append(panel);panel.querySelector('[data-sound-close]').focus({preventScroll:true});}
  if(!panelOpen)document.querySelector('.sound-panel')?.remove();
 }
 new MutationObserver(()=>{if(!document.querySelector('[data-sound-panel]')||(panelOpen&&!document.querySelector('.sound-panel')))controls();}).observe(document.querySelector('#app'),{childList:true,subtree:true});controls();
