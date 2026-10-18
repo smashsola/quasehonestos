@@ -689,6 +689,26 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-feedback button.primary:active{transform:translateY(1px);box-shadow:0 1px 0 #83452f}
 .defense-feedback button.primary:focus-visible{outline:3px solid #568a6c;outline-offset:3px}
 
+/* Large, celebratory response after a defense choice. */
+.defense-reaction-shade{position:fixed;inset:0;z-index:9998;background:radial-gradient(ellipse at center,rgba(11,50,48,.48),rgba(8,30,39,.84));backdrop-filter:blur(5px);animation:defenseReactionShade .25s ease-out both}
+.defense-feedback.defense-reaction{position:fixed;z-index:9999;left:50%;top:50%;width:min(620px,calc(100vw - 32px));max-height:min(88vh,780px);overflow:auto;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:12px;margin:0;padding:clamp(24px,5vw,48px);border:2px solid #fff;border-radius:28px;text-align:center;box-shadow:0 28px 90px rgba(0,0,0,.48);animation:defenseReactionPop .62s cubic-bezier(.16,1.4,.35,1) .32s both}
+.defense-reaction.is-success{background:linear-gradient(145deg,#fff9d9,#d9f5dd 72%);color:#123f32;border-color:#a3dcad}
+.defense-reaction.is-almost{background:linear-gradient(145deg,#fff9df,#e5f3dc 72%);color:#3a421c;border-color:#e6ca63}
+.defense-reaction.is-miss{background:linear-gradient(145deg,#fff0df,#f8dada 72%);color:#542d27;border-color:#efa18b}
+.defense-reaction-burst{display:grid;place-items:center;width:clamp(92px,18vw,142px);height:clamp(92px,18vw,142px);border:5px solid rgba(255,255,255,.92);border-radius:50%;background:rgba(255,255,255,.72);font-size:clamp(58px,12vw,92px);line-height:1;box-shadow:0 8px 22px rgba(29,72,53,.18);animation:defenseReactionBounce .9s ease-in-out .95s 2}
+.defense-reaction-kicker{font-size:12px;font-weight:900;letter-spacing:.14em;opacity:.74}
+.defense-reaction h2{margin:0;font-size:clamp(34px,8vw,62px);line-height:1;letter-spacing:-.04em;text-wrap:balance;text-shadow:0 2px 0 rgba(255,255,255,.8)}
+.defense-reaction-note{margin:0;font-size:clamp(17px,3vw,22px);font-weight:800}
+.defense-reaction-feedback{width:100%;max-height:24vh;overflow:auto;margin:4px 0 10px;padding:16px 18px;border:1px solid rgba(31,84,64,.22);border-radius:16px;background:rgba(255,255,255,.72);font-size:16px;line-height:1.6;text-align:left}
+.defense-reaction button.primary{min-height:54px;padding:14px 28px;border:0;border-radius:14px;background:linear-gradient(135deg,#1b6d55,#145244);color:#fff;font-size:18px;font-weight:900;box-shadow:0 5px 0 #0d3e36;transition:transform .15s ease,filter .15s ease}
+.defense-reaction button.primary:hover{filter:brightness(1.1);transform:translateY(-2px)}
+.defense-reaction button.primary:focus-visible{outline:4px solid #f4bd4f;outline-offset:4px}
+@keyframes defenseReactionShade{from{opacity:0}to{opacity:1}}
+@keyframes defenseReactionPop{0%{opacity:0;transform:translate(-50%,-42%) scale(.7) rotate(-3deg)}70%{opacity:1;transform:translate(-50%,-52%) scale(1.04) rotate(1deg)}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}}
+@keyframes defenseReactionBounce{0%,100%{transform:rotate(-8deg) scale(1)}50%{transform:rotate(8deg) scale(1.13)}}
+@media(max-width:520px){.defense-feedback.defense-reaction{width:calc(100vw - 20px);max-height:calc(100dvh - 20px);padding:22px 18px;border-radius:22px}.defense-reaction-feedback{font-size:14px;max-height:20vh}}
+@media(prefers-reduced-motion:reduce){.defense-reaction-shade,.defense-feedback.defense-reaction,.defense-reaction-burst{animation:none}}
+
 /* Sinais mais nítidos na conversa e nas etiquetas, sem colorir as ações inteiras. */
 .defense-chat-bubble.defense-sender{border:1.5px solid #8eae9c;box-shadow:0 0 0 1px #72978024,0 3px 8px #17342e18}
 .defense-chat-bubble.defense-character{border:1.5px solid #174e43;box-shadow:0 2px 7px #173c321e}

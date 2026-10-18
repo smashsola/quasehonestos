@@ -25,6 +25,13 @@ test('Cada golpista tem uma fala engraçada e uma segunda ação classificada se
  for(const person of defensePeople){const scenario=defenseCases[person.caseId],witty=scenario.choices.filter(choice=>choice.witty),classified=scenario.choices.filter(choice=>choice.classification);assert.ok(person.name);assert.ok(scenario.technique);assert.equal(scenario.choices.length,4);assert.ok(scenario.choices.every(choice=>choice.label.startsWith('AÇÃO — ')));assert.equal(witty.length,1,`${person.name} deve ter exatamente uma opção engraçada`);assert.equal(witty[0].safe,true);assert.equal(classified.length,1,`${person.name} deve ter uma ação classificada`);assert.equal(classified[0].safe,false);}
 });
 
+test('Cada escolha mostra uma reação grande, com parabéns, quase lá ao pausar ou ops ao errar',()=>{
+ const render=active=>defenseView({active,cursor:0},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
+ const safe=startDefenseCall(0);decideDefense(safe,'verify-person',1000);assert.equal(safe.reactionTier,'success');assert.match(render(safe),/class="defense-feedback defense-reaction is-success"/);assert.match(render(safe),/PARABÉNS!/);assert.match(render(safe),/🎉/);
+ const almost=startDefenseCall(0);endDefenseContact(almost);assert.equal(almost.reactionTier,'almost');assert.match(render(almost),/class="defense-feedback defense-reaction is-almost"/);assert.match(render(almost),/QUASE LÁ!/);
+ const miss=startDefenseCall(0);decideDefense(miss,'send-pix',1000);assert.equal(miss.reactionTier,'miss');assert.match(render(miss),/class="defense-feedback defense-reaction is-miss"/);assert.match(render(miss),/OPS, VACILOU!/);assert.match(render(miss),/aria-modal="true"/);
+});
+
 test('Todos os dez personagens têm retratos com expressão e boca animada para falar',async()=>{
  for(const person of defensePeople){assert.ok(voiceProfiles[person.id],`voz de ${person.id}`);for(const expression of expressions){const portrait=await readFile(new URL(`../src/portraits/${person.id}-${expression}.svg`,import.meta.url),'utf8');const talking=await readFile(new URL(`../src/portraits/${person.id}-${expression}-talking.svg`,import.meta.url),'utf8');assert.match(portrait,/<svg/);assert.match(talking,/mouth-speaking/);}}
 });
