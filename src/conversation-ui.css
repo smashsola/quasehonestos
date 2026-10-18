@@ -704,7 +704,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @media(prefers-reduced-motion:reduce){.defense-action-grid button.defense-action-option.is-picking,.defense-consequence-icon{animation:none}}
 .defense-action-playback-shade{position:fixed;inset:0;z-index:9996;background:radial-gradient(ellipse at center,rgba(13,48,44,.25),rgba(8,25,31,.72));backdrop-filter:blur(3px);animation:defenseActionShade .2s ease-out both}
 .defense-action-playback{position:fixed;inset:0;z-index:9997;display:grid;place-items:center;padding:20px;pointer-events:auto}
-.defense-action-playback-card{width:min(440px,calc(100vw - 36px));padding:clamp(24px,5vw,38px);border:1px solid #9bc3ab;border-radius:24px;background:linear-gradient(145deg,#f7fff8,#e1f0e8);color:#173c32;text-align:center;box-shadow:0 24px 90px #061c1a75;animation:defenseActionCard .24s cubic-bezier(.2,.85,.25,1.15) both}
+.defense-action-playback-card{width:min(620px,calc(100vw - 28px));padding:clamp(14px,3vw,26px);border:1px solid #9bc3ab;border-radius:24px;background:linear-gradient(145deg,#f7fff8,#e1f0e8);color:#173c32;text-align:center;box-shadow:0 24px 90px #061c1a75;animation:defenseActionCard .24s cubic-bezier(.2,.85,.25,1.15) both}
 .defense-action-playback-icon{display:grid;place-items:center;width:88px;height:88px;margin:0 auto 18px;border:1px solid #a9cbb7;border-radius:28px;background:#fff;color:#185b47;font-size:48px;box-shadow:0 8px 22px #174b321d;animation-duration:.88s;animation-timing-function:ease-in-out;animation-fill-mode:both}
 .defense-action-demo{display:flex;align-items:center;justify-content:center;gap:clamp(5px,2vw,12px);margin:0 auto 18px;padding:12px 8px;border:1px solid #c5ddd0;border-radius:18px;background:linear-gradient(110deg,#fff,#eaf5ed);box-shadow:inset 0 1px #fff}
 .defense-action-demo-person,.defense-action-demo-target{display:grid;min-width:58px;justify-items:center;gap:4px;color:#23624c;font-size:25px;font-weight:800}
@@ -714,19 +714,32 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-action-demo-path{position:relative;flex:1 1 20px;height:3px;max-width:44px;overflow:visible;border-radius:5px;background:#bdd9c8}
 .defense-action-demo-path i{position:absolute;top:50%;left:0;width:8px;height:8px;border-radius:50%;background:#2b8b64;box-shadow:0 0 0 3px #2b8b6420;transform:translateY(-50%);animation:defenseActionTravel .65s ease-in-out infinite alternate}
 .defense-action-demo-path:nth-of-type(4) i{animation-delay:-.32s}
-.defense-action-playback-icon.motion-call{animation-name:defenseActionCall}
-.defense-action-playback-icon.motion-send{animation-name:defenseActionSend}
-.defense-action-playback-icon.motion-warn{animation-name:defenseActionWarn}
-.defense-action-playback-icon.motion-close{animation-name:defenseActionClose}
-.defense-action-playback-icon.motion-open{animation-name:defenseActionOpen}
-.defense-action-playback-icon.motion-check{animation-name:defenseActionCheck}
+.defense-action-pc{overflow:hidden;border:1px solid #8eb3a0;border-radius:15px;background:linear-gradient(140deg,#254e4c,#356b69 62%,#274b54);box-shadow:0 9px 24px #123f3029;text-align:left;animation:defensePcWake .28s ease-out both}
+.defense-action-osbar{display:flex;align-items:center;gap:9px;min-height:28px;padding:0 10px;background:#173e3c;color:#e8f4ec;font-size:9px;letter-spacing:.08em}
+.defense-os-lights{display:flex;gap:3px}.defense-os-lights i{width:5px;height:5px;border-radius:50%;background:#81c3a2}.defense-os-lights i:nth-child(2){background:#eac079}.defense-os-lights i:nth-child(3){background:#df8e78}.defense-action-osbar small{margin-left:auto;color:#a6c7b6;font-size:7px;letter-spacing:.08em}
+.defense-action-app{width:min(100%,490px);min-height:213px;margin:14px auto 12px;overflow:hidden;border:1px solid #bfd5c8;border-radius:12px;background:#f4f8f4;box-shadow:0 8px 24px #102b2938;animation:defenseAppLaunch .38s cubic-bezier(.16,.8,.25,1) both}
+.defense-action-appbar{display:flex;align-items:center;gap:8px;height:34px;padding:0 11px;background:#24584d;color:#f5fff9;font-size:11px}.defense-action-appbar>span:first-child{display:grid;width:20px;height:20px;place-items:center;border-radius:6px;background:#a4cfb6;color:#205347;font-size:14px}.defense-app-controls{margin-left:auto;color:#d5e6dc;letter-spacing:.02em}
+.defense-action-appnav{display:flex;gap:clamp(8px,2vw,20px);align-items:center;min-height:30px;padding:0 13px;border-bottom:1px solid #d7e5db;background:#e8f0e9;color:#667f71;font-size:9px}.defense-action-appnav span.is-active{color:#245f4b;font-weight:900}
+.defense-action-appbody{padding:clamp(10px,2vw,17px)}.defense-action-account{display:flex;align-items:center;gap:9px;min-height:43px;padding-bottom:10px;border-bottom:1px solid #dce7de;color:#254c3f}.defense-action-appicon{display:grid;flex:0 0 34px;height:34px;place-items:center;border-radius:10px;background:#dceee1;color:#22634f;font-size:21px;animation-duration:.9s;animation-timing-function:ease-in-out;animation-fill-mode:both}.defense-action-account>span:nth-child(2){display:grid;gap:3px}.defense-action-account small,.defense-action-task>small{color:#698473;font-size:8px;font-weight:900;letter-spacing:.1em}.defense-action-account b{font-size:11px}.defense-demo-chip{margin-left:auto;padding:5px 8px;border:1px solid #c4ddd0;border-radius:999px;background:#e8f5eb;color:#36725a;font-size:8px;font-weight:900;letter-spacing:.05em}
+.defense-action-task{position:relative;display:grid;grid-template-columns:1fr auto;gap:5px 12px;margin-top:10px;padding:12px;border:1px solid #ceded3;border-radius:10px;background:white}.defense-action-task>small,.defense-action-task h3,.defense-action-task p{grid-column:1/-1}.defense-action-task h3{margin:0;color:#214c3e;font-size:clamp(14px,3vw,18px);line-height:1.2}.defense-action-task p{max-width:60ch;margin:0;color:#537062;font-size:clamp(10px,2.3vw,12px);line-height:1.4}.defense-action-appfooter{display:flex;align-items:center;justify-content:space-between;grid-column:1/-1;margin-top:3px}.defense-action-working{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:7px;background:#e3f2e8;color:#27674e;font-size:9px;font-weight:900}.defense-action-working i{width:7px;height:7px;border-radius:50%;background:#3c9a70;box-shadow:0 0 0 3px #3c9a7020;animation:defenseAppWorking .65s ease-in-out infinite alternate}.defense-action-cursor{color:#225846;font-size:17px;animation:defenseCursorTap .8s ease-in-out infinite alternate}
+.defense-action-taskbar{display:flex;align-items:center;gap:11px;min-height:26px;padding:0 10px;background:#173e3c;color:#e5f2e9;font-size:9px}.defense-action-taskbar>span:first-child{color:#8fd0aa;font-size:15px}.defense-action-taskbar small{margin-left:auto;color:#a7c8b7;font-size:7px;letter-spacing:.08em}
+.defense-action-playback-icon.motion-call,.defense-action-appicon.motion-call{animation-name:defenseActionCall}
+.defense-action-playback-icon.motion-send,.defense-action-appicon.motion-send{animation-name:defenseActionSend}
+.defense-action-playback-icon.motion-warn,.defense-action-appicon.motion-warn{animation-name:defenseActionWarn}
+.defense-action-playback-icon.motion-close,.defense-action-appicon.motion-close{animation-name:defenseActionClose}
+.defense-action-playback-icon.motion-open,.defense-action-appicon.motion-open{animation-name:defenseActionOpen}
+.defense-action-playback-icon.motion-check,.defense-action-appicon.motion-check{animation-name:defenseActionCheck}
 .defense-action-playback-card>small{color:#4d7967;font-size:10px;font-weight:900;letter-spacing:.16em}
 .defense-action-playback-card h2{margin:9px 0 10px;color:#173c32;font-size:clamp(24px,5vw,32px);line-height:1.1}
 .defense-action-playback-card p{margin:0 auto;color:#45685b;font-size:15px;line-height:1.55}
 .defense-action-progress{height:5px;margin:24px 0 0;overflow:hidden;border-radius:9px;background:#d0e2d6}
-.defense-action-progress i{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#43a578,#287156);transform:scaleX(0);transform-origin:left;animation:defenseActionProgress .95s linear both}
+.defense-action-progress i{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#43a578,#287156);transform:scaleX(0);transform-origin:left;animation:defenseActionProgress 1.6s linear both}
 @keyframes defenseActionShade{from{opacity:0}to{opacity:1}}
 @keyframes defenseActionCard{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes defensePcWake{from{opacity:.3;transform:scale(.97)}to{opacity:1;transform:scale(1)}}
+@keyframes defenseAppLaunch{from{opacity:.4;transform:translateY(12px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes defenseAppWorking{to{transform:scale(1.35);box-shadow:0 0 0 5px #3c9a7018}}
+@keyframes defenseCursorTap{0%,100%{transform:translate(0,0)}55%{transform:translate(4px,4px)}70%{transform:translate(4px,4px) scale(.8)}}
 @keyframes defenseActionCall{0%,100%{transform:rotate(0) scale(1)}20%{transform:rotate(-15deg) scale(1.05)}42%{transform:rotate(13deg) scale(1.05)}64%{transform:rotate(-9deg)}82%{transform:rotate(6deg)}}
 @keyframes defenseActionSend{0%{transform:translate(0,8px) scale(.8);opacity:.4}45%{transform:translate(-5px,-5px) scale(1.1);opacity:1}100%{transform:translate(4px,-12px) scale(.94);opacity:.85}}
 @keyframes defenseActionWarn{0%,100%{transform:translateX(0)}18%,54%{transform:translateX(-7px) rotate(-4deg)}36%,72%{transform:translateX(7px) rotate(4deg)}}
@@ -735,7 +748,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @keyframes defenseActionCheck{0%,100%{transform:scale(1);box-shadow:0 8px 22px #174b321d}45%{transform:scale(1.09);box-shadow:0 0 0 10px #59a47d20,0 8px 26px #174b3230}}
 @keyframes defenseActionProgress{to{transform:scaleX(1)}}
 @keyframes defenseActionTravel{to{left:calc(100% - 8px);transform:translateY(-50%) scale(1.3)}}
-@media(prefers-reduced-motion:reduce){.defense-action-playback-shade,.defense-action-playback-card,.defense-action-playback-icon,.defense-action-progress i,.defense-action-demo-path i{animation:none}.defense-action-progress i{transform:scaleX(1)}}
+@media(prefers-reduced-motion:reduce){.defense-action-playback-shade,.defense-action-playback-card,.defense-action-playback-icon,.defense-action-appicon,.defense-action-progress i,.defense-action-demo-path i,.defense-action-pc,.defense-action-app,.defense-action-working i,.defense-action-cursor{animation:none}.defense-action-progress i{transform:scaleX(1)}}
 .defense-reaction.is-success{background:linear-gradient(145deg,#fff9d9,#d9f5dd 72%);color:#123f32;border-color:#a3dcad}
 .defense-reaction.is-almost{background:linear-gradient(145deg,#fff9df,#e5f3dc 72%);color:#3a421c;border-color:#e6ca63}
 .defense-reaction.is-miss{background:linear-gradient(145deg,#fff0df,#f8dada 72%);color:#542d27;border-color:#efa18b}
