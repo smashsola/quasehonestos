@@ -1,28 +1,31 @@
 import {localStore as localStorage} from './safe-storage.js';
-import {speechTiming} from './speech-timing.js';
+import {speechPlan} from './speech-timing.js';
 let ctx,fanGain;
 // Cartoon syllables: each caller has a different pitch, pace and vowel color.
 const speakingNodes=new Set();
-function stopMurmurs(){for(const node of speakingNodes){try{node.stop();}catch{}}speakingNodes.clear();}
+let murmurRun=0;
+function stopMurmurs(){murmurRun++;for(const node of speakingNodes){try{node.stop();}catch{}}speakingNodes.clear();}
 document.addEventListener('qh-speaking-stop',stopMurmurs);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMurmurs();});
 document.addEventListener('click',e=>{if(e.target.closest('[data-sound-mute]'))stopMurmurs();},true);
 document.addEventListener('qh-murmur',async e=>{
- if(muted||document.hidden||!characterVolume)return;
+ const detail=e.detail||{},skip=()=>document.dispatchEvent(new CustomEvent('qh-murmur-skipped',{detail:{caller:detail.caller}}));stopMurmurs();const run=murmurRun;
+ if(muted||document.hidden||!characterVolume){skip();return;}
  try{
-  await ensureAudio();if(!ctx||muted||document.hidden)return;stopMurmurs();
-  const {pitch,pace,f1,f2,duration}=speechTiming(e.detail.caller,e.detail.emotion,e.detail.duration),start=ctx.currentTime+.02;
-  for(let i=0;i<Math.floor(duration/pace);i++){
+  await ensureAudio();if(run!==murmurRun)return;if(!ctx||ctx.state!=='running'||muted||document.hidden){skip();return;}
+  const {caller,emotion,duration:durationMs}=detail,{pitch,pace,f1,f2,duration,syllables}=speechPlan(caller,emotion,durationMs),start=ctx.currentTime+.02;let remaining=syllables;
+  for(let i=0;i<syllables;i++){
    const t=start+i*pace,voice=ctx.createOscillator(),envelope=ctx.createGain();
    voice.type='sawtooth';voice.frequency.setValueAtTime(pitch*(1+.09*Math.sin(i*2.4)),t);
-   voice.frequency.exponentialRampToValueAtTime(pitch*(i%3===0?1.16:.93),t+pace*.65);
-   envelope.gain.setValueAtTime(0,t);envelope.gain.linearRampToValueAtTime(.16*characterVolume/100,t+.015);envelope.gain.exponentialRampToValueAtTime(.0001,t+pace*.78);
+   voice.frequency.exponentialRampToValueAtTime(pitch*(i%3===0?1.16:.93),t+pace*.55);
+   envelope.gain.setValueAtTime(0,t);envelope.gain.linearRampToValueAtTime(.16*characterVolume/100,t+.015);envelope.gain.exponentialRampToValueAtTime(.0001,t+pace*.94);
    const filters=[f1,f2].map((frequency,j)=>{const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.frequency.value=frequency*(1+.15*Math.sin(i+j*2));filter.Q.value=2.5;voice.connect(filter);filter.connect(envelope);return filter;});
    envelope.connect(ctx.destination);speakingNodes.add(voice);
-   voice.onended=()=>{speakingNodes.delete(voice);voice.disconnect();filters.forEach(filter=>filter.disconnect());envelope.disconnect();};
-   voice.start(t);voice.stop(t+pace*.82);
+   voice.onended=()=>{speakingNodes.delete(voice);voice.disconnect();filters.forEach(filter=>filter.disconnect());envelope.disconnect();if(run===murmurRun&&--remaining===0)document.dispatchEvent(new CustomEvent('qh-speaking-end',{detail:{caller}}));};
+   voice.start(t);voice.stop(t+pace);
   }
- }catch{}
+  document.dispatchEvent(new CustomEvent('qh-speaking-start',{detail:{caller,emotion,duration:duration*1000,pace}}));
+ }catch{if(run===murmurRun)skip();}
 });
 let muted=localStorage.getItem('qh-muted')==='true';
 const setting=(key,fallback)=>{const raw=localStorage.getItem(key),value=Number(raw);return raw!==null&&Number.isFinite(value)?Math.max(0,Math.min(100,value)):fallback;};

@@ -123,9 +123,22 @@ let bootReadyWaiting=false;
 function clearDefensePlayback(){for(const timer of defensePlaybackTimers)clearTimeout(timer);defensePlaybackTimers=[];document.dispatchEvent(new CustomEvent('qh-speaking-stop'));}
 function defenseMurmurDuration(text){return Math.min(4200,Math.max(2800,replyDuration(text)));}
 function speakDefenseLine(active,text,caller,emotion,duration=defenseMurmurDuration(text)){if(!active||!text||!caller)return;document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller,duration,emotion,text}}));}
+function finishDefensePlayback(active){
+ if(state.active!==active||active.outcome||!finishDefenseMurmur(active))return;
+ for(const timer of defensePlaybackTimers)clearTimeout(timer);defensePlaybackTimers=[];document.dispatchEvent(new CustomEvent('qh-speaking-stop'));render();
+}
+document.addEventListener('qh-speaking-start',e=>{
+ const active=state.active;if(active?.mode!=='defense'||active.scammerId!==e.detail?.caller||active.chatStage!=='speaking'||active.outcome)return;
+ for(const timer of defensePlaybackTimers)clearTimeout(timer);defensePlaybackTimers=[];
+ const duration=Number(e.detail.duration)||defenseMurmurDuration(defenseCases[active.caseId].message);
+ if(active.scammerSpeakingExpression&&active.scammerSpeakingExpression!==active.scammerExpression)defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome||active.chatStage!=='speaking')return;active.scammerExpression=active.scammerSpeakingExpression;render();document.dispatchEvent(new CustomEvent('qh-speaking-expression',{detail:{caller:active.scammerId,emotion:active.scammerExpression}}));},Math.round(duration*.58)));
+ defensePlaybackTimers.push(setTimeout(()=>finishDefensePlayback(active),duration+350));
+});
+document.addEventListener('qh-speaking-end',e=>{const active=state.active;if(active?.mode==='defense'&&active.scammerId===e.detail?.caller)finishDefensePlayback(active);});
+document.addEventListener('qh-murmur-skipped',e=>{const active=state.active;if(active?.mode==='defense'&&active.scammerId===e.detail?.caller)finishDefensePlayback(active);});
 function startDefenseMurmur(active,scenario){
  if(!active||state.active!==active||active.mode!=='defense'||active.outcome||!scenario||active.murmurHeard)return;
- clearDefensePlayback();active.chatStage='speaking';active.murmurHeard=true;render();const duration=defenseMurmurDuration(scenario.message);speakDefenseLine(active,scenario.message,active.scammerId,active.scammerExpression,duration);if(active.scammerSpeakingExpression&&active.scammerSpeakingExpression!==active.scammerExpression)defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome||active.chatStage!=='speaking')return;active.scammerExpression=active.scammerSpeakingExpression;render();document.dispatchEvent(new CustomEvent('qh-speaking-expression',{detail:{caller:active.scammerId,emotion:active.scammerExpression}}));},Math.round(duration*.58)));defensePlaybackTimers.push(setTimeout(()=>{if(state.active!==active||active.outcome||!finishDefenseMurmur(active))return;document.dispatchEvent(new CustomEvent('qh-speaking-stop'));render();},duration));
+ clearDefensePlayback();active.chatStage='speaking';active.murmurHeard=true;render();const duration=defenseMurmurDuration(scenario.message);speakDefenseLine(active,scenario.message,active.scammerId,active.scammerExpression,duration);defensePlaybackTimers.push(setTimeout(()=>finishDefensePlayback(active),duration+1800));
 }
 function animateIncoming(){
  const active=state.active;if(active?.mode!=='defense'){render();return;}
