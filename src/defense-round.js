@@ -107,6 +107,14 @@ export const defenseFailures={
  'card-swap':{icon:'💳',title:'A senha foi vista e o cartão pode ter sido trocado',result:'O cartão que ficou com você pode pertencer a outra pessoa. Na vida real, bloqueie seu cartão pelo app do banco e confira as compras recentes.'}
 };
 
+export const defenseActionSounds={
+ 'verify-person':'call','pause-family':'call','call-bank':'call','ask-adult':'call',
+ 'hangup-official':'hangup',
+ 'ask-secret':'message','send-doc':'message','reply-cpf':'message','ask-it':'message','send-document':'message','send-cpf':'message',
+ 'give-code':'keypad','repeat-pin':'keypad',
+ 'send-pix':'payment','transfer-safe':'payment','refund-other':'payment','pay-qr':'payment','pay-link':'payment','pay-direct':'payment','pay-fee':'payment'
+};
+
 export const defenseActionScenes={
  'verify-person':{icon:'📞',title:'Ligando para o contato salvo',detail:'A chamada vai para o número que já estava na agenda.',motion:'call',target:'AGENDA'},
  'send-pix':{icon:'💸',title:'Preparando o Pix',detail:'O valor vai para a chave enviada na mensagem.',motion:'send',target:'CHAVE NOVA'},
