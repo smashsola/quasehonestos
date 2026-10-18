@@ -6,6 +6,7 @@ const speakingNodes=new Set();
 let murmurRun=0;
 const softVoices=new Set(['nino','yara','bia','luana','maya','duda','golpista2','golpista3']);
 const grittyVoices=new Set(['davi','bento','caio','igor','rafa','golpista1','golpista5']);
+const quieterVoices=new Set(['davi','bento','caio','igor','rafa','golpista1','golpista5']);
 function stopMurmurs(){murmurRun++;for(const node of speakingNodes){try{node.stop();}catch{}}speakingNodes.clear();}
 document.addEventListener('qh-speaking-stop',stopMurmurs);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMurmurs();});
@@ -20,7 +21,7 @@ document.addEventListener('qh-murmur',async e=>{
    const t=start+i*pace,voice=ctx.createOscillator(),envelope=ctx.createGain();
    voice.type=softVoices.has(caller)?'triangle':grittyVoices.has(caller)?'sawtooth':'square';voice.frequency.setValueAtTime(pitch*(1+.09*Math.sin(i*2.4)),t);
    voice.frequency.exponentialRampToValueAtTime(pitch*(i%3===0?1.16:.93),t+pace*.55);
-   envelope.gain.setValueAtTime(0,t);envelope.gain.linearRampToValueAtTime(.3*characterVolume/100,t+.015);envelope.gain.exponentialRampToValueAtTime(.0001,t+pace*.94);
+   envelope.gain.setValueAtTime(0,t);envelope.gain.linearRampToValueAtTime(.36*(quieterVoices.has(caller)?1.2:1)*characterVolume/100,t+.015);envelope.gain.exponentialRampToValueAtTime(.0001,t+pace*.94);
    const filters=[f1,f2].map((frequency,j)=>{const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.frequency.value=frequency*(1+.15*Math.sin(i+j*2));filter.Q.value=2.5;voice.connect(filter);filter.connect(envelope);return filter;});
    envelope.connect(ctx.destination);speakingNodes.add(voice);
    voice.onended=()=>{speakingNodes.delete(voice);voice.disconnect();filters.forEach(filter=>filter.disconnect());envelope.disconnect();if(run===murmurRun&&--remaining===0)document.dispatchEvent(new CustomEvent('qh-speaking-end',{detail:{caller}}));};
