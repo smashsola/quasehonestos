@@ -89,6 +89,11 @@ export function startDefenseCall(cursor){
  const scammer=scammerPeople.find(contact=>contact.id===person.scammerId);
  return {mode:'defense',caller:person.id,scammerId:scammer?.id,caseId:person.caseId,trust:0,used:[],log:[],outcome:null,expression:person.emotion||'confused',scammerExpression:scammer?.emotion||'confused',chatVisible:0,chatStage:'typing',unread:true};
 }
+export function resumeDefenseCall(a){
+ if(a?.mode!=='defense'||a.outcome)return false;
+ if(a.ransomwareDeadline){a.chatStage='ready';a.chatVisible=2;return true;}
+ a.chatStage='typing';a.chatVisible=1;a.unread=true;a.murmurHeard=false;return true;
+}
 export function decideDefense(a,choiceId,now=Date.now()){
  if(a?.mode!=='defense'||a.outcome)return false;
  const scenario=defenseCases[a.caseId],choice=scenario?.choices.find(c=>c.id===choiceId);
