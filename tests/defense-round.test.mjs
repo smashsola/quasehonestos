@@ -104,3 +104,7 @@ test('Ransomware é só simulação, permite desconectar e encerra após 45 segu
  assert.equal(stopRansomware(a),true);assert.equal(a.outcome,'blocked');assert.equal(a.ransomwareDeadline,null);
  const b=startDefenseCall(5);decideDefense(b,unsafe.id,2000);assert.equal(expireRansomware(b,47000),true);assert.equal(b.gameOver,true);assert.match(b.feedback,/salário inexistente de estagiário/);
 });
+test('Confetes continuam animados mesmo com movimento reduzido',async()=>{
+ const css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
+ assert.match(css,/\.desktop \.defense-confetti-corner i\{animation:defenseConfettiFly[^}]+!important\}/);
+});

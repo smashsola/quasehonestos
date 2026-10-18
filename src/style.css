@@ -511,6 +511,7 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
  @media(orientation:landscape) and (max-height:520px){.desktop-window[data-window-id="calls"] .contact,.desktop-window[data-window-id="calls"] .trust-card{display:none}.desktop-top{display:none}.desktop-window[data-window-id]{top:0!important;height:calc(100% - 64px - env(safe-area-inset-bottom))!important}.compose-help{display:none!important}}
 }
 @media(prefers-reduced-motion:reduce){.desktop *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media(prefers-reduced-motion:reduce){.desktop .defense-confetti-corner i{animation:defenseConfettiFly 1.55s cubic-bezier(.12,.56,.18,1) calc(.34s + var(--wait)) both!important}}
 .conversation[hidden],.debrief[hidden]{display:none!important}
 .result-tabs{display:flex;gap:8px;padding:8px 14px;margin:0;flex-shrink:0;background:#1c3238;border-bottom:1px solid #4e7169}
 .result-tabs button{min-height:44px;padding:10px 14px;border:1px solid #54756e;border-radius:5px;background:transparent;color:#c9ddd5;font-size:13px}
