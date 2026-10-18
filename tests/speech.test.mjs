@@ -17,7 +17,7 @@ test('Personagens fazem murmúrio sem narrar o texto em voz alta',async()=>{
  assert.match(audio,/voice\.type='sawtooth'/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
 });
 test('Retratos falantes mantêm emoção, abrem a boca de forma visível e têm ritmo legível',async()=>{
- for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}-talking.svg`,import.meta.url),'utf8');assert.match(svg,/mouth-rest/);assert.match(svg,/mouth-speaking/);assert.match(svg,/rx="12" ry="9"/);assert.match(svg,/class="speech-head"/);assert.match(svg,/prefers-reduced-motion/);assert.ok(svg.includes(`syllable ${speechTiming(caller,emotion).pace}s`));}
+ for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}-talking.svg`,import.meta.url),'utf8');assert.match(svg,/mouth-rest/);assert.match(svg,/mouth-speaking/);assert.match(svg,/rx="12" ry="9"/);assert.match(svg,/class="speech-head"/);assert.match(svg,/prefers-reduced-motion/);assert.equal((svg.match(/<g\b/g)||[]).length,(svg.match(/<\/g>/g)||[]).length,`${caller}/${emotion}: SVG com grupos fechados`);assert.ok(svg.includes(`syllable ${speechTiming(caller,emotion).pace}s`));}
 });
 test('Luana e o contato da cobrança têm silhuetas bem distintas nos retratos parados e falando',async()=>{
  for(const caller of ['luana','golpista3'])for(const emotion of expressions)for(const suffix of ['', '-talking']){
