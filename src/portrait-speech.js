@@ -29,9 +29,9 @@ function stopSpeech(){clearTimeout(timer);clearInterval(frameTimer);speech=null;
 document.addEventListener('qh-speaking-expression',e=>{if(!speech||speech.caller!==e.detail?.caller||!expressions.includes(e.detail?.emotion))return;speech.emotion=e.detail.emotion;updatePortraits();});
 document.addEventListener('qh-speaking-start',e=>{
  const {caller,emotion,duration,pace}=e.detail||{};if(document.hidden||!voiceProfiles[caller]||!expressions.includes(emotion))return;
- stopSpeech();const reducedMotion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches===true;speech={caller,emotion,mouthOpen:!reducedMotion};updatePortraits();
+ stopSpeech();speech={caller,emotion,mouthOpen:true};updatePortraits();
  const beat=Number(pace)||speechPlan(caller,emotion,duration).pace;
- if(!reducedMotion)frameTimer=setInterval(()=>{if(!speech)return;speech.mouthOpen=!speech.mouthOpen;updatePortraits();},beat*500);
+ frameTimer=setInterval(()=>{if(!speech)return;speech.mouthOpen=!speech.mouthOpen;updatePortraits();},beat*500);
  timer=setTimeout(stopSpeech,Number(duration)||speechPlan(caller,emotion).duration*1000);
 });
 document.addEventListener('qh-murmur',e=>{
