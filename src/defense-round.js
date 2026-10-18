@@ -1,10 +1,10 @@
 export const scammerPeople=[
- {id:'golpista1',emotion:'amused'},
- {id:'golpista2',emotion:'suspicious'},
- {id:'golpista3',emotion:'confused'},
- {id:'golpista4',emotion:'thinking'},
- {id:'golpista5',emotion:'surprised'},
- {id:'golpista6',emotion:'angry'}
+ {id:'golpista1',emotion:'amused',speakingExpression:'happy'},
+ {id:'golpista2',emotion:'suspicious',speakingExpression:'thinking'},
+ {id:'golpista3',emotion:'confused',speakingExpression:'suspicious'},
+ {id:'golpista4',emotion:'thinking',speakingExpression:'amused'},
+ {id:'golpista5',emotion:'surprised',speakingExpression:'happy'},
+ {id:'golpista6',emotion:'angry',speakingExpression:'suspicious'}
 ];
 
 export const defensePeople=[
@@ -87,7 +87,7 @@ export function startDefenseCall(cursor){
  const person=defensePeople[cursor],scenario=person&&defenseCases[person.caseId];
  if(!person||!scenario)return null;
  const scammer=scammerPeople.find(contact=>contact.id===person.scammerId);
- return {mode:'defense',caller:person.id,scammerId:scammer?.id,caseId:person.caseId,trust:0,used:[],log:[],outcome:null,expression:person.emotion||'confused',scammerExpression:scammer?.emotion||'confused',chatVisible:0,chatStage:'typing',unread:true};
+ return {mode:'defense',caller:person.id,scammerId:scammer?.id,caseId:person.caseId,trust:0,used:[],log:[],outcome:null,expression:person.emotion||'confused',scammerExpression:scammer?.emotion||'confused',scammerSpeakingExpression:scammer?.speakingExpression||scammer?.emotion||'confused',chatVisible:0,chatStage:'typing',unread:true};
 }
 export function resumeDefenseCall(a){
  if(a?.mode!=='defense'||a.outcome)return false;
@@ -116,3 +116,5 @@ export function expireRansomware(a,now=Date.now()){
  if(a?.mode!=='defense'||!a.ransomwareDeadline||now<a.ransomwareDeadline||a.outcome)return false;
  a.ransomwareDeadline=null;a.outcome='fooled';a.gameOver=true;a.expression='hurt';a.feedback='Os arquivos de brincadeira foram bloqueados. Na vida real, isole o dispositivo da rede e contate o suporte de segurança; não pague nem apague evidências sem orientação. O resgate não garante recuperação. Game over: o chefe vai com certeza descontar do seu salário inexistente de estagiário.';a.log.push({speaker:'Sistema',text:a.feedback});return true;
 }
+
+export function finishDefenseMurmur(a){if(!a||a.chatStage!=='speaking')return false;a.chatStage='ready';return true;}
