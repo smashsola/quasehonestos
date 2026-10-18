@@ -95,6 +95,18 @@ export const defenseMechanics={
  'card-swap':{icon:'💳',title:'Cartão devolvido',button:'Conferir o nome',result:'Confira o nome antes de guardar. Se não for seu cartão, não use: bloqueie e avise o banco.'}
 };
 
+export const defenseFailures={
+ whatsapp:{icon:'💸',title:'O Pix foi para o número novo',result:'A pessoa por trás desse número recebeu o dinheiro. Na vida real, avise o banco pelo canal oficial e tente pedir o bloqueio da transferência.'},
+ 'bank-call':{icon:'🔐',title:'O código abriu caminho para o golpista',result:'O código ou aplicativo pode dar acesso à conta. Na vida real, encerre a ligação, avise o banco pelo app oficial e troque suas senhas em um aparelho seguro.'},
+ 'fake-pix':{icon:'🧁',title:'O pedido saiu antes do Pix cair',result:'A imagem não confirmou o pagamento e o dinheiro não entrou. Na vida real, confira o extrato e, se já entregou o pedido, fale com seu banco.'},
+ boleto:{icon:'🧾',title:'O pagamento foi para outra conta',result:'O QR ou boleto pode ter enviado o dinheiro a um golpista. Na vida real, avise o banco e peça orientação para contestar a transferência.'},
+ delivery:{icon:'📦',title:'O link ficou com seus dados',result:'A página falsa pode usar os dados do cartão ou pessoais que você informou. Na vida real, bloqueie o cartão pelo app oficial e avise a loja ou o banco.'},
+ 'fake-motoboy':{icon:'💳',title:'O cartão e a senha ficaram expostos',result:'Alguém pode usar o cartão ou a senha. Na vida real, bloqueie o cartão pelo app oficial, ligue para o banco e conteste compras que não reconhece.'},
+ 'fake-store':{icon:'🛍️',title:'O Pix foi pago fora da plataforma',result:'A loja pode não existir e o pagamento fica sem a proteção da plataforma. Na vida real, avise o banco e denuncie a oferta no serviço onde a encontrou.'},
+ 'fake-government':{icon:'🪪',title:'Seus dados ou o pagamento foram para uma página falsa',result:'O link pode usar os dados enviados ou ficar com a taxa. Na vida real, avise o banco se pagou e procure o órgão pelo site oficial se compartilhou dados.'},
+ 'card-swap':{icon:'💳',title:'A senha foi vista e o cartão pode ter sido trocado',result:'O cartão que ficou com você pode pertencer a outra pessoa. Na vida real, bloqueie seu cartão pelo app do banco e confira as compras recentes.'}
+};
+
 export function useDefenseMechanic(a){
  const mechanic=defenseMechanics[a?.caseId];
  if(a?.mode!=='defense'||a.outcome||!a.chatVisible||a.ransomwareDeadline||!mechanic||a.mechanicUsed)return false;
@@ -118,7 +130,7 @@ export function decideDefense(a,choiceId,now=Date.now()){
  if(!choice||a.used.includes(choice.id))return false;
  a.used.push(choice.id);a.choice=choice.id;a.log.push({speaker:'Sistema',text:choice.label,action:true});
  if(choice.ransomware){a.ransomwareDeadline=now+10_000;a.ransomwareTriggeredAt=now;a.outcome=null;a.expression='surprised';a.log.push({speaker:'Sistema',text:'ALERTA: a máquina fictícia começou a bloquear arquivos. Você tem 10 segundos para desconectá-la da rede e acionar o suporte. Nada será alterado neste computador.'});}
- else {a.outcome=choice.safe?'blocked':'fooled';a.reactionTier=choice.safe?'success':'miss';a.feedback=choice.feedback;a.expression=choice.safe?'thinking':'hurt';a.log.push({speaker:'Sistema',text:choice.feedback});}
+ else {a.outcome=choice.safe?'blocked':'fooled';a.reactionTier=choice.safe?'success':'miss';a.feedback=choice.feedback;a.consequence=choice.safe?null:defenseFailures[a.caseId]||null;a.expression=choice.safe?'thinking':'hurt';a.log.push({speaker:'Sistema',text:choice.feedback});}
  return true;
 }
 export function stopRansomware(a){
