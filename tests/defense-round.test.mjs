@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {defensePeople,scammerPeople,defenseCases,defenseMechanics,startDefenseCall,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware,useDefenseMechanic} from '../src/defense-round.js';
+import {defensePeople,scammerPeople,defenseCases,defenseMechanics,defenseFailures,startDefenseCall,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware,useDefenseMechanic} from '../src/defense-round.js';
 import {fresh,nextCall,finishCall,migrateToDefense} from '../src/engine.js';
 import {defenseView} from '../src/defense-view.js';
 import {helpContent} from '../src/app-content.js';
@@ -25,20 +25,26 @@ test('Cada golpista tem uma fala engraçada e uma segunda ação classificada se
  for(const person of defensePeople){const scenario=defenseCases[person.caseId],witty=scenario.choices.filter(choice=>choice.witty),classified=scenario.choices.filter(choice=>choice.classification);assert.ok(person.name);assert.ok(scenario.technique);assert.equal(scenario.choices.length,4);assert.ok(scenario.choices.every(choice=>choice.label.startsWith('AÇÃO — ')));assert.equal(witty.length,1,`${person.name} deve ter exatamente uma opção engraçada`);assert.equal(witty[0].safe,true);assert.equal(classified.length,1,`${person.name} deve ter uma ação classificada`);assert.equal(classified[0].safe,false);}
 });
 
-test('Cada conversa tem uma interação rápida própria, opcional e sem punição',()=>{
+test('Cada conversa tem uma dica rápida própria, opcional e sem punição',()=>{
  const mechanics=Object.values(defenseMechanics);assert.equal(mechanics.length,9);assert.equal(new Set(mechanics.map(item=>item.button)).size,9);
  for(const person of defensePeople){const active=startDefenseCall(defensePeople.indexOf(person));active.chatVisible=1;if(person.caseId==='ransomware'){assert.equal(defenseMechanics[person.caseId],undefined);assert.equal(useDefenseMechanic(active),false);continue;}assert.ok(defenseMechanics[person.caseId]);assert.equal(useDefenseMechanic(active),true);assert.equal(active.mechanicFeedback,defenseMechanics[person.caseId].result);assert.equal(active.outcome,null);assert.equal(useDefenseMechanic(active),false);}
 });
 
 test('Interações rápidas aparecem junto da conversa e o resultado fica visível após tocar',()=>{
- const active=startDefenseCall(0);active.chatVisible=1;active.chatStage='ready';const view=()=>defenseView({active,cursor:0},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(view(),/data-defense-mechanic/);assert.match(view(),/Conferir o contato/);assert.equal(useDefenseMechanic(active),true);assert.match(view(),/role="status" tabindex="-1" data-mechanic-status/);assert.match(view(),/Este número não está salvo/);assert.doesNotMatch(view(),/data-defense-mechanic/);
+ const active=startDefenseCall(0);active.chatVisible=1;active.chatStage='ready';const view=()=>defenseView({active,cursor:0},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(view(),/DICA · OPCIONAL/);assert.match(view(),/Toque para ver uma pista/);assert.match(view(),/data-defense-mechanic/);assert.equal(useDefenseMechanic(active),true);assert.match(view(),/role="status" tabindex="-1" data-mechanic-status/);assert.match(view(),/DICA<\/small>/);assert.match(view(),/Este número não está salvo/);assert.doesNotMatch(view(),/data-defense-mechanic/);
 });
 
-test('Cada escolha mostra uma reação grande, com parabéns, quase lá ao pausar ou ops ao errar',async()=>{
+test('Cada erro tem uma consequência própria e orientação; ransomware mantém a pane especial',()=>{
+ assert.equal(Object.keys(defenseFailures).length,9);
+ const titles=new Set();
+ for(const person of defensePeople){const scenario=defenseCases[person.caseId],wrong=scenario.choices.find(choice=>!choice.safe);assert.ok(wrong);const active=startDefenseCall(defensePeople.indexOf(person));assert.equal(decideDefense(active,wrong.id,1000),true);if(person.caseId==='ransomware'){assert.equal(active.consequence,undefined);assert.ok(active.ransomwareDeadline);continue;}const effect=defenseFailures[person.caseId];assert.ok(effect,`consequência de ${person.caseId}`);assert.ok(!titles.has(effect.title),`título repetido: ${effect.title}`);titles.add(effect.title);assert.equal(active.consequence,effect);const html=defenseView({active,cursor:0},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(html,/class="defense-feedback defense-reaction defense-consequence is-miss/);assert.ok(html.includes(effect.icon));assert.ok(html.includes(effect.title));assert.ok(html.includes(effect.result));assert.match(html,/Isso aconteceu só no jogo/);}
+});
+
+test('Cada escolha mostra uma reação grande, com parabéns, quase lá ao pausar ou consequência ao errar',async()=>{
  const render=active=>defenseView({active,cursor:0},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
  const safe=startDefenseCall(0);decideDefense(safe,'verify-person',1000);assert.equal(safe.reactionTier,'success');assert.match(render(safe),/class="defense-feedback defense-reaction is-success"/);assert.match(render(safe),/PARABÉNS!/);assert.match(render(safe),/🎉/);assert.equal((render(safe).match(/class="defense-confetti-corner /g)||[]).length,4);assert.equal((render(safe).match(/<i style="--dx:/g)||[]).length,72);
  const almost=startDefenseCall(0);endDefenseContact(almost);assert.equal(almost.reactionTier,'almost');assert.match(render(almost),/class="defense-feedback defense-reaction is-almost"/);assert.match(render(almost),/QUASE LÁ!/);assert.doesNotMatch(render(almost),/defense-confetti/);
- const miss=startDefenseCall(0);decideDefense(miss,'send-pix',1000);assert.equal(miss.reactionTier,'miss');assert.match(render(miss),/class="defense-feedback defense-reaction is-miss"/);assert.match(render(miss),/OPS, VACILOU!/);assert.match(render(miss),/aria-modal="true"/);assert.doesNotMatch(render(miss),/defense-confetti/);
+ const miss=startDefenseCall(0);decideDefense(miss,'send-pix',1000);assert.equal(miss.reactionTier,'miss');assert.match(render(miss),/class="defense-feedback defense-reaction defense-consequence is-miss/);assert.match(render(miss),/O Pix foi para o número novo/);assert.match(render(miss),/aria-modal="true"/);assert.doesNotMatch(render(miss),/defense-confetti/);
  const [audio,game,css]=await Promise.all([readFile(new URL('../src/audio.js',import.meta.url),'utf8'),readFile(new URL('../src/game.js',import.meta.url),'utf8'),readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8')]);assert.match(game,/CustomEvent\('qh-defense-reaction'/);assert.match(audio,/addEventListener\('qh-defense-reaction'/);assert.match(audio,/tier==='success'/);assert.match(audio,/reactionTone\(frequency,start\+i\*\.15,\.28,\.3,'triangle'\)/);assert.match(audio,/reactionTone\(frequency\*2,start\+i\*\.15,\.19,\.075,'sine'\)/);assert.match(audio,/frequency,start\+\.72,\.68,\.18,'sine'/);assert.match(audio,/level\*1\.5\*messageVolume\/65/);assert.match(audio,/createDynamicsCompressor/);assert.match(audio,/tier==='almost'/);assert.match(audio,/reactionTone\(frequency,start\+i\*\.14,\.24,\.2,'triangle'\)/);assert.match(audio,/reactionTone\(392,start,\.58,\.3,'triangle',110\)/);assert.match(audio,/reactionTone\(146\.83,start\+\.08,\.48,\.23,'sawtooth',98\)/);assert.match(css,/animation:defenseConfettiFly/);assert.match(css,/@keyframes defenseConfettiFly/);assert.doesNotMatch(css,/defense-confetti-corner i\{animation:none/);
 });
 
