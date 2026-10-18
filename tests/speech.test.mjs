@@ -26,11 +26,11 @@ test('Luana e o contato da cobrança têm silhuetas bem distintas nos retratos p
   const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}${suffix}.svg`,import.meta.url),'utf8');assert.match(svg,/M25 27C19 30/);
  }
 });
-test('Rosto acompanha o ritmo do murmúrio real, persiste após render e para ao ocultar a página',async()=>{
- const original={document:globalThis.document,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout,setInterval:globalThis.setInterval,clearInterval:globalThis.clearInterval};const events={};let end,animate;
+test('Rosto acompanha o ritmo do murmúrio mesmo com movimento reduzido, persiste após render e para ao ocultar a página',async()=>{
+ const original={document:globalThis.document,matchMedia:globalThis.matchMedia,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout,setInterval:globalThis.setInterval,clearInterval:globalThis.clearInterval};const events={};let end,animate;
  const img={src:''},label={textContent:''},avatar={dataset:{caller:'nino',expression:'happy'},querySelector:()=>img,classList:{toggle(){}},parentElement:{querySelector:()=>label}};
  try{
- globalThis.document={hidden:false,addEventListener:(name,cb)=>events[name]=cb,querySelectorAll:()=>[avatar]};globalThis.setTimeout=cb=>{end=cb;return 1;};globalThis.clearTimeout=()=>{};globalThis.setInterval=(cb,delay)=>{assert.equal(delay,150,`movimento labial sincronizado: ${delay}ms`);animate=cb;return 2;};globalThis.clearInterval=()=>{};
+ globalThis.document={hidden:false,addEventListener:(name,cb)=>events[name]=cb,querySelectorAll:()=>[avatar]};globalThis.matchMedia=()=>({matches:true});globalThis.setTimeout=cb=>{end=cb;return 1;};globalThis.clearTimeout=()=>{};globalThis.setInterval=(cb,delay)=>{assert.equal(delay,150,`movimento labial sincronizado: ${delay}ms`);animate=cb;return 2;};globalThis.clearInterval=()=>{};
  const {portraitSource,updatePortraits}=await import('../src/portrait-speech.js');
  events['qh-murmur']({detail:{caller:'nino',emotion:'happy',duration:1800}});assert.doesNotMatch(img.src,/-talking.svg$/);events['qh-speaking-start']({detail:{caller:'nino',emotion:'happy',duration:1800,pace:.3}});assert.match(img.src,/happy-talking.svg$/);assert.equal(label.textContent,'falando…');updatePortraits();assert.match(portraitSource('nino','happy'),/-talking/);animate();assert.match(img.src,/nino-happy.svg$/);animate();assert.match(img.src,/happy-talking.svg$/);end();assert.match(img.src,/nino-happy.svg$/);assert.equal(label.textContent,'animado');
  events['qh-speaking-start']({detail:{caller:'nino',emotion:'happy',duration:1800,pace:.3}});avatar.dataset.expression='confused';events['qh-speaking-expression']({detail:{caller:'nino',emotion:'confused'}});assert.match(img.src,/confused-talking.svg$/);assert.match(portraitSource('nino','confused'),/-talking/);document.hidden=true;events.visibilitychange();assert.doesNotMatch(img.src,/-talking/);
