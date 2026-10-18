@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {defensePeople,scammerPeople,defenseCases,defenseMechanics,defenseFailures,startDefenseCall,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware,useDefenseMechanic} from '../src/defense-round.js';
+import {defensePeople,scammerPeople,defenseCases,defenseMechanics,defenseFailures,defenseActionScenes,startDefenseCall,resumeDefenseCall,finishDefenseMurmur,decideDefense,stopRansomware,endDefenseContact,expireRansomware,useDefenseMechanic} from '../src/defense-round.js';
 import {fresh,nextCall,finishCall,migrateToDefense} from '../src/engine.js';
 import {defenseView} from '../src/defense-view.js';
 import {helpContent} from '../src/app-content.js';
@@ -10,8 +10,8 @@ import {readFile} from 'node:fs/promises';
 const escape=value=>String(value).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
 test('Ao voltar para uma conversa salva, o murmúrio do golpista toca de novo',()=>{
- const active=startDefenseCall(2);active.chatVisible=2;active.chatStage='ready';active.murmurHeard=true;
- assert.equal(resumeDefenseCall(active),true);assert.equal(active.chatStage,'typing');assert.equal(active.chatVisible,1);assert.equal(active.unread,true);assert.equal(active.murmurHeard,false);
+ const active=startDefenseCall(2);active.chatVisible=2;active.chatStage='ready';active.murmurHeard=true;active.actionPending='deliver-proof';
+ assert.equal(resumeDefenseCall(active),true);assert.equal(active.actionPending,null);assert.equal(active.chatStage,'typing');assert.equal(active.chatVisible,1);assert.equal(active.unread,true);assert.equal(active.murmurHeard,false);
  const ransomware=startDefenseCall(5);ransomware.ransomwareDeadline=Date.now()+10_000;assert.equal(resumeDefenseCall(ransomware),true);assert.equal(ransomware.chatStage,'ready');assert.equal(ransomware.chatVisible,2);
 });
 
@@ -38,6 +38,13 @@ test('Cada erro tem uma consequência própria e orientação; ransomware manté
  assert.equal(Object.keys(defenseFailures).length,9);
  const titles=new Set();
  for(const person of defensePeople){const scenario=defenseCases[person.caseId],wrong=scenario.choices.find(choice=>!choice.safe);assert.ok(wrong);const active=startDefenseCall(defensePeople.indexOf(person));assert.equal(decideDefense(active,wrong.id,1000),true);if(person.caseId==='ransomware'){assert.equal(active.consequence,undefined);assert.ok(active.ransomwareDeadline);continue;}const effect=defenseFailures[person.caseId];assert.ok(effect,`consequência de ${person.caseId}`);assert.ok(!titles.has(effect.title),`título repetido: ${effect.title}`);titles.add(effect.title);assert.equal(active.consequence,effect);const html=defenseView({active,cursor:0},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(html,/class="defense-feedback defense-reaction defense-consequence is-miss/);assert.ok(html.includes(effect.icon));assert.ok(html.includes(effect.title));assert.ok(html.includes(effect.result));assert.match(html,/Isso aconteceu só no jogo/);}
+});
+
+test('Cada uma das 40 ações dos dez turnos mostra sua própria cena animada',async()=>{
+ const options=Object.values(defenseCases).flatMap(scenario=>scenario.choices);assert.equal(options.length,40);assert.equal(Object.keys(defenseActionScenes).length,40);
+ const titles=new Set();
+ for(const person of defensePeople){const scenario=defenseCases[person.caseId],active=startDefenseCall(defensePeople.indexOf(person));active.chatVisible=1;active.chatStage='ready';for(const choice of scenario.choices){const scene=defenseActionScenes[choice.id];assert.ok(scene,`cena para ${choice.id}`);assert.ok(scene.title&&scene.detail&&scene.icon&&scene.motion,`cena completa para ${choice.id}`);assert.ok(!titles.has(scene.title),`cena repetida: ${scene.title}`);titles.add(scene.title);active.actionPending=choice.id;const html=defenseView({active,cursor:defensePeople.indexOf(person)},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.ok(html.includes(`data-action-scene="${choice.id}"`));assert.ok(html.includes(scene.title));assert.ok(html.includes(scene.detail));assert.ok(html.includes(`motion-${scene.motion}`));assert.match(html,/AÇÃO EM ANDAMENTO/);assert.match(html,/defense-action-progress/);assert.match(html,/data-defense-choice="[^"]+"[^>]*disabled/);}}
+ const [game,css]=await Promise.all([readFile(new URL('../src/game.js',import.meta.url),'utf8'),readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8')]);assert.match(game,/active\.actionPending=choiceId/);assert.match(game,/active\.actionPending=null/);assert.match(game,/},950\)/);assert.match(css,/\.defense-action-playback-icon\.motion-call/);assert.match(css,/@keyframes defenseActionCall/);assert.match(css,/\.defense-action-progress i/);
 });
 
 test('Cada escolha mostra uma reação grande, com parabéns, quase lá ao pausar ou consequência ao errar',async()=>{
