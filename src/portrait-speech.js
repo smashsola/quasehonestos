@@ -1,5 +1,5 @@
 import {expressions,expressionNames} from './mood.js';
-import {voiceProfiles,speechTiming} from './speech-timing.js';
+import {voiceProfiles,speechPlan} from './speech-timing.js';
 let speech=null,timer,frameTimer;
 const readyImages=new Map();
 function preload(src){
@@ -19,21 +19,23 @@ export function portraitSource(caller,emotion){
 }
 export function updatePortraits(){
  document.querySelectorAll('.avatar[data-caller],.defense-sender-avatar[data-caller]').forEach(avatar=>{
-  const caller=avatar.dataset.caller,emotion=avatar.dataset.expression,img=avatar.querySelector('img'),talking=avatar.dataset.speaking==='true'||speech?.caller===caller&&speech.emotion===emotion;
-  if(img){const active=speech?.caller===caller&&speech.emotion===emotion,source=avatar.dataset.speaking==='true'&&active&&speech.mouthOpen?`/src/portraits/${caller}-${emotion}-talking.svg`:portraitSource(caller,emotion);if(!img.src.endsWith(source))img.src=source;preload(`/src/portraits/${caller}-${emotion}-talking.svg`);}
+  const caller=avatar.dataset.caller,emotion=avatar.dataset.expression,img=avatar.querySelector('img'),active=speech?.caller===caller&&speech.emotion===emotion,talking=active;
+  if(img){const source=portraitSource(caller,emotion);if(!img.src.endsWith(source))img.src=source;preload(`/src/portraits/${caller}-${emotion}-talking.svg`);}
   avatar.classList.toggle('is-speaking',talking);
   const label=avatar.parentElement.querySelector('.portrait-emotion');if(label)label.textContent=talking?'falando…':expressionNames[emotion];
  });
 }
 function stopSpeech(){clearTimeout(timer);clearInterval(frameTimer);speech=null;updatePortraits();}
 document.addEventListener('qh-speaking-expression',e=>{if(!speech||speech.caller!==e.detail?.caller||!expressions.includes(e.detail?.emotion))return;speech.emotion=e.detail.emotion;updatePortraits();});
+document.addEventListener('qh-speaking-start',e=>{
+ const {caller,emotion,duration,pace}=e.detail||{};if(document.hidden||!voiceProfiles[caller]||!expressions.includes(emotion))return;
+ stopSpeech();const reducedMotion=globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches===true;speech={caller,emotion,mouthOpen:!reducedMotion};updatePortraits();
+ const beat=Number(pace)||speechPlan(caller,emotion,duration).pace;
+ if(!reducedMotion)frameTimer=setInterval(()=>{if(!speech)return;speech.mouthOpen=!speech.mouthOpen;updatePortraits();},beat*500);
+ timer=setTimeout(stopSpeech,Number(duration)||speechPlan(caller,emotion).duration*1000);
+});
 document.addEventListener('qh-murmur',e=>{
- if(document.hidden||!voiceProfiles[e.detail?.caller]||!expressions.includes(e.detail?.emotion))return;
- stopSpeech();speech={caller:e.detail.caller,emotion:e.detail.emotion,mouthOpen:true};updatePortraits();
- // Toggle between the same face at rest and with its mouth open. This makes
- // speech visible even in browsers that do not animate CSS inside SVG images.
- frameTimer=setInterval(()=>{if(!speech)return;speech.mouthOpen=!speech.mouthOpen;updatePortraits();},Math.max(320,speechTiming(speech.caller,speech.emotion,e.detail.duration).pace*700));
- timer=setTimeout(stopSpeech,speechTiming(speech.caller,speech.emotion,e.detail.duration).duration*1000);
+ stopSpeech();
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech();});
 document.addEventListener('qh-speaking-stop',stopSpeech);

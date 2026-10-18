@@ -4,4 +4,8 @@ export function speechTiming(caller,emotion,duration=2800){
  const tone={amused:1.13,surprised:1.18,hurt:.86,angry:.9,confused:1.04}[emotion]||1;
  return {pitch:basePitch*tone,pace:basePace*(emotion==='amused'?.92:emotion==='hurt'?1.15:1),f1,f2,duration:Math.max(.6,Math.min(7.5,Number(duration)/1000||2.8))};
 }
+export function speechPlan(caller,emotion,duration=2800){
+ const timing=speechTiming(caller,emotion,duration),syllables=Math.max(1,Math.round(timing.duration/timing.pace));
+ return {...timing,syllables,pace:timing.duration/syllables};
+}
 export function replyDuration(text){return Math.max(2800,Math.min(7500,1200+String(text).length*35));}
