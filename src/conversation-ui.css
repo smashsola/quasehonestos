@@ -720,7 +720,6 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-confetti-corner i:nth-child(4n+3){background:#638ad2;width:7px;height:16px}
 .defense-confetti-corner i:nth-child(5n){background:#bd72b6;width:10px;height:10px;border-radius:50%}
 @keyframes defenseConfettiFly{0%{opacity:0;transform:translate(0,0) rotate(0) scale(.3)}12%{opacity:1;transform:translate(calc(var(--dx)*.14),calc(var(--dy)*.14)) rotate(calc(var(--spin)*.2)) scale(1.1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--spin)) scale(.7)}}
-@media(prefers-reduced-motion:reduce){.defense-confetti-corner i{animation:none;opacity:.9;transform:translate(var(--dx),var(--dy)) rotate(var(--spin))}}
 
 /* Sinais mais nítidos na conversa e nas etiquetas, sem colorir as ações inteiras. */
 .defense-chat-bubble.defense-sender{border:1.5px solid #8eae9c;box-shadow:0 0 0 1px #72978024,0 3px 8px #17342e18}
