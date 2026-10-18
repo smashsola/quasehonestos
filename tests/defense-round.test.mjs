@@ -43,36 +43,34 @@ test('Tela explica o golpe, mostra as quatro ações e ensina como sair',()=>{
  const state=fresh();state.mode='defense';nextCall(state);
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
  assert.match(html,/O que pode acontecer/);assert.match(html,/O contato não salvo está digitando/);assert.doesNotMatch(html,/Já paguei!/);assert.ok(!html.includes(defensePeople[0].reaction));assert.doesNotMatch(html,/data-defense-speak|Ouvir fala|defense-message-stamp|>agora</);assert.match(html,/role="log" tabindex="0"/);assert.equal((html.match(/data-defense-choice=/g)||[]).length,0);assert.match(html,/defense-typing/);assert.doesNotMatch(html,/AÇÃO SEGURA/);assert.doesNotMatch(html,/data-defense-exit/);
- state.active.chatVisible=2;state.active.chatStage='ready';const ready=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.ok(ready.includes(defensePeople[0].reaction));assert.equal((ready.match(/data-defense-choice=/g)||[]).length,4);assert.match(ready,/Quer interromper por aqui\?/);assert.match(ready,/data-defense-exit/);
+ state.active.chatVisible=1;state.active.chatStage='ready';const ready=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.doesNotMatch(ready,/reaction|<small>Eu/);assert.equal((ready.match(/data-defense-choice=/g)||[]).length,4);assert.match(ready,/Quer interromper por aqui\?/);assert.match(ready,/data-defense-exit/);
  const ids=[...ready.matchAll(/data-defense-choice="([^"]+)"/g)].map(match=>match[1]),choices=ids.map(id=>defenseCases.whatsapp.choices.find(choice=>choice.id===id));assert.ok(choices.slice(0,2).every(choice=>!choice.witty&&!choice.classification));assert.ok(choices.slice(2).every(choice=>choice.witty||choice.classification));assert.equal(new Set(choices.slice(2).map(choice=>choice.safe)).size,2);
  assert.match(helpContent(state,escape),/confirmar por um canal conhecido/);
  assert.match(helpContent(state,escape),/Golpes incluídos nesta rodada \(10\)/);
  const direct=fresh();direct.mode='defense';nextCall(direct);direct.active.caller='caio';direct.active.caseId='bank-call';direct.active.scammerId='golpista2';direct.active.chatVisible=2;direct.active.chatStage='ready';const directHtml=defenseView(direct,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(directHtml,/class="defense-response-tag is-classified"><span aria-hidden="true">💬<\/span> Resposta direta/);
 });
 
-test('Contato digita, fala com rosto animado, e a pessoa responde antes das ações',()=>{
+test('Só o golpista murmura: os dois retratos iguais animam a boca e a vítima não responde',()=>{
  const state=fresh();state.mode='defense';nextCall(state);state.active.chatVisible=0;state.active.chatStage='typing';
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
  assert.match(html,/defense-typing/);assert.match(html,/está digitando/);assert.doesNotMatch(html,/Já paguei!/);assert.doesNotMatch(html,/data-defense-choice=/);assert.match(html,/contato não confirmado/);assert.doesNotMatch(html,/no Zape agora/);
  assert.equal((html.match(/<span><\/span>/g)||[]).length,3);assert.doesNotMatch(html,/defense-wait/);
  state.active.chatVisible=1;state.active.chatStage='speaking';const speaking=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(speaking,/data-caller="golpista1"/);assert.match(speaking,/data-speaking="true"/);assert.match(speaking,/golpista1-amused-talking\.svg/);assert.match(speaking,/O contato não salvo está falando/);assert.match(speaking,/defense-chat is-speaking/);assert.doesNotMatch(speaking,/Bia está falando/);
- state.active.chatStage='reply-typing';const replyTyping=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(replyTyping,/Você está preparando uma resposta/);assert.match(replyTyping,/Oi, sou eu!/);
- state.active.chatVisible=2;state.active.chatStage='replying';state.active.expression=defensePeople[0].replyEmotion;const replying=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.match(replying,/bia-thinking-talking\.svg/);assert.match(replying,/Sua resposta está sendo enviada/);assert.match(replying,/<small>Eu<span class="defense-murmur-mark"/);
  state.active.chatStage='ready';const ready=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(ready,/data-defense-choice=/);assert.match(ready,/Bia/);assert.match(ready,/O que observar nesta mensagem/);assert.match(ready,/class="defense-response-tag is-witty"/);assert.match(ready,/class="defense-response-tag is-classified"/);
- assert.match(ready,/<small>Eu<\/small>/);assert.match(ready,/Três pistas para conferir antes de agir/);
+ assert.match(ready,/data-defense-choice=/);assert.match(ready,/O que observar nesta mensagem/);assert.match(ready,/class="defense-response-tag is-witty"/);assert.match(ready,/class="defense-response-tag is-classified"/);
+ assert.doesNotMatch(ready,/<small>Eu<\/small>|Você está preparando uma resposta|bia-thinking-talking/);assert.match(ready,/Três pistas para conferir antes de agir/);
 });
 
-test('Na situação do Pix, Luana mantém seu perfil e a fala própria aparece como Eu',()=>{
+test('No golpe do Pix, o mesmo retrato do golpista aparece no perfil e na mensagem',()=>{
  const state=fresh();state.mode='defense';state.active=startDefenseCall(2);state.active.chatVisible=2;state.active.chatStage='ready';
  const html=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(html,/<strong>Luana<\/strong>/);assert.match(html,/<article class="defense-chat-bubble defense-character"><small>Eu<\/small>/);
+ assert.match(html,/<strong>Contato não salvo<\/strong>/);assert.match(html,/Luana · Vende bolos por encomenda/);assert.doesNotMatch(html,/defense-character|<small>Eu<\/small>/);
+ const avatarSources=[...html.matchAll(/<img draggable="false" src="([^"]+)" alt="" width="(?:64|42)"/g)].map(match=>match[1]);assert.equal(avatarSources.length,2);assert.equal(avatarSources[0],avatarSources[1]);
  state.active.chatStage='speaking';state.active.chatVisible=1;
  const scammer=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
  assert.match(scammer,/golpista3-confused-talking\.svg/);assert.match(scammer,/class="defense-murmur-mark"/);
- state.active.chatStage='replying';state.active.chatVisible=2;state.active.expression='suspicious';
- const reply=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
- assert.match(reply,/luana-suspicious-talking\.svg/);assert.match(reply,/defense-character is-murmuring/);
+ state.active.chatStage='ready';state.active.chatVisible=1;
+ const idle=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.doesNotMatch(idle,/luana-suspicious-talking|defense-character is-murmuring/);
 });
 
 test('Bolinha de mensagem nova aparece no Zape, inclusive na barra do celular',async()=>{

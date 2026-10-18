@@ -730,11 +730,12 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-character.is-murmuring{animation:murmur-bubble .72s ease-in-out infinite alternate}
 @keyframes murmur-bars{to{transform:scaleY(.35);opacity:.55}}
 @keyframes murmur-bubble{from{transform:translateY(0)}to{transform:translateY(-2px)}}
-.defense-clues{margin:16px 0;border:1px solid #78a58b;border-left:5px solid #22674f;border-radius:14px;background:linear-gradient(145deg,#f1f8f2,#e2efe6);box-shadow:0 6px 16px #153e2d16;color:#173f32}
-.defense-clues summary{min-height:72px;grid-template-columns:42px minmax(0,1fr) 30px;padding:12px 15px;background:linear-gradient(110deg,#d9ece0,#eef6ef)}
-.defense-clues-icon{width:40px;height:40px;border-radius:13px;background:#215d4d;color:#fff;font-size:18px;box-shadow:0 3px 0 #174537}
+.defense-clues{margin:16px 0;border:1px solid #c7d8ca;border-radius:14px;background:linear-gradient(145deg,#f7faf5,#edf3e9);box-shadow:0 4px 13px #153e2d12;color:#173f32}
+.defense-clues summary{min-height:72px;grid-template-columns:42px minmax(0,1fr) 30px;padding:12px 15px;background:linear-gradient(110deg,#eff5ec,#f7f9f3)}
+.defense-clues-icon{width:40px;height:40px;border-radius:13px;border:1px solid #cbd9bd;background:#e8eedb;color:#607345;font-size:18px;box-shadow:0 2px 0 #d2ddc4}
 .defense-clues-copy strong{font-size:15px;color:#143d31}.defense-clues-copy small{color:#426b57;font-size:12px}
-.defense-clues-arrow{display:grid;place-items:center;width:28px;height:28px;border:1px solid #a4c3ad;border-radius:9px;background:#f7fbf7;color:#235a45;font-size:18px}
+.defense-clues-arrow{justify-self:center;width:9px;height:9px;margin-top:-5px;border-right:2px solid #75835f;border-bottom:2px solid #75835f;transform:rotate(45deg);transition:transform .18s ease}
+.defense-clues[open] .defense-clues-arrow{margin-top:5px;transform:rotate(225deg)}
 .defense-clues[open] summary{border-bottom:1px solid #c6dccd}.defense-clues ul{padding:10px 16px 16px 66px}.defense-clues li{border-color:#c6dacb;background:#fbfdfb;box-shadow:0 2px 5px #2048380a}
 .mail-welcome{padding:clamp(18px,3vw,30px);background:radial-gradient(ellipse at 90% 0,#edf5ed 0,transparent 42%),#f7faf7}
 .mail-app-heading{align-items:flex-start;padding-bottom:20px;border-bottom:1px solid #d3e0d6}.mail-app-heading h1{margin:7px 0 4px;font-size:clamp(25px,3vw,32px);letter-spacing:-.025em}.mail-app-heading p{margin:0;color:#5a7567;font-size:13px}
