@@ -18,6 +18,8 @@ test('Personagens fazem murmúrio sem narrar o texto em voz alta',async()=>{
  assert.match(audio,/voice\.type=softVoices/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
  assert.match(audio,/qh-speaking-start/);assert.match(audio,/qh-speaking-end/);assert.match(audio,/voice\.stop\(t\+pace\)/);
  assert.match(audio,/softVoices\.has\(caller\)\?'triangle':grittyVoices\.has\(caller\)\?'sawtooth':'square'/);
+ assert.match(audio,/linearRampToValueAtTime\(\.23\*characterVolume\/100/);assert.match(audio,/characterVolume=setting\('qh-character-volume',90\)/);
+ const layout=await readFile(new URL('../src/style.css',import.meta.url),'utf8');assert.match(layout,/defense-typing-pulse/);assert.match(layout,/border-radius:18px 18px 18px 6px/);assert.match(layout,/linear-gradient\(145deg,#fff 8%,#edf6ef 100%\)/);
 });
 test('Retratos falantes deixam a boca estática aberta para a animação sincronizada pelo áudio',async()=>{
  for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}-talking.svg`,import.meta.url),'utf8');assert.match(svg,/\.mouth-rest\{opacity:0\}/);assert.match(svg,/\.mouth-speaking\{opacity:1\}/);assert.doesNotMatch(svg,/animation:(?:syllable|nod)/);assert.match(svg,/mouth-speaking/);assert.match(svg,/rx="12" ry="9"/);assert.match(svg,/class="speech-head"/);assert.equal((svg.match(/<g\b/g)||[]).length,(svg.match(/<\/g>/g)||[]).length,`${caller}/${emotion}: SVG com grupos fechados`);}

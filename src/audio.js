@@ -20,7 +20,7 @@ document.addEventListener('qh-murmur',async e=>{
    const t=start+i*pace,voice=ctx.createOscillator(),envelope=ctx.createGain();
    voice.type=softVoices.has(caller)?'triangle':grittyVoices.has(caller)?'sawtooth':'square';voice.frequency.setValueAtTime(pitch*(1+.09*Math.sin(i*2.4)),t);
    voice.frequency.exponentialRampToValueAtTime(pitch*(i%3===0?1.16:.93),t+pace*.55);
-   envelope.gain.setValueAtTime(0,t);envelope.gain.linearRampToValueAtTime(.16*characterVolume/100,t+.015);envelope.gain.exponentialRampToValueAtTime(.0001,t+pace*.94);
+   envelope.gain.setValueAtTime(0,t);envelope.gain.linearRampToValueAtTime(.23*characterVolume/100,t+.015);envelope.gain.exponentialRampToValueAtTime(.0001,t+pace*.94);
    const filters=[f1,f2].map((frequency,j)=>{const filter=ctx.createBiquadFilter();filter.type='bandpass';filter.frequency.value=frequency*(1+.15*Math.sin(i+j*2));filter.Q.value=2.5;voice.connect(filter);filter.connect(envelope);return filter;});
    envelope.connect(ctx.destination);speakingNodes.add(voice);
    voice.onended=()=>{speakingNodes.delete(voice);voice.disconnect();filters.forEach(filter=>filter.disconnect());envelope.disconnect();if(run===murmurRun&&--remaining===0)document.dispatchEvent(new CustomEvent('qh-speaking-end',{detail:{caller}}));};
@@ -31,7 +31,7 @@ document.addEventListener('qh-murmur',async e=>{
 });
 let muted=localStorage.getItem('qh-muted')==='true';
 const setting=(key,fallback)=>{const raw=localStorage.getItem(key),value=Number(raw);return raw!==null&&Number.isFinite(value)?Math.max(0,Math.min(100,value)):fallback;};
-let clickVolume=setting('qh-click-volume',65),fanVolume=setting('qh-fan-volume',30),characterVolume=setting('qh-character-volume',75),keyboardVolume=setting('qh-keyboard-volume',55),messageVolume=setting('qh-message-volume',65),panelOpen=false;
+let clickVolume=setting('qh-click-volume',65),fanVolume=setting('qh-fan-volume',30),characterVolume=setting('qh-character-volume',90),keyboardVolume=setting('qh-keyboard-volume',55),messageVolume=setting('qh-message-volume',65),panelOpen=false;
 const clickBuffers=new Map();
 function playClick(release=false){
  if(muted||!ctx||document.hidden||!clickVolume)return;
