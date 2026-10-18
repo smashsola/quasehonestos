@@ -32,7 +32,7 @@ import {checkIncoming,markIncomingSeen,answerIncoming,dismissIncoming,snoozeInco
 import {dialogueHints} from './dialogue.js';
 import {incomingScene,refreshIncoming,incomingReport} from './incoming-scenes.js';
 import {callers,moves,bossLines,schemes,furniture,interactionMoves,schemeItems} from './data.js';
-import {defensePeople,scammerPeople,defenseCases,decideDefense,stopRansomware,endDefenseContact,expireRansomware} from './defense-round.js';
+import {defensePeople,scammerPeople,defenseCases,resumeDefenseCall,decideDefense,stopRansomware,endDefenseContact,expireRansomware} from './defense-round.js';
 import {defenseView,defenseCampaignEnding} from './defense-view.js';
 import {load,KEY,nextCall,applyMove,closeCall,finishCall,fresh,migrateToDefense,buy,equipWallpaper,availableMoves,executeScheme,disconnectSession,sendUpdateFile,reviewUpdateData,chooseSkin} from './engine.js';
 const isMobile=()=>compactScreen(innerWidth,innerHeight,matchMedia('(pointer: coarse)').matches);
@@ -42,7 +42,7 @@ refreshIncoming(state);
 if(state.active?.mode!=='defense'&&state.active?.log.length===1&&!state.active.used.length&&!state.active.outcome&&state.active.log[0].speaker!=='Você')state.active.log=[];
 if(state.active?.mode!=='defense'&&state.active&&!state.active.scheme&&!state.active.used.length&&!state.active.outcome)state.active.log=[];
 const legacyLines=['Você tenta encurtar o tempo para decidir.','Você mostra um cargo inventado. O crachá tem um carimbo de batata.','Você usa simpatia para tentar conquistar confiança.','Você apresenta a proposta fictícia e espera uma decisão.'];
-if(state.active?.mode==='defense'&&!state.active.outcome){if(state.active.ransomwareDeadline){state.active.chatStage='ready';state.active.chatVisible=2;}else{state.active.chatStage='typing';state.active.chatVisible=1;state.active.unread=true;}}
+if(state.active?.mode==='defense'&&!state.active.outcome)resumeDefenseCall(state.active);
 for(const entry of [state.active,...state.history])for(const line of entry?.log||[]){const index=legacyLines.indexOf(line.text);if(index>=0)line.text=moves[index].reply;}
 const escape=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const protectivePauses=()=>[...state.history,state.active].filter(h=>resultImpact(h)?.protectionChosen).length;
