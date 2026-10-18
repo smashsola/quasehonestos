@@ -100,21 +100,21 @@ export function decideDefense(a,choiceId,now=Date.now()){
  if(!choice||a.used.includes(choice.id))return false;
  a.used.push(choice.id);a.choice=choice.id;a.log.push({speaker:'Sistema',text:choice.label,action:true});
  if(choice.ransomware){a.ransomwareDeadline=now+45_000;a.ransomwareTriggeredAt=now;a.outcome=null;a.expression='surprised';a.log.push({speaker:'Sistema',text:'ALERTA: a máquina fictícia começou a bloquear arquivos. Você tem 45 segundos para desconectá-la da rede e acionar o suporte. Nada será alterado neste computador.'});}
- else {a.outcome=choice.safe?'blocked':'fooled';a.feedback=choice.feedback;a.expression=choice.safe?'thinking':'hurt';a.log.push({speaker:'Sistema',text:choice.feedback});}
+ else {a.outcome=choice.safe?'blocked':'fooled';a.reactionTier=choice.safe?'success':'miss';a.feedback=choice.feedback;a.expression=choice.safe?'thinking':'hurt';a.log.push({speaker:'Sistema',text:choice.feedback});}
  return true;
 }
 export function stopRansomware(a){
  if(a?.mode!=='defense'||!a.ransomwareDeadline||a.outcome)return false;
- a.ransomwareDeadline=null;a.ransomwareStopped=true;a.outcome='blocked';a.feedback='Você desconectou a máquina simulada e chamou o suporte. O ransomware ficou restrito ao cenário fictício.';a.expression='happy';a.log.push({speaker:'Sistema',text:a.feedback});return true;
+ a.ransomwareDeadline=null;a.ransomwareStopped=true;a.outcome='blocked';a.reactionTier='success';a.feedback='Você desconectou a máquina simulada e chamou o suporte. O ransomware ficou restrito ao cenário fictício.';a.expression='happy';a.log.push({speaker:'Sistema',text:a.feedback});return true;
 }
 export function endDefenseContact(a){
  if(a?.mode!=='defense'||a.outcome||a.ransomwareDeadline)return false;
  const nextStep={whatsapp:'Ligue para a pessoa no número que você já tinha salvo antes de fazer qualquer Pix.', 'bank-call':'Feche a ligação e abra o app do banco por conta própria. Se compartilhou código ou instalou um app, avise o banco pelo canal oficial.', 'fake-pix':'Confira o extrato pelo app do banco. Se o dinheiro não entrou, não entregue o pedido; se já entregou, fale com o banco.', boleto:'Não pague pelo QR recebido. Localize a cobrança no app ou site que você já conhece e confira quem vai receber.', delivery:'Apague o link sem preencher dados. Consulte o pedido no app ou site oficial da loja.', ransomware:'Não abra o anexo. Se já executou o arquivo, desconecte o aparelho da rede e chame o suporte de confiança.', 'fake-motoboy':'Não entregue cartão nem senha. Ligue para o banco pelo número do cartão ou pelo app e peça orientação.', 'fake-store':'Não faça Pix por fora da plataforma. Confira a loja e o vendedor dentro do app oficial.', 'fake-government':'Não pague nem envie documentos pelo link. Consulte o serviço digitando o endereço oficial ou usando o app do órgão.', 'card-swap':'Confira o cartão e cubra a senha ao digitar. Se o cartão foi trocado, bloqueie-o pelo app oficial e fale com o banco.'}[a.caseId]||'Se já enviou dinheiro ou dados, procure o banco ou o suporte pelo canal oficial.';
- a.outcome='blocked';a.choice='end-contact';a.expression='thinking';a.feedback=`Você pausou a conversa. ${nextStep} Confirme qualquer dúvida por um canal oficial; se já houve prejuízo, contate o banco ou o suporte o quanto antes.`;a.log.push({speaker:'Sistema',text:'AÇÃO — encerrar contato e buscar confirmação por um canal oficial.'},{speaker:'Sistema',text:a.feedback});return true;
+ a.outcome='blocked';a.choice='end-contact';a.reactionTier='almost';a.expression='thinking';a.feedback=`Você pausou a conversa. ${nextStep} Confirme qualquer dúvida por um canal oficial; se já houve prejuízo, contate o banco ou o suporte o quanto antes.`;a.log.push({speaker:'Sistema',text:'AÇÃO — encerrar contato e buscar confirmação por um canal oficial.'},{speaker:'Sistema',text:a.feedback});return true;
 }
 export function expireRansomware(a,now=Date.now()){
  if(a?.mode!=='defense'||!a.ransomwareDeadline||now<a.ransomwareDeadline||a.outcome)return false;
- a.ransomwareDeadline=null;a.outcome='fooled';a.gameOver=true;a.expression='hurt';a.feedback='Os arquivos de brincadeira foram bloqueados. Na vida real, isole o dispositivo da rede e contate o suporte de segurança; não pague nem apague evidências sem orientação. O resgate não garante recuperação. Game over: o chefe vai com certeza descontar do seu salário inexistente de estagiário.';a.log.push({speaker:'Sistema',text:a.feedback});return true;
+ a.ransomwareDeadline=null;a.outcome='fooled';a.reactionTier='miss';a.gameOver=true;a.expression='hurt';a.feedback='Os arquivos de brincadeira foram bloqueados. Na vida real, isole o dispositivo da rede e contate o suporte de segurança; não pague nem apague evidências sem orientação. O resgate não garante recuperação. Game over: o chefe vai com certeza descontar do seu salário inexistente de estagiário.';a.log.push({speaker:'Sistema',text:a.feedback});return true;
 }
 
 export function finishDefenseMurmur(a){if(!a||a.chatStage!=='speaking')return false;a.chatStage='ready';return true;}
