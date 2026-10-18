@@ -16,8 +16,8 @@ test('Personagens fazem murmúrio sem narrar o texto em voz alta',async()=>{
  assert.doesNotMatch(audio,/SpeechSynthesisUtterance|speechSynthesis|function speakText/);
  assert.match(audio,/voice\.type='sawtooth'/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
 });
-test('Retratos falantes mantêm emoção, boca articulada e opção de movimento reduzido',async()=>{
- for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}-talking.svg`,import.meta.url),'utf8');assert.match(svg,/mouth-rest/);assert.match(svg,/mouth-speaking/);assert.match(svg,/class="speech-head"/);assert.match(svg,/prefers-reduced-motion/);assert.ok(svg.includes(`syllable ${speechTiming(caller,emotion).pace}s`));}
+test('Retratos falantes mantêm emoção, abrem a boca de forma visível e têm ritmo legível',async()=>{
+ for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const svg=await readFile(new URL(`../src/portraits/${caller}-${emotion}-talking.svg`,import.meta.url),'utf8');assert.match(svg,/mouth-rest/);assert.match(svg,/mouth-speaking/);assert.match(svg,/rx="12" ry="9"/);assert.match(svg,/class="speech-head"/);assert.match(svg,/prefers-reduced-motion/);assert.ok(svg.includes(`syllable ${speechTiming(caller,emotion).pace}s`));}
 });
 test('Luana e o contato da cobrança têm silhuetas bem distintas nos retratos parados e falando',async()=>{
  for(const caller of ['luana','golpista3'])for(const emotion of expressions)for(const suffix of ['', '-talking']){
@@ -28,7 +28,7 @@ test('Rosto abre e fecha a boca enquanto o golpista murmura, persiste após rend
  const original={document:globalThis.document,setTimeout:globalThis.setTimeout,clearTimeout:globalThis.clearTimeout,setInterval:globalThis.setInterval,clearInterval:globalThis.clearInterval};const events={};let end,animate;
  const img={src:''},label={textContent:''},avatar={dataset:{caller:'nino',expression:'happy'},querySelector:()=>img,classList:{toggle(){}},parentElement:{querySelector:()=>label}};
  try{
- globalThis.document={hidden:false,addEventListener:(name,cb)=>events[name]=cb,querySelectorAll:()=>[avatar]};globalThis.setTimeout=cb=>{end=cb;return 1;};globalThis.clearTimeout=()=>{};globalThis.setInterval=cb=>{animate=cb;return 2;};globalThis.clearInterval=()=>{};
+ globalThis.document={hidden:false,addEventListener:(name,cb)=>events[name]=cb,querySelectorAll:()=>[avatar]};globalThis.setTimeout=cb=>{end=cb;return 1;};globalThis.clearTimeout=()=>{};globalThis.setInterval=(cb,delay)=>{assert.ok(delay>=320,`movimento labial legível: ${delay}ms`);animate=cb;return 2;};globalThis.clearInterval=()=>{};
  const {portraitSource,updatePortraits}=await import('../src/portrait-speech.js');
  events['qh-murmur']({detail:{caller:'nino',emotion:'happy',duration:1800}});assert.match(img.src,/happy-talking.svg$/);assert.equal(label.textContent,'falando…');updatePortraits();assert.match(portraitSource('nino','happy'),/-talking/);animate();assert.match(img.src,/nino-happy.svg$/);animate();assert.match(img.src,/happy-talking.svg$/);end();assert.match(img.src,/nino-happy.svg$/);assert.equal(label.textContent,'animado');
  events['qh-murmur']({detail:{caller:'nino',emotion:'happy',duration:1800}});document.hidden=true;events.visibilitychange();assert.doesNotMatch(img.src,/-talking/);

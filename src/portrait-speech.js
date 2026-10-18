@@ -31,7 +31,7 @@ document.addEventListener('qh-murmur',e=>{
  stopSpeech();speech={caller:e.detail.caller,emotion:e.detail.emotion,mouthOpen:true};updatePortraits();
  // Toggle between the same face at rest and with its mouth open. This makes
  // speech visible even in browsers that do not animate CSS inside SVG images.
- frameTimer=setInterval(()=>{if(!speech)return;speech.mouthOpen=!speech.mouthOpen;updatePortraits();},Math.max(180,speechTiming(speech.caller,speech.emotion,e.detail.duration).pace*420));
+ frameTimer=setInterval(()=>{if(!speech)return;speech.mouthOpen=!speech.mouthOpen;updatePortraits();},Math.max(320,speechTiming(speech.caller,speech.emotion,e.detail.duration).pace*700));
  timer=setTimeout(stopSpeech,speechTiming(speech.caller,speech.emotion,e.detail.duration).duration*1000);
 });
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech();});
