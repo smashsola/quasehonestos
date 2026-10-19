@@ -15,12 +15,15 @@ export function portraitSource(caller,emotion){
  const valid=expressions.includes(emotion)?emotion:'neutral',base=`/src/portraits/${caller}-${valid}`;
  const animated=base+'-talking.svg';
  if(speech?.caller===caller&&speech.emotion===valid&&speech.mouthOpen&&preload(animated))return animated;
- return preload(base+'.svg')?base+'.svg':`/src/portraits/${caller}-neutral.svg`;
+ const still=base+'.svg';if(preload(still))return still;
+ // Keep the last decoded face on screen while the next expression downloads.
+ for(const [source,ready] of readyImages)if(ready&&source.startsWith(`/src/portraits/${caller}-`))return source;
+ return `/src/portraits/${caller}-neutral.svg`;
 }
 export function updatePortraits(){
  document.querySelectorAll('.avatar[data-caller],.defense-sender-avatar[data-caller]').forEach(avatar=>{
   const caller=avatar.dataset.caller,emotion=avatar.dataset.expression,img=avatar.querySelector('img'),active=speech?.caller===caller&&speech.emotion===emotion,talking=active;
-  if(img){const source=portraitSource(caller,emotion);if(!img.src.endsWith(source))img.src=source;preload(`/src/portraits/${caller}-${emotion}-talking.svg`);}
+  if(img){const source=portraitSource(caller,emotion);if(source&&!img.src.endsWith(source))img.src=source;preload(`/src/portraits/${caller}-${emotion}-talking.svg`);}
   avatar.classList.toggle('is-speaking',talking);
   const label=avatar.parentElement.querySelector('.portrait-emotion');if(label)label.textContent=talking?'falando…':expressionNames[emotion];
  });

@@ -53,3 +53,15 @@ test('Retrato estático permanece até a imagem falante carregar e falha de asse
  talking.onload();assert.equal(img.src,'/src/portraits/yara-neutral-talking.svg');events['qh-speaking-stop']();
  }finally{Object.assign(globalThis,previous);}
 });
+test('Retrato mantém a última imagem decodificada ao trocar de expressão',async()=>{
+ const previous={document:globalThis.document,Image:globalThis.Image},events={},images=[];
+ const img={src:'/src/portraits/yara-neutral.svg'},avatar={dataset:{caller:'yara',expression:'neutral'},querySelector:()=>img,classList:{toggle(){}},parentElement:{querySelector:()=>null}};
+ try{
+  globalThis.Image=class{constructor(){images.push(this);}set src(value){this.source=value;}get src(){return this.source;}};
+  globalThis.document={hidden:false,addEventListener:(name,cb)=>events[name]=cb,querySelectorAll:()=>[avatar]};
+  const speech=await import('../src/portrait-speech.js?expression-no-flash-test');
+  speech.updatePortraits();const neutral=images.find(image=>image.src==='/src/portraits/yara-neutral.svg');neutral.onload();
+  avatar.dataset.expression='happy';speech.updatePortraits();assert.equal(img.src,'/src/portraits/yara-neutral.svg');
+  const happy=images.find(image=>image.src==='/src/portraits/yara-happy.svg');happy.onload();assert.equal(img.src,'/src/portraits/yara-happy.svg');
+ }finally{Object.assign(globalThis,previous);}
+});
