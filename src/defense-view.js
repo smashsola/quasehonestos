@@ -51,7 +51,9 @@ function scammerTypingPanel(id,escape){
  return `<div class="demo-scammer-control${isMessage?' is-message':''}${isAttachment?' has-attachment':''}${isTyping?' is-typing':''}" style="--typing-time:${typingTime}"><span class="demo-scammer-status"><i></i><span class="demo-status-typing">${activityLabel}${isTyping?' · Eu':''}</span><span class="demo-status-legacy">${activityLabel}</span>${isMessage?`<span class="demo-status-sending">Enviando…</span><span class="demo-status-sent">${isAttachment?'Anexo enviado':'Mensagem enviada'} ✓</span>`:''}</span><div class="demo-scammer-entry"><small>${isMessage?'EU · MENSAGEM FICTÍCIA':isTyping?'EU · AÇÃO SIMULADA':'AÇÃO SIMULADA'}</small><span class="demo-scammer-text" ${isTyping?'aria-label="Eu: conteúdo fictício sendo digitado"':''}>${letters}${isTyping?'<b aria-hidden="true"></b>':''}</span></div>${isMessage&&!isAttachment?`<div class="demo-sent-message"><small>EU</small><span>${escape(phrase)}</span><b>✓✓ Enviada</b></div>`:''}${isAttachment?`<div class="demo-attachment-send"><span class="demo-attachment-icon" aria-hidden="true">📎</span><span><b>${attachmentName}</b><small>Imagem fictícia · ${id==='send-document'?'86':'128'} KB</small></span><strong><i></i><span class="demo-attach-progress">Anexando…</span><span class="demo-attach-done">Anexado ✓</span></strong></div>`:''}</div>`;
 }
 export function defenseActionDuration(id){
- return 7;
+ const phrase=scammerTyping[id]?.[0]||'',isAttachment=['send-doc','send-document'].includes(id),isMessage=['ask-secret','give-code','reply-cpf','send-cpf','send-doc','send-document','pay-link'].includes(id);
+ const finishTime=Math.max(2.2,phrase.length*.045)+(isAttachment?2.4:isMessage?1.2:.5);
+ return Math.max(7,Math.ceil(finishTime*10)/10);
 }
 
 function demoActivity(app,scene,demo,escape){

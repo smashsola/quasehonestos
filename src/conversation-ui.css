@@ -845,7 +845,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .desktop .defense-action-app[data-demo-kind="messages"] .demo-message-out{animation:demoMessageSlide .4s ease calc(var(--action-duration,4.7s)*.63) both!important}
  .desktop .demo-shield{animation:demoShieldPulse 1s ease-in-out infinite!important}
  .desktop .demo-security-orbit{animation:demoOrbit 1.4s ease-in-out infinite alternate!important}
- .desktop .demo-delivery-track i{animation:demoTrackProgress var(--action-duration,7s) linear both!important}
+ .desktop .demo-delivery-track i{animation:demoTrackProgress calc(var(--action-duration,7s)*.57) linear calc(var(--action-duration,7s)*.43) both!important}
  .desktop .demo-file-scan i{animation:demoFileScan 1s ease-in-out infinite alternate!important}
  .desktop .demo-nfc i{animation:demoNfcWave 1s ease-out infinite!important}
  .desktop .demo-scammer-status>i{animation:demoRemotePulse 1.2s ease-in-out infinite!important}
@@ -1037,7 +1037,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .demo-action-control .defense-action-appbutton{animation-delay:0s}
 .defense-action-appresult>strong{font-size:clamp(12px,2.2vw,14px);line-height:1.45}
 .defense-action-step.step-4 strong{font-size:clamp(12px,2vw,14px);-webkit-line-clamp:3}
-.demo-delivery-track i{width:0;animation:demoTrackProgress var(--action-duration,7s) linear both}
+.demo-delivery-track i{width:0;animation:demoTrackProgress calc(var(--action-duration,7s)*.57) linear calc(var(--action-duration,7s)*.43) both}
 @keyframes demoTrackProgress{from{width:0}to{width:90%}}
 .defense-recap-heading::after{content:"";display:block;width:9px;height:9px;margin:auto;border:0;border-right:2px solid #315d4e;border-bottom:2px solid #315d4e;border-radius:0;transform:rotate(45deg);transition:transform .2s ease}
 .defense-recap-card[open]>.defense-recap-heading::after{transform:rotate(225deg)}
@@ -1049,3 +1049,45 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @keyframes defenseEndingButton{0%,100%{box-shadow:0 0 0 0 #9fca9700;transform:translateY(0)}50%{box-shadow:0 0 0 5px #9fca972e;transform:translateY(-2px)}}
 @media(max-width:600px){.defense-recap-heading{grid-template-columns:32px minmax(0,1fr) auto 18px}}
 @media(prefers-reduced-motion:reduce){.defense-ending-actions button.primary{animation:none}}
+
+/* One deliberate pass per action: progress indicators finish instead of replaying. */
+.defense-action-demo-path i{animation:defenseActionTravel var(--action-duration,7s) ease-in-out both}
+.defense-action-demo-path:nth-of-type(4) i{animation-delay:1.1s}
+.defense-action-working i{animation:defenseAppWorking 1.1s ease-in-out 1 both}
+.demo-scammer-status>i{animation:demoRemotePulse 1.2s ease-in-out 1 both}
+.demo-scammer-text>b{animation:demoTypeCaret .7s steps(2,end) 3}
+.demo-call-rings i{animation:demoCallRing 1.3s ease-out 1 both}
+.demo-call-rings i+i{animation-delay:.34s}
+.demo-call-wave i{animation:demoCallWave 1.15s ease-in-out 1 both}
+.demo-call-wave i:nth-child(2n){animation-delay:.08s}
+.demo-call-wave i:nth-child(3n){animation-delay:.16s}
+.demo-call-wave i:nth-child(4n){animation-delay:.24s}
+.demo-call-wave i:nth-child(5n){animation-delay:.32s}
+.demo-call-wave i:nth-child(6n){animation-delay:.4s}
+.demo-call-wave i:nth-child(7n){animation-delay:.48s}
+.demo-call-wave i:nth-child(8n){animation-delay:.56s}
+.demo-call-wave i:nth-child(9n){animation-delay:.64s}
+@keyframes demoCallWave{0%,100%{height:4px}50%{height:15px}}
+.demo-shield{animation:demoShieldPulse 1.4s ease-in-out 1 both}
+.demo-security-orbit{animation:demoOrbit 1.5s ease-in-out 1 both}
+.demo-delivery-track i{animation:demoTrackProgress var(--action-duration,7s) linear 1 both}
+.demo-file-scan i{animation:demoFileScan 1.5s ease-in-out 1 both}
+.demo-nfc i{animation:demoNfcWave 1.3s ease-out 1 both}
+.demo-nfc i+i{animation-delay:.3s}
+.defense-action-app[data-demo-kind="messages"] .demo-message-out{animation:demoMessageSlide .45s ease-out calc(var(--action-duration,7s)*.63) 1 both}
+@media(prefers-reduced-motion:reduce){
+ .desktop .defense-action-demo-path i{animation:defenseActionTravel var(--action-duration,7s) ease-in-out both!important}
+ .desktop .defense-action-working i{animation:defenseAppWorking 1.1s ease-in-out 1 both!important}
+ .desktop .demo-call-rings i{animation:demoCallRing 1.3s ease-out 1 both!important}
+ .desktop .demo-call-wave i{animation:demoCallWave 1.15s ease-in-out 1 both!important}
+ .desktop .demo-shield{animation:demoShieldPulse 1.4s ease-in-out 1 both!important}
+ .desktop .demo-security-orbit{animation:demoOrbit 1.5s ease-in-out 1 both!important}
+ .desktop .demo-delivery-track i{animation:demoTrackProgress var(--action-duration,7s) linear 1 both!important}
+ .desktop .demo-file-scan i{animation:demoFileScan 1.5s ease-in-out 1 both!important}
+ .desktop .demo-nfc i{animation:demoNfcWave 1.3s ease-out 1 both!important}
+ .desktop .demo-message-out{animation:demoMessageSlide .45s ease-out calc(var(--action-duration,7s)*.63) 1 both!important}
+ .desktop .demo-scammer-status>i{animation:demoRemotePulse 1.2s ease-in-out 1 both!important}
+ .desktop .demo-scammer-text>b{animation:demoTypeCaret .7s steps(2,end) 3!important}
+}
+.defense-reaction-feedback{font-size:clamp(18px,2.6vw,21px);font-weight:650;color:#173c32;background:#fff;border:2px solid #b6d6c4;box-shadow:0 5px 16px #173c3014}
+@media(max-width:520px){.defense-reaction-feedback{font-size:17px;max-height:24vh;padding:14px 15px}}
