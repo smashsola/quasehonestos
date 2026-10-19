@@ -1,5 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 import {desktopIconPosition,initialDesktopIcons} from '../src/desktop-icons.js';
 const viewport={width:1000,height:800};
 test('Drop encaixa na grade; movimento do ponteiro continua livre',()=>{
@@ -25,4 +26,18 @@ test('Grade do PC mantém duas colunas no desktop comum para liberar área às j
  const ids=Array.from({length:12},(_,i)=>`app-${i}`),positions=initialDesktopIcons(ids,{}, {width:1280,height:720});
  assert.equal(new Set(Object.values(positions).map(p=>p.x)).size,2);
  for(const p of Object.values(positions))assert.ok(p.y+88<=720-57);
+});
+test('Destaque do tutorial e aviso de mensagem não tiram atalhos desktop da posição calculada',async()=>{
+ const css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
+ assert.match(css,/@media\s*\(min-width:\s*601px\)\s*and\s*\(pointer:\s*fine\)\s*,\s*\(min-width:\s*1001px\)\s*and\s*\(pointer:\s*coarse\)\s*\{\.desktop\s+\.desktop-icons>button\[data-icon\]\s*\{position:absolute!important\}\}/);
+});
+test('Atalhos ficam em células distintas nas resoluções usuais de desktop',()=>{
+ const ids=Array.from({length:12},(_,i)=>`app-${i}`);
+ for(const viewport of [{width:1024,height:768},{width:1280,height:720},{width:1366,height:768},{width:1920,height:1080}]){
+  const positions=Object.values(initialDesktopIcons(ids,{},viewport));
+  for(let i=0;i<positions.length;i++)for(let j=i+1;j<positions.length;j++){
+   const a=positions[i],b=positions[j];
+   assert.ok(a.x+110<=b.x||b.x+110<=a.x||a.y+88<=b.y||b.y+88<=a.y,`atalhos sobrepostos em ${viewport.width}x${viewport.height}`);
+  }
+ }
 });
