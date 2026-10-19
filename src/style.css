@@ -755,13 +755,11 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 /* Clear, visibly moving typing dots also work when the OS requests reduced motion. */
 .defense-typing{width:62px;height:36px;gap:8px;padding:0 12px;border-radius:18px 18px 18px 6px;background:#fff;box-shadow:0 2px 6px #17342e12}
 .defense-typing span{width:6px;height:6px;border:0;border-radius:50%;background:#34775d;box-shadow:none;transform:none;will-change:transform,opacity}
-.defense-typing span:nth-child(1){animation:defense-dot-one .72s ease-in-out -0.21s infinite}
-.defense-typing span:nth-child(2){animation:defense-dot-two 1.03s cubic-bezier(.38,0,.62,1) -0.64s infinite}
-.defense-typing span:nth-child(3){animation:defense-dot-three .84s ease-in-out -0.37s infinite}
-@keyframes defense-dot-one{0%,100%{opacity:.45;transform:translateY(1px) scale(.82)}35%{opacity:1;transform:translateY(-4px) scale(1.12)}68%{opacity:.72;transform:translateY(0) scale(.94)}}
-@keyframes defense-dot-two{0%,100%{opacity:.55;transform:translateY(0) scale(.9)}24%{opacity:1;transform:translateY(-3px) scale(1.08)}59%{opacity:.4;transform:translateY(1px) scale(.82)}}
-@keyframes defense-dot-three{0%,100%{opacity:.42;transform:translateY(1px) scale(.84)}43%{opacity:1;transform:translateY(-4px) scale(1.1)}77%{opacity:.68;transform:translateY(-1px) scale(.95)}}
-@media(prefers-reduced-motion:reduce){.desktop .defense-typing span:nth-child(1){animation:defense-dot-one .72s ease-in-out -0.21s infinite!important}.desktop .defense-typing span:nth-child(2){animation:defense-dot-two 1.03s cubic-bezier(.38,0,.62,1) -0.64s infinite!important}.desktop .defense-typing span:nth-child(3){animation:defense-dot-three .84s ease-in-out -0.37s infinite!important}}
+.defense-typing span:nth-child(1){animation:defense-dot-wave .84s ease-in-out 0s infinite}
+.defense-typing span:nth-child(2){animation:defense-dot-wave .84s ease-in-out .16s infinite}
+.defense-typing span:nth-child(3){animation:defense-dot-wave .84s ease-in-out .32s infinite}
+@keyframes defense-dot-wave{0%,100%{opacity:.42;transform:translateY(1px) scale(.84)}28%{opacity:1;transform:translateY(-4px) scale(1.1)}58%{opacity:.7;transform:translateY(0) scale(.94)}}
+@media(prefers-reduced-motion:reduce){.desktop .defense-typing span:nth-child(1){animation:defense-dot-wave .84s ease-in-out 0s infinite!important}.desktop .defense-typing span:nth-child(2){animation:defense-dot-wave .84s ease-in-out .16s infinite!important}.desktop .defense-typing span:nth-child(3){animation:defense-dot-wave .84s ease-in-out .32s infinite!important}}
 
 .ransomware-alert button.primary[data-defense-stop]{display:flex;width:100%;min-height:68px;align-items:center;justify-content:flex-start;gap:13px;margin-top:14px;padding:10px 16px;border:1px solid #8e3429;border-radius:12px;background:linear-gradient(135deg,#c44f39,#a63229);color:#fff;text-align:left;box-shadow:0 4px 0 #79291f,0 8px 18px #8e34292b;transition:transform .15s ease,filter .15s ease,box-shadow .15s ease}
 .ransomware-alert button.primary[data-defense-stop]:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 5px 0 #79291f,0 10px 22px #8e342933}
