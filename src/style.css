@@ -872,3 +872,11 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 /* Make the Zape halo visibly breathe, without moving the shortcut itself. */
 @keyframes zapeAuraBreath{0%{border-color:#83e3c788;box-shadow:0 0 0 2px #83e3c722,0 0 7px #83e3c744;opacity:.68;transform:scale(.97)}100%{border-color:#b4ffe0;box-shadow:0 0 0 7px #83e3c766,0 0 22px #83e3c7d9;opacity:1;transform:scale(1.035)}}
 .desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after{animation:zapeAuraBreath 1.25s ease-in-out infinite alternate!important;inset:-6px!important;border-width:2px!important;transform-origin:center!important}
+
+
+/* Animate the shortcut button itself so the Zape highlight is unmistakable. */
+@keyframes zapeShortcutPulse{0%{filter:drop-shadow(0 0 1px #83e3c766);background-color:#83e3c700;border-color:#83e3c766;box-shadow:0 0 0 0 #83e3c700}100%{filter:drop-shadow(0 0 15px #83e3c7);background-color:#83e3c722;border-color:#a4f0d5;box-shadow:0 0 0 6px #83e3c755,0 0 20px #83e3c799}}
+@keyframes zapeGuideGlow{0%{filter:drop-shadow(0 0 1px #83e3c766)}100%{filter:drop-shadow(0 0 15px #83e3c7)}}
+.desktop .desktop-icons [data-icon="calls"]{animation:zapeShortcutPulse 1.3s ease-in-out infinite alternate!important}
+.desktop .first-call-guide .guide-actions button[data-app="calls"],.desktop .mobile-dock [data-app="calls"]{animation:zapeGuideGlow 1.3s ease-in-out infinite alternate!important}
+.desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after{animation:none!important;transform:none!important}
