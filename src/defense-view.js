@@ -47,8 +47,8 @@ function scammerTypingPanel(id,escape){
  const phrase=choices[0],isTyping=['ask-secret','give-code','repeat-pin','reply-cpf','send-cpf','send-doc','send-document','pay-link'].includes(id),isMessage=['ask-secret','give-code','reply-cpf','send-cpf','send-doc','send-document','pay-link'].includes(id),isAttachment=['send-doc','send-document'].includes(id);
  const activityLabel=isTyping?'Você está digitando':id==='install-remote'?'Você está mexendo no computador':id==='open-attachment'?'Abrindo o anexo':id==='enable-macros'?'Ativando o conteúdo do arquivo':'Preparando a ação';
  const letters=[...phrase].map((char,index)=>`<i style="--letter:${index}" aria-hidden="true">${char===' '?' ':escape(char)}</i>`).join('');
- const typingTime=`${Math.max(2.2,phrase.length*.045).toFixed(2)}s`,attachmentName=id==='send-document'?'foto-cpf-ficticia.jpg':id==='send-doc'?'documento-ficticio.pdf':null;
- return `<div class="demo-scammer-control${isMessage?' is-message':''}${isAttachment?' has-attachment':''}${isTyping?' is-typing':''}" style="--typing-time:${typingTime}"><span class="demo-scammer-status"><i></i><span class="demo-status-typing">${activityLabel}${isTyping?' · Eu':''}</span><span class="demo-status-legacy">${activityLabel}</span>${isMessage?'<span class="demo-status-sending">Enviando…</span><span class="demo-status-sent">Mensagem enviada ✓</span>':''}</span><div class="demo-scammer-entry"><small>${isMessage?'EU · MENSAGEM FICTÍCIA':isTyping?'EU · AÇÃO SIMULADA':'AÇÃO SIMULADA'}</small><span class="demo-scammer-text" ${isTyping?'aria-label="Eu: conteúdo fictício sendo digitado"':''}>${letters}${isTyping?'<b aria-hidden="true"></b>':''}</span></div>${isMessage?`<div class="demo-sent-message"><small>EU</small><span>${escape(phrase)}</span><b>✓✓ Enviada</b></div>`:''}${isAttachment?`<div class="demo-attachment-send"><span class="demo-attachment-icon" aria-hidden="true">📎</span><span><b>${attachmentName}</b><small>Arquivo fictício · ${id==='send-document'?'86':'128'} KB</small></span><strong><i></i><span class="demo-attach-progress">Anexando…</span><span class="demo-attach-done">Anexado ✓</span></strong></div>`:''}</div>`;
+ const typingTime=`${Math.max(2.2,phrase.length*.045).toFixed(2)}s`,attachmentName=id==='send-document'?'foto-cpf-ficticia.jpg':id==='send-doc'?'documento-ficticio.jpg':null;
+ return `<div class="demo-scammer-control${isMessage?' is-message':''}${isAttachment?' has-attachment':''}${isTyping?' is-typing':''}" style="--typing-time:${typingTime}"><span class="demo-scammer-status"><i></i><span class="demo-status-typing">${activityLabel}${isTyping?' · Eu':''}</span><span class="demo-status-legacy">${activityLabel}</span>${isMessage?`<span class="demo-status-sending">Enviando…</span><span class="demo-status-sent">${isAttachment?'Anexo enviado':'Mensagem enviada'} ✓</span>`:''}</span><div class="demo-scammer-entry"><small>${isMessage?'EU · MENSAGEM FICTÍCIA':isTyping?'EU · AÇÃO SIMULADA':'AÇÃO SIMULADA'}</small><span class="demo-scammer-text" ${isTyping?'aria-label="Eu: conteúdo fictício sendo digitado"':''}>${letters}${isTyping?'<b aria-hidden="true"></b>':''}</span></div>${isMessage&&!isAttachment?`<div class="demo-sent-message"><small>EU</small><span>${escape(phrase)}</span><b>✓✓ Enviada</b></div>`:''}${isAttachment?`<div class="demo-attachment-send"><span class="demo-attachment-icon" aria-hidden="true">📎</span><span><b>${attachmentName}</b><small>Imagem fictícia · ${id==='send-document'?'86':'128'} KB</small></span><strong><i></i><span class="demo-attach-progress">Anexando…</span><span class="demo-attach-done">Anexado ✓</span></strong></div>`:''}</div>`;
 }
 export function defenseActionDuration(id){
  const phrases=scammerTyping[id];
@@ -88,32 +88,32 @@ export const defenseActionDemos={
  'wait-settle':{context:'Extrato da conta · pedido aguardando',button:'Conferir saldo',result:'Extrato conferido antes de liberar o pedido.'},
  'check-beneficiary':{context:'Boleto · dados de quem recebe',button:'Ver recebedor',result:'Nome do recebedor exibido para conferência.'},
  'pay-qr':{context:'Cobrança · QR Code recebido',button:'Pagar agora',result:'Pagamento iniciado sem conferir quem recebe.'},
- 'open-known-app':{context:'App oficial do banco · cobranças',button:'Abrir app do banco',result:'App conhecido aberto para localizar a cobrança.'},
- 'send-doc':{context:'Mensagem · documento pessoal anexado',button:'Anexar documento',result:'Foto do documento anexada à conversa.'},
- 'track-official':{context:'Pedido · página de rastreio',button:'Consultar pedido',result:'Rastreio aberto pelo app conhecido da loja.'},
+ 'open-known-app':{context:'App oficial do banco · cobranças',button:'Abrir app do banco',result:'A tela de cobranças está aberta para conferência.'},
+ 'send-doc':{context:'Documento pessoal · imagem para enviar',button:'Anexar documento',result:'Imagem de demonstração incluída na conversa.'},
+ 'track-official':{context:'Pedido · página de rastreio',button:'Consultar pedido',result:'O número do pedido apareceu no app conhecido.'},
  'pay-link':{context:'Link de pagamento · formulário de cartão',button:'Preencher cartão',result:'Formulário de cartão aberto pelo link recebido.'},
- 'reply-cpf':{context:'Conversa · resposta com dados pessoais',button:'Enviar resposta',result:'CPF e endereço digitados no chat simulado.'},
- 'ask-store':{context:'Loja conhecida · seus pedidos',button:'Abrir meus pedidos',result:'Pedido localizado dentro do app conhecido.'},
+ 'reply-cpf':{context:'Conversa · resposta com dados pessoais',button:'Enviar resposta',result:'CPF e endereço foram enviados à conversa simulada.'},
+ 'ask-store':{context:'Loja conhecida · seus pedidos',button:'Abrir meus pedidos',result:'O histórico de compras apareceu no app da loja.'},
  'dont-open-report':{context:'Arquivo inesperado · fechado',button:'Fechar anexo',result:'Arquivo mantido fechado enquanto o suporte é chamado.'},
- 'open-attachment':{context:'Arquivo inesperado · download',button:'Abrir arquivo',result:'Anexo executado dentro da simulação.'},
- 'enable-macros':{context:'Documento · conteúdo bloqueado',button:'Ativar conteúdo',result:'Macros liberadas no documento da simulação.'},
+ 'open-attachment':{context:'Arquivo inesperado · download',button:'Abrir arquivo',result:'A simulação executou o anexo.'},
+ 'enable-macros':{context:'Documento · conteúdo bloqueado',button:'Ativar conteúdo',result:'O arquivo recebeu permissão para executar conteúdo.'},
  'ask-it':{context:'Suporte da firma · novo chamado',button:'Pedir ajuda',result:'Chamado aberto sem executar o arquivo.'},
  'call-bank':{context:'Banco · canal oficial do cartão',button:'Ligar para o banco',result:'Chamada iniciada pelo canal oficial.'},
  'hand-card':{context:'Visita à porta · cartão e senha',button:'Entregar cartão',result:'Cartão e senha passados à visita na simulação.'},
  'block-app':{context:'Cartões · controles de segurança',button:'Bloquear cartão',result:'Cartão marcado para bloqueio no app fictício.'},
  'ask-id':{context:'Visita · identificação solicitada',button:'Conferir crachá',result:'Identificação pedida antes de entregar o cartão.'},
- 'check-platform':{context:'Compra protegida · perfil do vendedor',button:'Ver vendedor',result:'Perfil aberto dentro da plataforma de compra.'},
- 'pay-direct':{context:'Pix · pagamento fora da plataforma',button:'Preparar Pix',result:'Pix preparado para a chave enviada por fora.'},
- 'search-official':{context:'Loja conhecida · campo de busca',button:'Pesquisar oferta',result:'Oferta procurada dentro do app oficial.'},
- 'send-document':{context:'Reserva de produto · dados solicitados',button:'Anexar documentos',result:'CPF e foto anexados à reserva simulada.'},
- 'official-gov':{context:'Serviço público · consulta de protocolo',button:'Consultar protocolo',result:'Consulta aberta pelo endereço oficial digitado.'},
- 'pay-fee':{context:'Taxa de entrega · link recebido',button:'Pagar taxa',result:'Pagamento preparado pelo link da mensagem.'},
+ 'check-platform':{context:'Compra protegida · perfil do vendedor',button:'Ver vendedor',result:'O perfil do vendedor foi carregado para conferência.'},
+ 'pay-direct':{context:'Pix · pagamento fora da plataforma',button:'Preparar Pix',result:'O Pix fictício ficou preparado para uma chave externa.'},
+ 'search-official':{context:'Loja conhecida · campo de busca',button:'Pesquisar oferta',result:'A busca exibiu a oferta dentro do app conhecido.'},
+ 'send-document':{context:'Reserva de produto · dados solicitados',button:'Anexar documentos',result:'Os arquivos fictícios foram incluídos no pedido.'},
+ 'official-gov':{context:'Serviço público · consulta de protocolo',button:'Consultar protocolo',result:'A página de consulta abriu com um protocolo fictício.'},
+ 'pay-fee':{context:'Taxa de entrega · link recebido',button:'Pagar taxa',result:'A taxa fictícia ficou preparada para pagamento.'},
  'ask-adult':{context:'Contatos · pessoa de confiança',button:'Iniciar chamada',result:'Ligação iniciada para pedir outra opinião.'},
- 'send-cpf':{context:'Cadastro · dados pessoais',button:'Enviar dados',result:'CPF e data de nascimento digitados no chat.'},
+ 'send-cpf':{context:'Cadastro · dados pessoais',button:'Enviar dados',result:'CPF e nascimento foram enviados à conversa simulada.'},
  'watch-card':{context:'Pagamento presencial · valor no visor',button:'Conferir valor',result:'Valor conferido; cartão continua com você.'},
  'leave-card':{context:'Cartão devolvido · nome não conferido',button:'Guardar cartão',result:'Cartão aceito sem conferir o nome.'},
  'use-wallet':{context:'Carteira digital · pagamento por aproximação',button:'Conferir e aproximar',result:'Valor consultado antes de aproximar o celular.'},
- 'repeat-pin':{context:'Teclado · senha visível',button:'Digitar senha',result:'Senha digitada sem cobrir o teclado.'}
+ 'repeat-pin':{context:'Teclado · senha visível',button:'Digitar senha',result:'O PIN fictício foi enviado sem cobrir as teclas.'}
 };
 
 function responseTag(choice,escape){
