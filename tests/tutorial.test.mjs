@@ -28,8 +28,8 @@ test('Tutorial de defesa acompanha só a primeira conversa e fica disponível se
  const s=fresh();s.history.push({caller:'nino',outcome:'closed'});migrateToDefense(s);
  const welcome=tutorialPanel(s,String,true);assert.match(welcome,/Bata o ponto no Zape/);assert.match(welcome,/Etapa 1 de 3/);assert.match(welcome,/data-app="calls"/);assert.doesNotMatch(welcome,/Começar tutorial/);
  assert.equal(tutorialAction(s,'collapse'),true);assert.match(tutorialPanel(s,String),/Mostrar dicas/);assert.equal(tutorialAction(s,'collapse'),true);
- nextCall(s);s.active.chatStage='typing';assert.match(tutorialStep(s).title,/mensagem nova/);assert.match(tutorialStep(s).text,/três pontos/);
- s.active.chatStage='speaking';assert.match(tutorialStep(s).text,/murmura sozinho/);assert.equal(tutorialTarget(s),'.defense-chat-bubble.defense-sender');
+ nextCall(s);s.active.chatStage='typing';assert.match(tutorialStep(s).title,/mensagem nova/);assert.match(tutorialStep(s).text,/três pontos/);assert.equal(tutorialTarget(s),null,'mensagens passivas não recebem aro verde');
+ s.active.chatStage='speaking';assert.match(tutorialStep(s).text,/murmura sozinho/);assert.equal(tutorialTarget(s),null,'balão da conversa não recebe aro verde');
  s.active.chatStage='ready';s.active.murmurHeard=true;assert.equal(tutorialStep(s).number,2);const clueGuide=tutorialPanel(s,String);assert.match(clueGuide,/O que observar/);assert.match(clueGuide,/data-tutorial-clues/);assert.match(clueGuide,/lógica/);
  s.active.outcome='blocked';assert.equal(tutorialStep(s).number,3);assert.match(tutorialStep(s).text,/Você está no rumo, boa sorte/);assert.equal(tutorialTarget(s),'.defense-feedback-actions .primary');finishCall(s);assert.equal(tutorialStep(s),null);assert.equal(tutorialPanel(s,String),'');
 });

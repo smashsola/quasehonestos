@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {looksPersonal,exportLocalData,clearLocalData,publicDialogueAI} from '../src/privacy-data.js';
+import {looksPersonal,exportLocalData,clearLocalData,publicDialogueAI,privacyVersion,shouldShowPrivacyNotice} from '../src/privacy-data.js';
 import {evaluateTrust,polishReply} from '../src/ai-dialogue.js';
 import {onRequestPost} from '../functions/api/dialogue.js';
 function storage(entries){const map=new Map(entries);return {get length(){return map.size;},key:i=>[...map.keys()][i],getItem:k=>map.get(k)??null,removeItem:k=>map.delete(k)};}
@@ -27,3 +27,5 @@ test('Dados pessoais são recusados antes de chamar o provedor experimental',asy
  const request=new Request('https://example.com/api/dialogue',{method:'POST',headers:{Origin:'https://example.com','Content-Type':'application/json'},body:JSON.stringify({caller:'nino',scheme:'prize',reference:'Fala local',history:[{speaker:'Você',text:'teste@example.invalid'}]})});
  const response=await onRequestPost({request,env:{DIALOGUE_AI_ENABLED:'true',DIALOGUE_PROVIDER:'gemini',DIALOGUE_ALLOW_EXPERIMENTAL_PROVIDERS:'true',GEMINI_API_KEY:'test'}});assert.equal(response.status,400);assert.equal((await response.json()).error,'personal-data');
 });
+
+test('Aviso de privacidade reaparece após a atualização e respeita o aceite desta versão',()=>{const old=storage([['qh-privacy-notice','2026-10-15']]),current=storage([['qh-privacy-notice',privacyVersion]]);assert.equal(privacyVersion,'2026-10-19');assert.equal(shouldShowPrivacyNotice(old),true);assert.equal(shouldShowPrivacyNotice(current),false);});

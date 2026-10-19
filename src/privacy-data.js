@@ -1,4 +1,5 @@
-export const privacyVersion='2026-10-15';
+export const privacyVersion='2026-10-19';
+export const shouldShowPrivacyNotice=storage=>storage.getItem('qh-privacy-notice')!==privacyVersion;
 export const publicDialogueAI=false;
 
 const email=/[\w.+-]+@[\w.-]+\.[a-z]{2,}/i;

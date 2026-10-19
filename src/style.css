@@ -806,99 +806,34 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
  .first-call-guide .guide-mentor{padding-block:6px}
  .first-call-guide .guide-body{padding-block:8px}
 }
-.tutorial-spotlight{position:relative!important;z-index:360!important;outline:3px solid #78d6b4!important;outline-offset:3px!important;box-shadow:0 0 0 8px #78d6b440,0 0 22px #78d6b477!important;animation:tutorialSpotlight 1.25s ease-in-out infinite alternate}
-/* Desktop shortcuts use saved x/y coordinates; tutorial and unread states must not put them back in document flow. */
+/* Saved desktop icon coordinates must survive tutorial and unread states. */
 @media (min-width:601px) and (pointer:fine),(min-width:1001px) and (pointer:coarse){.desktop .desktop-icons>button[data-icon]{position:absolute!important}}
-@keyframes tutorialSpotlight{from{box-shadow:0 0 0 5px #78d6b428,0 0 12px #78d6b455}to{box-shadow:0 0 0 9px #78d6b455,0 0 26px #78d6b499}}
-.guide-pointing{display:flex;align-items:center;gap:7px;margin-top:-7px;padding:7px 9px;border:1px solid #e4c77e55;border-radius:7px;background:#d8b85712;color:#e9d89b;font-size:10px;line-height:1.45}
-.guide-pointing span{font-size:16px;color:#f0cb6f}
-@media(prefers-reduced-motion:reduce){.tutorial-spotlight{animation:none}}
 
-/* The training card gets a quiet teal halo that travels around its edge. */
+/* Tutorial emphasis stays legible and never recolors the highlighted control. */
+.desktop .tutorial-spotlight{position:relative!important;z-index:360!important;outline:2px solid #82dfbf!important;outline-offset:3px!important;box-shadow:0 0 0 4px #78d6b422!important;animation:none!important}
+.desktop .defense-chat .tutorial-spotlight{outline:none!important;box-shadow:none!important}
 .first-call-guide{isolation:isolate;border-radius:12px;border-color:#75aa98;background:linear-gradient(155deg,#203b40 0%,#172f35 72%,#183832 100%);box-shadow:0 12px 32px #071d2680,0 0 0 1px #9bd9c122}
 .first-call-guide::after{content:"";position:absolute;inset:0;z-index:2;border:1px solid #79d4b366;border-radius:inherit;pointer-events:none;opacity:.65}
-@supports ((mask-composite:exclude) or (-webkit-mask-composite:xor)){
- .first-call-guide::after{inset:-1px;border:0;padding:2px;background:conic-gradient(from 0deg,transparent 0deg 255deg,#83e3c7 300deg,#d4efb1 325deg,transparent 360deg);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;animation:guideAuraTravel 3.6s linear infinite;opacity:.9}
-}
 .guide-mentor{background:linear-gradient(100deg,#ffffff0a,#8dd5b20a);border-bottom-color:#91b7aa38}
 .guide-progress span{height:4px;border-radius:99px;background:#8cb5a42e}
 .guide-progress .done{background:#79c5a5}.guide-progress .current{background:#77d2b1;box-shadow:0 0 9px #77d2b180}
 .first-call-guide .guide-actions button:first-child{border-radius:9px;box-shadow:0 4px 0 #315b4e,0 8px 18px #071d263b,inset 0 1px 0 #ffffff4a}
 .first-call-guide .guide-actions button:last-child{border-radius:8px}
-@keyframes guideAuraTravel{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.first-call-guide::after{animation:none!important}.first-call-guide .guide-progress .current{box-shadow:none}}
-.tutorial-spotlight:is([data-icon="calls"],[data-app="calls"]),.first-call-guide .guide-actions button[data-app="calls"]{isolation:isolate;border-radius:12px;position:relative}
-.tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.first-call-guide .guide-actions button[data-app="calls"]::after{content:"";position:absolute;inset:-6px;z-index:2;border:2px solid #83e3c7;border-radius:16px;box-shadow:0 0 12px #83e3c766;pointer-events:none;animation:zapeAuraPulse .78s ease-in-out infinite alternate}
-@keyframes zapeAuraPulse{from{transform:scale(.98);opacity:.62;box-shadow:0 0 9px #83e3c755}to{transform:scale(1.045);opacity:1;box-shadow:0 0 22px #83e3c7c9,0 0 0 5px #83e3c733}}
-/* Keep tutorial-specific emphasis running even if the browser globally suppresses motion. */
-@media(prefers-reduced-motion:reduce){.desktop .tutorial-spotlight{animation:tutorialSpotlight 1.1s ease-in-out infinite alternate!important}.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after{animation:zapeAuraPulse .78s ease-in-out infinite alternate!important}}
-/* The guide scrolls vertically when needed, never sideways. */
 .desktop .first-call-guide{overflow-x:hidden;overscroll-behavior-x:none;scrollbar-gutter:stable}
 .desktop .first-call-guide .guide-body{min-width:0;overflow-wrap:anywhere}
-.guide-pointing{margin-top:8px;padding:9px 11px;border:1px solid #78c9aa55;border-radius:10px;background:linear-gradient(110deg,#77d7b01c,#77d7b006);color:#d9eee5;box-shadow:inset 3px 0 #78d6b4,0 4px 14px #071d2626;font-size:11px;line-height:1.55}
+.guide-pointing{display:flex;align-items:center;gap:7px;margin:8px 0 0;padding:9px 11px;border:1px solid #78c9aa55;border-radius:10px;background:linear-gradient(110deg,#77d7b01c,#77d7b006);color:#d9eee5;box-shadow:inset 3px 0 #78d6b4,0 4px 14px #071d2626;font-size:11px;line-height:1.55}
 .guide-pointing span{display:grid;place-items:center;flex:0 0 9px;width:9px;height:9px;margin:0 7px 0 2px;border:2px solid #9ce6c8;border-radius:50%;background:#9ce6c8;box-shadow:0 0 0 3px #74d0ad20}
 .first-day-steps>div{position:relative;min-height:78px;padding:13px 12px 13px 15px;border:1px solid #75aa9880;border-radius:10px;background:linear-gradient(145deg,#315159,#263f47);box-shadow:inset 0 1px #ffffff16,0 6px 14px #081c2548;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
 .first-day-steps>div::before{position:absolute;inset:0 auto 0 0;width:4px;border-radius:10px 0 0 10px;background:linear-gradient(180deg,#f0c087,#77d2b1);content:""}
 .first-day-steps>div:hover{transform:translateY(-2px);border-color:#88c9ae99;box-shadow:inset 0 1px #ffffff10,0 10px 20px #081c2555}
 @media(max-width:780px){.first-day-steps>div{min-height:70px}}
-@media(prefers-reduced-motion:reduce){.first-day-steps>div{transition:none}}
+@media(max-height:700px) and (min-width:601px){.desktop-window:not(.maximized){max-height:calc(100svh - 96px)}.first-call-guide{max-height:calc(100svh - 116px)}}
+@media(max-height:520px) and (orientation:landscape){.first-call-guide{max-height:45%;margin-block:4px;padding-block:0}.first-call-guide .guide-mentor{padding-block:6px}.first-call-guide .guide-body{padding-block:8px}}
 
-/* Zape Zape keeps the tutorial's mint halo moving automatically on the desktop. */
-.desktop-icons [data-icon="calls"]{position:relative;isolation:isolate}
-.desktop-icons [data-icon="calls"]::after{content:"";position:absolute;inset:-6px;z-index:2;border:2px solid #83e3c7;border-radius:16px;box-shadow:0 0 12px #83e3c766;pointer-events:none;animation:zapeAuraPulse 1.1s ease-in-out infinite alternate}
-@media(prefers-reduced-motion:reduce){.desktop .desktop-icons [data-icon="calls"]::after{animation:zapeAuraPulse 1.1s ease-in-out infinite alternate!important}}
-
-/* The Zape shortcut keeps a strong, automatic tutorial-style aura. */
-.desktop-icons [data-icon="calls"]{animation:zapeIconPulse 1.05s ease-in-out infinite alternate!important}
-.desktop-icons [data-icon="calls"]::after{inset:-8px;border-width:2.5px;animation:zapeAuraPulse .95s ease-in-out infinite alternate!important}
-@keyframes zapeIconPulse{from{box-shadow:0 0 0 0 #78d6b400,0 3px 8px #09212c12}to{box-shadow:0 0 0 7px #78d6b43d,0 0 25px #78d6b477}}
-@media(prefers-reduced-motion:reduce){.desktop .desktop-icons [data-icon="calls"]{animation:zapeIconPulse 1.05s ease-in-out infinite alternate!important}.desktop .desktop-icons [data-icon="calls"]::after{animation:zapeAuraPulse .95s ease-in-out infinite alternate!important}}
-
-
-/* Calm, consistent tutorial emphasis. The mint pulse is driven by Web Animations after render,
-   so it starts without hover and is not canceled by reduced-motion browser settings. */
-.desktop .tutorial-spotlight{outline:2px solid #82dfbf!important;outline-offset:3px!important;box-shadow:0 0 0 4px #78d6b422!important;animation:none!important}
-.first-call-guide::after{inset:0!important;border:1px solid #79d4b366!important;padding:0!important;background:none!important;mask:none!important;-webkit-mask:none!important;animation:none!important;opacity:.7!important}
-.desktop .desktop-icons [data-icon="calls"]{position:relative;isolation:isolate;animation:none!important}
-.desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after{content:"";position:absolute;inset:-4px;z-index:2;border:1px solid #83e3c7;border-radius:inherit;box-shadow:0 0 0 2px #83e3c71c;pointer-events:none;animation:none!important;transform:none!important}
-
-
-/* The Zape callout is a restrained ring pulse on the actual shortcut and tutorial CTA. */
-@keyframes zapeAuraBreath{from{border-color:#83e3c7a6;box-shadow:0 0 0 2px #83e3c711,0 0 5px #83e3c722;opacity:.76}to{border-color:#a4f0d5;box-shadow:0 0 0 4px #83e3c733,0 0 12px #83e3c766;opacity:1}}
-.desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after{animation:zapeAuraBreath 1.55s ease-in-out infinite alternate!important;inset:-5px!important;border-width:1.5px!important;transform:none!important}
-.desktop .mobile-dock [data-app="calls"]{position:relative;isolation:isolate}
-
-
-/* Make the Zape halo visibly breathe, without moving the shortcut itself. */
-@keyframes zapeAuraBreath{0%{border-color:#83e3c788;box-shadow:0 0 0 2px #83e3c722,0 0 7px #83e3c744;opacity:.68;transform:scale(.97)}100%{border-color:#b4ffe0;box-shadow:0 0 0 7px #83e3c766,0 0 22px #83e3c7d9;opacity:1;transform:scale(1.035)}}
-.desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after{animation:zapeAuraBreath 1.25s ease-in-out infinite alternate!important;inset:-6px!important;border-width:2px!important;transform-origin:center!important}
-
-
-/* Animate the shortcut button itself so the Zape highlight is unmistakable. */
-@keyframes zapeShortcutPulse{0%{filter:drop-shadow(0 0 1px #83e3c766);background-color:#83e3c700;border-color:#83e3c766;box-shadow:0 0 0 0 #83e3c700}100%{filter:drop-shadow(0 0 15px #83e3c7);background-color:#83e3c722;border-color:#a4f0d5;box-shadow:0 0 0 6px #83e3c755,0 0 20px #83e3c799}}
-@keyframes zapeGuideGlow{0%{filter:drop-shadow(0 0 1px #83e3c766)}100%{filter:drop-shadow(0 0 15px #83e3c7)}}
-.desktop .desktop-icons [data-icon="calls"]{animation:zapeShortcutPulse 1.3s ease-in-out infinite alternate!important}
-.desktop .first-call-guide .guide-actions button[data-app="calls"],.desktop .mobile-dock [data-app="calls"]{animation:zapeGuideGlow 1.3s ease-in-out infinite alternate!important}
-.desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after{animation:none!important;transform:none!important}
-
-
-/* Final polish: keep the shortcut unchanged and let only its soft halo breathe. */
-@keyframes zapeShortcutPulse{0%,100%{filter:drop-shadow(0 0 1px #83e3c722);background-color:transparent;border-color:transparent;box-shadow:none}50%{filter:drop-shadow(0 0 7px #83e3c766);background-color:transparent;border-color:transparent;box-shadow:none}}
-@keyframes zapeAuraBreath{0%,100%{border-color:#83e3c788;box-shadow:0 0 0 2px #83e3c711,0 0 6px #83e3c733;opacity:.72}50%{border-color:#a4f0d5;box-shadow:0 0 0 4px #83e3c733,0 0 13px #83e3c788;opacity:1}}
-.desktop .desktop-icons [data-icon="calls"]{animation:zapeShortcutPulse 1.8s ease-in-out infinite!important}
-.desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after{animation:zapeAuraBreath 1.8s ease-in-out infinite!important;inset:-4px!important;border-width:1px!important;transform:none!important}
-.desktop .first-call-guide .guide-actions button[data-app="calls"],.desktop .mobile-dock [data-app="calls"]{animation:zapeGuideGlow 1.8s ease-in-out infinite alternate!important}
-
-
-/* Match the tutorial callout to the Zape aura; give the shortcut a small extra lift. */
-@keyframes qhTutorialAura{0%,100%{opacity:.72;box-shadow:0 0 0 2px #83e3c722,0 0 7px #83e3c744}50%{opacity:1;box-shadow:0 0 0 4px #83e3c744,0 0 13px #83e3c799}}
-@keyframes qhZapeAura{0%,100%{opacity:.72;box-shadow:0 0 0 3px #83e3c733,0 0 8px #83e3c755}50%{opacity:1;box-shadow:0 0 0 5px #83e3c755,0 0 16px #83e3c7bb}}
-.desktop .desktop-icons [data-icon="calls"]{animation:none!important;filter:none!important}
-.desktop .first-call-guide .guide-actions button[data-app="calls"],.desktop .mobile-dock [data-app="calls"]{animation:none!important;filter:none!important}
-.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after,.desktop .tutorial-spotlight[data-app="calls"]::after{animation:qhTutorialAura 1.65s ease-in-out infinite!important;inset:-5px!important;border:1px solid #83e3c7!important;border-radius:inherit!important;transform:none!important}
-.desktop .desktop-icons [data-icon="calls"]::after,.desktop .desktop-icons [data-icon="calls"].tutorial-spotlight::after{animation:qhZapeAura 1.65s ease-in-out infinite!important;inset:-5px!important;border:1.5px solid #83e3c7!important;border-radius:inherit!important;transform:none!important}
-
-
-/* Raise the mint glow slightly while preserving each button's own text and fill colors. */
+/* A persistent mint ring pulses without changing the icon or button fill. */
 @keyframes qhTutorialAura{0%,100%{opacity:.8;box-shadow:0 0 0 3px #83e3c733,0 0 9px #83e3c766}50%{opacity:1;box-shadow:0 0 0 5px #83e3c766,0 0 17px #83e3c7bb}}
 @keyframes qhZapeAura{0%,100%{opacity:.82;box-shadow:0 0 0 4px #83e3c744,0 0 10px #83e3c777}50%{opacity:1;box-shadow:0 0 0 6px #83e3c777,0 0 20px #83e3c7dd}}
+.desktop .desktop-icons [data-icon="calls"],.desktop .first-call-guide .guide-actions button[data-app="calls"],.desktop .mobile-dock [data-app="calls"],.desktop .tutorial-spotlight[data-app="calls"]{position:relative;isolation:isolate;filter:none!important}
+.desktop .desktop-icons [data-icon="calls"]::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after,.desktop .tutorial-spotlight[data-app="calls"]::after{content:"";position:absolute;inset:-5px;z-index:3;border:2px solid #83e3c7;border-radius:inherit;pointer-events:none;transform:none!important;animation:qhTutorialAura 1.65s ease-in-out infinite!important}
+.desktop .desktop-icons [data-icon="calls"]::after,.desktop .desktop-icons [data-icon="calls"].tutorial-spotlight::after{animation:qhZapeAura 1.65s ease-in-out infinite!important}
+@media(prefers-reduced-motion:reduce){.first-day-steps>div{transition:none}}

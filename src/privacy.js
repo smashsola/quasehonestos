@@ -1,5 +1,5 @@
 import {localStore as localStorage,sessionStore as sessionStorage} from './safe-storage.js';
-import {privacyVersion,exportLocalData,clearLocalData} from './privacy-data.js';
+import {privacyVersion,exportLocalData,clearLocalData,shouldShowPrivacyNotice} from './privacy-data.js';
 let dialog,previousFocus,first=false;
 const shield='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6z" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="m8 12 3 3 5-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function openPrivacy(initial=false){
@@ -21,5 +21,5 @@ function closePrivacy(){if(!dialog)return;if(first)localStorage.setItem('qh-priv
 function mount(){const bar=document.querySelector('.taskbar');if(bar&&!bar.querySelector('[data-privacy-open]')){const b=document.createElement('button');b.className='privacy-toggle';b.dataset.privacyOpen='';b.title='Privacidade e dados locais';b.setAttribute('aria-label','Privacidade e dados locais');b.innerHTML=shield;bar.querySelector('.os-account')?.after(b);}}
 new MutationObserver(mount).observe(document.querySelector('#app'),{childList:true,subtree:true});mount();
 document.addEventListener('click',e=>{if(e.target.closest('[data-privacy-open]'))openPrivacy();});
-const firstNotice=()=>{if(localStorage.getItem('qh-privacy-notice')!==privacyVersion)openPrivacy(true);};
+const firstNotice=()=>{if(shouldShowPrivacyNotice(localStorage))openPrivacy(true);};
 if(document.querySelector('#os-boot')&&!document.documentElement.dataset.bootReady)document.addEventListener('qh-boot-ready',firstNotice,{once:true});else firstNotice();
