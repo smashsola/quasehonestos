@@ -17,6 +17,17 @@ test('A rodada encerrada permite voltar ao computador sem reiniciar',()=>{
  assert.match(html,/Começar outra rodada/);
 });
 
+test('O resumo final deixa abrir cada conversa e mostra os dados ou anexos enviados',async()=>{
+ const html=defenseCampaignEnding({history:[
+  {caseId:'bank-call',caller:'caio',choice:'give-code',outcome:'fooled',feedback:'Código informado.'},
+  {caseId:'delivery',caller:'maya',choice:'reply-cpf',outcome:'fooled',feedback:'Dados enviados.'},
+  {caseId:'fake-store',caller:'duda',choice:'send-document',outcome:'fooled',feedback:'Documento anexado.'},
+  {caseId:'whatsapp',caller:'bia',choice:'verify-person',outcome:'blocked',feedback:'Ligação pelo contato salvo.'}
+ ]},escape);
+ assert.equal((html.match(/<details class="defense-recap-card"/g)||[]).length,4);assert.equal((html.match(/<summary class="defense-recap-heading"/g)||[]).length,4);assert.match(html,/Você informou o código recebido por SMS/);assert.match(html,/Você enviou CPF e endereço pelo chat/);assert.match(html,/Você enviou CPF e foto de documento para a reserva/);assert.match(html,/Você não enviou código, CPF ou anexo ao golpista/);assert.match(html,/<span>1<\/span>/);assert.doesNotMatch(html,/<span>0[1-9]<\/span>/);
+ const css=await readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8');assert.match(css,/call-window-body:has\(\.defense-ending\).*overflow-y:auto/);assert.match(css,/\.defense-recap-card\[open\]/);assert.match(css,/\.defense-recap-shared\.is-risk/);
+});
+
 test('Cada resultado de situação oferece voltar ao PC junto de continuar',()=>{
  const active=startDefenseCall(0);decideDefense(active,'send-pix');
  const html=defenseView({active,cursor:0},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
