@@ -874,6 +874,28 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-recap-shared{border-left:4px solid #b57a3c;background:#fff6e9}.defense-recap-shared.is-safe{border-left-color:#398260;background:#edf7ef}.defense-recap-shared.is-risk{border-left-color:#b56a39;background:#fff2e6}.defense-recap-feedback{background:#edf4ef}
 .mail-message-count{display:flex;align-items:center;gap:6px;white-space:nowrap;line-height:1.2}.mail-message-count strong{color:#235640;font-size:13px}.mail-row-wrap{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 40px;align-items:stretch;gap:6px}.mail-star-toggle{display:grid;place-items:center;align-self:center;width:38px;height:38px;padding:0;border:1px solid #d2dfd4;border-radius:11px;background:#f6faf6;color:#718b7b;font-size:20px;cursor:pointer}.mail-star-toggle:hover,.mail-star-toggle:focus-visible{border-color:#bd9a4b;background:#fff8e8;color:#946b17;outline:2px solid #dfc577;outline-offset:2px}.mail-star-toggle.is-starred{border-color:#d6b65e;background:#fff5d5;color:#946b17}
 @media(max-width:600px){.defense-contact-status{padding:5px 7px;font-size:10px}.defense-ending{padding:14px}.defense-recap{padding:12px}.defense-recap-heading{grid-template-columns:32px minmax(0,1fr) auto 18px;gap:7px;padding:9px}.defense-recap-heading>span{width:29px;height:29px}.defense-recap-heading>div strong{font-size:13px}.defense-recap-heading>div small{font-size:11px}.defense-recap-heading>b{grid-column:auto;justify-self:start;font-size:9px}.defense-recap-body{padding:0 9px 10px}.mail-row-wrap{grid-template-columns:minmax(0,1fr) 36px}.mail-star-toggle{width:34px;height:34px}}
+
+/* Recap makes the player's side of each fictional chat read like a sent message. */
+.defense-recap{border-color:#b8cfc2;background:linear-gradient(145deg,#f6faf4,#eaf2eb);box-shadow:0 8px 22px #173c3010}
+.defense-recap>h2{font-size:23px;letter-spacing:-.025em}
+.defense-recap>p{margin:5px 0 18px;color:#526b60;font-size:13px}
+.defense-recap-list{gap:8px}
+.defense-recap-card{border-color:#c8d8cf;background:#fff;box-shadow:0 2px 5px #173c3008}
+.defense-recap-heading{min-height:62px;padding:10px 14px}
+.defense-recap-heading>span{background:#e4f0e9;color:#21664e}
+.defense-recap-heading>b{padding:6px 10px;font-size:10px}
+.defense-recap-body{gap:10px;padding:2px 14px 14px 59px}
+.defense-recap-choice,.defense-recap-feedback{padding:11px 13px;border-color:#e0e9e3;background:#f7faf7}
+.defense-recap-message{display:grid;grid-template-columns:34px minmax(0,1fr) 18px;align-items:start;gap:9px;max-width:100%;margin-left:auto;padding:11px 13px;border:1px solid #b8d9c8;border-radius:13px 13px 4px 13px;background:linear-gradient(135deg,#e4f4e9,#d6eee1);box-shadow:0 3px 8px #1749360d}
+.defense-recap-message.is-risk{border-color:#edcfad;background:linear-gradient(135deg,#fff4e8,#f8e8d7)}
+.defense-recap-message-avatar{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#245d4e;color:#f3fff8;font-size:9px;font-weight:900;letter-spacing:.04em}
+.defense-recap-message.is-risk .defense-recap-message-avatar{background:#8d5630}
+.defense-recap-message>div{min-width:0}
+.defense-recap-message>div small{color:#47695a;font-size:10px;font-weight:850;letter-spacing:.04em;text-transform:uppercase}
+.defense-recap-message>div p{margin:3px 0 0;color:#163f33;font-size:14px;font-weight:750;line-height:1.45;overflow-wrap:anywhere}
+.defense-recap-message-status{align-self:end;color:#287b5b;font-size:14px;font-weight:900}
+.defense-recap-message.is-risk .defense-recap-message-status{color:#a65a27}
+@media(max-width:600px){.defense-recap-body{padding:2px 9px 11px}.defense-recap-heading{min-height:58px}.defense-recap-message{padding:10px;grid-template-columns:30px minmax(0,1fr) 16px}.defense-recap-message-avatar{width:29px;height:29px}.defense-recap-message>div p{font-size:13px}}
 .defense-chat.is-speaking .defense-sender-avatar,.defense-character.is-murmuring{outline:3px solid #79cba2;outline-offset:3px}
 .defense-contact .avatar.is-speaking,.defense-sender-avatar.is-speaking{animation:defense-speaking-pulse .62s ease-in-out infinite;border-color:#187554;box-shadow:0 0 0 5px #77cba254,0 6px 16px #153c2b35}
 .defense-chat-bubble.defense-sender.is-speaking{border-color:#32866a;background:linear-gradient(125deg,#f2faf4,#e8f4ed);box-shadow:0 0 0 2px #77cba244,0 8px 20px #153c3220}

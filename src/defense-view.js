@@ -151,28 +151,28 @@ export function defenseView(state,{escape,portraitSource}){
 export function defenseCampaignEnding(state,escape){
  const campaign=state.history.filter(item=>item.caseId),protectedCount=campaign.filter(item=>item.outcome==='blocked').length;
  const sharedEffects={
-  'end-contact':'Você encerrou a conversa. Nenhum código, CPF ou anexo foi enviado.',
-  'ask-secret':'Você pediu um código à outra pessoa; não compartilhou um código seu.',
-  'give-code':'Você informou o código recebido por SMS.',
-  'install-remote':'Você iniciou a instalação do app de acesso remoto.',
-  'transfer-safe':'Você iniciou uma transferência para a conta indicada na ligação.',
-  'send-pix':'Você tentou enviar um Pix para a chave da mensagem.',
-  'deliver-proof':'Você liberou o pedido sem confirmar o Pix no extrato.',
-  'refund-other':'Você preparou uma devolução para outra chave enviada no chat.',
-  'pay-qr':'Você iniciou um pagamento pelo QR recebido, sem conferir quem receberia.',
-  'send-doc':'Você enviou uma foto fictícia de documento pelo chat.',
-  'pay-link':'Você preencheu os dados do cartão em um link recebido por mensagem.',
-  'reply-cpf':'Você enviou CPF e endereço pelo chat.',
-  'open-attachment':'Você abriu o anexo inesperado na simulação.',
-  'enable-macros':'Você ativou o conteúdo do arquivo na simulação.',
-  'hand-card':'Você entregou o cartão e informou a senha à visita.',
-  'ask-id':'Você pediu identificação e a escolha previa entregar o cartão se parecesse correta.',
-  'pay-direct':'Você iniciou um Pix direto para a chave do vendedor.',
-  'send-document':'Você enviou CPF e foto de documento para a reserva.',
-  'pay-fee':'Você tentou pagar a taxa pelo link da mensagem.',
-  'send-cpf':'Você enviou CPF e data de nascimento no cadastro.',
-  'leave-card':'Você aceitou um cartão sem conferir se era o seu.',
-  'repeat-pin':'Você digitou a senha novamente sem cobrir o teclado.'
+  'end-contact':'[conversa encerrada; nenhum dado enviado]',
+  'ask-secret':'[pedido de confirmação; nenhum código seu enviado]',
+  'give-code':'[código SMS fictício: 804 271]',
+  'install-remote':'[instalação do app de acesso remoto iniciada]',
+  'transfer-safe':'[transferência fictícia iniciada para a conta indicada]',
+  'send-pix':'[Pix fictício iniciado para a chave da mensagem]',
+  'deliver-proof':'[pedido liberado antes de confirmar o Pix]',
+  'refund-other':'[devolução iniciada para outra chave do chat]',
+  'pay-qr':'[pagamento fictício iniciado pelo QR recebido]',
+  'send-doc':'[foto de documento fictício anexada]',
+  'pay-link':'[dados fictícios do cartão preenchidos no link]',
+  'reply-cpf':'[CPF e endereço fictícios enviados]',
+  'open-attachment':'[anexo aberto: nota-fiscal-urgente.pdf fictício]',
+  'enable-macros':'[macros do documento fictício ativadas]',
+  'hand-card':'[cartão fictício entregue; senha informada]',
+  'ask-id':'[identificação pedida; nenhum dado enviado]',
+  'pay-direct':'[Pix fictício iniciado para a chave do vendedor]',
+  'send-document':'[CPF e foto de documento fictícios anexados]',
+  'pay-fee':'[pagamento fictício da taxa iniciado pelo link]',
+  'send-cpf':'[CPF e data de nascimento fictícios enviados]',
+  'leave-card':'[cartão da simulação aceito sem conferência]',
+  'repeat-pin':'[senha fictícia digitada novamente]'
  };
- return `<section class="welcome shift-ending defense-ending"><div class="shift-stamp"><span></span> RODADA ENCERRADA</div><h1>${campaign.some(item=>item.gameOver)?'Fim de jogo. O RH já sabe.':'Expediente concluído.'}</h1><p>${campaign.some(item=>item.gameOver)?'O ransomware fictício terminou a rodada. O chefe vai com certeza descontar do seu salário inexistente de estagiário.':`Você concluiu as ${defensePeople.length} situações. ${protectedCount} risco(s) foram interrompidos.`}</p><p>Na vida real, confirme por canais oficiais, não compartilhe códigos e procure o banco ou suporte rapidamente se houver prejuízo.</p><section class="defense-recap" aria-labelledby="defense-recap-title"><h2 id="defense-recap-title">O que você praticou</h2><p>Abra cada conversa para rever sua escolha e o que foi compartilhado.</p><div class="defense-recap-list">${campaign.map((item,i)=>{const scenario=defenseCases[item.caseId],person=defensePeople.find(p=>p.id===item.caller),choice=scenario?.choices.find(option=>option.id===item.choice),shared=sharedEffects[item.choice]|| (choice?.safe?'Você não enviou código, CPF ou anexo ao golpista.':`Você realizou a ação indicada: ${choice?.label?.replace(/^AÇÃO — /,'')||'consulte a escolha registrada'}.`);return `<details class="defense-recap-card"><summary class="defense-recap-heading"><span>${i+1}</span><div><strong>${escape(person?.name||'Atendimento')}</strong><small>${escape(scenario?.title||'')}</small></div><b class="${item.outcome==='blocked'?'recap-safe':'recap-risk'}">${item.outcome==='blocked'?'Risco interrompido':'Risco passou'}</b></summary><div class="defense-recap-body"><div class="defense-recap-choice"><small>Sua escolha</small><p>${escape(choice?.label?.replace(/^AÇÃO — /,'')||item.choice||'')}</p></div><div class="defense-recap-shared ${item.outcome==='blocked'?'is-safe':'is-risk'}"><small>O que foi passado ao golpista</small><p>${escape(shared)}</p></div><div class="defense-recap-feedback"><small>O que aconteceu</small><p>${escape(item.feedback||'')}</p></div></div></details>`;}).join('')}</div></section><p><b>Missão de aprendizado:</b> suspeitou? Pause, confirme por um canal conhecido e só então decida.</p><div class="defense-ending-actions"><button class="defense-ending-desktop" data-show-desktop>Voltar para o computador</button><button class="primary" data-action="reset">Começar outra rodada</button></div></section>`;
+ return `<section class="welcome shift-ending defense-ending"><div class="shift-stamp"><span></span> RODADA ENCERRADA</div><h1>${campaign.some(item=>item.gameOver)?'Fim de jogo. O RH já sabe.':'Expediente concluído.'}</h1><p>${campaign.some(item=>item.gameOver)?'O ransomware fictício terminou a rodada. O chefe vai com certeza descontar do seu salário inexistente de estagiário.':`Você concluiu as ${defensePeople.length} situações. ${protectedCount} risco(s) foram interrompidos.`}</p><p>Na vida real, confirme por canais oficiais, não compartilhe códigos e procure o banco ou suporte rapidamente se houver prejuízo.</p><section class="defense-recap" aria-labelledby="defense-recap-title"><h2 id="defense-recap-title">O que você praticou</h2><p>Abra uma conversa para ver sua escolha e a mensagem fictícia enviada.</p><div class="defense-recap-list">${campaign.map((item,i)=>{const scenario=defenseCases[item.caseId],person=defensePeople.find(p=>p.id===item.caller),choice=scenario?.choices.find(option=>option.id===item.choice),shared=sharedEffects[item.choice]|| (choice?.safe?'[nenhum código, CPF ou anexo enviado]':`[ação da simulação: ${choice?.label?.replace(/^AÇÃO — /,'')||'escolha registrada'}]`);return `<details class="defense-recap-card"><summary class="defense-recap-heading"><span>${i+1}</span><div><strong>${escape(person?.name||'Atendimento')}</strong><small>${escape(scenario?.title||'')}</small></div><b class="${item.outcome==='blocked'?'recap-safe':'recap-risk'}">${item.outcome==='blocked'?'Risco interrompido':'Risco passou'}</b></summary><div class="defense-recap-body"><div class="defense-recap-choice"><small>Sua escolha</small><p>${escape(choice?.label?.replace(/^AÇÃO — /,'')||item.choice||'')}</p></div><div class="defense-recap-message ${item.outcome==='blocked'?'is-safe':'is-risk'}"><span class="defense-recap-message-avatar" aria-hidden="true">EU</span><div><small>Mensagem fictícia enviada</small><p>Eu: ${escape(shared)}</p></div><span class="defense-recap-message-status" aria-label="Mensagem simulada">✓</span></div><div class="defense-recap-feedback"><small>Resultado</small><p>${escape(item.feedback||'')}</p></div></div></details>`;}).join('')}</div></section><p><b>Missão de aprendizado:</b> suspeitou? Pause, confirme por um canal conhecido e só então decida.</p><div class="defense-ending-actions"><button class="defense-ending-desktop" data-show-desktop>Voltar para o computador</button><button class="primary" data-action="reset">Começar outra rodada</button></div></section>`;
 }
