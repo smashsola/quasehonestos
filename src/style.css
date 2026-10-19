@@ -806,10 +806,10 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
  .first-call-guide .guide-mentor{padding-block:6px}
  .first-call-guide .guide-body{padding-block:8px}
 }
-.tutorial-spotlight{position:relative!important;z-index:360!important;outline:3px solid #f3c963!important;outline-offset:3px!important;box-shadow:0 0 0 8px #f3c96340,0 0 22px #f3c96377!important;animation:tutorialSpotlight 1.25s ease-in-out infinite alternate}
+.tutorial-spotlight{position:relative!important;z-index:360!important;outline:3px solid #78d6b4!important;outline-offset:3px!important;box-shadow:0 0 0 8px #78d6b440,0 0 22px #78d6b477!important;animation:tutorialSpotlight 1.25s ease-in-out infinite alternate}
 /* Desktop shortcuts use saved x/y coordinates; tutorial and unread states must not put them back in document flow. */
 @media (min-width:601px) and (pointer:fine),(min-width:1001px) and (pointer:coarse){.desktop .desktop-icons>button[data-icon]{position:absolute!important}}
-@keyframes tutorialSpotlight{from{box-shadow:0 0 0 5px #f3c96328,0 0 12px #f3c96355}to{box-shadow:0 0 0 9px #f3c96355,0 0 26px #f3c96399}}
+@keyframes tutorialSpotlight{from{box-shadow:0 0 0 5px #78d6b428,0 0 12px #78d6b455}to{box-shadow:0 0 0 9px #78d6b455,0 0 26px #78d6b499}}
 .guide-pointing{display:flex;align-items:center;gap:7px;margin-top:-7px;padding:7px 9px;border:1px solid #e4c77e55;border-radius:7px;background:#d8b85712;color:#e9d89b;font-size:10px;line-height:1.45}
 .guide-pointing span{font-size:16px;color:#f0cb6f}
 @media(prefers-reduced-motion:reduce){.tutorial-spotlight{animation:none}}

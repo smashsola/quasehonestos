@@ -1,4 +1,4 @@
-import {defensePeople,scammerPeople,defenseCases,defenseMechanics,defenseFailures,defenseActionScenes} from './defense-round.js';
+import {defensePeople,scammerPeople,defenseCases,defenseMechanics,defenseFailures,defenseActionScenes,defenseActionSounds} from './defense-round.js';
 
 const responseIcons={
  'Resposta direta':'💬',
@@ -138,14 +138,16 @@ export function defenseView(state,{escape,portraitSource}){
  const actionDemo=actionScene?defenseActionDemos[a.actionPending]:null;
  const actionAppContent=actionScene?demoActivity(actionApp,actionScene,actionDemo,escape):'';
  const scammerActivity=actionScene?scammerTypingPanel(a.actionPending,escape):'';
+ const actionVerb={call:'LIGANDO',hangup:'DESLIGANDO',message:'ENVIANDO MENSAGEM',keypad:'DIGITANDO CÓDIGO',payment:'FAZENDO PAGAMENTO',connect:'CONECTANDO',file:'ABRINDO ARQUIVO',delivery:'ATUALIZANDO PEDIDO',click:'CONSULTANDO',terminal:'NO CAIXA'};
  const actionSteps=actionScene?[
-  {icon:'▣',label:'TELA ABERTA',detail:actionApp.title},
-  {icon:['send-doc','send-document','open-attachment'].includes(a.actionPending)?'📎':['ask-secret','give-code','reply-cpf','send-cpf','pay-link'].includes(a.actionPending)?'✎':'↖',label:['send-doc','send-document'].includes(a.actionPending)?'ANEXANDO':['ask-secret','give-code','reply-cpf','send-cpf','pay-link'].includes(a.actionPending)?'DIGITANDO':'AÇÃO',detail:['send-doc','send-document'].includes(a.actionPending)?'Preparando o arquivo fictício':['ask-secret','give-code','reply-cpf','send-cpf','pay-link'].includes(a.actionPending)?'Escrevendo na conversa simulada':actionDemo.button},
+  {icon:'▣',label:'ABRINDO APP',detail:actionApp.title},
+  {icon:'⌕',label:'LOCALIZANDO',detail:actionDemo.context},
+  {icon:actionScene.icon,label:actionVerb[defenseActionSounds[a.actionPending]]||'FAZENDO A AÇÃO',detail:actionDemo.button},
   {icon:'✓',label:'O QUE ACONTECEU',detail:actionDemo.result}
  ]:[];
  const actionDuration=actionScene?defenseActionDuration(a.actionPending):0;
- const actionStepDuration=Math.min(1.35,actionDuration/4);
- const actionStepDelay=index=>`${(actionDuration-actionStepDuration)*index/2}s`;
+ const actionStepDuration=Math.min(1.05,actionDuration/4);
+ const actionStepDelay=index=>`${(actionDuration-actionStepDuration)*index/Math.max(1,actionSteps.length-1)}s`;
  const displayChoices=[...scenario.choices].sort((left,right)=>Number(!!left.witty||!!left.classification)-Number(!!right.witty||!!right.classification));
  const reaction=a.reactionTier==='almost'?{title:'QUASE LÁ!',icon:'🟡',note:'Boa pausa! Falta só confirmar pelo canal oficial.'}:a.reactionTier==='success'?{title:'PARABÉNS!',icon:'🎉',note:'Mandou bem: você escolheu um caminho seguro.'}:{title:'OPS, VACILOU!',icon:'😬',note:'Dá para corrigir: veja o que fazer agora.'};
  const typing=chatStage==='typing';

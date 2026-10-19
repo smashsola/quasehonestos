@@ -767,7 +767,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-action-playback-card h2{margin:9px 0 10px;color:#173c32;font-size:clamp(24px,5vw,32px);line-height:1.1}
 .defense-action-playback-card p{margin:0 auto;color:#45685b;font-size:15px;line-height:1.55}
 .defense-action-progress{height:5px;margin:24px 0 0;overflow:hidden;border-radius:9px;background:#d0e2d6}
-.defense-action-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 0;padding:0;list-style:none;text-align:left}
+.defense-action-steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0 0;padding:0;list-style:none;text-align:left}
 .defense-action-step{position:relative;display:grid;grid-template-columns:32px minmax(0,1fr);align-items:center;gap:8px;min-width:0;min-height:66px;padding:9px;border:1px solid #d2e2d7;border-radius:12px;background:#ffffffa8;opacity:.48;transform:translateY(5px);animation:defenseActionStep var(--step-duration,1.2s) ease-out both;animation-delay:var(--step-delay,0s)}
 .defense-action-step::after{content:"";position:absolute;left:calc(100% + 1px);top:50%;width:6px;border-top:1px solid #9dbba8}
 .defense-action-step:last-child::after{display:none}
@@ -777,6 +777,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-action-step strong{display:-webkit-box;overflow:hidden;color:#244b3d;font-size:10px;line-height:1.35;-webkit-box-orient:vertical;-webkit-line-clamp:2}
 .defense-action-step.step-2>span{background:#fff1d8;color:#9a6822}
 .defense-action-step.step-3>span{background:#e2f3e8;color:#28775a}
+.defense-action-step.step-4>span{background:#dff0f2;color:#286574}
 .defense-action-progress i{display:block;width:100%;height:100%;border-radius:inherit;background:linear-gradient(90deg,#43a578,#287156);transform:scaleX(0);transform-origin:left;animation:defenseActionProgress var(--action-duration,4.7s) linear both}
 @keyframes defenseActionShade{from{opacity:0}to{opacity:1}}
 @keyframes defenseActionCard{from{opacity:0;transform:translateY(12px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -798,6 +799,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @keyframes defenseActionStep{0%{opacity:.42;transform:translateY(5px);border-color:#d2e2d7;box-shadow:none}18%,72%{opacity:1;transform:translateY(0);border-color:#62a57c;background:#f5fff7;box-shadow:0 4px 16px #286d4826}100%{opacity:.82;transform:translateY(0);border-color:#b5d0bf;box-shadow:0 2px 7px #286d4810}}
 @keyframes defenseActionTravel{to{left:calc(100% - 8px);transform:translateY(-50%) scale(1.3)}}
 @media(max-width:520px){.defense-action-playback{padding:10px}.defense-action-playback-card{padding:12px;border-radius:17px}.defense-action-pc{max-height:39dvh;overflow:auto}.defense-action-app{min-height:0;margin:8px auto}.defense-action-steps{gap:5px;margin-top:9px}.defense-action-step{grid-template-columns:22px minmax(0,1fr);gap:4px;min-height:50px;padding:5px}.defense-action-step>span{width:21px;height:21px;font-size:11px}.defense-action-step strong{font-size:8px}.defense-action-step small{font-size:6px}.defense-action-progress{margin-top:12px}}
+@media(max-width:700px){.defense-action-steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.defense-action-playback-shade,.defense-action-playback-card,.defense-action-playback-icon,.defense-action-appicon,.defense-action-progress i,.defense-action-demo-path i,.defense-action-pc,.defense-action-app,.defense-action-working i,.defense-action-cursor,.defense-action-step{animation:none!important}.defense-action-appbutton,.defense-action-working,.defense-action-appresult>strong{animation:none;opacity:1;transform:none}.defense-action-step{opacity:1;transform:none}.defense-action-progress i{transform:scaleX(1)}}
 @media(prefers-reduced-motion:reduce){.demo-call-rings i,.demo-call-wave i,.demo-message-out,.demo-shield,.demo-security-orbit,.demo-delivery-track i,.demo-file-scan i,.demo-nfc i{animation:none!important}}
 @keyframes demoTypeLetter{to{opacity:1}}@keyframes demoTypeCaret{50%{opacity:0}}@keyframes demoRemotePulse{50%{box-shadow:0 0 0 5px #d9844912;opacity:.65}}@keyframes demoTypingLabel{0%,98%{opacity:1}100%{opacity:0}}@keyframes demoStatusFlash{0%,100%{opacity:0}15%,85%{opacity:1}}@keyframes demoStatusShow{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}@keyframes demoMessageSent{to{opacity:1;transform:translateY(0)}}@keyframes demoAttachmentArrive{to{opacity:1;transform:translateX(0)}}@keyframes demoAttachmentProgress{to{transform:scaleX(1)}}@keyframes demoHideProgress{to{opacity:0}}
