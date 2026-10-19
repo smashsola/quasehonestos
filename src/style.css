@@ -813,3 +813,21 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .guide-pointing{display:flex;align-items:center;gap:7px;margin-top:-7px;padding:7px 9px;border:1px solid #e4c77e55;border-radius:7px;background:#d8b85712;color:#e9d89b;font-size:10px;line-height:1.45}
 .guide-pointing span{font-size:16px;color:#f0cb6f}
 @media(prefers-reduced-motion:reduce){.tutorial-spotlight{animation:none}}
+
+/* The training card gets a quiet teal halo that travels around its edge. */
+.first-call-guide{isolation:isolate;border-radius:12px;border-color:#75aa98;background:linear-gradient(155deg,#203b40 0%,#172f35 72%,#183832 100%);box-shadow:0 12px 32px #071d2680,0 0 0 1px #9bd9c122}
+.first-call-guide::after{content:"";position:absolute;inset:0;z-index:2;border:1px solid #79d4b366;border-radius:inherit;pointer-events:none;opacity:.65}
+@supports ((mask-composite:exclude) or (-webkit-mask-composite:xor)){
+ .first-call-guide::after{inset:-1px;border:0;padding:2px;background:conic-gradient(from 0deg,transparent 0deg 255deg,#83e3c7 300deg,#d4efb1 325deg,transparent 360deg);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;animation:guideAuraTravel 3.6s linear infinite;opacity:.9}
+}
+.guide-mentor{background:linear-gradient(100deg,#ffffff0a,#8dd5b20a);border-bottom-color:#91b7aa38}
+.guide-progress span{height:4px;border-radius:99px;background:#8cb5a42e}
+.guide-progress .done{background:#79c5a5}.guide-progress .current{background:#77d2b1;box-shadow:0 0 9px #77d2b180}
+.first-call-guide .guide-actions button:first-child{border-radius:9px;box-shadow:0 4px 0 #315b4e,0 8px 18px #071d263b,inset 0 1px 0 #ffffff4a}
+.first-call-guide .guide-actions button:last-child{border-radius:8px}
+@keyframes guideAuraTravel{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.first-call-guide::after{animation:none!important}.first-call-guide .guide-progress .current{box-shadow:none}}
+.tutorial-spotlight:is([data-icon="calls"],[data-app="calls"]),.first-call-guide .guide-actions button[data-app="calls"]{isolation:isolate;border-radius:12px;position:relative}
+.tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.first-call-guide .guide-actions button[data-app="calls"]::after{content:"";position:absolute;inset:-5px;z-index:2;border:2px solid #83e3c7;border-radius:16px;box-shadow:0 0 14px #83e3c780;pointer-events:none;animation:zapeAuraPulse 1.8s ease-out infinite}
+@keyframes zapeAuraPulse{0%{transform:scale(.96);opacity:.9}75%,100%{transform:scale(1.12);opacity:0}}
+@media(prefers-reduced-motion:reduce){.tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.first-call-guide .guide-actions button[data-app="calls"]::after{animation:none;opacity:.65;transform:none}}
