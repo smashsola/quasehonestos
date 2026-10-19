@@ -659,7 +659,6 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
  .first-call-guide.guide-collapsed .guide-heading{height:50px;margin:0;display:flex;align-items:center;justify-content:space-between}
 }
 .desktop-icons button[data-icon="boss"],.taskbar button[data-task-app="boss"]{position:relative}
-.desktop-icons button[data-icon="boss"].has-unread::after,.taskbar button[data-task-app="boss"].has-unread::after{content:"";position:absolute;width:10px;height:10px;right:9px;top:8px;border:2px solid #e7efe5;border-radius:50%;background:#d95f52;box-shadow:0 1px 3px #142a2f66;pointer-events:none}
 
 /* Janelas desktop podem ser redimensionadas; o conteúdo acompanha a largura real. */
 @media (min-width:781px) and (pointer:fine){
@@ -771,3 +770,44 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .defense-quick-mechanic>button:hover{background:#eaf3ec}.defense-quick-mechanic>button:focus-visible{outline:3px solid #5a9673;outline-offset:-3px}
 .defense-mechanic-icon{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;border:1px solid #c6dacb;border-radius:10px;background:#e5f0e7;color:#28664d;font-size:19px}
 .defense-quick-mechanic>button>span:nth-child(2),.defense-quick-mechanic>div{display:grid;gap:2px;min-width:0}.defense-quick-mechanic small{color:#668273;font-size:9px;font-style:normal;font-weight:800;letter-spacing:.09em}.defense-quick-mechanic strong{font-size:13px}.defense-quick-mechanic em{color:#436655;font-size:12px;font-style:normal}.defense-mechanic-arrow{margin-left:auto;color:#568068;font-size:24px}.defense-quick-mechanic p{margin:0;color:#315747;font-size:12px;line-height:1.45}
+
+
+/* Common phone widths and compact-height laptop screens. */
+@media(max-width:360px){
+ .desktop-top{font-size:10px;padding-inline:8px}
+ .desktop-window>.windowbar{padding-inline:8px}
+ .desktop-window[data-window-id="calls"] .contact{gap:7px;padding-inline:8px}
+ .desktop-window[data-window-id="calls"] .contact h1{font-size:17px}
+ .desktop-window[data-window-id="calls"] .avatar,.desktop-window[data-window-id="calls"] .avatar img{width:48px!important;height:48px!important;min-width:48px!important}
+ .desktop-window[data-window-id="calls"] .avatar{flex-basis:48px!important}
+ .mobile-dock{gap:3px;padding-inline:5px}
+ .mobile-dock button>span{font-size:11px}
+ .mobile-app-switcher{padding-inline:10px}
+ .first-call-guide{max-height:32%;margin-inline:8px}
+}
+@media(min-width:781px) and (max-width:1100px){
+ .desktop-window:not(.maximized){width:min(790px,calc(100vw - 190px));min-width:0;max-height:calc(100svh - 112px)}
+ .desktop .desktop-icons{width:106px}
+ .taskbar{gap:5px;padding-inline:8px}
+ .taskbar button{padding-inline:10px}
+}
+@media(min-width:1101px) and (max-width:1440px){
+ .desktop-window:not(.maximized){width:min(790px,calc(100vw - 220px));min-width:0;max-height:calc(100svh - 112px)}
+}
+@media(min-width:1441px){
+ .desktop-window:not(.maximized){width:min(900px,calc(100vw - 280px));max-height:calc(100svh - 120px)}
+}
+@media(max-height:700px) and (min-width:601px){
+ .desktop-window:not(.maximized){max-height:calc(100svh - 96px)}
+ .first-call-guide{max-height:calc(100svh - 116px)}
+}
+@media(max-height:520px) and (orientation:landscape){
+ .first-call-guide{max-height:45%;margin-block:4px;padding-block:0}
+ .first-call-guide .guide-mentor{padding-block:6px}
+ .first-call-guide .guide-body{padding-block:8px}
+}
+.tutorial-spotlight{position:relative!important;z-index:360!important;outline:3px solid #f3c963!important;outline-offset:3px!important;box-shadow:0 0 0 8px #f3c96340,0 0 22px #f3c96377!important;animation:tutorialSpotlight 1.25s ease-in-out infinite alternate}
+@keyframes tutorialSpotlight{from{box-shadow:0 0 0 5px #f3c96328,0 0 12px #f3c96355}to{box-shadow:0 0 0 9px #f3c96355,0 0 26px #f3c96399}}
+.guide-pointing{display:flex;align-items:center;gap:7px;margin-top:-7px;padding:7px 9px;border:1px solid #e4c77e55;border-radius:7px;background:#d8b85712;color:#e9d89b;font-size:10px;line-height:1.45}
+.guide-pointing span{font-size:16px;color:#f0cb6f}
+@media(prefers-reduced-motion:reduce){.tutorial-spotlight{animation:none}}

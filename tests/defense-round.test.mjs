@@ -167,10 +167,17 @@ test('No golpe do Pix, o mesmo retrato do golpista aparece no perfil e na mensag
  const idle=defenseView(state,{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});assert.doesNotMatch(idle,/luana-suspicious-talking|defense-character is-murmuring/);
 });
 
-test('Bolinha de mensagem nova aparece no Zape, inclusive na barra do celular',async()=>{
+test('Mensagens novas continuam anunciadas sem o ponto decorativo na barra do celular',async()=>{
  const {mobileNavigation}=await import('../src/mobile-ui.js');
  const html=mobileNavigation([['calls','☎','Zape Zape 2']],'calls',{callUnread:true},()=>'<svg></svg>');
  assert.match(html,/data-app="calls" class="has-unread" aria-label="Zape, mensagem nova"/);
+ const css=await readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8');assert.doesNotMatch(css,/has-unread::after|aria-label\*="mensagem nova"\)::after/);
+});
+
+test('Tutorial encerra primeira conversa com incentivo e indicação do próximo clique',()=>{
+ const active=startDefenseCall(0),safe=defenseCases[defensePeople[0].caseId].choices.find(choice=>choice.safe);assert.ok(decideDefense(active,safe.id,1000));
+ const html=defenseView({mode:'defense',tutorial:'defense',cursor:0,active},{escape,portraitSource:(id,emotion)=>`/src/portraits/${id}-${emotion}.svg`});
+ assert.match(html,/Você está no rumo! Boa sorte no restante do expediente/);assert.match(html,/clique em <strong>Próxima situação<\/strong>/);assert.match(html,/class="primary" data-action="finish">Próxima situação/);
 });
 
 test('Ransomware é só simulação, permite desconectar e encerra após 10 segundos se não reagir',async()=>{

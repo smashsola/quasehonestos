@@ -469,7 +469,6 @@
 .desktop-icons button{display:grid!important;grid-template-columns:42px minmax(0,1fr);align-items:center;justify-items:start;gap:9px;min-width:0;line-height:1.35}
 .desktop-icons button>span{display:grid!important;place-items:center;width:40px;height:40px;min-width:40px;margin:0!important;line-height:1!important}
 .desktop-icons button>span svg{display:block;width:32px;height:32px;max-width:100%}
-.desktop-icons button[data-icon="boss"].has-unread::after,.taskbar button[data-task-app="boss"].has-unread::after{content:"";position:absolute;top:8px;right:9px;width:9px;height:9px;border:2px solid #edf4e9;border-radius:50%;background:#dc7862;box-shadow:0 0 0 1px #193a35;pointer-events:none}
 .first-call-guide .guide-actions button:last-child{align-self:stretch!important;min-height:44px!important;padding:10px 14px!important;border:1px solid #9ab4a5!important;border-radius:8px!important;background:#f4f8f3!important;color:#214b3a!important;font-size:13px!important;font-weight:700!important;text-decoration:none!important}
 .first-call-guide .guide-actions button:last-child:hover{background:#e1eee4!important;color:#173b2e!important;text-decoration:underline!important;text-underline-offset:3px}
 .first-call-guide .guide-actions button:last-child:focus-visible{outline:3px solid #b47b23!important;outline-offset:3px}
@@ -511,7 +510,6 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .mobile-dock button>span{max-width:100%;overflow:hidden;text-overflow:ellipsis;font-size:12px!important;font-weight:700!important;letter-spacing:0!important}
  .mobile-dock button[aria-current="page"]{border-color:#8abda5!important;background:#315e50!important;color:#fff!important;box-shadow:inset 0 2px #e7c47d,inset 0 -2px #84c6a4!important}
  .mobile-dock button[data-mobile-apps][aria-expanded="true"]{border-color:#b6d6c1!important;background:#254a43!important;box-shadow:inset 0 0 0 1px #b6d6c144!important}
- .mobile-dock button[data-mobile-inbox][aria-label*="mensagem nova"]::after{content:"";position:absolute;top:6px;right:calc(50% - 23px);width:10px;height:10px;border:2px solid #123731;border-radius:50%;background:#e78368;box-shadow:0 0 0 1px #f3d6ae;pointer-events:none}
  .mobile-dock button:focus-visible{outline:3px solid #f1c267!important;outline-offset:-3px!important}
  .desktop-window:not([data-window-id="calls"])>.windowbar button[data-window="close"]{background:#7f302c!important;border:2px solid #f6d2c1!important;border-radius:10px!important;color:#fff!important;font-size:23px!important;font-weight:800!important;line-height:1!important;box-shadow:0 2px 0 #431c1b!important}
  .desktop-window:not([data-window-id="calls"])>.windowbar button[data-window="close"]:hover,.desktop-window:not([data-window-id="calls"])>.windowbar button[data-window="close"]:active{background:#a23e36!important;color:#fff!important}
@@ -614,7 +612,6 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .mail-app-heading>button:hover,.mail-app-heading>button:active{background:#f4e2db!important;border-color:#b86d61!important;color:#853b32!important}
 .mail-app-heading>button:focus-visible{outline:3px solid #b7d2bf!important;outline-offset:2px!important}
 @media(min-width:1001px) and (pointer:fine){.desktop-icons button{box-sizing:border-box;overflow:hidden;overflow-wrap:anywhere}.desktop-icons button>span{min-width:0}.desktop-icons button svg{max-width:100%}}
-.desktop-icons button[data-icon="calls"].has-unread::after,.taskbar button[data-task-app="calls"].has-unread::after,.mobile-dock button[data-app="calls"].has-unread::after{content:"";position:absolute;top:7px;right:9px;width:9px;height:9px;border:2px solid #edf4e9;border-radius:50%;background:#dc7862;box-shadow:0 0 0 1px #193a35;pointer-events:none}
 .mobile-dock button[data-app="calls"]{position:relative}
 
 /* Cartões de ação com hierarquia clara, sem cor que entregue uma resposta. */
@@ -972,3 +969,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 
 .desktop-window[data-window-id="calls"] .defense-ending>p{color:#d6e6df}.desktop-window[data-window-id="calls"] .defense-ending h1{color:#fff;font-size:32px}.desktop-window[data-window-id="calls"] .defense-ending .shift-stamp{color:#b9e4ce}.desktop-window[data-window-id="calls"] .defense-ending .shift-stamp>span{background:#86d2ae}
 .demo-scammer-control:not(.is-typing) .demo-scammer-status>i{display:none}
+
+.defense-tutorial-finish{margin:12px 0 0;padding:12px 14px;border:1px solid #e5ce86;border-radius:12px;background:#fff8dc;color:#42522a;font-size:13px;font-weight:600;line-height:1.55;text-align:left}
+.defense-tutorial-finish strong{color:#294e37}
+@media(max-width:520px){.defense-tutorial-finish{font-size:12px;padding:10px 11px}}
