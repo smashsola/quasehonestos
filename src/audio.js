@@ -81,13 +81,18 @@ function reactionTone(frequency,start,duration,level,type='sine',endFrequency){
  const oscillator=ctx.createOscillator(),gain=ctx.createGain();oscillator.type=type;oscillator.frequency.setValueAtTime(frequency,start);if(endFrequency)oscillator.frequency.exponentialRampToValueAtTime(endFrequency,start+duration*.88);gain.gain.setValueAtTime(.0001,start);gain.gain.linearRampToValueAtTime(Math.min(.9,level*1.5*messageVolume/65),start+.012);gain.gain.exponentialRampToValueAtTime(.0001,start+duration);oscillator.connect(gain);if(!reactionLimiter){reactionLimiter=ctx.createDynamicsCompressor();reactionLimiter.threshold.value=-8;reactionLimiter.knee.value=4;reactionLimiter.ratio.value=12;reactionLimiter.attack.value=.003;reactionLimiter.release.value=.16;reactionLimiter.connect(ctx.destination);}gain.connect(reactionLimiter);oscillator.onended=()=>{oscillator.disconnect();gain.disconnect();};oscillator.start(start);oscillator.stop(start+duration+.015);
 }
 document.addEventListener('qh-defense-action',async e=>{
- const type=e.detail?.sound;if(computerDead||!['call','hangup','message','keypad','payment'].includes(type)||muted||document.hidden||!messageVolume)return;
+ const type=e.detail?.sound;if(computerDead||!['call','hangup','message','keypad','payment','connect','file','delivery','click','terminal'].includes(type)||muted||document.hidden||!messageVolume)return;
  try{await ensureAudio();if(!ctx||ctx.state!=='running'||computerDead||muted||document.hidden||!messageVolume)return;const start=ctx.currentTime+.035;
   if(type==='call'){[350,440].forEach(frequency=>reactionTone(frequency,start,.58,.13,'sine'));reactionTone(480,start+.78,.25,.095,'sine');}
   else if(type==='hangup'){reactionTone(480,start,.17,.15,'sine',340);reactionTone(340,start+.18,.23,.13,'sine',220);}
   else if(type==='message'){reactionTone(880,start,.11,.12,'triangle');reactionTone(1174.66,start+.105,.14,.105,'triangle');}
   else if(type==='keypad'){reactionTone(697,start,.13,.1,'sine');reactionTone(1209,start,.13,.1,'sine');reactionTone(770,start+.19,.13,.09,'sine');reactionTone(1336,start+.19,.13,.09,'sine');}
   else if(type==='payment'){reactionTone(659.25,start,.095,.11,'sine');reactionTone(523.25,start+.11,.16,.1,'sine');}
+  else if(type==='connect'){reactionTone(660,start,.09,.11,'triangle');reactionTone(880,start+.11,.16,.12,'sine');reactionTone(1046.5,start+.34,.2,.09,'sine');}
+  else if(type==='file'){reactionTone(310,start,.12,.1,'triangle',220);reactionTone(620,start+.14,.1,.075,'sine');}
+  else if(type==='delivery'){reactionTone(740,start,.13,.12,'sine');reactionTone(988,start+.12,.18,.1,'sine');}
+  else if(type==='click'){reactionTone(510,start,.035,.055,'triangle');reactionTone(730,start+.06,.045,.045,'sine');}
+  else if(type==='terminal'){reactionTone(1209,start,.12,.11,'sine');reactionTone(697,start+.16,.12,.1,'sine');}
  }catch{}
 });
 document.addEventListener('qh-defense-reaction',async e=>{

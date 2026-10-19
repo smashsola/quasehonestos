@@ -112,7 +112,9 @@ export const defenseActionSounds={
  'hangup-official':'hangup',
  'ask-secret':'message','send-doc':'message','reply-cpf':'message','ask-it':'message','send-document':'message','send-cpf':'message',
  'give-code':'keypad','repeat-pin':'keypad',
- 'send-pix':'payment','transfer-safe':'payment','refund-other':'payment','pay-qr':'payment','pay-link':'payment','pay-direct':'payment','pay-fee':'payment'
+ 'send-pix':'payment','transfer-safe':'payment','refund-other':'payment','pay-qr':'payment','pay-link':'payment','pay-direct':'payment','pay-fee':'payment',
+ 'install-remote':'connect','block-app':'connect','open-attachment':'file','enable-macros':'file','dont-open-report':'file',
+ 'deliver-proof':'delivery','track-official':'delivery','search-official':'click','open-known-app':'click','check-statement':'click','check-beneficiary':'click','watch-card':'terminal','leave-card':'terminal','hand-card':'terminal','use-wallet':'terminal','ask-id':'click'
 };
 
 export const defenseActionScenes={
