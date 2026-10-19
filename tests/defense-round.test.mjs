@@ -24,8 +24,18 @@ test('O resumo final deixa abrir cada conversa e mostra os dados ou anexos envia
   {caseId:'fake-store',caller:'duda',choice:'send-document',outcome:'fooled',feedback:'Documento anexado.'},
   {caseId:'whatsapp',caller:'bia',choice:'verify-person',outcome:'blocked',feedback:'Ligação pelo contato salvo.'}
  ]},escape);
- assert.equal((html.match(/<details class="defense-recap-card"/g)||[]).length,4);assert.equal((html.match(/<summary class="defense-recap-heading"/g)||[]).length,4);assert.match(html,/Você informou o código recebido por SMS/);assert.match(html,/Você enviou CPF e endereço pelo chat/);assert.match(html,/Você enviou CPF e foto de documento para a reserva/);assert.match(html,/Você não enviou código, CPF ou anexo ao golpista/);assert.match(html,/<span>1<\/span>/);assert.doesNotMatch(html,/<span>0[1-9]<\/span>/);
- const css=await readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8');assert.match(css,/call-window-body:has\(\.defense-ending\).*overflow-y:auto/);assert.match(css,/\.defense-recap-card\[open\]/);assert.match(css,/\.defense-recap-shared\.is-risk/);
+ assert.equal((html.match(/<details class="defense-recap-card"/g)||[]).length,4);assert.equal((html.match(/<summary class="defense-recap-heading"/g)||[]).length,4);assert.match(html,/Eu: \[código SMS fictício: 804 271\]/);assert.match(html,/Eu: \[CPF e endereço fictícios enviados\]/);assert.match(html,/Eu: \[CPF e foto de documento fictícios anexados\]/);assert.match(html,/Eu: \[nenhum código, CPF ou anexo enviado\]/);assert.match(html,/Mensagem fictícia enviada/);assert.match(html,/<span>1<\/span>/);assert.doesNotMatch(html,/<span>0[1-9]<\/span>/);
+ const css=await readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8');assert.match(css,/call-window-body:has\(\.defense-ending\).*overflow-y:auto/);assert.match(css,/\.defense-recap-card\[open\]/);assert.match(css,/\.defense-recap-message\.is-risk/);
+});
+
+test('O resumo registra anexos e dados como mensagens fictícias enviadas pela pessoa jogadora',()=>{
+ const html=defenseCampaignEnding({history:[
+  {caseId:'ransomware',caller:'leo',choice:'open-attachment',outcome:'fooled',feedback:'Arquivo aberto.'},
+  {caseId:'bank-call',caller:'caio',choice:'give-code',outcome:'fooled',feedback:'Código compartilhado.'}
+ ]},escape);
+ assert.match(html,/Eu: \[anexo aberto: nota-fiscal-urgente\.pdf fictício\]/);
+ assert.match(html,/Eu: \[código SMS fictício: 804 271\]/);
+ assert.match(html,/aria-label="Mensagem simulada"/);
 });
 
 test('Cada resultado de situação oferece voltar ao PC junto de continuar',()=>{
