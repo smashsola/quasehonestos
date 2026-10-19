@@ -26,28 +26,28 @@ const demoApps=[
 function defenseDemoApp(id){return demoApps.find(app=>app.ids.includes(id))||{kind:'files',title:'Computador da firma',icon:'▦',nav:['Início','Atividades','Ajuda'],label:'Simulação de atendimento'};}
 
 const scammerTyping={
- 'ask-secret':['Eu: confirmei por aqui','Eu: pode continuar','Eu: já estou fazendo'],
- 'give-code':['Eu: código recebido','Eu: confirmei o acesso','Eu: pronto, enviei'],
- 'install-remote':['Eu: acesso liberado','Eu: pode mexer no PC','Eu: suporte autorizado'],
- 'repeat-pin':['Eu: senha digitada','Eu: confirmei no teclado','Eu: pronto por aqui'],
- 'reply-cpf':['Eu: dados enviados','Eu: cadastro atualizado','Eu: respondi a mensagem'],
- 'send-cpf':['Eu: cadastro preenchido','Eu: dados confirmados','Eu: enviei a resposta'],
- 'send-doc':['Eu: anexo enviado','Eu: documento anexado','Eu: respondi por aqui'],
- 'send-document':['Eu: reserva preenchida','Eu: dados enviados','Eu: pedido confirmado'],
- 'pay-link':['Eu: formulário preenchido','Eu: pagamento confirmado','Eu: dados enviados'],
- 'enable-macros':['Eu: conteúdo ativado','Eu: arquivo liberado','Eu: confirmei a janela'],
- 'open-attachment':['Eu: arquivo aberto','Eu: anexo carregado','Eu: confirmei a abertura'],
- 'send-pix':['Eu: transferência preparada','Eu: confirmei o envio','Eu: pagamento iniciado'],
- 'pay-qr':['Eu: QR confirmado','Eu: pagamento iniciado','Eu: confirmei por aqui'],
- 'pay-direct':['Eu: transferência preparada','Eu: pagamento enviado','Eu: confirmei o Pix'],
- 'pay-fee':['Eu: taxa preenchida','Eu: pagamento confirmado','Eu: finalizei por aqui']
+ 'ask-secret':['Me manda o código que chegou por SMS.','Pode enviar o código de confirmação?','Preciso do código para continuar.'],
+ 'give-code':['804 271','Código de confirmação: 390 614','Seu código fictício é 728 053'],
+ 'install-remote':['Acesso remoto autorizado.','Instalador de suporte aberto.','Permissão de acesso concedida.'],
+ 'repeat-pin':['Senha digitada novamente: ••••','PIN repetido no teclado.','Confirmei a senha mais uma vez.'],
+ 'reply-cpf':['CPF: 123.456.789-00 · Endereço: Rua das Flores, 123','Meus dados: CPF 987.654.321-00, endereço fictício.','CPF 321.654.987-00 · Rua de Exemplo, 45'],
+ 'send-cpf':['CPF: 123.456.789-00 · Nascimento: 10/10/1990','Cadastro: CPF 987.654.321-00 · 01/01/1985','Meus dados: 321.654.987-00 · 22/08/1992'],
+ 'send-doc':['[foto fictícia do documento anexada]','[RG de exemplo enviado como anexo]','[documento pessoal fictício · imagem anexada]'],
+ 'send-document':['[foto do CPF fictício anexada]','[documento para reserva · arquivo anexado]','CPF 123.456.789-00 · [foto fictícia anexada]'],
+ 'pay-link':['[dados fictícios do cartão enviados no link]','Cartão de demonstração: •••• 0042 · formulário enviado','[pagamento fictício confirmado no link]'],
+ 'enable-macros':['Ativei o conteúdo solicitado.','Macros habilitadas no arquivo fictício.','[conteúdo do documento ativado]'],
+ 'open-attachment':['[anexo aberto: nota-fiscal-urgente.pdf]','Abri o arquivo que você enviou.','[arquivo fictício executado na simulação]'],
+ 'send-pix':['[Pix fictício enviado para chave recebida]','Transferência de demonstração iniciada: C$ 480.','[Pix de teste preparado para o destinatário]'],
+ 'pay-qr':['[QR Code fictício pago · C$ 86]','Pagamento de demonstração enviado pelo QR.','[pagamento-teste · QR recebido]'],
+ 'pay-direct':['[Pix fictício enviado para a chave do vendedor]','Transferência de teste iniciada: C$ 950.','[pagamento fictício realizado fora do app]'],
+ 'pay-fee':['[taxa fictícia de entrega paga: C$ 12]','Pagamento de teste enviado pelo link.','[taxa de demonstração · transação iniciada]']
 };
 function scammerTypingPanel(id,escape){
  const choices=scammerTyping[id];if(!choices)return '';
- const phrase=choices[Math.floor(Math.random()*choices.length)];
+ const phrase=choices[0],isMessage=['ask-secret','give-code','reply-cpf','send-cpf','send-doc','send-document','pay-link'].includes(id),isAttachment=['send-doc','send-document'].includes(id);
  const letters=[...phrase].map((char,index)=>`<i style="--letter:${index}" aria-hidden="true">${char===' '?' ':escape(char)}</i>`).join('');
- const typingTime=`${Math.max(1.8,phrase.length*.075).toFixed(2)}s`,isMessage=['ask-secret','give-code','reply-cpf','send-cpf','send-doc','send-document','pay-link'].includes(id),isAttachment=['send-doc','send-document'].includes(id);
- return `<div class="demo-scammer-control${isMessage?' is-message':''}${isAttachment?' has-attachment':''}" style="--typing-time:${typingTime}"><span class="demo-scammer-status"><i></i><span class="demo-status-typing">${id==='install-remote'?'Golpista mexendo no PC':'Golpista digitando no app'} · Eu</span>${isMessage?'<span class="demo-status-sending">Enviando mensagem…</span><span class="demo-status-sent">Mensagem enviada ✓</span>':''}</span><div class="demo-scammer-entry"><small>${isMessage?'EU · MENSAGEM FICTÍCIA':'EU · AÇÃO SIMULADA'}</small><span class="demo-scammer-text" aria-label="Eu: texto aleatório de demonstração">${letters}<b aria-hidden="true"></b></span></div>${isMessage?`<div class="demo-sent-message"><small>EU</small><span>${escape(phrase)}</span><b>✓✓ Enviada</b></div>`:''}${isAttachment?'<div class="demo-attachment-send"><span class="demo-attachment-icon" aria-hidden="true">📎</span><span><b>documento-de-exemplo.pdf</b><small>Arquivo fictício · 128 KB</small></span><strong><i></i><span class="demo-attach-progress">Anexando…</span><span class="demo-attach-done">Anexado ✓</span></strong></div>':''}</div>`;
+ const typingTime=`${Math.max(2.2,phrase.length*.045).toFixed(2)}s`,attachmentName=id==='send-document'?'foto-cpf-ficticia.jpg':id==='send-doc'?'documento-ficticio.pdf':null;
+ return `<div class="demo-scammer-control${isMessage?' is-message':''}${isAttachment?' has-attachment':''}" style="--typing-time:${typingTime}"><span class="demo-scammer-status"><i></i><span class="demo-status-typing">${id==='install-remote'?'Você está mexendo no computador':'Você está digitando'} · Eu</span><span class="demo-status-legacy">${id==='install-remote'?'Golpista mexendo no PC':'Golpista digitando no app'} · Eu</span>${isMessage?'<span class="demo-status-sending">Enviando…</span><span class="demo-status-sent">Mensagem enviada ✓</span>':''}</span><div class="demo-scammer-entry"><small>${isMessage?'EU · MENSAGEM FICTÍCIA':'EU · AÇÃO SIMULADA'}</small><span class="demo-scammer-text" aria-label="Eu: conteúdo fictício sendo digitado">${letters}<b aria-hidden="true"></b></span></div>${isMessage?`<div class="demo-sent-message"><small>EU</small><span>${escape(phrase)}</span><b>✓✓ Enviada</b></div>`:''}${isAttachment?`<div class="demo-attachment-send"><span class="demo-attachment-icon" aria-hidden="true">📎</span><span><b>${attachmentName}</b><small>Arquivo fictício · ${id==='send-document'?'86':'128'} KB</small></span><strong><i></i><span class="demo-attach-progress">Anexando…</span><span class="demo-attach-done">Anexado ✓</span></strong></div>`:''}</div>`;
 }
 
 function demoActivity(app,scene,demo,escape){
