@@ -867,3 +867,8 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 @keyframes zapeAuraBreath{from{border-color:#83e3c7a6;box-shadow:0 0 0 2px #83e3c711,0 0 5px #83e3c722;opacity:.76}to{border-color:#a4f0d5;box-shadow:0 0 0 4px #83e3c733,0 0 12px #83e3c766;opacity:1}}
 .desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after{animation:zapeAuraBreath 1.55s ease-in-out infinite alternate!important;inset:-5px!important;border-width:1.5px!important;transform:none!important}
 .desktop .mobile-dock [data-app="calls"]{position:relative;isolation:isolate}
+
+
+/* Make the Zape halo visibly breathe, without moving the shortcut itself. */
+@keyframes zapeAuraBreath{0%{border-color:#83e3c788;box-shadow:0 0 0 2px #83e3c722,0 0 7px #83e3c744;opacity:.68;transform:scale(.97)}100%{border-color:#b4ffe0;box-shadow:0 0 0 7px #83e3c766,0 0 22px #83e3c7d9;opacity:1;transform:scale(1.035)}}
+.desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after{animation:zapeAuraBreath 1.25s ease-in-out infinite alternate!important;inset:-6px!important;border-width:2px!important;transform-origin:center!important}
