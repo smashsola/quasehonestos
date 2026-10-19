@@ -83,7 +83,7 @@ function reactionTone(frequency,start,duration,level,type='sine',endFrequency){
 document.addEventListener('qh-defense-action',async e=>{
  const type=e.detail?.sound;if(computerDead||!['call','hangup','message','keypad','payment','connect','file','delivery','click','terminal'].includes(type)||muted||document.hidden||!messageVolume)return;
  try{await ensureAudio();if(!ctx||ctx.state!=='running'||computerDead||muted||document.hidden||!messageVolume)return;const start=ctx.currentTime+.035;
-  if(type==='call'){[350,440].forEach(frequency=>reactionTone(frequency,start,.58,.13,'sine'));reactionTone(480,start+.78,.25,.095,'sine');}
+  if(type==='call'){for(const offset of [0,.32,1.05,1.37]){reactionTone(440,start+offset,.22,.2,'sine');reactionTone(480,start+offset,.22,.17,'sine');}reactionTone(440,start+2.1,.32,.2,'sine');reactionTone(480,start+2.1,.32,.17,'sine');}
   else if(type==='hangup'){reactionTone(480,start,.17,.15,'sine',340);reactionTone(340,start+.18,.23,.13,'sine',220);}
   else if(type==='message'){reactionTone(880,start,.11,.12,'triangle');reactionTone(1174.66,start+.105,.14,.105,'triangle');}
   else if(type==='keypad'){reactionTone(697,start,.13,.1,'sine');reactionTone(1209,start,.13,.1,'sine');reactionTone(770,start+.19,.13,.09,'sine');reactionTone(1336,start+.19,.13,.09,'sine');}

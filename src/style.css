@@ -842,3 +842,8 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .first-day-steps>div:hover{transform:translateY(-2px);border-color:#88c9ae99;box-shadow:inset 0 1px #ffffff10,0 10px 20px #081c2555}
 @media(max-width:780px){.first-day-steps>div{min-height:70px}}
 @media(prefers-reduced-motion:reduce){.first-day-steps>div{transition:none}}
+
+/* Zape Zape keeps the tutorial's mint halo moving automatically on the desktop. */
+.desktop-icons [data-icon="calls"]{position:relative;isolation:isolate}
+.desktop-icons [data-icon="calls"]::after{content:"";position:absolute;inset:-6px;z-index:2;border:2px solid #83e3c7;border-radius:16px;box-shadow:0 0 12px #83e3c766;pointer-events:none;animation:zapeAuraPulse 1.1s ease-in-out infinite alternate}
+@media(prefers-reduced-motion:reduce){.desktop .desktop-icons [data-icon="calls"]::after{animation:zapeAuraPulse 1.1s ease-in-out infinite alternate!important}}

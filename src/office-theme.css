@@ -98,3 +98,7 @@ button:focus-visible,a:focus-visible,summary:focus-visible,textarea:focus-visibl
 .desktop-window .app-window-body .skin-catalog button:not(:disabled){background:#203b35;color:#f0f6ef;border-color:#83a798}
 .desktop-window .app-window-body .skin-catalog button:not(:disabled) :is(small,strong,span){color:#e3eee4}
 .desktop-window .app-window-body .skin-catalog button[aria-pressed="true"]:not(:disabled){border:2px solid #e3c17c;background:#29483d}
+
+/* Keep the first-day page reachable even when the desktop window is short. */
+.desktop-window[data-window-id="calls"].welcome-window{height:min(780px,calc(100svh - 112px));max-height:calc(100svh - 90px);display:flex;flex-direction:column;min-height:0}
+.desktop-window[data-window-id="calls"].welcome-window>.call-window-body{display:block!important;flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto!important;overscroll-behavior:contain}

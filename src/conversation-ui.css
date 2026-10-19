@@ -818,8 +818,8 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .demo-message-compose .demo-action-control{margin:0 8px 0 auto}
 .demo-message-compose .defense-action-appbutton{min-height:23px;padding:0 8px;font-size:8px;white-space:nowrap}
 .defense-action-app[data-demo-kind="messages"] .demo-message-out{animation:demoMessageSlide .4s ease calc(var(--action-duration,4.7s)*.63) both}
-@keyframes defenseCursorTap{0%,4%{opacity:0;transform:translate(112px,-54px) scale(.9)}12%{opacity:1;transform:translate(98px,-48px) scale(1)}31%{opacity:1;transform:translate(32px,-18px) scale(1)}39%{opacity:1;transform:translate(2px,0) scale(1)}43%,47%{opacity:1;transform:translate(2px,3px) scale(.82)}53%{opacity:1;transform:translate(2px,0) scale(1)}67%{opacity:1;transform:translate(63px,-18px) scale(1)}74%,78%{opacity:1;transform:translate(63px,-15px) scale(.82)}84%{opacity:.7;transform:translate(80px,14px) scale(1)}100%{opacity:0;transform:translate(80px,14px) scale(.96)}}
-@keyframes defenseAppRipple{0%,38%,69%{opacity:0;transform:scale(.92)}43%,75%{opacity:.9;transform:scale(1)}49%,81%,100%{opacity:0;transform:scale(1.5)}}
+@keyframes defenseCursorTap{0%,4%{opacity:0;transform:translate(112px,-54px) scale(.9)}12%{opacity:1;transform:translate(98px,-48px) scale(1)}31%{opacity:1;transform:translate(32px,-18px) scale(1)}39%{opacity:1;transform:translate(2px,0) scale(1)}43%,47%{opacity:1;transform:translate(2px,3px) scale(.82)}53%{opacity:1;transform:translate(2px,0) scale(1)}67%{opacity:1;transform:translate(42px,-8px) scale(1)}84%{opacity:.8;transform:translate(48px,-5px) scale(1)}100%{opacity:0;transform:translate(48px,-5px) scale(.96)}}
+@keyframes defenseAppRipple{0%,38%{opacity:0;transform:scale(.92)}43%{opacity:.9;transform:scale(1)}49%,100%{opacity:0;transform:scale(1.5)}}
 /* The mock computer remains animated even when the host browser requests reduced motion. */
 @media(prefers-reduced-motion:reduce){
  .desktop .defense-action-playback-shade{animation:defenseActionShade .2s ease-out both!important}
@@ -845,7 +845,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .desktop .defense-action-app[data-demo-kind="messages"] .demo-message-out{animation:demoMessageSlide .4s ease calc(var(--action-duration,4.7s)*.63) both!important}
  .desktop .demo-shield{animation:demoShieldPulse 1s ease-in-out infinite!important}
  .desktop .demo-security-orbit{animation:demoOrbit 1.4s ease-in-out infinite alternate!important}
- .desktop .demo-delivery-track i{animation:demoTrackProgress 1.2s ease-in-out infinite alternate!important}
+ .desktop .demo-delivery-track i{animation:demoTrackProgress var(--action-duration,7s) linear both!important}
  .desktop .demo-file-scan i{animation:demoFileScan 1s ease-in-out infinite alternate!important}
  .desktop .demo-nfc i{animation:demoNfcWave 1s ease-out infinite!important}
  .desktop .demo-scammer-status>i{animation:demoRemotePulse 1.2s ease-in-out infinite!important}
@@ -1032,3 +1032,20 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .defense-tutorial-finish{margin:12px 0 0;padding:12px 14px;border:1px solid #e5ce86;border-radius:12px;background:#fff8dc;color:#42522a;font-size:13px;font-weight:600;line-height:1.55;text-align:left}
 .defense-tutorial-finish strong{color:#294e37}
 @media(max-width:520px){.defense-tutorial-finish{font-size:12px;padding:10px 11px}}
+
+/* Action playback: a single visible click, a delivery path that only advances, and readable outcomes. */
+.demo-action-control .defense-action-appbutton{animation-delay:0s}
+.defense-action-appresult>strong{font-size:clamp(12px,2.2vw,14px);line-height:1.45}
+.defense-action-step.step-4 strong{font-size:clamp(12px,2vw,14px);-webkit-line-clamp:3}
+.demo-delivery-track i{width:0;animation:demoTrackProgress var(--action-duration,7s) linear both}
+@keyframes demoTrackProgress{from{width:0}to{width:90%}}
+.defense-recap-heading::after{content:"";display:block;width:9px;height:9px;margin:auto;border:0;border-right:2px solid #315d4e;border-bottom:2px solid #315d4e;border-radius:0;transform:rotate(45deg);transition:transform .2s ease}
+.defense-recap-card[open]>.defense-recap-heading::after{transform:rotate(225deg)}
+.defense-recap-heading{grid-template-columns:38px minmax(0,1fr) auto 22px}
+.defense-recap-heading>div small{color:#536d62;font-size:12px}
+.defense-recap-card{border-radius:15px}
+.defense-recap-card[open]>.defense-recap-heading{background:linear-gradient(90deg,#f2f8f3,#fff)}
+.defense-ending-actions button.primary{animation:defenseEndingButton 2.4s ease-in-out infinite;box-shadow:0 0 0 0 #9fca9780}
+@keyframes defenseEndingButton{0%,100%{box-shadow:0 0 0 0 #9fca9700;transform:translateY(0)}50%{box-shadow:0 0 0 5px #9fca972e;transform:translateY(-2px)}}
+@media(max-width:600px){.defense-recap-heading{grid-template-columns:32px minmax(0,1fr) auto 18px}}
+@media(prefers-reduced-motion:reduce){.defense-ending-actions button.primary{animation:none}}
