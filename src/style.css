@@ -888,3 +888,11 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .desktop .desktop-icons [data-icon="calls"]{animation:zapeShortcutPulse 1.8s ease-in-out infinite!important}
 .desktop .desktop-icons [data-icon="calls"]::after,.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after{animation:zapeAuraBreath 1.8s ease-in-out infinite!important;inset:-4px!important;border-width:1px!important;transform:none!important}
 .desktop .first-call-guide .guide-actions button[data-app="calls"],.desktop .mobile-dock [data-app="calls"]{animation:zapeGuideGlow 1.8s ease-in-out infinite alternate!important}
+
+
+/* Match the tutorial callout to the Zape aura; give the shortcut a small extra lift. */
+@keyframes qhTutorialAura{0%,100%{opacity:.72;box-shadow:0 0 0 2px #83e3c722,0 0 7px #83e3c744}50%{opacity:1;box-shadow:0 0 0 4px #83e3c744,0 0 13px #83e3c799}}
+@keyframes qhZapeAura{0%,100%{opacity:.72;box-shadow:0 0 0 3px #83e3c733,0 0 8px #83e3c755}50%{opacity:1;box-shadow:0 0 0 5px #83e3c755,0 0 16px #83e3c7bb}}
+.desktop .desktop-icons [data-icon="calls"],.desktop .first-call-guide .guide-actions button[data-app="calls"],.desktop .mobile-dock [data-app="calls"]{animation:none!important;filter:none!important;background-color:unset!important}
+.desktop .first-call-guide .guide-actions button[data-app="calls"]::after,.desktop .mobile-dock [data-app="calls"]::after,.desktop .tutorial-spotlight[data-app="calls"]::after{animation:qhTutorialAura 1.65s ease-in-out infinite!important;inset:-5px!important;border:1px solid #83e3c7!important;border-radius:inherit!important;transform:none!important}
+.desktop .desktop-icons [data-icon="calls"]::after,.desktop .desktop-icons [data-icon="calls"].tutorial-spotlight::after{animation:qhZapeAura 1.65s ease-in-out infinite!important;inset:-5px!important;border:1.5px solid #83e3c7!important;border-radius:inherit!important;transform:none!important}
