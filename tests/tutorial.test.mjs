@@ -41,3 +41,7 @@ test('Fim do expediente separa item compartilhado, pausa protetiva e recusa por 
  const s={...fresh(),finished:true,tutorial:'completed',history:[{item:{token:'QH-DEMO'},audit:[]},{item:null,audit:[{intent:'wait'}]},{item:null,audit:[{intent:'hostile'}]}]};
  assert.deepEqual(shiftLearning(s),{shared:1,paused:1,withoutSharing:2});assert.match(shiftEnding(s,String),/Primeira conversa guiada concluída/);assert.match(shiftEnding(s,String),/Pausar também não significa que a fonte já foi consultada/);
 });
+
+test('Destaque de tutorial usa verde-água e combina com o texto da dica',()=>{
+ const s=fresh();migrateToDefense(s);const html=tutorialPanel(s,String,true);assert.match(html,/contorno verde-água/);assert.doesNotMatch(html,/dourado/);
+});
