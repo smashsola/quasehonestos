@@ -830,4 +830,14 @@ img[src*="/portraits/"]{user-select:none;-webkit-user-drag:none}
 .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"]),.first-call-guide .guide-actions button[data-app="calls"]{isolation:isolate;border-radius:12px;position:relative}
 .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.first-call-guide .guide-actions button[data-app="calls"]::after{content:"";position:absolute;inset:-5px;z-index:2;border:2px solid #83e3c7;border-radius:16px;box-shadow:0 0 14px #83e3c780;pointer-events:none;animation:zapeAuraPulse 1.8s ease-out infinite}
 @keyframes zapeAuraPulse{0%{transform:scale(.96);opacity:.9}75%,100%{transform:scale(1.12);opacity:0}}
-@media(prefers-reduced-motion:reduce){.tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.first-call-guide .guide-actions button[data-app="calls"]::after{animation:none;opacity:.65;transform:none}}
+/* Keep tutorial-specific emphasis running even if the browser globally suppresses motion. */
+@media(prefers-reduced-motion:reduce){.desktop .tutorial-spotlight:is([data-icon="calls"],[data-app="calls"])::after,.desktop .first-call-guide .guide-actions button[data-app="calls"]::after{animation:zapeAuraPulse 1.8s ease-out infinite!important}}
+/* The guide scrolls vertically when needed, never sideways. */
+.desktop .first-call-guide{overflow-x:hidden;overscroll-behavior-x:none;scrollbar-gutter:stable}
+.desktop .first-call-guide .guide-body{min-width:0;overflow-wrap:anywhere}
+.guide-pointing{margin-top:8px;padding:9px 11px;border:1px solid #78c9aa55;border-radius:10px;background:linear-gradient(110deg,#77d7b01c,#77d7b006);color:#d9eee5;box-shadow:inset 3px 0 #78d6b4,0 4px 14px #071d2626;font-size:11px;line-height:1.55}
+.guide-pointing span{display:grid;place-items:center;flex:0 0 23px;width:23px;height:23px;border-radius:50%;background:#74d0ad24;color:#9ce6c8;font-size:15px}
+.shift-learning-grid>div{position:relative;padding-top:20px;border-color:#a4cbb944;background:linear-gradient(145deg,#effaf3,#dceee5);box-shadow:0 8px 20px #061c2922,inset 0 1px #ffffffcc;transition:transform .18s ease,box-shadow .18s ease}
+.shift-learning-grid>div::before{position:absolute;top:0;left:14px;content:"";width:28px;height:3px;border-radius:0 0 4px 4px;background:#79c5a5}
+.shift-learning-grid>div:hover{transform:translateY(-2px);box-shadow:0 12px 24px #061c2930,inset 0 1px #fff}
+@media(prefers-reduced-motion:reduce){.shift-learning-grid>div{transition:none}}
