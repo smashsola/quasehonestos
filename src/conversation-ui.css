@@ -1091,3 +1091,18 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 }
 .defense-reaction-feedback{font-size:clamp(18px,2.6vw,21px);font-weight:650;color:#173c32;background:#fff;border:2px solid #b6d6c4;box-shadow:0 5px 16px #173c3014}
 @media(max-width:520px){.defense-reaction-feedback{font-size:17px;max-height:24vh;padding:14px 15px}}
+
+/* One divider for an expanded clue card; avoid the doubled mint stripe. */
+.defense-clues[open] summary{border-bottom:0!important}
+.defense-clues[open] ul{border-top:1px solid #d8e3db!important}
+/* Tutorial completion and outcome copy should be readable at a glance. */
+.defense-tutorial-finish{display:grid;gap:7px;padding:16px 18px;border:2px solid #d6b95f;background:linear-gradient(110deg,#fff7d7,#fffdf0);color:#263f32;font-size:18px;font-weight:600;line-height:1.5;box-shadow:0 5px 16px #4d40151a}
+.defense-tutorial-finish .tutorial-finish-title{display:block;color:#183f32;font-size:23px;font-weight:950;line-height:1.15}
+.defense-tutorial-finish>span{display:block}
+.desktop .defense-feedback.defense-reaction .defense-reaction-feedback{max-width:50ch;min-height:84px;padding:20px 22px;border:2px solid #9fcbb3;border-radius:17px;background:#fff;color:#143c31;font-size:clamp(20px,3vw,23px);font-weight:650;line-height:1.55;box-shadow:0 7px 20px #173c3020}
+@media(max-width:520px){.defense-tutorial-finish{padding:13px 14px;font-size:17px}.defense-tutorial-finish .tutorial-finish-title{font-size:21px}.desktop .defense-feedback.defense-reaction .defense-reaction-feedback{min-height:72px;padding:15px 16px;font-size:18px}}
+/* Move to the mock app quickly; one press only, at the same moment the ringtone starts. */
+@keyframes defenseAppClick{0%,11%,100%{transform:translateY(0);filter:brightness(1)}17%,21%{transform:translateY(2px);filter:brightness(.84);box-shadow:0 0 0 #19563e}}
+@keyframes defenseAppRipple{0%,15%{opacity:0;transform:scale(.92)}19%{opacity:.95;transform:scale(1)}26%,100%{opacity:0;transform:scale(1.55)}}
+@keyframes defenseCursorTap{0%,3%{opacity:0;transform:translate(112px,-54px) scale(.9)}8%{opacity:1;transform:translate(98px,-48px) scale(1)}13%{opacity:1;transform:translate(32px,-18px) scale(1)}16%{opacity:1;transform:translate(2px,0) scale(1)}18%,21%{opacity:1;transform:translate(2px,3px) scale(.82)}27%{opacity:1;transform:translate(2px,0) scale(1)}48%{opacity:.8;transform:translate(42px,-8px) scale(1)}100%{opacity:0;transform:translate(48px,-5px) scale(.96)}}
+@media(max-width:520px){.defense-tutorial-finish{font-size:16px}.defense-tutorial-finish .tutorial-finish-title{font-size:20px}}
