@@ -178,6 +178,14 @@ export function resumeDefenseCall(a){
  if(a.ransomwareDeadline){a.chatStage='ready';a.chatVisible=2;return true;}
  a.chatStage='typing';a.chatVisible=1;a.unread=true;a.murmurHeard=false;return true;
 }
+export function beginDefenseAction(a,choiceId){
+ if(a?.mode!=='defense'||!['ready','speaking'].includes(a.chatStage)||a.outcome||a.ransomwareDeadline||a.actionPending)return false;
+ const choice=defenseCases[a.caseId]?.choices.find(item=>item.id===choiceId);
+ if(!choice||a.used.includes(choice.id))return false;
+ a.chatStage='ready';
+ a.actionPending=choice.id;
+ return true;
+}
 export function decideDefense(a,choiceId,now=Date.now()){
  if(a?.mode!=='defense'||a.outcome)return false;
  const scenario=defenseCases[a.caseId],choice=scenario?.choices.find(c=>c.id===choiceId);
