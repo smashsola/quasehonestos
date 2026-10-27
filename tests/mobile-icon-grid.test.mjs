@@ -6,7 +6,7 @@ test('mobile launcher order is validated, deduplicated, and completed',()=>{
  assert.deepEqual(normalizeMobileIconOrder(['calls','files','boss'],['boss','boss','unknown']),['boss','calls','files']);
 });
 
-test('dragging a mobile icon inserts it into a snapped grid position',()=>{
- assert.deepEqual(moveMobileIcon(['calls','files','boss','ledger'],'calls','boss'),['files','boss','calls','ledger']);
+test('dragging a mobile icon swaps only its source and target grid positions',()=>{
+ assert.deepEqual(moveMobileIcon(['calls','files','boss','ledger'],'calls','boss'),['boss','files','calls','ledger']);
  assert.deepEqual(moveMobileIcon(['calls','files'],'missing','files'),['calls','files']);
 });

@@ -1,15 +1,22 @@
 # Quase Honestos
 
+[Jogar a versão pública](https://quasehonestos.betaniaaa.workers.dev/) · Campanha de 30 casos · Trambique OS
+
 Quase Honestos é uma comédia interativa no Trambique OS sobre golpes, pressão e exposição no ambiente digital. O projeto se relaciona à categoria oficial **Prevenção à Violência** ao dar prática de pausa, checagem independente, proteção de dados e busca de apoio — sem alegar que o jogo já provou eficácia com estudantes.
 
 ## Versão atual
 
-- Dez personagens e dez situações fictícias de defesa, com quatro ações concretas por situação. Há alternativas para confirmar por canais conhecidos, interromper o contato ou chamar suporte; cada situação também tem uma resposta engraçada e uma ação de risco classificada.
+- Campanha com **30 situações em seis dias**, cinco por dia: mensagens e identidade; Pix e cobranças; compras e entregas; contas e dispositivos; trabalho e oportunidades; pressão e falsa autoridade. Campanhas antigas preservam sua ordem salva.
+- Perfil local com nome ou apelido e escolha entre dez personagens. A faixa etária é pedida uma vez: **6–10 anos** recebe textos curtos, glossário e duas respostas corretas, uma parcial e uma errada; **11 anos ou mais** recebe uma correta, uma parcial e duas erradas. As duas versões têm humor e a identificação **Resposta engraçadinha**. A ordem das alternativas varia.
+- As ações mostram o que a escolha provoca em uma demonstração animada. O tutorial de Lia acompanha o primeiro caso e indica onde clicar; sua conclusão concede C$ 100 uma única vez. A consequência, o aprendizado e a movimentação de créditos aparecem no resultado.
+- **Vingança** opcional após resolver o caso: três perguntas educativas e uma cena fictícia de virada. Apenas pausar a conversa não libera a revanche. Ela pode render créditos fictícios uma única vez e não apaga o prejuízo anterior. Cada dia tem uma trilha própria de vingança.
+- **Correio** com 18 tipos de recado, chegadas em intervalos aleatórios, tutorial próprio e bônus de C$ 15–25 por conferência correta. As respostas entram no resumo do dia; abrir a mensagem sozinho não dá recompensa.
+- **Loja da firma** com 26 compras entre objetos de mesa e papéis de parede. A coleção registra o que foi comprado, equipado ou guardado. O saldo pode ficar negativo ao cair em golpes; compras exigem saldo suficiente.
 - O motor local controla confiança, encerramento, permissões, itens, créditos e progresso. Falas geradas não tomam decisões porque o fluxo principal não usa um modelo de IA.
 - Pausar para buscar confirmação fica registrado como intenção protetiva; o jogo não afirma que uma fonte foi consultada quando isso não aconteceu.
 - Resultados e replay distinguem o que ocorreu, o risco observado e uma hipótese de proteção. Compartilhamentos anteriores continuam visíveis.
 - A rodada de defesa integra fichas, correio, pedidos e outros registros do próprio jogo. Casos podem ser legítimos, fraudulentos ou inconclusivos.
-- As situações de defesa cobrem pedido urgente por WhatsApp, falsa central, comprovante de Pix, boleto/QR adulterado, taxa falsa de entrega, ransomware, falso motoboy, loja/leilão falso, mensagem falsa sobre CPF/benefício e troca de cartão na maquininha. A seleção cobre as modalidades mais citadas no RADAR FEBRABAN de junho de 2025, além de outros exemplos educativos.
+- Os casos incluem falsa central, WhatsApp clonado, voz falsa, Pix, boletos, ransomware, permissões abusivas, skins falsas, anúncios de emprego, investimentos, aluguel, ingressos, doações e outras armadilhas. O catálogo e as categorias estão em `src/defense-round.js`, `src/expanded-scams.js` e `src/case-categories.js`.
 - O Manual oferece uma atividade opcional com situações A/B, cada uma pedindo ação e evidência. A exportação é local, codificada e não inclui conversas por padrão. **Ainda não foi aplicada nem validada com estudantes.**
 - O progresso fica neste navegador. No celular, a navegação mostra um app por vez; no desktop, o Trambique OS mantém suas janelas.
 
@@ -32,7 +39,13 @@ O endpoint legado `/api/dialogue` responde HTTP 410. Há arquivos de protótipos
 
 ## Privacidade e limites
 
-A partida, o histórico e as preferências ficam no armazenamento do navegador. A atividade em sala exporta apenas códigos de decisões/evidências e tempo da sessão; não envia resultados ao servidor. A hospedagem Cloudflare pode processar metadados técnicos de conexão conforme sua política. O filtro local reduz formatos comuns de dados pessoais, mas não detecta todas as informações identificáveis.
+A partida, o nome ou apelido, o personagem, a faixa etária, o saldo, as compras e as preferências ficam no armazenamento do navegador. Não pedimos idade exata: a faixa adapta textos, humor e alternativas. Não há conta remota nem sincronização entre dispositivos. A atividade em sala exporta apenas códigos de decisões/evidências e tempo da sessão; não envia resultados ao servidor. A hospedagem Cloudflare pode processar metadados técnicos de conexão conforme sua política. O filtro local reduz formatos comuns de dados pessoais, mas não detecta todas as informações identificáveis.
+
+## Verificação e pendências
+
+Os testes automatizados cobrem regras, alternativas por idade, salvamento, créditos, campanhas, Correio, compras e regressões. Eles não substituem a revisão visual. A auditoria completa das telas, dos 30 casos e das vinganças em celular, tablet e desktop ainda está em andamento; não há garantia de ausência de bugs visuais.
+
+A matriz de revisão usa 360×800 e 390×844 (celulares), 768×1024 (tablet), 1366×768 e 1920×1080 (computadores). São tamanhos representativos para cobrir diferentes layouts, não uma promessa de que todo aparelho terá o mesmo comportamento. O roteiro inclui primeiro cadastro, retorno, termos, tutorial, seis dias de campanha, respostas das duas faixas etárias, vinganças, Correio, loja, resultados e recarregamento.
 
 O aviso não constitui certificação jurídica nem afirma conformidade integral com a LGPD. Antes de uso em sala, a equipe e a escola devem revisar a atividade, combinar o tratamento dos arquivos locais e testar com estudantes voluntários sem recolher nomes ou relatos pessoais.
 

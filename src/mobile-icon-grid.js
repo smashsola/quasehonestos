@@ -8,6 +8,6 @@ export function normalizeMobileIconOrder(ids,saved){
 export function moveMobileIcon(order,movingId,targetId){
  const next=[...order],from=next.indexOf(movingId),to=next.indexOf(targetId);
  if(from<0||to<0||from===to)return next;
- next.splice(from,1);next.splice(to,0,movingId);
+ [next[from],next[to]]=[next[to],next[from]];
  return next;
 }

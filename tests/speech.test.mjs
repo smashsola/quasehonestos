@@ -14,7 +14,8 @@ test('Ritmo e duração acompanham personagem, emoção e tamanho da fala',()=>{
 });
 test('Personagens fazem murmúrio sem narrar o texto em voz alta',async()=>{
  const audio=await readFile(new URL('../src/audio.js',import.meta.url),'utf8');
- assert.doesNotMatch(audio,/SpeechSynthesisUtterance|speechSynthesis|function speakText/);
+ assert.doesNotMatch(audio,/SpeechSynthesisUtterance|speechSynthesis|new Audio\(/);
+ assert.match(audio,/function speakBoss/);assert.match(audio,/caller:'bento',emotion:'neutral',duration:replyDuration\(text\)/);
  assert.match(audio,/voice\.type=softVoices/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
  assert.match(audio,/qh-speaking-start/);assert.match(audio,/qh-speaking-end/);assert.match(audio,/voice\.stop\(t\+pace\)/);
  assert.match(audio,/softVoices\.has\(caller\)\?'triangle':grittyVoices\.has\(caller\)\?'sawtooth':'square'/);

@@ -1,3 +1,4 @@
+import {expandedPortraitId} from './expanded-scams.js';
 import {expressions,expressionNames} from './mood.js';
 import {voiceProfiles,speechPlan} from './speech-timing.js';
 let speech=null,timer,frameTimer,mouthTimer;
@@ -12,7 +13,7 @@ function preload(src){
  return readyImages.get(src);
 }
 export function portraitSource(caller,emotion){
- const valid=expressions.includes(emotion)?emotion:'neutral',base=`/src/portraits/${caller}-${valid}`;
+ const valid=expressions.includes(emotion)?emotion:'neutral',base=`/src/portraits/${expandedPortraitId(caller)}-${valid}`;
  const animated=base+'-talking.svg';
  if(speech?.caller===caller&&speech.emotion===valid&&speech.mouthOpen&&preload(animated))return animated;
  const still=base+'.svg';if(preload(still))return still;

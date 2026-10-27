@@ -1,3 +1,6 @@
+import {audienceCase} from './audience.js';
+import {officeIcon} from './office-icons.js';
+import {expandedScams,expandedById,expandedChoices,expandedDemo} from './expanded-scams.js';
 export const scammerPeople=[
  {id:'golpista1',emotion:'amused',speakingExpression:'happy'},
  {id:'golpista2',emotion:'suspicious',speakingExpression:'thinking'},
@@ -25,10 +28,10 @@ export const defenseCases={
   {id:'verify-person',label:'AÇÃO — ligar para o número que você já tinha salvo e confirmar com a pessoa',safe:true,feedback:'Boa. A ligação pelo contato conhecido confirma a identidade sem depender do número novo.'},
   {id:'send-pix',label:'AÇÃO — fazer o Pix agora porque a mensagem parece ser da pessoa',safe:false,feedback:'A foto e o nome podem ser copiados. Confirme por um canal conhecido antes de transferir.'},
   {id:'ask-secret',label:'AÇÃO — pedir que a pessoa envie um código recebido por SMS',safe:false,classification:'Pedido de código',feedback:'Código de acesso não confirma identidade e não deve ser compartilhado. Use uma ligação ou outro canal conhecido.'},
-  {id:'pause-family',label:'AÇÃO — dizer “Pix no susto, não; vou ligar pro número salvo” e confirmar com a pessoa',safe:true,witty:true,feedback:'Boa. Você ligou para o contato salvo e deixou o susto só no pedido, não na conta.'}
+  {id:'pause-family',label:'AÇÃO — dizer “Trocou de número? Até minha mãe vai ter que passar pela perícia” e ligar para o número salvo para confirmar',safe:true,witty:true,feedback:'Boa. Você ligou para o contato salvo e confirmou quem estava pedindo antes de mexer na conta.'}
  ]},
  'bank-call':{title:'Falsa central do banco',technique:'Alguém finge ser do banco, inventa um problema e pede código, acesso ao celular ou transferência para uma “conta segura”.',message:'Central de segurança: detectamos uma compra. Para cancelar, diga o código que chegou por SMS e instale nosso app de suporte remoto.',cues:['A ligação chegou sem você pedir','Pede um código do celular ou um app que dá acesso ao aparelho','Banco não precisa que você transfira dinheiro para proteger a conta'],choices:[
-  {id:'hangup-official',label:'AÇÃO — dizer “código por telefone? Nem o da portaria” e chamar o banco pelo app oficial',safe:true,witty:true,feedback:'Boa. O código ficou guardado e você falou com o banco pelo app oficial.'},
+  {id:'hangup-official',label:'AÇÃO — dizer “Meu código tá igual meu salário: ninguém vê” e chamar o banco pelo app oficial',safe:true,witty:true,feedback:'Boa. O código ficou guardado e você falou com o banco pelo app oficial.'},
   {id:'give-code',label:'AÇÃO — ditar o código para cancelar a compra',safe:false,classification:'Resposta direta',feedback:'O código pode autorizar acesso ou uma operação. Banco não precisa que você o dite.'},
   {id:'install-remote',label:'AÇÃO — instalar o aplicativo indicado pelo atendente',safe:false,feedback:'Um app de acesso remoto pode entregar o controle do aparelho. Feche a ligação e procure o banco pelo app oficial.'},
   {id:'transfer-safe',label:'AÇÃO — transferir o saldo para a conta “segura” informada',safe:false,feedback:'“Conta segura” indicada por telefone é um sinal de golpe. Não transfira; confirme diretamente com o banco.'}
@@ -37,10 +40,10 @@ export const defenseCases={
   {id:'check-statement',label:'AÇÃO — abrir o app do banco por conta própria e conferir o saldo/extrato',safe:true,feedback:'Boa. O extrato da sua conta confirma se o dinheiro entrou de verdade.'},
   {id:'deliver-proof',label:'AÇÃO — entregar o pedido porque recebeu a imagem do comprovante',safe:false,classification:'Decisão pela imagem',feedback:'Imagem pode ser editada e agendamento não é crédito confirmado. Confira no extrato antes de entregar.'},
   {id:'refund-other',label:'AÇÃO — devolver qualquer valor para outra chave enviada no chat',safe:false,feedback:'Não devolva para uma chave diferente. Se um Pix cair por engano, fale com seu banco e use o fluxo oficial de devolução.'},
-  {id:'wait-settle',label:'AÇÃO — dizer “meu forno espera o Pix cair” e conferir o extrato antes de entregar',safe:true,witty:true,feedback:'Boa. O bolo pode sair quentinho; o Pix só conta quando aparece no extrato.'}
+  {id:'wait-settle',label:'AÇÃO — dizer “Print de Pix não paga nem a vela do bolo” e conferir o extrato antes de entregar',safe:true,witty:true,feedback:'Boa. O bolo pode sair quentinho; o Pix só conta quando aparece no extrato.'}
  ]},
  boleto:{title:'Boleto ou QR Code trocado',technique:'Um boleto ou QR Code falso pode mandar o dinheiro para uma conta que não é da empresa que fez a cobrança.',message:'Segue a segunda via. O código vence hoje; paga por este QR rapidinho pra não bloquear sua conta.',cues:['Pressa para pagar por um link recebido','Confira o nome de quem vai receber o dinheiro','Dá para confirmar a cobrança por um canal conhecido'],choices:[
-  {id:'check-beneficiary',label:'AÇÃO — dizer “boleto com pressa? Eu confiro duas vezes” e ver quem recebe no app',safe:true,witty:true,feedback:'Boa. Você conferiu o nome e o valor no app; QR bonito também precisa passar na vistoria.'},
+  {id:'check-beneficiary',label:'AÇÃO — dizer “Esse boleto tá com mais pressa de receber que eu na sexta-feira” e ver quem recebe no app',safe:true,witty:true,feedback:'Boa. Você conferiu o nome e o valor no app; QR bonito também precisa passar na vistoria.'},
   {id:'pay-qr',label:'AÇÃO — pagar o QR recebido sem abrir os detalhes',safe:false,classification:'Pagamento direto',feedback:'O QR pode enviar o valor a outra pessoa. Confira o beneficiário e confirme a cobrança com a empresa por um canal conhecido.'},
   {id:'open-known-app',label:'AÇÃO — abrir o app ou site que você já usa e localizar a cobrança',safe:true,feedback:'Boa. Acesse por um caminho conhecido e compare o beneficiário e o valor.'},
   {id:'send-doc',label:'AÇÃO — enviar foto do documento para liberarem a segunda via',safe:false,feedback:'Não envie documentos para esse contato. A cobrança pode ser verificada sem entregar seus dados.'}
@@ -49,36 +52,36 @@ export const defenseCases={
   {id:'track-official',label:'AÇÃO — abrir o app/site oficial da loja ou transportadora por conta própria',safe:true,feedback:'Boa. Consulte o pedido pelo app ou endereço que você já conhece.'},
   {id:'pay-link',label:'AÇÃO — abrir o link e preencher o cartão para liberar o pacote',safe:false,feedback:'A página pode copiar os dados do cartão. Não use o link; confira o pedido no app oficial.'},
   {id:'reply-cpf',label:'AÇÃO — responder com CPF e endereço para confirmar a entrega',safe:false,classification:'Resposta por mensagem',feedback:'Não envie dados pessoais por resposta a uma mensagem inesperada. Confirme pelo canal oficial.'},
-  {id:'ask-store',label:'AÇÃO — dizer “taxa surpresa eu já tenho no condomínio” e conferir no app da loja',safe:true,witty:true,feedback:'Boa. A taxa surpresa ficou sem surpresa: você conferiu o pedido no app conhecido.'}
+  {id:'ask-store',label:'AÇÃO — dizer “Minha encomenda foi sequestrada por um link de R$ 4,90?” e conferir no app da loja',safe:true,witty:true,feedback:'Boa. A taxa surpresa ficou sem surpresa: você conferiu o pedido no app conhecido.'}
  ]},
  ransomware:{title:'Anexo suspeito: “nota fiscal urgente”',technique:'O arquivo pode instalar um programa que trava os documentos e cobra dinheiro para liberar. Aqui, tudo acontece só no computador do jogo.',message:'Segue a nota fiscal que faltou. Clique em “Habilitar conteúdo” para abrir. Se não pagar hoje, perde o prazo.',cues:['Anexo inesperado e pressão por prazo','Pede para liberar funções ou abrir outro arquivo','Um programa pode travar seus arquivos; pagar não garante que voltem'],choices:[
   {id:'dont-open-report',label:'AÇÃO — não abrir; confirmar a nota com quem enviou por um contato conhecido',safe:true,feedback:'Boa. Você evitou executar o anexo e confirmou a cobrança por outro canal.'},
   {id:'open-attachment',label:'AÇÃO — executar o arquivo para ver a nota agora',safe:false,ransomware:true,feedback:'O anexo fictício iniciou o ransomware de brincadeira da rodada. Ele tenta bloquear os arquivos simulados.'},
   {id:'enable-macros',label:'AÇÃO — permitir que o arquivo execute o que pediu',safe:false,classification:'Abertura do arquivo',ransomware:true,feedback:'Você permitiu que o anexo executasse um programa. Um arquivo malicioso pode bloquear os arquivos do computador.'},
-  {id:'ask-it',label:'AÇÃO — dizer “se o arquivo quer clique, vai ter que marcar horário com o TI”, fechar e pedir ajuda',safe:true,witty:true,feedback:'Boa. O arquivo ficou fechado e você chamou o suporte; clique mágico só em filme.'}
+  {id:'ask-it',label:'AÇÃO — dizer “Nota fiscal em arquivo executável? E o recibo vem de capacete?”, fechar e pedir ajuda',safe:true,witty:true,feedback:'Boa. O arquivo ficou fechado e você chamou o suporte; clique mágico só em filme.'}
  ]},
  'fake-motoboy':{title:'Falso motoboy e troca de cartão',technique:'Depois de uma ligação falsa do banco, alguém aparece para pegar o cartão e tenta descobrir a senha.',message:'Banco: detectamos uma compra. Diga sua senha para cancelar. Um motoboy vai recolher seu cartão com defeito. Corte o plástico, mas entregue o chip.',cues:['O banco não manda buscar cartão nem pede senha por telefone','A visita inesperada veio depois de uma ligação que assustou você','O cartão e a senha podem permitir compras ou saques'],choices:[
   {id:'call-bank',label:'AÇÃO — desligar, não entregar o cartão e ligar para o banco pelo app ou número oficial',safe:true,feedback:'Boa. Banco não precisa recolher seu cartão nem saber sua senha. Use o canal oficial para bloquear ou conferir.'},
   {id:'hand-card',label:'AÇÃO — entregar o cartão cortado ao motoboy e informar a senha',safe:false,classification:'Entrega de cartão e senha',feedback:'O chip pode continuar utilizável e a senha abre caminho para operações. Não entregue o cartão; contate o banco por um canal oficial.'},
-  {id:'block-app',label:'AÇÃO — dizer “meu cartão não é lanche pra passear de moto” e bloquear pelo app',safe:true,witty:true,feedback:'Boa. Seu cartão ficou no seu bolso, não na garupa do motoboy; você o bloqueou pelo app.'},
+  {id:'block-app',label:'AÇÃO — dizer “O banco mandou buscar meu cartão? Manda buscar meus boletos também” e bloquear pelo app',safe:true,witty:true,feedback:'Boa. Seu cartão ficou no seu bolso, não na garupa do motoboy; você o bloqueou pelo app.'},
   {id:'ask-id',label:'AÇÃO — pedir o crachá do motoboy e, se parecer certo, entregar o cartão',safe:false,feedback:'Um crachá pode ser copiado. Não entregue o cartão nem compartilhe senha; ligue para o banco por conta própria.'}
  ]},
  'fake-store':{title:'Loja ou leilão falso',technique:'Uma oferta boa demais e com prazo curto pode levar a uma loja inventada ou a um pedido para pagar por fora.',message:'Notebook novo por 70% menos só até hoje! Faz o Pix direto para reservar. A plataforma cobra taxa demais, mas pode confiar.',cues:['Preço muito baixo e prazo curto','Pedido para sair da plataforma de compra','Se der problema, pode ser mais difícil pedir ajuda ao banco'],choices:[
   {id:'check-platform',label:'AÇÃO — conferir a loja e o vendedor dentro da plataforma oficial antes de pagar',safe:true,feedback:'Boa. Verifique o endereço, a reputação e as condições sem sair da plataforma.'},
   {id:'pay-direct',label:'AÇÃO — fazer o Pix direto para garantir o desconto antes que acabe',safe:false,classification:'Pagamento fora da plataforma',feedback:'O desconto e a urgência podem levar a uma loja falsa. Não pague por fora; confira a oferta no canal oficial.'},
-  {id:'search-official',label:'AÇÃO — dizer “se acaba enquanto eu confiro, pode ficar com o desconto” e abrir o app oficial',safe:true,witty:true,feedback:'Boa. A promoção pode até acabar; seu dinheiro não precisa ir junto. Você conferiu no app oficial.'},
+  {id:'search-official',label:'AÇÃO — dizer “Essa promoção acaba em cinco minutos desde ontem” e abrir o app oficial',safe:true,witty:true,feedback:'Boa. A promoção pode até acabar; seu dinheiro não precisa ir junto. Você conferiu no app oficial.'},
   {id:'send-document',label:'AÇÃO — enviar CPF e foto do documento para reservar o produto',safe:false,feedback:'Documento não é necessário para confirmar se a oferta existe. Não envie seus dados a esse contato.'}
  ]},
  'fake-government':{title:'Mensagem falsa sobre CPF ou benefício',technique:'A mensagem finge ser de um órgão público, inventa uma pendência urgente e leva a um link que pede dados ou dinheiro.',message:'GOV.BR: seu CPF será suspenso hoje. Regularize agora nesta página e pague a taxa de liberação para evitar bloqueio.',cues:['O aviso chegou por mensagem e traz um link','A ameaça de bloqueio cria pressa','O link pede dados pessoais e pagamento'],choices:[
   {id:'official-gov',label:'AÇÃO — não abrir o link e consultar o serviço digitando o endereço oficial no navegador',safe:true,feedback:'Boa. Consulte o órgão diretamente pelo endereço oficial ou por um canal que você já conhece.'},
   {id:'pay-fee',label:'AÇÃO — pagar a taxa no link para impedir o bloqueio do CPF',safe:false,classification:'Pagamento por link recebido',feedback:'A cobrança pode levar a uma página falsa. Feche o link e consulte o serviço diretamente no portal oficial.'},
-  {id:'ask-adult',label:'AÇÃO — dizer “esse link chegou com mais drama que novela das nove” e conferir com alguém de confiança',safe:true,witty:true,feedback:'Boa. O link fez drama; você conferiu o aviso com alguém antes de agir.'},
+  {id:'ask-adult',label:'AÇÃO — dizer “Meu CPF vai ser suspenso? Vai ficar pendurado onde?” e conferir com alguém de confiança',safe:true,witty:true,feedback:'Boa. O link fez drama; você conferiu o aviso com alguém antes de agir.'},
   {id:'send-cpf',label:'AÇÃO — responder com CPF e data de nascimento para confirmar o cadastro',safe:false,feedback:'Esses dados podem ser usados para fraude. Não responda à mensagem; consulte o órgão pelo canal oficial.'}
  ]},
  'card-swap':{title:'Cartão trocado na maquininha',technique:'Durante o pagamento, alguém pode distrair você, olhar sua senha e devolver um cartão parecido que não é seu.',message:'A maquininha recusou. Digita a senha de novo enquanto eu tento aqui. Pronto, pode ir — seu cartão está de volta.',cues:['Acompanhe a compra até ela terminar','Cubra o teclado ao digitar a senha','Confira o nome no cartão antes de guardá-lo'],choices:[
   {id:'watch-card',label:'AÇÃO — cobrir a senha, acompanhar o pagamento e conferir se o cartão devolvido é seu',safe:true,feedback:'Boa. Confira o valor no visor, proteja a senha e verifique o cartão antes de guardá-lo.'},
   {id:'leave-card',label:'AÇÃO — aceitar o cartão sem olhar porque a compra foi aprovada',safe:false,classification:'Cartão não conferido',feedback:'Um cartão parecido pode ser trocado durante a distração. Confira o nome e, se algo estiver errado, bloqueie o cartão pelo canal oficial.'},
-  {id:'use-wallet',label:'AÇÃO — dizer “meu cartão não vai passear sozinho” e pagar por aproximação após conferir o valor',safe:true,witty:true,feedback:'Boa. O cartão ficou com você, e o valor foi conferido antes do pagamento.'},
+  {id:'use-wallet',label:'AÇÃO — dizer “Meu cartão não sai da minha vista. Já basta meu dinheiro” e pagar por aproximação após conferir o valor',safe:true,witty:true,feedback:'Boa. O cartão ficou com você, e o valor foi conferido antes do pagamento.'},
   {id:'repeat-pin',label:'AÇÃO — digitar a senha outra vez sem cobrir o teclado para agilizar',safe:false,feedback:'Alguém pode observar a senha. Proteja o teclado e nunca aceite ajuda para digitar.'}
  ]}
 };
@@ -160,39 +163,59 @@ export const defenseActionScenes={
  'repeat-pin':{icon:'🔢',title:'Digitando a senha de novo',detail:'Você abre o teclado e deixa a senha à mostra.',motion:'warn',target:'SENHA'}
 };
 
+// Append only: existing campaign positions and action IDs remain valid.
+for(const [index,s] of expandedScams.entries()){
+ const base=defensePeople[index%10];
+ defensePeople.push({...base,id:'visit-'+s.id,caseId:s.id,role:s.app,reaction:s.technique,portraitId:base.id});
+ defenseCases[s.id]={title:s.title,technique:s.technique,message:s.message,cues:s.evidence,choices:expandedChoices(s)};
+ defenseMechanics[s.id]={icon:officeIcon(s.icon),title:s.app,button:'Conferir: '+s.app,result:s.lesson};
+ defenseFailures[s.id]={icon:officeIcon(s.icon),title:({bank:'A devolução foi para outra conta',tasks:'O saque continuou bloqueado',job:'A taxa não garantiu uma vaga',loan:'O empréstimo não foi liberado',investment:'O lucro ficou só no painel',prize:'O prêmio não apareceu',market:'A venda não foi confirmada',sessions:'Outra sessão entrou na conta',dossier:'A cobrança não era do escritório',voice:'A voz não confirmou a identidade',chat:'O pedido virou uma transferência',rental:'A reserva não foi confirmada',ticket:'O print não virou um ingresso',camera:'A imagem foi para o contato',updates:'O site ativou mais avisos falsos',terms:'A assinatura escondida foi aceita',middleman:'O intermediário ficou com o pagamento',donation:'A doação foi para a campanha copiada',mei:'A taxa não era a guia consultada',inventory:'A troca abriu acesso ao inventário'}[s.kind]),result:s.unsafeResult+' '+s.lesson};
+ for(const choice of defenseCases[s.id].choices){
+  const suffix=choice.id.split('--')[1],demo=expandedDemo(s,suffix);defenseActionScenes[choice.id]={icon:'◉',title:demo.context,detail:s.title+': '+choice.label.replace(/^AÇÃO — /,''),motion:choice.safe?'check':'warn',target:demo.button};
+  defenseActionSounds[choice.id]=choice.safe?'click':'payment';
+ }
+}
+
 export function useDefenseMechanic(a){
  const mechanic=defenseMechanics[a?.caseId];
- if(a?.mode!=='defense'||a.outcome||!a.chatVisible||a.ransomwareDeadline||!mechanic||a.mechanicUsed)return false;
+ if(a?.mode!=='defense'||a.outcome||!a.chatVisible||a.ransomwareDeadline||a.actionPending||!mechanic||a.mechanicUsed)return false;
  a.mechanicUsed=true;a.mechanicFeedback=mechanic.result;return true;
 }
 
-export function startDefenseCall(cursor){
+export const defenseCaseFor=a=>audienceCase(defenseCases[a?.caseId],a?.caseId,a?.audience);
+export function startDefenseCall(cursor,audience){
  const person=defensePeople[cursor],scenario=person&&defenseCases[person.caseId];
  if(!person||!scenario)return null;
  const scammer=scammerPeople.find(contact=>contact.id===person.scammerId);
- return {mode:'defense',caller:person.id,scammerId:scammer?.id,caseId:person.caseId,trust:0,used:[],log:[],outcome:null,expression:person.emotion||'confused',scammerExpression:scammer?.emotion||'confused',scammerSpeakingExpression:scammer?.speakingExpression||scammer?.emotion||'confused',chatVisible:0,chatStage:'typing',unread:true};
+ return {mode:'defense',audience,choiceSeed:Math.floor(Math.random()*4294967296),caller:person.id,scammerId:scammer?.id,caseId:person.caseId,trust:0,used:[],log:[],outcome:null,expression:person.emotion||'confused',scammerExpression:scammer?.emotion||'confused',scammerSpeakingExpression:scammer?.speakingExpression||scammer?.emotion||'confused',chatVisible:0,chatStage:'typing',unread:true};
 }
 export function resumeDefenseCall(a){
  if(a?.mode!=='defense'||a.outcome)return false;
+ if(a.actionPending&&defenseCaseFor(a)?.choices.some(c=>c.id===a.actionPending)&&!a.used.includes(a.actionPending)){
+  a.actionStartedAt=Number.isFinite(a.actionStartedAt)?a.actionStartedAt:Date.now();a.chatStage='ready';a.chatVisible=1;a.murmurHeard=true;a.unread=false;return true;
+ }
  a.actionPending=null;
  if(a.ransomwareDeadline){a.chatStage='ready';a.chatVisible=2;return true;}
+ if(a.chatStage==='ready'&&a.murmurHeard){a.chatVisible=Math.max(1,a.chatVisible||0);return true;}
  a.chatStage='typing';a.chatVisible=1;a.unread=true;a.murmurHeard=false;return true;
 }
-export function beginDefenseAction(a,choiceId){
- if(a?.mode!=='defense'||!['ready','speaking'].includes(a.chatStage)||a.outcome||a.ransomwareDeadline||a.actionPending)return false;
- const choice=defenseCases[a.caseId]?.choices.find(item=>item.id===choiceId);
+export function beginDefenseAction(a,choiceId,now=Date.now()){
+ if(a?.mode!=='defense'||!['ready','speaking'].includes(a.chatStage)||a.outcome||a.ransomwareDeadline||a.actionPending||a.interaction)return false;
+ const choice=defenseCaseFor(a)?.choices.find(item=>item.id===choiceId);
  if(!choice||a.used.includes(choice.id))return false;
  a.chatStage='ready';
  a.actionPending=choice.id;
+ a.actionStartedAt=now;
+ a.balanceEligible=true;
  return true;
 }
 export function decideDefense(a,choiceId,now=Date.now()){
  if(a?.mode!=='defense'||a.outcome)return false;
- const scenario=defenseCases[a.caseId],choice=scenario?.choices.find(c=>c.id===choiceId);
+ const scenario=defenseCaseFor(a),choice=scenario?.choices.find(c=>c.id===choiceId);
  if(!choice||a.used.includes(choice.id))return false;
  a.used.push(choice.id);a.choice=choice.id;a.log.push({speaker:'Sistema',text:choice.label,action:true});
  if(choice.ransomware){a.ransomwareDeadline=now+10_000;a.ransomwareTriggeredAt=now;a.outcome=null;a.expression='surprised';a.log.push({speaker:'Sistema',text:'ALERTA: a máquina fictícia começou a bloquear arquivos. Você tem 10 segundos para desconectá-la da rede e acionar o suporte. Nada será alterado neste computador.'});}
- else {a.outcome=choice.safe?'blocked':'fooled';a.reactionTier=choice.safe?'success':'miss';a.feedback=choice.feedback;a.consequence=choice.safe?null:defenseFailures[a.caseId]||null;a.expression=choice.safe?'thinking':'hurt';a.log.push({speaker:'Sistema',text:choice.feedback});}
+ else {a.outcome=choice.safe||choice.partial?'blocked':'fooled';a.partial=!!choice.partial;a.humor=scenario.humor||null;a.reactionTier=choice.partial?'almost':choice.safe?'success':'miss';a.feedback=choice.feedback;a.consequence=choice.safe||choice.partial?null:defenseFailures[a.caseId]||null;a.expression=choice.safe||choice.partial?'thinking':'hurt';a.log.push({speaker:'Sistema',text:choice.feedback});}
  return true;
 }
 export function stopRansomware(a){
@@ -200,7 +223,7 @@ export function stopRansomware(a){
  a.ransomwareDeadline=null;a.ransomwareStopped=true;a.outcome='blocked';a.reactionTier='success';a.feedback='Você desconectou a máquina simulada e chamou o suporte. O ransomware ficou restrito ao cenário fictício.';a.expression='happy';a.log.push({speaker:'Sistema',text:a.feedback});return true;
 }
 export function endDefenseContact(a){
- if(a?.mode!=='defense'||a.outcome||a.ransomwareDeadline)return false;
+ if(a?.mode!=='defense'||a.outcome||a.ransomwareDeadline||a.actionPending||a.interaction)return false;
  const nextStep={whatsapp:'Ligue para a pessoa no número que você já tinha salvo antes de fazer qualquer Pix.', 'bank-call':'Feche a ligação e abra o app do banco por conta própria. Se compartilhou código ou instalou um app, avise o banco pelo canal oficial.', 'fake-pix':'Confira o extrato pelo app do banco. Se o dinheiro não entrou, não entregue o pedido; se já entregou, fale com o banco.', boleto:'Não pague pelo QR recebido. Localize a cobrança no app ou site que você já conhece e confira quem vai receber.', delivery:'Apague o link sem preencher dados. Consulte o pedido no app ou site oficial da loja.', ransomware:'Não abra o anexo. Se já executou o arquivo, desconecte o aparelho da rede e chame o suporte de confiança.', 'fake-motoboy':'Não entregue cartão nem senha. Ligue para o banco pelo número do cartão ou pelo app e peça orientação.', 'fake-store':'Não faça Pix por fora da plataforma. Confira a loja e o vendedor dentro do app oficial.', 'fake-government':'Não pague nem envie documentos pelo link. Consulte o serviço digitando o endereço oficial ou usando o app do órgão.', 'card-swap':'Confira o cartão e cubra a senha ao digitar. Se o cartão foi trocado, bloqueie-o pelo app oficial e fale com o banco.'}[a.caseId]||'Se já enviou dinheiro ou dados, procure o banco ou o suporte pelo canal oficial.';
  a.outcome='blocked';a.choice='end-contact';a.reactionTier='almost';a.expression='thinking';a.feedback=`Você pausou a conversa. ${nextStep} Confirme qualquer dúvida por um canal oficial; se já houve prejuízo, contate o banco ou o suporte o quanto antes.`;a.log.push({speaker:'Sistema',text:'AÇÃO — encerrar contato e buscar confirmação por um canal oficial.'},{speaker:'Sistema',text:a.feedback});return true;
 }
@@ -210,3 +233,15 @@ export function expireRansomware(a,now=Date.now()){
 }
 
 export function finishDefenseMurmur(a){if(!a||a.chatStage!=='speaking')return false;a.chatStage='ready';return true;}
+
+// Settle once per action, including after a reload; old results are never charged.
+export function settleDefenseLoss(state){
+ const a=state.active;
+ if(a?.mode!=='defense'||!a.outcome||!a.balanceEligible||a.balanceSettlement)return false;
+ const amounts={whatsapp:480,'bank-call':300,'fake-pix':81,boleto:120,delivery:81,ransomware:180,'fake-motoboy':250,'fake-store':150,'fake-government':81,'card-swap':81};
+ const requested=a.outcome==='fooled'?(expandedById[a.caseId]?.loss||amounts[a.caseId]||81):0;
+ const before=Number.isFinite(state.credits)?state.credits:0,loss=requested;
+ state.credits=before-loss;
+ a.balanceSettlement={before,after:state.credits,loss,requested};
+ return loss>0;
+}

@@ -11,7 +11,7 @@ const esc=value=>String(value);
 test('Onboarding usa história curta e Supervisor, sem colocar a Chefia no tutorial',()=>{
  const state=fresh(),tutorial=tutorialPanel(state,esc),manual=helpContent(state,esc,false);
  assert.ok(tutorialStory.length<260);
- assert.match(tutorial,/Supervisor/);assert.match(tutorial,/Trambique OS/);assert.doesNotMatch(tutorial,/Chefia/);
+ assert.match(tutorial,/Lia/);assert.match(tutorial,/Trambique OS/);assert.doesNotMatch(tutorial,/Chefia/);
  assert.match(manual,/Onde você está/);assert.match(manual,/Supervisor acompanha só o primeiro caso/);
 });
 

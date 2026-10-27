@@ -1,4 +1,4 @@
-export const privacyVersion='2026-10-19';
+export const privacyVersion='2026-10-26-age-bands';
 export const shouldShowPrivacyNotice=storage=>storage.getItem('qh-privacy-notice')!==privacyVersion;
 export const publicDialogueAI=false;
 

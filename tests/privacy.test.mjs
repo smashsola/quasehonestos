@@ -28,4 +28,4 @@ test('Dados pessoais são recusados antes de chamar o provedor experimental',asy
  const response=await onRequestPost({request,env:{DIALOGUE_AI_ENABLED:'true',DIALOGUE_PROVIDER:'gemini',DIALOGUE_ALLOW_EXPERIMENTAL_PROVIDERS:'true',GEMINI_API_KEY:'test'}});assert.equal(response.status,400);assert.equal((await response.json()).error,'personal-data');
 });
 
-test('Aviso de privacidade reaparece após a atualização e respeita o aceite desta versão',()=>{const old=storage([['qh-privacy-notice','2026-10-15']]),current=storage([['qh-privacy-notice',privacyVersion]]);assert.equal(privacyVersion,'2026-10-19');assert.equal(shouldShowPrivacyNotice(old),true);assert.equal(shouldShowPrivacyNotice(current),false);});
+test('Aviso de privacidade reaparece após a atualização e respeita o aceite desta versão',()=>{const old=storage([['qh-privacy-notice','2026-10-15']]),current=storage([['qh-privacy-notice',privacyVersion]]);assert.equal(privacyVersion,'2026-10-26-age-bands');assert.equal(shouldShowPrivacyNotice(old),true);assert.equal(shouldShowPrivacyNotice(current),false);});

@@ -1,3 +1,4 @@
+import {extraMailScenes} from './mail-scenes-extra.js';
 import {defenseScenes} from './dialogue.js';
 
 // Fictional messages aimed at the player, separate from the NPC proposals.
@@ -23,7 +24,14 @@ export const incomingScenes={
   {id:'allow',label:'Pagar sem conferir para o café não atrasar',safe:false,feedback:'A urgência tentou pular a conferência. Confira o destinatário e a origem antes de confirmar um pagamento.'}
  ]}
 };
-export function incomingScene(pending){return pending?.variant==='office'?incomingScenes[pending.scene]:defenseScenes[pending?.scene];}
+for(const scene of extraMailScenes)incomingScenes[scene.id]=scene;
+for(const scene of Object.values(incomingScenes))scene.reward??=20;
+export function incomingScene(pending){
+ const base=pending?.variant==='office'?incomingScenes[pending.scene]:defenseScenes[pending?.scene];if(!base||!['child','teen'].includes(pending?.audience))return base;
+ const safe=base.choices.find(c=>c.safe),wrong=base.choices.filter(c=>!c.safe),partial={id:'pause-mail',label:'Parar por enquanto, mas ainda não conferir a origem.',partial:true,safe:false,feedback:'Você não seguiu o pedido. Isso ajuda, mas ainda falta confirmar a origem pelo canal conhecido.'},help={id:'help-mail',label:'Pedir ajuda a um adulto de confiança para conferir pelo canal conhecido.',safe:true,feedback:'Você pediu ajuda e confirmou o pedido antes de agir. '+base.signal};
+ const childMessages={prize:'Chegou uma encomenda para você. Pague uma taxa por esta mensagem para receber hoje.',support:'Sou seu chefe e troquei de número. Preciso de dinheiro agora. Não ligue para conferir.',club:'Você tem dinheiro para receber. Antes, mande um Pix para liberar esse dinheiro.',update:'A conta do café mudou. Pague esta nova cobrança sem conferir o nome de quem recebe.'};
+ return {...base,...(pending.audience==='child'?{message:childMessages[pending.scene]||base.message}:{}),choices:pending.audience==='child'?[safe,help,partial,wrong[0]]:[safe,partial,...wrong.slice(0,2)]};
+}
 export function refreshIncoming(state){
  const p=state.incoming?.pending;
  if(!p||p.result||p.variant==='office'||!incomingScenes[p.scene])return false;
@@ -31,5 +39,5 @@ export function refreshIncoming(state){
 }
 export function incomingReport(history=[]){
  if(!history.length)return '';
- return '\nRECADOS RECEBIDOS\n'+history.map(h=>`${h.sender}\nEscolha: ${h.label}\n${h.feedback}\n${Number.isFinite(h.penalty)?'Perda: C$ '+h.penalty+' · saldo após a resposta: C$ '+h.after:'Sem desconto registrado neste recado antigo.'}`).join('\n\n');
+ return '\nRECADOS RECEBIDOS\n'+history.map(h=>`${h.sender}\nEscolha: ${h.label}\n${h.feedback}\n${h.reward?'Bônus: C$ '+h.reward+' · ':''}${Number.isFinite(h.penalty)?'Perda: C$ '+h.penalty+' · saldo após a resposta: C$ '+h.after:'Sem desconto registrado neste recado antigo.'}`).join('\n\n');
 }

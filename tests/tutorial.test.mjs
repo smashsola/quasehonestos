@@ -1,13 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fresh,nextCall,applyTypedMove,finishCall,closeCall,load,migrateToDefense} from '../src/engine.js';
-import {tutorialStory,tutorialStep,tutorialTarget,tutorialPanel,tutorialAction} from '../src/tutorial.js';
+import {tutorialStory,tutorialStep,tutorialTarget,tutorialPanel,tutorialAction,tutorialWindowRect} from '../src/tutorial.js';
 import {checkIncoming} from '../src/incoming.js';
 import {shiftLearning,shiftEnding} from '../src/shift-ending.js';
 test('Tutorial apresenta história curta e Supervisor sem usar a Chefia',()=>{
  const html=tutorialPanel(fresh(),String);
  assert.match(tutorialStory,/Quase Honestos/);assert.ok(tutorialStory.length<260);
- assert.match(html,/Supervisor/);assert.match(html,/SEU PRIMEIRO DIA/);assert.match(html,/Trambique OS/);assert.doesNotMatch(html,/Chefia/);
+ assert.match(html,/Lia/);assert.match(html,/SEU PRIMEIRO DIA/);assert.match(html,/Trambique OS/);assert.doesNotMatch(html,/Chefia/);
 });
 test('Tutorial acompanha o estado real, não entrega itens ou altera créditos e permite pular',()=>{
  const s=fresh();assert.equal(tutorialStep(s).number,1);tutorialAction(s,'start');nextCall(s);assert.equal(tutorialStep(s).number,2);
@@ -26,12 +26,35 @@ test('Guia distingue anexo, permissão e uso no app; some depois da primeira con
 });
 test('Tutorial de defesa acompanha só a primeira conversa e fica disponível sem depender do app aberto',()=>{
  const s=fresh();s.history.push({caller:'nino',outcome:'closed'});migrateToDefense(s);
- const welcome=tutorialPanel(s,String,true);assert.match(welcome,/Bata o ponto no Zape/);assert.match(welcome,/Etapa 1 de 3/);assert.match(welcome,/data-app="calls"/);assert.doesNotMatch(welcome,/Começar tutorial/);
+ const welcome=tutorialPanel(s,String,true);assert.match(welcome,/Abra o Zape Zape 2/);assert.match(welcome,/Etapa 1 de 5/);assert.match(welcome,/data-app="calls"/);assert.doesNotMatch(welcome,/Começar tutorial/);
+ assert.match(tutorialPanel(s,String,false,{callsVisible:true}),/data-tutorial-begin/);
  assert.equal(tutorialAction(s,'collapse'),true);assert.match(tutorialPanel(s,String),/Mostrar dicas/);assert.equal(tutorialAction(s,'collapse'),true);
  nextCall(s);s.active.chatStage='typing';assert.match(tutorialStep(s).title,/mensagem nova/);assert.match(tutorialStep(s).text,/três pontos/);assert.equal(tutorialTarget(s),null,'mensagens passivas não recebem aro verde');
- s.active.chatStage='speaking';assert.match(tutorialStep(s).text,/murmura sozinho/);assert.equal(tutorialTarget(s),null,'balão da conversa não recebe aro verde');
- s.active.chatStage='ready';s.active.murmurHeard=true;assert.equal(tutorialStep(s).number,2);const clueGuide=tutorialPanel(s,String);assert.match(clueGuide,/O que observar/);assert.match(clueGuide,/data-tutorial-clues/);assert.match(clueGuide,/lógica/);
- s.active.outcome='blocked';s.active.reactionTier='success';assert.equal(tutorialStep(s).number,3);assert.match(tutorialStep(s).text,/Você está no rumo, boa sorte/);assert.equal(tutorialTarget(s),'.defense-feedback.is-success .defense-reaction-feedback','o resultado correto recebe o destaque durante o tutorial');s.active.reactionTier='miss';assert.equal(tutorialTarget(s),'.defense-feedback-actions .primary','resultados fora do tutorial de acerto mantêm a navegação');finishCall(s);assert.equal(tutorialStep(s),null);assert.equal(tutorialPanel(s,String),'');
+ s.active.chatStage='speaking';assert.match(tutorialStep(s).text,/contato está falando/);assert.match(tutorialTarget(s),/data-defense-choice="verify-person"/,'a resposta já aparece destacada durante a fala, sem marcar o balão da conversa');
+ s.active.chatStage='ready';s.active.murmurHeard=true;assert.equal(tutorialStep(s).number,2);assert.match(tutorialPanel(s,String),/data-tutorial-hint/);
+ s.active.mechanicUsed=true;const clueGuide=tutorialPanel(s,String);assert.match(clueGuide,/O que observar/);assert.match(clueGuide,/data-tutorial-clues/);assert.match(clueGuide,/lógica/);
+ s.active.tutorialCluesSeen=true;assert.equal(tutorialStep(s).number,4);assert.match(tutorialTarget(s),/data-defense-choice="verify-person"/);
+ s.active.outcome='blocked';s.active.reactionTier='success';assert.equal(tutorialStep(s).number,5);assert.match(tutorialStep(s).text,/Vingança/);assert.equal(tutorialTarget(s),'.defense-feedback-actions .primary','só controles clicáveis recebem destaque');s.active.reactionTier='miss';assert.equal(tutorialTarget(s),'.defense-feedback-actions .primary');finishCall(s);assert.equal(tutorialStep(s),null);assert.equal(tutorialPanel(s,String),'');
+});
+
+test('Resposta segura recebe indicação só no primeiro caso guiado e nunca durante a ação',()=>{
+ const s=fresh();migrateToDefense(s);nextCall(s);s.active.chatStage='ready';
+ assert.match(tutorialTarget(s),/verify-person/);
+ s.active.actionPending='verify-person';assert.equal(tutorialTarget(s),null);s.active.actionPending=null;
+ for(const tutorial of ['skipped','completed']){s.tutorial=tutorial;assert.equal(tutorialTarget(s),null);}
+ s.tutorial='defense';s.cursor=1;assert.equal(tutorialTarget(s),null);
+});
+test('Guia continua utilizável se a janela do Zape for fechada ou minimizada',()=>{
+ const s=fresh();migrateToDefense(s);nextCall(s);s.active.chatStage='ready';
+ const panel=tutorialPanel(s,String,false,{callsVisible:false});
+ assert.match(panel,/Volte ao Zape/);assert.match(panel,/data-app="calls"/);assert.doesNotMatch(panel,/data-tutorial-hint/);
+});
+
+test('Coluna do tutorial reserva espaço mesmo para janelas grandes ou salvas à direita',()=>{
+ for(const width of [1001,1100,1223,1366,1920])for(const rect of [{x:384,width:690},{x:8,width:width-16},{x:width-100,width:560}]){
+  const guideWidth=Math.min(330,Math.max(280,width*.27)),fit=tutorialWindowRect(rect,{width},guideWidth);
+  assert.ok(fit.x>=8);assert.ok(fit.width>0);assert.ok(fit.x+fit.width<=width-guideWidth-42);
+ }
 });
 test('Recados surpresa não interrompem a primeira conversa guiada, voltam na seguinte',()=>{
  const s=fresh();nextCall(s);s.active.log=[{speaker:'Você',text:'Oi'}];s.tutorial='active';assert.equal(checkIncoming(s,0),false);assert.equal(s.incoming,undefined);

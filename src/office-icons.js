@@ -1,5 +1,7 @@
 // Original desk symbols: one outline, paper base and restrained department colors.
 const symbols={
+ shield:['#81c8b1','<path d="M32 7 52 15v16c0 13-12 22-20 26C24 53 12 44 12 31V15z"/><path d="m22 31 7 7 14-16" fill="none"/>'],
+ search:['#98bbcb','<circle cx="27" cy="27" r="17"/><path d="m40 40 15 15M20 27h14" fill="none"/>'],
  calls:['#81c8b1','<path d="M12 12h40v31H28l-12 9v-9h-4z"/><path d="M21 23h22M21 31h15"/>'],
  files:['#e3c17c','<path d="M8 17h18l6 7h24v29H8z"/><path d="M14 33h35M14 41h27"/>'],
  boss:['#98bbcb','<rect x="9" y="16" width="46" height="35" rx="3"/><path d="m11 19 21 18 21-18M12 48l14-13m26 13L38 35"/>'],
@@ -13,4 +15,4 @@ const symbols={
  update:['#98bbcb','<path d="M15 8h26l9 9v39H15zM41 8v10h9"/><path d="m24 38 8-9 8 9m-8-9v18"/>'],
  link:['#81c8b1','<rect x="10" y="14" width="44" height="35" rx="3"/><path d="M10 24h44M18 34h11m8 0h9m-28 7h7"/>']
 };
-export function officeIcon(id){const [accent,art]=symbols[id]||symbols.help;return `<svg class="office-icon" viewBox="0 0 64 64" aria-hidden="true"><g fill="${accent}" stroke="#173b3a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">${art}</g></svg>`;}
+export function officeIcon(id){if(id==='brand')return `<svg class="office-icon office-brand" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="12" fill="#e7a867"/><g fill="none" stroke="#263644" stroke-width="4" stroke-linejoin="round"><path d="M17 13h30v28H17zM12 52h40M25 41v11m14-11v11M23 24h4m10 0h4M25 34h14"/></g><path d="M45 7l10 10" stroke="#fff1cf" stroke-width="6" stroke-linecap="round"/></svg>`;const [accent,art]=symbols[id]||symbols.help;return `<svg class="office-icon" viewBox="0 0 64 64" aria-hidden="true"><g fill="${accent}" stroke="#173b3a" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round">${art}</g></svg>`;}

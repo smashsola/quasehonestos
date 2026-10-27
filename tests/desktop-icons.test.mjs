@@ -29,7 +29,7 @@ test('Grade do PC mantém duas colunas no desktop comum para liberar área às j
 });
 test('Destaque do tutorial e aviso de mensagem não tiram atalhos desktop da posição calculada',async()=>{
  const css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
- assert.match(css,/@media\s*\(min-width:\s*601px\)\s*and\s*\(pointer:\s*fine\)\s*,\s*\(min-width:\s*1001px\)\s*and\s*\(pointer:\s*coarse\)\s*\{\.desktop\s+\.desktop-icons>button\[data-icon\]\s*\{position:absolute!important\}\}/);
+ assert.match(css,/@media\s*\(min-width:\s*781px\)\s*and\s*\(pointer:\s*fine\)\s*,\s*\(min-width:\s*1001px\)\s*and\s*\(pointer:\s*coarse\)\s*\{\.desktop\s+\.desktop-icons>button\[data-icon\]\s*\{position:absolute!important\}\}/);
 });
 test('Atalhos ficam em células distintas nas resoluções usuais de desktop',()=>{
  const ids=Array.from({length:12},(_,i)=>`app-${i}`);

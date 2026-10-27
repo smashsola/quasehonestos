@@ -1,0 +1,9 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {shuffledChoices} from '../src/choice-order.js';
+import {moveMobileIcon} from '../src/mobile-icon-grid.js';
+import {revengeMusicThemes,revengeMusicTheme} from '../src/revenge-music-themes.js';
+
+test('Answer order stays stable during a case and can place the correct answer in all four positions',()=>{const answers=[{id:'safe'},{id:'wrong1'},{id:'partial'},{id:'wrong2'}],positions=[0,0,0,0];for(let seed=0;seed<1000;seed++){const a={caseId:'whatsapp',choiceSeed:seed},first=shuffledChoices(a,answers);assert.deepEqual(first,shuffledChoices(a,answers));assert.deepEqual(new Set(first.map(a=>a.id)),new Set(answers.map(a=>a.id)));positions[first.findIndex(a=>a.id==='safe')]++;}for(const n of positions)assert.ok(n>180&&n<320,String(positions));assert.deepEqual(answers.map(a=>a.id),['safe','wrong1','partial','wrong2']);});
+test('Dragging swaps exactly two icons and leaves every other slot untouched',()=>{const order=['calls','files','mail','results','help','shop'];for(const from of order)for(const to of order){const changed=moveMobileIcon(order,from,to);assert.equal(changed.filter((id,i)=>id!==order[i]).length,from===to?0:2);assert.equal(changed[order.indexOf(to)],from);assert.equal(new Set(changed).size,6);}assert.deepEqual(order,['calls','files','mail','results','help','shop']);});
+test('Each day has its own original score, rhythm, riff and soft introduction',()=>{assert.equal(revengeMusicThemes.length,6);for(const key of ['name','bpm','lead','intro','riff'])assert.equal(new Set(revengeMusicThemes.map(t=>JSON.stringify(t[key]))).size,6,key);for(let day=1;day<=6;day++){const t=revengeMusicTheme(day);assert.equal(t,revengeMusicThemes[day-1]);assert.equal(t.intro.length,16);assert.equal(t.lead.length,16);assert.ok(t.roots.every(n=>n>=28&&n<=60));assert.ok(t.riff.every(n=>n>=0&&n<4));}assert.equal(revengeMusicTheme(100),revengeMusicThemes[5]);});

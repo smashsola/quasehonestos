@@ -6,7 +6,7 @@ const load=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
 
 test('Tutorial usa asset e identidade de Supervisor',async()=>{
  const tutorial=await load('src/tutorial.js');
- assert.match(tutorial,/portraits\/supervisor\.svg/);
+ assert.match(tutorial,/portraits\/supervisor-lia\.svg/);
  assert.match(tutorial,/SUPERVISÃO/);
  assert.doesNotMatch(tutorial,/portraits\/boss\.svg/);
 });
