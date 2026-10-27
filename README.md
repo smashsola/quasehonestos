@@ -43,9 +43,11 @@ A partida, o nome ou apelido, o personagem, a faixa etária, o saldo, as compras
 
 ## Verificação e pendências
 
-Os testes automatizados cobrem regras, alternativas por idade, salvamento, créditos, campanhas, Correio, compras e regressões. Eles não substituem a revisão visual. A auditoria completa das telas, dos 30 casos e das vinganças em celular, tablet e desktop ainda está em andamento; não há garantia de ausência de bugs visuais.
+Os testes automatizados cobrem regras, alternativas por idade, salvamento, créditos, campanhas, Correio, compras e regressões. A [auditoria de 27/10/2026](docs/AUDITORIA-2026-10-27.md) documenta a campanha completa por testes de integração, a matriz de telas no navegador, os cliques exercitados e os problemas corrigidos. Testes de software não garantem ausência de bugs nem comprovam impacto educativo.
 
 A matriz de revisão usa 360×800 e 390×844 (celulares), 768×1024 (tablet), 1366×768 e 1920×1080 (computadores). São tamanhos representativos para cobrir diferentes layouts, não uma promessa de que todo aparelho terá o mesmo comportamento. O roteiro inclui primeiro cadastro, retorno, termos, tutorial, seis dias de campanha, respostas das duas faixas etárias, vinganças, Correio, loja, resultados e recarregamento.
+
+Para repetir estados visuais isolados: `npm run build` e `node scripts/qa-server.mjs`. O servidor de QA escuta somente em `127.0.0.1:4183` (ou `QA_PORT`). As rotas `/__qa` criam perfis e partidas fictícios e substituem o salvamento daquela origem local; use uma origem/perfil descartável. Exemplos e limites estão no relatório. Esse servidor não integra a publicação Cloudflare.
 
 O aviso não constitui certificação jurídica nem afirma conformidade integral com a LGPD. Antes de uso em sala, a equipe e a escola devem revisar a atividade, combinar o tratamento dos arquivos locais e testar com estudantes voluntários sem recolher nomes ou relatos pessoais.
 
