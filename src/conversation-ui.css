@@ -1798,3 +1798,33 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 
 /* O rodapé do cadastro é apenas texto; não pode interceptar o botão de entrar. */
 .os-login>footer{pointer-events:none}
+
+/* Desktop windows behave like movable, restorable app windows. */
+.desktop-window>.windowbar{cursor:grab;touch-action:none;user-select:none}
+.desktop-window.window-dragging>.windowbar{cursor:grabbing}
+.desktop-window>.windowbar>div{display:flex;align-items:center;gap:0}
+.desktop-window>.windowbar .window-max-control{display:grid;place-items:center;width:38px;height:30px;min-width:38px;padding:0;border:0;border-radius:0;background:transparent;color:#31584a}
+.desktop-window>.windowbar .window-max-control svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.25;stroke-linecap:square;stroke-linejoin:round}
+.desktop-window>.windowbar .window-max-control:hover{background:#ffffffa8}
+.desktop-window>.windowbar button[data-window="minimize"]{border:0;border-radius:0;background:transparent;color:#31584a}
+.desktop-window>.windowbar button[data-window="minimize"]:hover{background:#ffffffa8}
+.desktop-window>.windowbar button[data-window="close"]{border:0;border-radius:0 7px 0 0;background:transparent;color:#31584a}
+.desktop-window>.windowbar button[data-window="close"]:hover{background:#c74639;color:#fff}
+.desktop-window.maximized{left:8px!important;top:45px!important;width:calc(100vw - 16px)!important;height:calc(100svh - 115px)!important;max-height:none!important;border-radius:10px}
+.desktop-window.maximized>.windowbar button[data-window="close"]{border-radius:0 9px 0 0}
+@media(max-width:780px),(pointer:coarse) and (max-width:1000px){
+ .mobile-app-switcher{top:calc(42px + env(safe-area-inset-top,0px))!important;bottom:calc(var(--qh-dock-height,78px) + 8px + env(safe-area-inset-bottom,0px))!important;left:8px!important;right:8px!important;height:auto!important;max-height:calc(var(--qh-view-height,100dvh) - var(--qh-dock-height,78px) - 52px - env(safe-area-inset-top,0px))!important;overflow-y:auto!important;overscroll-behavior:contain}
+ .mobile-app-switcher>.mobile-utilities{margin-top:auto!important;padding-bottom:12px!important}
+ .mobile-dock{z-index:9800!important;visibility:visible}
+ .desktop-window.maximized{left:0!important;top:calc(30px + env(safe-area-inset-top,0px))!important;width:100%!important;height:calc(var(--qh-view-height,100dvh) - 94px - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important;border-radius:0}
+}
+@media(max-width:480px){
+ .login-age{padding:13px!important;border-radius:15px!important}
+ .login-age>div{gap:9px!important}
+ .login-age label{grid-template-columns:22px minmax(0,1fr)!important;align-items:center!important;gap:10px!important;min-height:70px!important;padding:12px!important;border-radius:12px!important;background:#173b3a24;box-shadow:0 2px 0 #092c2733;transition:background-color .16s,border-color .16s,transform .16s!important}
+ .login-age label:hover{transform:translateY(-1px)}
+ .login-age input{width:20px!important;height:20px!important;margin:0!important;accent-color:#36785c}
+ .login-age label>span{font-size:14px!important;font-weight:700!important;line-height:1.35!important}
+ .login-age label small{margin-top:3px!important;font-size:11px!important;line-height:1.35!important;opacity:.82}
+ .login-age>small{margin-top:12px!important;font-size:11px!important;line-height:1.5!important}
+}
