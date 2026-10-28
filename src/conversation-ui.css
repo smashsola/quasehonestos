@@ -1821,9 +1821,9 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @media(max-width:480px){
  .login-age{padding:13px!important;border-radius:15px!important}
  .login-age>div{gap:9px!important}
- .login-age label{grid-template-columns:22px minmax(0,1fr)!important;align-items:center!important;gap:10px!important;min-height:70px!important;padding:12px!important;border-radius:12px!important;background:#173b3a24;box-shadow:0 2px 0 #092c2733;transition:background-color .16s,border-color .16s,transform .16s!important}
+ .login-age label{display:grid!important;grid-template-columns:22px minmax(0,1fr)!important;align-items:start!important;gap:10px!important;min-height:70px!important;padding:12px!important;border-radius:12px!important;background:#173b3a24;box-shadow:0 2px 0 #092c2733;transition:background-color .16s,border-color .16s,transform .16s!important}
  .login-age label:hover{transform:translateY(-1px)}
- .login-age input{width:20px!important;height:20px!important;margin:0!important;accent-color:#36785c}
+ .login-age input{width:20px!important;height:20px!important;margin:1px 0 0!important;align-self:start!important;accent-color:#36785c}
  .login-age label>span{font-size:14px!important;font-weight:700!important;line-height:1.35!important}
  .login-age label small{margin-top:3px!important;font-size:11px!important;line-height:1.35!important;opacity:.82}
  .login-age>small{margin-top:12px!important;font-size:11px!important;line-height:1.5!important}
