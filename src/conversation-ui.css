@@ -1878,3 +1878,5 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @media(max-width:780px) and (orientation:landscape) and (max-height:520px){
  .desktop>.mobile-app-switcher{top:calc(var(--qh-top-height,56px) + env(safe-area-inset-top,0px))!important}
 }
+.incoming-message>header button,.incoming-message.mobile-inline>header button{border-radius:9px!important;transform:none!important}
+.incoming-message>header button:hover,.incoming-message.mobile-inline>header button:hover{transform:none!important}
