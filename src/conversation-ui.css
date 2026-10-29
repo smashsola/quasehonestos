@@ -1883,3 +1883,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .desktop-window>.windowbar button,.desktop-window>.windowbar button svg{color:#fff!important;opacity:1!important}
 .desktop-window>.windowbar button svg{filter:none!important}
 .desktop-window>.windowbar button svg path,.desktop-window>.windowbar button svg rect{stroke:currentColor!important;opacity:1!important}
+@media(max-width:780px),(pointer:coarse) and (max-width:1000px){
+ .desktop-window>.windowbar button[data-window="close"]{background:#a93632!important;border:1px solid #ffd1c6!important;color:#fff!important;box-shadow:0 2px 0 #68241f!important}
+ .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active{background:#c74639!important;color:#fff!important}
+}
