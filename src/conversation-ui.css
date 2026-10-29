@@ -1873,6 +1873,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @media(max-width:780px),(pointer:coarse) and (max-width:1000px){
  .desktop>.mobile-app-switcher{position:absolute!important;top:calc(var(--qh-top-height,86px) + env(safe-area-inset-top,0px))!important;right:0!important;bottom:-24px!important;left:0!important;height:auto!important;max-height:none!important;margin:0!important;padding-bottom:calc(var(--qh-dock-height,78px) + env(safe-area-inset-bottom,0px) + 36px)!important;border-radius:16px 16px 0 0!important;box-sizing:border-box!important;overflow-y:auto!important;background:#edf3ec!important;z-index:9700!important}
  .desktop>.mobile-dock{z-index:9800!important}
+ .desktop:has(>.mobile-app-switcher)::after{content:"";position:fixed;z-index:9600;top:calc(var(--qh-view-top,0px) + var(--qh-top-height,86px) + env(safe-area-inset-top,0px));right:0;bottom:0;left:0;background:#edf3ec;pointer-events:none}
 }
 @media(max-width:780px) and (orientation:landscape) and (max-height:520px){
  .desktop>.mobile-app-switcher{top:calc(var(--qh-top-height,56px) + env(safe-area-inset-top,0px))!important}
