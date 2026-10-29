@@ -2,6 +2,8 @@
 
 [Jogar a versão pública](https://quasehonestos.betaniaaa.workers.dev/) · Campanha de 30 casos · Trambique OS
 
+> **Direitos autorais:** © 2026 Paulo Henrique Ribeiro da Silva. Todos os direitos reservados. A publicação deste repositório e do site não concede licença para copiar, adaptar, redistribuir, republicar ou usar o projeto para treinamento de sistemas de IA sem autorização prévia por escrito. Consulte [NOTICE.md](NOTICE.md). Componentes de terceiros permanecem sujeitos às respectivas licenças.
+
 Quase Honestos é uma comédia interativa no Trambique OS sobre golpes, pressão e exposição no ambiente digital. O projeto se relaciona à categoria oficial **Prevenção à Violência** ao dar prática de pausa, checagem independente, proteção de dados e busca de apoio — sem alegar que o jogo já provou eficácia com estudantes.
 
 ## Versão atual
