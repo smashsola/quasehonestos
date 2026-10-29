@@ -1880,3 +1880,6 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 }
 .incoming-message>header button,.incoming-message.mobile-inline>header button{border-radius:9px!important;transform:none!important}
 .incoming-message>header button:hover,.incoming-message.mobile-inline>header button:hover{transform:none!important}
+.desktop-window>.windowbar button,.desktop-window>.windowbar button svg{color:#fff!important;opacity:1!important}
+.desktop-window>.windowbar button svg{filter:none!important}
+.desktop-window>.windowbar button svg path,.desktop-window>.windowbar button svg rect{stroke:currentColor!important;opacity:1!important}
