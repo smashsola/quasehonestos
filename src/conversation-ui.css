@@ -1859,3 +1859,11 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .incoming-message>header button{display:grid!important;place-items:center!important;box-sizing:border-box!important;width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;flex:0 0 42px!important;padding:0!important;border:1px solid #9ab9a4!important;border-radius:50%!important;background:#e1eee5!important;color:#285441!important;box-shadow:0 2px 0 #bdd1c2!important;transition:background-color .18s,border-color .18s,transform .18s!important}
 .incoming-message>header button:hover{background:#f2e3bf!important;border-color:#c99d53!important;color:#604a21!important;transform:rotate(8deg)}
 .incoming-message>header button:focus-visible{outline:3px solid #e7bf6f!important;outline-offset:2px!important}
+
+/* Keep the mobile app picker opaque to the bottom edge so the page cannot peek through. */
+@media(max-width:780px),(pointer:coarse) and (max-width:1000px){
+ .mobile-app-switcher{position:fixed!important;top:calc(var(--qh-view-top,0px) + var(--qh-top-height,86px) + env(safe-area-inset-top,0px))!important;right:8px!important;bottom:0!important;left:8px!important;height:auto!important;max-height:none!important;box-sizing:border-box!important;padding-bottom:calc(var(--qh-dock-height,78px) + env(safe-area-inset-bottom,0px) + 12px)!important;overflow-y:auto!important;background:#edf3ec!important;z-index:9700!important}
+}
+@media(max-width:780px) and (orientation:landscape) and (max-height:520px){
+ .mobile-app-switcher{top:calc(var(--qh-view-top,0px) + var(--qh-top-height,56px) + env(safe-area-inset-top,0px))!important}
+}
