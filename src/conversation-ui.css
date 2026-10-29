@@ -1829,3 +1829,33 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .login-age label small{margin-top:3px!important;font-size:11px!important;line-height:1.35!important;opacity:.82}
  .login-age>small{margin-top:12px!important;font-size:11px!important;line-height:1.5!important}
 }
+
+/* Keep the player identity fully visible above the mobile app switcher. */
+@media(max-width:780px),(pointer:coarse) and (max-width:1000px){
+ .desktop-top{z-index:9600}
+ .desktop-top>span{display:block!important;max-width:calc(100% - 100px);min-width:0;overflow:visible}
+ .desktop-top .session-owner-details{display:block!important;min-width:0;max-width:100%;overflow:visible}
+ .desktop-top .session-owner-details>span{display:block;color:#d8e9dd;font:650 11px/1.35 system-ui,-apple-system,'Segoe UI',sans-serif;overflow-wrap:anywhere}
+ .mobile-app-switcher{top:calc(var(--qh-top-height,86px) + env(safe-area-inset-top,0px))!important;bottom:calc(var(--qh-dock-height,78px) + 8px + env(safe-area-inset-bottom,0px))!important;left:8px!important;right:8px!important;height:auto!important;max-height:calc(var(--qh-view-height,100dvh) - var(--qh-dock-height,78px) - var(--qh-top-height,86px) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 8px)!important;overflow-y:auto!important;overscroll-behavior:contain;border-radius:18px!important;z-index:9500}
+}
+@media(max-width:780px) and (orientation:landscape) and (max-height:520px){
+ .desktop{--qh-top-height:56px;--qh-dock-height:64px}
+ .desktop-top{display:flex!important;height:calc(var(--qh-top-height) + env(safe-area-inset-top,0px));padding:4px 62px 4px 10px;gap:4px}
+ .desktop-top>strong{font-size:10px;gap:2px 7px}
+ .desktop-top>strong>small{font-size:6px}
+ .desktop-top .session-owner-details>span{font-size:9px}
+ .desktop-top .session-owner-photo{top:4px;right:8px;width:46px!important;height:46px!important;border-radius:11px}
+ .desktop-window[data-window-id]{top:calc(var(--qh-top-height) + env(safe-area-inset-top,0px))!important;height:calc(100% - var(--qh-top-height) - var(--qh-dock-height) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px))!important}
+ .mobile-app-switcher{top:calc(var(--qh-top-height) + env(safe-area-inset-top,0px))!important;bottom:calc(var(--qh-dock-height) + 8px + env(safe-area-inset-bottom,0px))!important;left:8px!important;right:8px!important;max-height:calc(100dvh - var(--qh-top-height) - var(--qh-dock-height) - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px) - 8px)!important;border-radius:18px!important}
+}
+
+/* The message-level X dismisses one card; keep it distinct from the red app close control. */
+.incoming-message>header button,.incoming-message.mobile-inline>header button{display:grid!important;place-items:center!important;box-sizing:border-box!important;width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;flex:0 0 42px!important;padding:0!important;border:1px solid #9ab9a4!important;border-radius:50%!important;background:#e1eee5!important;color:#285441!important;box-shadow:0 2px 0 #bdd1c2!important;transition:background-color .18s,border-color .18s,transform .18s!important}
+.incoming-message>header button:hover,.incoming-message.mobile-inline>header button:hover{background:#f2e3bf!important;border-color:#c99d53!important;color:#604a21!important;transform:rotate(8deg)}
+.incoming-message>header button:focus-visible,.incoming-message.mobile-inline>header button:focus-visible{outline:3px solid #e7bf6f!important;outline-offset:2px!important}
+}
+
+/* The message-level X dismisses one card; keep it distinct from the red app close control. */
+.incoming-message>header button{display:grid!important;place-items:center!important;box-sizing:border-box!important;width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;flex:0 0 42px!important;padding:0!important;border:1px solid #9ab9a4!important;border-radius:50%!important;background:#e1eee5!important;color:#285441!important;box-shadow:0 2px 0 #bdd1c2!important;transition:background-color .18s,border-color .18s,transform .18s!important}
+.incoming-message>header button:hover{background:#f2e3bf!important;border-color:#c99d53!important;color:#604a21!important;transform:rotate(8deg)}
+.incoming-message>header button:focus-visible{outline:3px solid #e7bf6f!important;outline-offset:2px!important}
