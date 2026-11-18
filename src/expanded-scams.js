@@ -545,13 +545,22 @@ export const expandedScams=[
 
 export const expandedById=Object.fromEntries(expandedScams.map(s=>[s.id,s]));
 export const expandedAction=(id)=>expandedScams.find(s=>id?.startsWith(s.id+'--'));
+const expandedTrustActions={bank:'copiar a chave alternativa enviada no chat',tasks:'aumentar os depósitos depois do primeiro ganho',job:'enviar documentos para a vaga não confirmada',loan:'pagar uma nova taxa para acelerar a liberação',investment:'reinvestir porque o gráfico continua subindo',prize:'informar o cartão para validar o sorteio',market:'entregar o produto confiando só no e-mail',sessions:'enviar o código de vinculação ao suporte do chat',dossier:'aceitar os dados do processo como prova de identidade',voice:'pagar sem ligar porque reconheceu o áudio',chat:'mandar dinheiro e esconder o pedido de todo mundo',rental:'reservar sem conferir o imóvel porque tem fotos',ticket:'aceitar o QR em imagem como prova de ingresso',camera:'deixar a visita fotografar o documento',updates:'instalar o programa indicado pelo aviso',terms:'aceitar sem ler porque o botão promete ser grátis',middleman:'manter o preço em segredo e confiar na história do intermediário',donation:'doar porque a foto da campanha parece conhecida',mei:'pagar sem consultar porque o CNPJ está correto',inventory:'aprovar a troca porque a skin parece rara'};
+const expandedUnsafeAction=(s,suffix)=>suffix==='trust'?expandedTrustActions[s.kind]:s.unsafeLabel;
 export function expandedChoices(s){return [
  {id:s.id+'--verify',label:'AÇÃO — '+s.safeLabel,safe:true,feedback:s.safeResult+' '+s.lesson},
  {id:s.id+'--accept',label:'AÇÃO — '+s.unsafeLabel,safe:false,classification:'Autorização pelo contato',feedback:s.unsafeResult+' '+s.lesson},
- {id:s.id+'--trust',label:'AÇÃO — '+({bank:'copiar a chave alternativa enviada no chat',tasks:'aumentar os depósitos depois do primeiro ganho',job:'enviar documentos para a vaga não confirmada',loan:'pagar uma nova taxa para acelerar a liberação',investment:'reinvestir porque o gráfico continua subindo',prize:'informar o cartão para validar o sorteio',market:'entregar o produto confiando só no e-mail',sessions:'enviar o código de vinculação ao suporte do chat',dossier:'aceitar os dados do processo como prova de identidade',voice:'pagar sem ligar porque reconheceu o áudio',chat:'mandar dinheiro e esconder o pedido de todo mundo',rental:'reservar sem conferir o imóvel porque tem fotos',ticket:'aceitar o QR em imagem como prova de ingresso',camera:'deixar a visita fotografar o documento',updates:'instalar o programa indicado pelo aviso',terms:'aceitar sem ler porque o botão promete ser grátis',middleman:'manter o preço em segredo e confiar na história do intermediário',donation:'doar porque a foto da campanha parece conhecida',mei:'pagar sem consultar porque o CNPJ está correto',inventory:'aprovar a troca porque a skin parece rara'}[s.kind]),safe:false,feedback:s.unsafeResult+' '+s.lesson},
+ {id:s.id+'--trust',label:'AÇÃO — '+expandedUnsafeAction(s,'trust'),safe:false,feedback:s.unsafeResult+' '+s.lesson},
  {id:s.id+'--joke',label:'AÇÃO — dizer “'+standaloneJokes[s.id]+'” e '+s.safeLabel.charAt(0).toLowerCase()+s.safeLabel.slice(1),safe:true,witty:true,feedback:s.safeResult+' '+s.lesson}
 ];}
 
 const basePortraits=['bia','caio','luana','igor','maya','leo','nina','duda','rafa','enzo'];
 export function expandedPortraitId(id){const index=expandedScams.findIndex(s=>'visit-'+s.id===id);return index<0?id:basePortraits[index%10];}
-export function expandedDemo(s,suffix){const names={verify:'Conferência independente',accept:'Pedido autorizado',trust:'Aparência aceita como prova',joke:'Conferência antes da resposta'},safe=['verify','joke'].includes(suffix);return {context:s.app+' · '+names[suffix],button:{verify:'Conferir',accept:'Autorizar',trust:'Continuar',joke:'Conferir e responder'}[suffix]+' · '+s.app,result:(safe?s.safeResult:s.unsafeResult)+(suffix==='trust'?' A aparência não confirmou a origem.':suffix==='joke'?' Você conferiu antes de responder à provocação.':'')};}
+export function expandedDemo(s,suffix){
+ const safe=['verify','joke'].includes(suffix),unsafeAction=expandedUnsafeAction(s,suffix);
+ const check=s.checks?.[suffix==='joke'?1:0]||s.app;
+ const context=suffix==='verify'?`${s.app} · ${check}`:suffix==='joke'?`${s.app} · ${check}`:`${s.app} · ${unsafeAction}`;
+ const button=suffix==='verify'?`Conferir · ${s.app}`:suffix==='joke'?`Conferir antes de responder · ${s.app}`:suffix==='accept'?`Autorizar · ${s.app}`:`Continuar sem conferir · ${s.app}`;
+ const extra=suffix==='trust'?' A aparência da mensagem não confirma a origem.':suffix==='joke'?' Você conferiu antes de responder à provocação.':'';
+ return {context,button,result:(safe?s.safeResult:s.unsafeResult)+extra};
+}

@@ -1828,3 +1828,11 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .login-age label small{margin-top:3px!important;font-size:11px!important;line-height:1.35!important;opacity:.82}
  .login-age>small{margin-top:12px!important;font-size:11px!important;line-height:1.5!important}
 }
+
+/* Keep each account screen visually independent from the desktop below it. */
+.os-login{background-color:#173b3a;isolation:isolate}
+
+/* The live tutorial normally reserves space beside the app, but moving the
+   window and maximizing it must keep the desktop's regular window behavior. */
+.desktop.has-tutorial-desktop .desktop-window.maximized{left:8px!important;right:8px!important;width:auto!important;max-width:none!important;min-width:0!important}
+.desktop.has-tutorial-desktop:has(.desktop-window.maximized) .first-call-guide{top:auto!important;bottom:70px!important;right:16px!important;max-height:min(42vh,400px)!important}

@@ -55,6 +55,77 @@ O aviso não constitui certificação jurídica nem afirma conformidade integral
 
 O [diagnóstico TeenTech](docs/AVALIACAO-TEENTECH.md) compara evidências implementadas com as categorias e a rubrica do regulamento oficial. O [protocolo da atividade piloto](docs/AVALIACAO-APRENDIZAGEM.md) explica as versões antes/depois e as limitações. O [roteiro de demonstração](docs/PITCH-3-MINUTOS.md) usa funcionalidades existentes. Resultados de testes de software não são evidência de impacto educacional.
 
+## Apresentação TeenTech
+
+### Resumo do projeto
+
+**Quase Honestos** é um jogo educativo de prevenção à violência e aos golpes digitais apresentado como um computador de escritório fictício. A pessoa joga como estagiária de uma firma suspeita, recebe conversas e recados que simulam pressão, fraude e abuso de confiança e precisa decidir como agir. Cada escolha abre uma demonstração visual da consequência, seguida de uma explicação sobre o risco e sobre o que ainda precisa ser confirmado.
+
+O projeto transforma orientações que costumam aparecer em listas de dicas em uma experiência de decisão: ler o pedido, procurar pistas, interromper a urgência e conferir a informação por um canal conhecido. Seu foco é a prática guiada de estratégias seguras; o jogo não afirma que uma pessoa está imune a golpes depois de jogar.
+
+### Problema e público
+
+Mensagens fraudulentas podem imitar bancos, lojas, familiares, órgãos públicos, oportunidades de trabalho e serviços conhecidos. Elas pressionam por Pix, códigos, senhas, documentos, instalação de programas ou permissões. Uma orientação genérica pode ser difícil de aplicar no momento em que alguém está com pressa ou inseguro.
+
+O jogo foi pensado para adolescentes e também oferece uma versão de leitura mais curta para crianças de 6 a 10 anos. A faixa escolhida altera o vocabulário e o formato das alternativas; não se pede data de nascimento. A interface funciona em celular, tablet e computador. Em sala, pode servir como ponto de partida para conversa orientada por uma pessoa educadora, sem solicitar relatos reais ou dados pessoais dos estudantes.
+
+### Como se joga
+
+1. A pessoa escolhe um apelido, um personagem e uma faixa de linguagem. O perfil é local e não exige senha.
+2. No Trambique OS, abre o Zape Zape 2, lê o pedido e observa as pistas do caso.
+3. Escolhe uma ação concreta: conferir por um canal conhecido, pausar, procurar ajuda ou seguir o pedido recebido.
+4. A cena mostra a ação dentro de um aplicativo fictício. O resultado explica o que aconteceu e qual verificação ficou faltando.
+5. Em alguns casos, é possível consultar fichas e registros de outros aplicativos fictícios para comparar informações.
+6. A vingança é uma cena opcional da história, liberada depois da resolução do caso. Antes dela, há perguntas de proteção digital; a brincadeira não recomenda retaliação fora do jogo.
+7. O Correio apresenta situações extras. Conferir corretamente pode render créditos fictícios, que podem ser usados para personalizar a mesa na Loja da firma.
+8. Resultados e resumos permitem rever escolhas, consequências e os casos da campanha.
+
+### Conteúdo e aprendizagem pretendida
+
+A campanha tem 30 situações organizadas em seis dias de cinco casos. Os temas incluem pedido urgente de dinheiro, falsa central bancária, comprovante falso, boleto ou QR trocado, taxa de entrega, arquivo suspeito, troca de cartão, emprego com cobrança, renda por tarefas, empréstimo com depósito antecipado, investimento, prêmio falso, aluguel, ingresso, voz clonada, relacionamento virtual, captura de conta por QR ou código, coleta de selfie e documento, permissões escondidas, falso intermediário, doação desviada, cobrança falsa de MEI e oferta de itens de jogo.
+
+As respostas ensinam hábitos transferíveis: comparar o pedido com uma fonte independente, abrir o aplicativo por um caminho que a pessoa já conhece, desconfiar de códigos de acesso, revisar permissões, não pagar para liberar um ganho e buscar ajuda quando houver dúvida. Algumas situações são inconclusivas ou podem envolver relações e cobranças legítimas; identidade não é medida por uma porcentagem de confiança.
+
+O humor aparece nas conversas e nas respostas engraçadinhas, mas as explicações de segurança permanecem diretas. Para crianças, textos e alternativas são simplificados. O glossário explica termos como Pix, QR, CPF e skin no contexto em que aparecem.
+
+### O que diferencia o protótipo
+
+- **Ação com consequência visível:** a escolha não termina em “certo” ou “errado”; uma cena demonstra o que seria enviado, conferido, instalado ou bloqueado.
+- **História e humor próprios:** a firma, seus aplicativos, personagens, créditos e a vingança fictícia criam continuidade sem reproduzir transações reais.
+- **Casos variados e conectados:** conversas, Correio, fichas e registros podem se complementar, para a pessoa comparar evidências em vez de julgar apenas uma mensagem isolada.
+- **Duas faixas de linguagem:** o modo infantil encurta textos e reduz o número de alternativas enganosas; o modo adolescente traz mais detalhes e opções.
+- **Uso sem conta e sem serviço externo de IA:** decisões e progresso ficam no navegador. O fluxo de jogo é controlado por regras locais e não envia conversas a um modelo de IA.
+- **Possibilidade de uso acompanhado:** o Manual contém uma atividade opcional com decisões e evidências para discussão. É um recurso de protótipo, ainda sem validação em sala.
+
+### Pitch de aproximadamente três minutos
+
+> Uma mensagem chega no celular dizendo que alguém conhecido trocou de número e precisa de dinheiro com urgência. Outra parece ser do banco e pede um código. Na hora, não basta saber que golpes existem: é preciso conseguir parar, conferir e escolher o próximo passo.
+>
+> O Quase Honestos transforma esse momento em um jogo. A pessoa entra como estagiária de uma firma fictícia e recebe situações inspiradas em golpes e pressões digitais do dia a dia. Ela lê a conversa, procura pistas e decide o que fazer. Em vez de mostrar só um sinal verde ou vermelho, o jogo abre uma cena do aplicativo envolvido e mostra a consequência daquela ação. Depois, explica o que aconteceu e como conferir por um canal conhecido.
+>
+> São 30 casos em seis dias. Eles passam por Pix, falsa central, compras, emprego, QR e códigos de acesso, voz falsa, cobrança escondida, doações e outras situações. Conversas e registros de aplicativos fictícios podem se conectar, então o jogador aprende a comparar fontes. Há uma linguagem mais curta para crianças e outra para adolescentes, sem pedir idade exata. O Correio traz desafios extras e a Loja permite personalizar a mesa com créditos que só existem no jogo.
+>
+> A firma também é uma comédia. O humor aproxima a experiência, mas não muda a orientação: fora do jogo, a resposta segura é interromper o contato, confirmar a informação por um meio confiável e pedir ajuda quando necessário. A “vingança” é apenas um momento opcional de ficção, depois de perguntas de proteção digital; não é uma sugestão de retaliação real.
+>
+> O jogo roda no navegador em celular e computador, não precisa de conta e mantém o progresso no próprio dispositivo. As mensagens e transações são inventadas, e as decisões são executadas por regras locais. O próximo passo é testar a clareza e a experiência com estudantes voluntários e educadores, com consentimento e sem recolher histórias pessoais. Queremos descobrir se as cenas ajudam a conversar sobre como verificar antes de agir — e melhorar o jogo com esse retorno.
+
+### Roteiro de demonstração para banca
+
+1. Abra o Zape e apresente um caso de urgência de Pix. Mostre o pedido, a pista e as ações possíveis.
+2. Escolha a conferência pelo contato conhecido e deixe a demonstração animada chegar ao resultado. Explique como a ação reduz a pressão sem prometer proteção perfeita.
+3. Abra o resumo do caso e mostre a explicação. Se houver tempo, compare com uma opção insegura para visualizar a consequência fictícia.
+4. Mostre um caso que cruza informações entre aplicativos ou fichas para demonstrar a checagem independente.
+5. Apresente a versão infantil, o Correio e a atividade do Manual como recursos complementares, deixando claro que o material ainda precisa de avaliação com público real.
+6. Encerre com o limite e a próxima etapa: o protótipo ensina e registra escolhas no próprio navegador; testes de software não medem mudança de comportamento.
+
+### Evidências e próximos passos
+
+O repositório contém **923 testes automatizados**, além de roteiros de revisão funcional e visual. Esses testes verificam regras, campanhas, conteúdo, salvamento e interface automatizável. Eles demonstram que partes do software se comportam como especificado; não medem compreensão, confiança, retenção nem prevenção real de golpes.
+
+Para avançar no TeenTech, a equipe pode organizar uma revisão de linguagem com educadores, realizar um teste de usabilidade voluntário com atividades fictícias, observar onde as pessoas hesitam e revisar os casos com base nesse retorno. Qualquer avaliação de aprendizagem deve ser planejada com consentimento, coleta mínima e autorização da escola ou responsáveis, conforme a idade e o contexto. Não se deve pedir que participantes compartilhem golpes, senhas, conversas ou situações pessoais.
+
+**Resumo para o formulário:** jogo de navegador sobre prevenção a golpes e violência digital; público de crianças mais velhas e adolescentes; 30 casos com cenas de consequência, duas faixas de linguagem e progresso local; tecnologia sem IA em tempo de execução; contribuição pretendida: praticar pausa, checagem independente e busca de apoio; estado da evidência: protótipo funcional com testes de software, ainda sem estudo de impacto educativo.
+
 ## Publicar
 
 O Worker de produção é publicado com `npm run deploy:worker`, usando o projeto Cloudflare configurado em `wrangler.jsonc`. A publicação de Pages é separada e usa `npm run deploy:pages`.

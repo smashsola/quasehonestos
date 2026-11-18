@@ -301,7 +301,7 @@ app.addEventListener('pointerdown',e=>{
   bar=document.querySelector(`[data-window-id="${id}"] [data-drag]`);if(!bar)return;
  }
  e.preventDefault();const sx=e.clientX,sy=e.clientY,el=bar.closest('[data-window-id]'),rect=el.getBoundingClientRect(),x=w.x,y=w.y;w.z=++layer;el.style.zIndex=w.z;
- const move=ev=>{const fit=fitWindow({x:x+ev.clientX-sx,y:y+ev.clientY-sy,width:rect.width,height:rect.height},viewport);w.x=fit.x;w.y=fit.y;el.classList.add('window-dragging');el.style.left=w.x+'px';el.style.top=w.y+'px';el.style.setProperty('--window-left',el.style.left);el.style.setProperty('--window-top',el.style.top);};
+ const move=ev=>{const fit=fitWindow({x:x+ev.clientX-sx,y:y+ev.clientY-sy,width:rect.width,height:rect.height},viewport);w.x=fit.x;w.y=fit.y;el.classList.add('window-dragging');el.style.left=w.x+'px';el.style.top=w.y+'px';el.style.setProperty('--window-left',el.style.left);el.style.setProperty('--window-top',el.style.top);el.style.setProperty('--tutorial-fit-left',el.style.left);};
  const end=()=>{el.classList.remove('window-dragging');window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',end);window.removeEventListener('pointercancel',end);saveWindows();};
  window.addEventListener('pointermove',move);window.addEventListener('pointerup',end,{once:true});window.addEventListener('pointercancel',end,{once:true});
 });

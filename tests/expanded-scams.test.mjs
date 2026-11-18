@@ -2,7 +2,7 @@ import {requiresScamInteraction} from '../src/interaction-policy.js';
 import {advanceCampaignDay} from '../src/campaign-days.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {expandedScams,expandedById} from '../src/expanded-scams.js';
+import {expandedScams,expandedById,expandedDemo,expandedChoices} from '../src/expanded-scams.js';
 import {beginScamInteraction,actScamInteraction,expireScamInteraction,scamInteractionView} from '../src/scam-interaction.js';
 import {defensePeople,defenseCases,startDefenseCall,beginDefenseAction,decideDefense,settleDefenseLoss} from '../src/defense-round.js';
 import {fresh,load,finishCall,nextCall} from '../src/engine.js';
@@ -13,6 +13,7 @@ function active(id){const a=startDefenseCall(defensePeople.findIndex(p=>p.caseId
 function review(a){if(a.caseId==='fake-middleman'){actScamInteraction(a,'read:buyer');actScamInteraction(a,'read:seller');}if(a.caseId==='terms-permissions')for(const key of ['contacts','sms','renewal'])actScamInteraction(a,'toggle:'+key);if(a.caseId==='fake-donation')actScamInteraction(a,'select:official');if(a.caseId==='fake-mei')actScamInteraction(a,'select:guide');}
 
 test('Fifteen new scams plus terms append without changing the first ten cases',()=>{assert.equal(expandedScams.length,20);assert.equal(defensePeople.length,30);assert.equal(Object.values(defenseCases).flatMap(s=>s.choices).length,120);assert.deepEqual(defensePeople.slice(0,10).map(p=>p.caseId),['whatsapp','bank-call','fake-pix','boleto','delivery','ransomware','fake-motoboy','fake-store','fake-government','card-swap']);assert.equal(new Set(expandedScams.map(s=>s.kind)).size,20);});
+test('As demonstrações dos 20 casos novos identificam o app, a checagem e a consequência escolhida',()=>{for(const s of expandedScams){const [verify,accept,trust,joke]=['verify','accept','trust','joke'].map(action=>expandedDemo(s,action)),choices=expandedChoices(s);assert.match(verify.context,new RegExp(s.app));assert.match(verify.context,new RegExp(s.checks[0]));assert.match(verify.result,new RegExp(s.safeResult));assert.match(accept.context,new RegExp(s.unsafeLabel));assert.match(accept.result,new RegExp(s.unsafeResult));assert.ok(trust.context.includes(choices.find(choice=>choice.id.endsWith('--trust')).label.replace('AÇÃO — ','')));assert.match(trust.result,new RegExp(s.unsafeResult));assert.match(joke.context,new RegExp(s.checks[1]));assert.match(joke.result,new RegExp(s.safeResult));}});
 for(const s of expandedScams){
  test(s.id+': all four choices settle once; only selected choices open their mechanic',()=>{
   for(const choice of defenseCases[s.id].choices){let a=active(s.id),state={active:a,credits:0},done=choice.id;
