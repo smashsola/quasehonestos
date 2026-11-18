@@ -626,7 +626,7 @@ setInterval(()=>{
  render();localStorage.setItem(KEY,JSON.stringify(state));
  if(earned){document.dispatchEvent(new CustomEvent('qh-notification'));document.dispatchEvent(new CustomEvent('qh-revenge-dialogue'));}
  document.querySelector('.revenge-body h2')?.focus({preventScroll:true});
-},250);
+},1000);
 
 function syncRevengeVisual(){
  const r=state.active?.revenge,scene=r?.scene;
@@ -644,7 +644,7 @@ function syncRevengeVisual(){
 
 app.addEventListener('change',event=>{const control=event.target.closest('[data-scam-toggle]');if(!control)return;actScamInteraction(state.active,'toggle:'+control.dataset.scamToggle);render();localStorage.setItem(KEY,JSON.stringify(state));});
 app.addEventListener('click',event=>{const button=event.target.closest('[data-scam-command]');if(!button||button.disabled)return;event.preventDefault();const voice=state.active?.caseId==='fake-voice'&&state.active.interaction?.step===0&&button.dataset.scamCommand==='inspect';const result=actScamInteraction(state.active,button.dataset.scamCommand);if(!result?.changed)return;if(voice)document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller:state.active.scammerId,emotion:'thinking',duration:4800,text:expandedById['fake-voice'].message}}));if(result.choice)beginDefenseAction(state.active,result.choice);render();localStorage.setItem(KEY,JSON.stringify(state));});
-setInterval(()=>{if(state.active?.interaction?.view!=='contain')return;const result=expireScamInteraction(state.active);if(!result?.choice)return;beginDefenseAction(state.active,result.choice);render();localStorage.setItem(KEY,JSON.stringify(state));},250);
+setInterval(()=>{if(state.active?.interaction?.view!=='contain')return;const result=expireScamInteraction(state.active);if(!result?.choice)return;beginDefenseAction(state.active,result.choice);render();localStorage.setItem(KEY,JSON.stringify(state));},1000);
 
 app.addEventListener('click',event=>{const button=event.target.closest('[data-next-day]');if(!button||!advanceCampaignDay(state,defensePeople.length))return;if(nextCall(state)){localStorage.setItem(KEY,JSON.stringify(state));render();const body=document.querySelector('[data-window-id="calls"] .call-window-body');if(body)body.scrollTop=0;animateIncoming();}});
 

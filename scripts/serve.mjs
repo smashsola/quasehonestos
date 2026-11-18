@@ -2,7 +2,7 @@ import http from 'node:http';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-const root=path.resolve(fileURLToPath(new URL('..',import.meta.url)));
+const root=path.resolve(fileURLToPath(new URL(process.env.PREVIEW_DIST==='1'?'../dist/':'..',import.meta.url)));
 const mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml'};
 export function createDevServer(){
  return http.createServer(async(req,res)=>{
