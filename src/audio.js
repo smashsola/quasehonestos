@@ -67,7 +67,7 @@ function speakBoss(panel){
  stopBossVoice();if(!panel||muted||document.hidden||!characterVolume)return;
  const text=panel.querySelector('[data-boss-line]')?.textContent;if(!text)return;
  bossPanel=panel;
- document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller:'bento',emotion:'neutral',duration:replyDuration(text)}}));
+ document.dispatchEvent(new CustomEvent('qh-murmur',{detail:{caller:'bento',emotion:'neutral',text,duration:replyDuration(text)}}));
 }
 document.addEventListener('qh-speaking-start',e=>{
  if(!bossPanel||e.detail?.caller!=='bento')return;
@@ -113,7 +113,7 @@ document.addEventListener('visibilitychange',()=>{mousePressed=false;if(!ctx)ret
 function returnAudioFocus(){const mobile=document.querySelector('.mobile-dock [data-mobile-apps]');(mobile?.getBoundingClientRect().height?mobile:document.querySelector('[data-sound-panel]'))?.focus();}
 function controls(){
  const bar=document.querySelector('.taskbar');if(!bar)return;
- let button=bar.querySelector('[data-sound-panel]');if(!button){button=document.createElement('button');button.dataset.soundPanel='true';button.className='sound-toggle';bar.insertBefore(button,bar.querySelector('small'));}
+ let button=bar.querySelector('[data-sound-panel]');if(!button){button=document.createElement('button');button.dataset.soundPanel='true';button.className='sound-toggle';bar.insertBefore(button,bar.querySelector('.show-desktop'));}
  const title=muted?'Som silenciado · ajustar áudio':'Ajustar áudio';button.textContent=muted?'♪ ×':'♪';button.title=title;button.setAttribute('aria-label',title);button.setAttribute('aria-expanded',String(panelOpen));
  if(panelOpen&&!document.querySelector('.sound-panel')){const panel=document.createElement('section');panel.className='sound-panel';panel.setAttribute('aria-label','Sons do computador');panel.innerHTML=`<div><strong>Sons do computador</strong><button data-sound-close aria-label="Fechar ajustes de áudio">×</button></div><label>Clique do mouse <output>${clickVolume}%</output><input aria-label="Volume do clique do mouse" data-volume="click" type="range" min="0" max="100" value="${clickVolume}"></label><label>Teclado <output>${keyboardVolume}%</output><input aria-label="Volume do teclado" data-volume="keyboard" type="range" min="0" max="100" value="${keyboardVolume}"></label><label>Murmúrio dos personagens <output>${characterVolume}%</output><input aria-label="Volume do murmúrio dos personagens" data-volume="character" type="range" min="0" max="100" value="${characterVolume}"></label><label>Mensagens <output>${messageVolume}%</output><input aria-label="Volume das mensagens" data-volume="message" type="range" min="0" max="100" value="${messageVolume}"></label><label>Ventoinha <output>${fanVolume}%</output><input aria-label="Volume da ventoinha" data-volume="fan" type="range" min="0" max="100" value="${fanVolume}"></label><button data-sound-mute>${muted?'Ativar sons':'Silenciar tudo'}</button>`;document.querySelector('.desktop').append(panel);panel.querySelector('[data-sound-close]').focus({preventScroll:true});}
  if(!panelOpen)document.querySelector('.sound-panel')?.remove();

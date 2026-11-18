@@ -127,7 +127,7 @@ O humor aparece nas conversas e nas respostas engraçadinhas, mas as explicaçõ
 
 ### Evidências e próximos passos
 
-O repositório contém **934 testes automatizados**, além de roteiros de revisão funcional e visual. Esses testes verificam regras, campanhas, conteúdo, salvamento e interface automatizável. Eles demonstram que partes do software se comportam como especificado; não medem compreensão, confiança, retenção nem prevenção real de golpes.
+O repositório contém **938 testes automatizados**, além de roteiros de revisão funcional e visual. Esses testes verificam regras, campanhas, conteúdo, salvamento e interface automatizável. Eles demonstram que partes do software se comportam como especificado; não medem compreensão, confiança, retenção nem prevenção real de golpes.
 
 Para avançar no TeenTech, a equipe pode organizar uma revisão de linguagem com educadores, realizar um teste de usabilidade voluntário com atividades fictícias, observar onde as pessoas hesitam e revisar os casos com base nesse retorno. Qualquer avaliação de aprendizagem deve ser planejada com consentimento, coleta mínima e autorização da escola ou responsáveis, conforme a idade e o contexto. Não se deve pedir que participantes compartilhem golpes, senhas, conversas ou situações pessoais.
 

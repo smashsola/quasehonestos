@@ -134,6 +134,14 @@ html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:a
 .desktop-window[data-window-id="accessibility"] .a11y-daltonism-card strong{color:#fff!important}
 .desktop-window[data-window-id="accessibility"] .a11y-daltonism-card span{color:#edf5ef!important}
 .desktop-window[data-window-id="accessibility"] .a11y-daltonism-card[aria-pressed="true"]{background:#24533a!important;border-color:#bd8e2d!important}
+.desktop-window[data-window-id="accessibility"] .a11y-header{display:block!important;width:100%;min-width:0;box-sizing:border-box}
+.desktop-window[data-window-id="accessibility"] .a11y-header h1{display:block;max-width:100%;overflow-wrap:normal;word-break:normal;line-height:1.25}
+.desktop-window[data-window-id="accessibility"] .a11y-header p{max-width:65ch;overflow-wrap:anywhere}
+.desktop-window[data-window-id="accessibility"] .a11y-row{min-width:0;flex-wrap:wrap}
+.desktop-window[data-window-id="accessibility"] .a11y-row-text{flex:1 1 220px;min-width:min(100%,220px)}
+.desktop-window[data-window-id="accessibility"] .a11y-btn-group{flex:1 1 100%;min-width:0}
+html.a11y-font-large .desktop-window[data-window-id="accessibility"] .a11y-window-view{zoom:1.18;width:84.75%}
+html.a11y-font-xlarge .desktop-window[data-window-id="accessibility"] .a11y-window-view{zoom:1.35;width:74.08%}
 html.a11y-high-contrast .desktop-window[data-window-id="accessibility"] .a11y-daltonism-card{background:#000!important;color:#fff!important;border:2px solid #fff!important}
 html.a11y-high-contrast .desktop-window[data-window-id="accessibility"] .a11y-daltonism-card :is(strong,span){color:#fff!important}
 @media(max-width:780px){
@@ -145,3 +153,15 @@ html.a11y-high-contrast .desktop-window[data-window-id="accessibility"] .a11y-da
  .desktop-window[data-window-id="accessibility"] .a11y-voice-controls{display:flex;justify-content:flex-start;flex-wrap:wrap;min-width:0}
  .desktop-window[data-window-id="accessibility"] .a11y-daltonism-grid{grid-template-columns:minmax(0,1fr)}
 }
+
+/* Keep the status area together at the end of the desktop taskbar. */
+@media(min-width:781px){
+ .desktop .taskbar{justify-content:flex-start!important;gap:7px}
+ .desktop .taskbar .os-account{margin-left:auto!important;flex:none;white-space:nowrap}
+ .desktop .taskbar .taskbar-clock{flex:0 0 auto;min-width:64px}
+ .desktop .taskbar .network-toggle,.desktop .taskbar .sound-toggle{flex:0 0 42px}
+ .desktop .taskbar>.show-desktop{order:20;margin-left:8px!important;flex:0 0 10px!important}
+}
+.desktop .desktop-icons{overflow:auto;overscroll-behavior:contain}
+.desktop .qh-egg{touch-action:manipulation}
+.desktop .windowbar button[data-window="minimize"]::before{transform:translateY(3px)}

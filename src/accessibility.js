@@ -2,7 +2,7 @@
 // Oferece suporte completo para deficientes visuais e os top 4 tipos de daltonismo.
 
 const STORAGE_KEY = 'qh-accessibility-settings';
-const ENTRY_SEEN_KEY = 'qh-a11y-entry-seen-v1';
+let entrySpeechTimer = 0;
 
 export const accessibilityDefaults = {
   highContrast: false,
@@ -142,33 +142,71 @@ export function applyAccessibility(settings) {
 
 // Ouvinte de leitor de tela interativo
 let speechListenerInstalled = false;
+const liveSpeechValues = new Map();
+
+function spokenName(target) {
+  const labelledBy = target.getAttribute('aria-labelledby')
+    ?.split(/\s+/).map(id => document.getElementById(id)?.innerText || '').join(' ');
+  const labels = [...(target.labels || [])].map(label => label.innerText).join(' ');
+  const name = target.getAttribute('aria-label') || labelledBy || labels ||
+    target.innerText || target.getAttribute('placeholder') || target.getAttribute('title') || '';
+  const role = target.getAttribute('role') || (target.tagName === 'INPUT'
+    ? ({radio:'opção',checkbox:'caixa de seleção',range:'controle deslizante',submit:'botão'}[target.type] || 'campo')
+    : ({BUTTON:'botão', A:'link', TEXTAREA:'campo de texto', SELECT:'lista'}[target.tagName] || ''));
+  const state = target.getAttribute('aria-pressed') === 'true' ? 'ativado' :
+    target.getAttribute('aria-pressed') === 'false' ? 'desativado' :
+    target.getAttribute('aria-expanded') === 'true' ? 'aberto' :
+    target.getAttribute('aria-expanded') === 'false' ? 'fechado' :
+    target.getAttribute('aria-current') === 'page' ? 'página atual' :
+    target.getAttribute('aria-selected') === 'true' || target.checked ? 'selecionado' :
+    target.getAttribute('aria-selected') === 'false' || target.getAttribute('aria-checked') === 'false' ? 'não selecionado' : '';
+  return [name, role, state].filter(Boolean).join('. ');
+}
+
+function installLiveSpeech() {
+  if (typeof document === 'undefined' || !document.body || document.body.dataset.a11yLiveSpeech) return;
+  document.body.dataset.a11yLiveSpeech = 'true';
+  const announce = node => {
+    if (!getAccessibilitySettings().screenReader || !(node instanceof Element)) return;
+    const live = node.matches('[aria-live],#announcement,[role="status"],[role="alert"],[role="log"]')
+      ? node : node.closest('[aria-live],#announcement,[role="status"],[role="alert"],[role="log"]');
+    if (!live || live.closest('[aria-hidden="true"]') || live.hidden) return;
+    const text = (live.matches('[role="log"]') ? live.lastElementChild?.innerText : live.innerText || live.textContent || '')
+      ?.replace(/\s+/g, ' ').trim();
+    const key = live.id || `${live.getAttribute('aria-label') || live.getAttribute('role')}:${typeof live.className === 'string' ? live.className : ''}`;
+    if (!text || liveSpeechValues.get(key) === text) return;
+    liveSpeechValues.set(key, text);
+    speakText(text);
+  };
+  const observer = new MutationObserver(records => {
+    for (const record of records) {
+      if (record.type === 'characterData') announce(record.target.parentElement);
+      else if (record.type === 'childList') {
+        if (record.target instanceof Element) announce(record.target);
+        for (const added of record.addedNodes) if (added instanceof Element) announce(added);
+      }
+    }
+  });
+  observer.observe(document.body, {subtree:true,childList:true,characterData:true});
+}
+
 function installSpeechListeners() {
   if (speechListenerInstalled || typeof document === 'undefined') return;
   speechListenerInstalled = true;
+  installLiveSpeech();
 
   document.addEventListener('focusin', e => {
     const s = getAccessibilitySettings();
     if (!s.screenReader) return;
     const target = e.target;
     if (!target) return;
-    const text = target.getAttribute('aria-label') || target.innerText || target.getAttribute('placeholder') || target.getAttribute('title') || '';
+    const text = spokenName(target);
     if (text) speakText(text);
-  });
-
-  document.addEventListener('click', e => {
-    const s = getAccessibilitySettings();
-    if (!s.screenReader) return;
-    const bubble = e.target.closest('.bubble, .login-return-card, .choices button, .windowbar, .a11y-daltonism-card');
-    if (bubble && !e.target.closest('button[data-open-accessibility]')) {
-      const text = bubble.getAttribute('aria-label') || bubble.innerText || '';
-      if (text) speakText(text);
-    }
   });
 }
 
 // Banner com a pergunta sutil mas evidente ao abrir o site
 export function renderAccessibilityPrompt() {
-  try { if (localStorage.getItem(ENTRY_SEEN_KEY) === '1') return ''; } catch {}
   return `
     <aside class="a11y-entry-prompt" role="region" aria-label="Preferências de Acessibilidade">
       <span class="a11y-entry-icon" aria-hidden="true">♿</span>
@@ -189,14 +227,11 @@ export function renderAccessibilityPrompt() {
 export function startAccessibilityEntry(root) {
   const prompt = root?.querySelector('.a11y-entry-prompt');
   if (!prompt) return false;
-  try {
-    if (localStorage.getItem(ENTRY_SEEN_KEY) === '1') { prompt.remove(); return false; }
-    localStorage.setItem(ENTRY_SEEN_KEY, '1');
-  } catch {}
   const stop = prompt.querySelector('[data-a11y-entry-stop]');
   const settings = getAccessibilitySettings(); settings.screenReader = true; saveAccessibilitySettings(settings);
-  stop?.addEventListener('click', () => { const next = getAccessibilitySettings(); next.screenReader = false; saveAccessibilitySettings(next); stopSpeaking(); prompt.remove(); });
-  window.setTimeout(() => speakText('Acessibilidade do Trambique OS. O leitor de voz começa ligado e vai ler as mensagens e opções do jogo. Use Ajustar acessibilidade para mudar contraste, tamanho das letras, movimento ou desligar a voz. Você também pode desligar a voz agora.'), 350);
+  stop?.addEventListener('click', () => { window.clearTimeout(entrySpeechTimer); entrySpeechTimer = 0; const next = getAccessibilitySettings(); next.screenReader = false; saveAccessibilitySettings(next); stopSpeaking(); prompt.querySelector('.a11y-entry-text p').textContent = 'Leitura por voz desligada. Você ainda pode ajustar os outros recursos.'; stop.disabled = true; stop.textContent = 'Narração desligada'; stop.setAttribute('aria-pressed','true'); });
+  window.clearTimeout(entrySpeechTimer);
+  entrySpeechTimer = window.setTimeout(() => { entrySpeechTimer = 0; speakText('Acessibilidade do Trambique OS. O leitor de voz começa ligado e vai ler o jogo. Use Ajustar acessibilidade para mudar contraste, tamanho das letras ou movimento. Você também pode desligar a voz agora.'); }, 350);
   return true;
 }
 
@@ -457,7 +492,7 @@ export function initAccessibility() {
     const openBtn = e.target.closest('[data-open-accessibility]');
     if (openBtn) {
       e.preventDefault();
-      try { localStorage.setItem(ENTRY_SEEN_KEY, '1'); } catch {}
+      window.clearTimeout(entrySpeechTimer); entrySpeechTimer = 0; stopSpeaking();
       openAccessibilityModal();
       return;
     }

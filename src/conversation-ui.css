@@ -1906,4 +1906,17 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 }
 
 /* Keep the radio controls visibly separated from their labels at every width. */
-.os-login .login-age label{grid-template-columns:28px minmax(0,1fr)!important;gap:16px!important}
+.os-login .login-age label{display:flex!important;align-items:flex-start!important;gap:16px!important}
+.os-login .login-age label>span{flex:1 1 auto!important;min-width:0!important}
+.os-login .login-age input{flex:0 0 20px!important;width:20px!important;height:20px!important;margin:2px 0 0!important}
+
+/* Keyboard and screen-reader landmarks for the active desktop app. */
+.skip-main-link{position:fixed;z-index:2147483000;top:-80px;left:12px;padding:12px 16px;background:#fff;color:#173b3a;border:2px solid #173b3a;border-radius:6px;font-weight:700}
+.skip-main-link:focus{top:12px;outline:3px solid #edb77f;outline-offset:3px}
+.desktop-window [role="main"]{scroll-margin-top:48px}
+.desktop-window [role="log"]{scroll-margin-block:12px}
+.desktop-window :is(button,a,input,textarea,select,summary,[tabindex="0"]):focus-visible{outline:3px solid #bd741e!important;outline-offset:3px!important;box-shadow:0 0 0 2px #fff!important}
+.desktop .taskbar .show-desktop{margin-left:8px!important}
+.desktop .taskbar button[data-show-desktop]:focus-visible{outline:3px solid #edb77f!important;outline-offset:-3px!important}
+.desktop .windowbar button[data-window="minimize"]::before{transform:translateY(3px)}
+@media(max-width:780px){.skip-main-link:focus{top:calc(env(safe-area-inset-top,0px) + 8px)}}

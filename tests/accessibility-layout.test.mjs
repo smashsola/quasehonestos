@@ -2,11 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 
-const [controls,layout,app,loginCss]=await Promise.all([
+const [controls,layout,app,loginCss,loginRuntime,game,achievements,accessibilityCss,interfaceCss,audio]=await Promise.all([
  readFile(new URL('../src/a11y.css',import.meta.url),'utf8'),
  readFile(new URL('../src/a11y.css',import.meta.url),'utf8'),
  readFile(new URL('../src/accessibility.js',import.meta.url),'utf8'),
  readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8'),
+ readFile(new URL('../src/login.js',import.meta.url),'utf8'),
+ readFile(new URL('../src/game.js',import.meta.url),'utf8'),
+ readFile(new URL('../src/achievements.js',import.meta.url),'utf8'),
+ readFile(new URL('../src/accessibility.css',import.meta.url),'utf8'),
+ readFile(new URL('../src/conversation-ui.css',import.meta.url),'utf8'),
+ readFile(new URL('../src/audio.js',import.meta.url),'utf8'),
 ]);
 
 test('Titlebar controls are black at rest and the close control turns red on hover',()=>{
@@ -25,5 +31,39 @@ test('Accessibility app text and color cards retain readable contrast and fit na
 });
 
 test('Age selection spacing wins against phone-specific label overrides',()=>{
- assert.match(loginCss,/\.os-login \.login-age label\{grid-template-columns:28px minmax\(0,1fr\)!important;gap:16px!important\}\s*$/);
+ assert.match(loginCss,/\.os-login \.login-age label\{display:flex!important;align-items:flex-start!important;gap:16px!important\}/);
+ assert.match(loginCss,/\.os-login \.login-age label>span\{flex:1 1 auto!important;min-width:0!important\}/);
+});
+
+test('First profile always offers the voice onboarding, while returning accounts get the settings shortcut',()=>{
+ assert.match(app,/export function renderAccessibilityPrompt\(\)\s*\{\s*return/);
+ assert.match(app,/export function startAccessibilityEntry\(root\)[\s\S]*settings\.screenReader = true/);
+ assert.match(loginRuntime,/screen\.className='os-login login-first-visit'/);
+ assert.match(loginRuntime,/renderAccessibilityPrompt\(\)\}\s*<form/);
+ assert.match(loginRuntime,/welcome\.innerHTML=renderAccessibilityPill\(\)/);
+});
+
+test('Screen reader speaks dynamic alerts and each desktop app exposes a skip link and main landmark',()=>{
+ assert.match(app,/function installLiveSpeech\(\)[\s\S]*MutationObserver/);
+ assert.match(app,/node\.matches\('\[aria-live\]/);
+ assert.match(app,/function spokenName\(target\)[\s\S]*aria-pressed/);
+ assert.match(game,/skip-main-link/);
+ assert.match(game,/setAttribute\('role','main'\)/);
+ assert.match(interfaceCss,/\.skip-main-link:focus/);
+});
+
+test('Secrets are announced and can be collected without a mouse; accessibility heading and taskbar remain usable',()=>{
+ assert.match(achievements,/aria-keyshortcuts','E'/);
+ assert.match(achievements,/Aperte E ou Enter para pegar/);
+ assert.match(achievements,/getElementById\('announcement'\);if\(live\)live\.textContent=/);
+ assert.match(controls,/\.taskbar \.os-account\{margin-left:auto!important/);
+ assert.match(controls,/\.taskbar>\.show-desktop\{order:20/);
+ assert.match(controls,/\.a11y-header\{display:block!important/);
+ assert.match(controls,/a11y-font-xlarge \.desktop-window\[data-window-id="accessibility"\] \.a11y-window-view\{zoom:1\.35/);
+});
+
+test('Character voice reads the actual dialogue when the integrated reader is enabled',()=>{
+ assert.match(audio,/function speakBoss\(panel\)[\s\S]*text,duration:replyDuration\(text\)/);
+ assert.match(audio,/getAccessibilitySettings\(\)\.screenReader/);
+ assert.match(audio,/detail\.text&&getAccessibilitySettings\(\)\.screenReader/);
 });

@@ -12,10 +12,11 @@ test('Ritmo e duração acompanham personagem, emoção e tamanho da fala',()=>{
  assert.equal(speechTiming('nino','happy',999999).duration,7.5);
  for(const caller of Object.keys(voiceProfiles))for(const emotion of expressions){const plan=speechPlan(caller,emotion,3850);assert.ok(Math.abs(plan.pace*plan.syllables-plan.duration)<1e-9);}
 });
-test('Personagens fazem murmúrio sem narrar o texto em voz alta',async()=>{
+test('Personagens fazem murmúrio e o leitor fala o texto apenas quando ativado',async()=>{
  const audio=await readFile(new URL('../src/audio.js',import.meta.url),'utf8');
  assert.doesNotMatch(audio,/SpeechSynthesisUtterance|speechSynthesis|new Audio\(/);
- assert.match(audio,/function speakBoss/);assert.match(audio,/caller:'bento',emotion:'neutral',duration:replyDuration\(text\)/);
+ assert.match(audio,/function speakBoss/);assert.match(audio,/caller:'bento',emotion:'neutral',text,duration:replyDuration\(text\)/);
+ assert.match(audio,/detail\.text&&getAccessibilitySettings\(\)\.screenReader/);
  assert.match(audio,/voice\.type=softVoices/);assert.match(audio,/createBiquadFilter/);assert.match(audio,/Murmúrio dos personagens/);
  assert.match(audio,/qh-speaking-start/);assert.match(audio,/qh-speaking-end/);assert.match(audio,/voice\.stop\(t\+pace\)/);
  assert.match(audio,/softVoices\.has\(caller\)\?'triangle':grittyVoices\.has\(caller\)\?'sawtooth':'square'/);

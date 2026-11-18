@@ -23,7 +23,7 @@ test('Partida interrompida não vira desempenho perfeito nem conta histórico an
 });
 test('Chefe mantém as dez frases escritas e usa o murmúrio dos personagens',async()=>{
  const audio=await readFile(new URL('../src/audio.js',import.meta.url),'utf8');
- assert.match(audio,/caller:'bento',emotion:'neutral',duration:replyDuration\(text\)/);
+ assert.match(audio,/caller:'bento',emotion:'neutral',text,duration:replyDuration\(text\)/);
  assert.match(audio,/\['qh-speaking-end','qh-murmur-skipped'\]/);
  assert.doesNotMatch(audio,/speechSynthesis|bossClip|new Audio\(/);
  for(let safe=0;safe<10;safe++){

@@ -5,7 +5,7 @@ let open=false,diagnostic=-1;
 function controls(){
  const bar=document.querySelector('.taskbar');if(!bar)return;
  let button=bar.querySelector('[data-network-toggle]');
- if(!button){button=document.createElement('button');button.dataset.networkToggle='true';button.className='network-toggle';button.innerHTML=wifi;button.title='Internet da firma · conectada por um milagre';button.setAttribute('aria-label','Internet da firma: conectada. Ver rede');button.setAttribute('aria-controls','network-panel');bar.insertBefore(button,bar.querySelector('[data-sound-panel]')||bar.querySelector('small'));}
+ if(!button){button=document.createElement('button');button.dataset.networkToggle='true';button.className='network-toggle';button.innerHTML=wifi;button.title='Internet da firma · conectada por um milagre';button.setAttribute('aria-label','Internet da firma: conectada. Ver rede');button.setAttribute('aria-controls','network-panel');bar.insertBefore(button,bar.querySelector('[data-sound-panel]')||bar.querySelector('.show-desktop'));}
  button.setAttribute('aria-expanded',String(open));
  if(open&&!document.querySelector('#network-panel')){
   const panel=document.createElement('section');panel.id='network-panel';panel.className='network-panel';panel.setAttribute('role','dialog');panel.setAttribute('aria-labelledby','network-title');
