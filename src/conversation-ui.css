@@ -1836,7 +1836,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .os-login>.a11y-pill-shortcut{display:none!important}
  .os-login>.a11y-entry-prompt{width:calc(100vw - 28px)!important;max-width:100%!important;min-width:0!important;margin:0 auto 14px!important;box-sizing:border-box!important}
  .os-login .a11y-entry-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
- .os-login .a11y-entry-actions button{width:100%!important;min-width:0!important}
+ .os-login .a11y-entry-actions button{width:auto!important;min-width:0!important}
  .os-login .login-account{width:calc(100vw - 28px)!important;max-width:510px!important;min-width:0!important;box-sizing:border-box!important;align-self:center}
  .os-login .login-account>*{max-width:100%;min-width:0;box-sizing:border-box}
  .os-login .login-age,.os-login .login-avatar-picker{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
