@@ -35,13 +35,13 @@ test('All thirty stages reserve and stagger their props, control and result',()=
   assert.doesNotMatch(html,/display:none|\shidden=/);
  }
 });
-test('All twenty additional revenge scenes show the specific villain and firm dialogue',()=>{
+test('All twenty additional revenge scenes stay focused on the action and leave dialogue for the ending',()=>{
  for(const scam of expandedScams){
   const scene=revengeScenes[scam.id];
   const villain=revengeAnimation(scam.id,2,scene,escape);
   const reply=revengeAnimation(scam.id,4,scene,escape);
-  assert.ok(villain.includes(escape(scam.villain)),`${scam.id}: villain line`);
-  assert.ok(reply.includes(escape(scam.reply)),`${scam.id}: firm reply`);
+  assert.ok(!villain.includes(escape(scam.villain)),`${scam.id}: no repeated villain line`);
+  assert.ok(!reply.includes(escape(scam.reply)),`${scam.id}: no repeated firm reply`);
   assert.ok(reply.includes(escape(scene.steps[4][2])),`${scam.id}: closing note`);
  }
 });
