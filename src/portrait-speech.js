@@ -12,14 +12,20 @@ function preload(src){
  }
  return readyImages.get(src);
 }
+export function preloadPortrait(caller,emotion='neutral'){
+ if(!caller)return;
+ const expression=expressions.includes(emotion)?emotion:'neutral',base=`/src/portraits/${expandedPortraitId(caller)}-${expression}`;
+ preload(`${base}.svg`);preload(`${base}-talking.svg`);
+}
 export function portraitSource(caller,emotion){
  const valid=expressions.includes(emotion)?emotion:'neutral',base=`/src/portraits/${expandedPortraitId(caller)}-${valid}`;
  const animated=base+'-talking.svg';
  if(speech?.caller===caller&&speech.emotion===valid&&speech.mouthOpen&&preload(animated))return animated;
  const still=base+'.svg';if(preload(still))return still;
  // Keep the last decoded face on screen while the next expression downloads.
- for(const [source,ready] of readyImages)if(ready&&source.startsWith(`/src/portraits/${caller}-`))return source;
- return `/src/portraits/${caller}-neutral.svg`;
+ const portrait=expandedPortraitId(caller);
+ for(const [source,ready] of readyImages)if(ready&&source.startsWith(`/src/portraits/${portrait}-`))return source;
+ return `/src/portraits/${portrait}-neutral.svg`;
 }
 export function updatePortraits(){
  document.querySelectorAll('.avatar[data-caller],.defense-sender-avatar[data-caller]').forEach(avatar=>{

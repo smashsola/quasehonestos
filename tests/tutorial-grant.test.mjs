@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {fresh,load} from '../src/engine.js';
+import {fresh,load,nextCall,finishCall} from '../src/engine.js';
 import {settleTutorialGrant,tutorialGrantLine} from '../src/tutorial.js';
 import {startDefenseCall} from '../src/defense-round.js';
 import {mailMoney} from '../src/mail-view.js';
@@ -19,6 +19,12 @@ test('Pular tutorial ou já estar em outro caso não gera bônus; bônus não ap
   const state={...fresh(),mode:'defense',tutorial:'defense',active:{outcome:'blocked'},...override};assert.equal(settleTutorialGrant(state),false);
  }
  const state={...fresh(),mode:'defense',tutorial:'defense',active:{outcome:'fooled'},credits:-480};settleTutorialGrant(state);assert.equal(state.credits,-380);
+});
+test('Concluir o primeiro tutorial libera logo o próximo atendimento',()=>{
+ const state={...fresh(),mode:'defense',tutorial:'defense',active:startDefenseCall(0,'child')};
+ state.active.outcome='blocked';state.active.choice='verify-person';state.active.used=['verify-person'];
+ assert.equal(settleTutorialGrant(state),true);state.tutorial='completed';assert.equal(finishCall(state),true);
+ assert.equal(state.cursor,1);assert.equal(nextCall(state),true);assert.equal(state.active.caseId,state.caseOrder[1]);
 });
 test('Ganho pequeno do Correio começa em zero e percorre valores intermediários',()=>{
  const clock=createMoneyTween(0),run=clock.retarget(20,1000,350);assert.equal(clock.sample(1300).count,0);

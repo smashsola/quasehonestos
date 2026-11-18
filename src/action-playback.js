@@ -1,5 +1,6 @@
 // A single clock owns each demonstration. Re-rendering the desktop must never
 // restart its click, sound, or completion callback.
+import {instantTextOn} from './a11y-timing.js';
 export function createActionPlayback({now=Date.now,schedule=setTimeout,cancel=clearTimeout,onPhase=()=>{},onPress=()=>{},onFinish=()=>{}}={}){
  let run=null,timers=[];
  const clear=()=>{timers.forEach(cancel);timers=[];};
@@ -13,7 +14,7 @@ export function createActionPlayback({now=Date.now,schedule=setTimeout,cancel=cl
  return {
   start(key,duration,startedAt=now()){
    if(run?.key===key){refresh();return false;}
-   clear();run={key,duration:Math.max(7000,duration),startedAt,pressed:false,result:false};
+   clear();run={key,duration:Math.max(instantTextOn()?600:7000,duration),startedAt,pressed:false,result:false};
    onPhase('preparing',key);
    for(const fraction of [.18,.76,1])timers.push(schedule(refresh,Math.max(0,startedAt+run.duration*fraction-now())));
    return true;

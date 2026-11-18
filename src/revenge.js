@@ -61,8 +61,12 @@ export function answerRevenge(state,step,id,now=Date.now()){
  const a=state.active,r=a?.revenge,q=revengeCaseFor(a)?.questions[step];
  if(!canRevenge(a)||!r?.open||r.phase!=='quiz'||step!==r.step||!q||!q.options.some(option=>option.id===id)||r.tried.includes(id))return false;
  r.tried.push(id);r.attempts++;
- const correct=questionIsCorrect(q,id);r.feedback={correct,partial:!!q.partialIds?.includes(id),text:correct?q.lesson:q.partialIds?.includes(id)?'Parar ajuda, mas ainda falta conferir a origem e proteger a conta. Tente uma atitude que complete essa proteção.':'Essa escolha mantém uma brecha. Pense em como confirmar a origem e proteger os dados; tente outra opção.'};
- if(correct){r.answers.push({step,id,firstTry:r.tried.length===1});r.phase='answered';r.answeredAt=now;}return true;
+ const correct=questionIsCorrect(q,id),partial=!!q.partialIds?.includes(id),limit=a.audience==='child'?4:3;
+ r.maxAttempts=limit;r.mistakes??=Math.max(0,((r.attempts||0)-1)-(r.answers?.length||0));if(!correct)r.mistakes++;
+ r.feedback={correct,partial,attemptsLeft:Math.max(0,limit-r.mistakes),text:correct?q.lesson:partial?'Essa ajuda um pouco, mas ainda falta conferir a origem e proteger a conta. Essa resposta conta como erro.':'Essa escolha mantém uma brecha. Pense em como confirmar a origem e proteger os dados.'};
+ if(correct){r.answers.push({step,id,firstTry:r.tried.length===1});r.phase='answered';r.answeredAt=now;}
+ else if(r.mistakes>=limit){r.phase='failed';r.failedAt=now;}
+ return true;
 }
 export function advanceRevenge(state,now=Date.now()){const a=state.active,r=a?.revenge;if(!canRevenge(a)||!r?.open||r.phase!=='answered')return false;r.step++;r.tried=[];r.feedback=null;r.phase=r.step===3?'ready':'quiz';if(r.phase==='ready')r.readyAt=now;return true;}
 export function revengeAdvanceGate(state,now=Date.now()){
