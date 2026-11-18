@@ -33,6 +33,8 @@ test('Accessibility app text and color cards retain readable contrast and fit na
 test('Age selection spacing wins against phone-specific label overrides',()=>{
  assert.match(loginCss,/\.os-login \.login-age label\{display:flex!important;align-items:flex-start!important;gap:16px!important\}/);
  assert.match(loginCss,/\.os-login \.login-age label>span\{flex:1 1 auto!important;min-width:0!important\}/);
+ assert.match(loginCss,/\.os-login \.a11y-entry-actions\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)!important\}/);
+ assert.match(loginCss,/@media\(min-width:781px\) and \(max-height:820px\)\{[\s\S]*?\.os-login\{justify-content:flex-start!important/);
 });
 
 test('First profile always offers the voice onboarding, while returning accounts get the settings shortcut',()=>{

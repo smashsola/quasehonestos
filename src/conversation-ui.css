@@ -1835,7 +1835,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .os-login{align-items:stretch!important;padding-left:14px!important;padding-right:14px!important;box-sizing:border-box!important;overflow-x:hidden!important}
  .os-login>.a11y-pill-shortcut{display:none!important}
  .os-login>.a11y-entry-prompt{width:calc(100vw - 28px)!important;max-width:100%!important;min-width:0!important;margin:0 auto 14px!important;box-sizing:border-box!important}
- .os-login .a11y-entry-actions{grid-template-columns:minmax(0,1fr)!important}
+ .os-login .a11y-entry-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
  .os-login .a11y-entry-actions button{width:100%!important;min-width:0!important}
  .os-login .login-account{width:calc(100vw - 28px)!important;max-width:510px!important;min-width:0!important;box-sizing:border-box!important;align-self:center}
  .os-login .login-account>*{max-width:100%;min-width:0;box-sizing:border-box}
@@ -1845,6 +1845,14 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .os-login .login-avatar-picker>div{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;min-width:0!important}
  .os-login .login-avatar-picker button{min-width:0!important}
  .os-login footer{width:100%;box-sizing:border-box}
+}
+
+/* Short laptop/tablet screens scroll from the top instead of hiding the voice prompt. */
+@media(min-width:781px) and (max-height:820px){
+ .os-login{justify-content:flex-start!important;padding-top:88px!important;padding-bottom:20px!important}
+ .os-login>.a11y-entry-prompt{margin-bottom:12px!important}
+ .os-login .login-account{margin-top:0!important}
+ .os-login footer{position:static!important;width:100%;margin:14px 0 0;flex-wrap:wrap;box-sizing:border-box}
 }
 
 /* Keep the player identity fully visible above the mobile app switcher. */
