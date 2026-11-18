@@ -1831,6 +1831,7 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 }
 
 /* Keep the first-visit accessibility and account controls within narrow phones. */
+.login-age label{grid-template-columns:24px minmax(0,1fr)!important;column-gap:14px!important}
 @media(max-width:780px){
  .os-login{align-items:stretch!important;padding-left:14px!important;padding-right:14px!important;box-sizing:border-box!important;overflow-x:hidden!important}
  .os-login>.a11y-pill-shortcut{display:none!important}
