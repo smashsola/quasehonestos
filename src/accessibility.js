@@ -173,12 +173,12 @@ export function renderAccessibilityPrompt() {
     <aside class="a11y-entry-prompt" role="region" aria-label="Preferências de Acessibilidade">
       <span class="a11y-entry-icon" aria-hidden="true">♿</span>
       <div class="a11y-entry-text">
-        <strong>Acessibilidade do Trambique OS</strong>
-        <p>Precisa de alto contraste, leitor de voz ou paleta para daltônicos?</p>
+        <strong>Acessibilidade</strong>
+        <p>Contraste, leitor de voz ou cores?</p>
       </div>
       <div class="a11y-entry-actions">
         <button type="button" class="a11y-entry-btn-primary" data-open-accessibility aria-label="Configurar acessibilidade do jogo">
-          Ajustar Acessibilidade
+          Ajustar
         </button>
       </div>
     </aside>

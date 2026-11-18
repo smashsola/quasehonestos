@@ -210,6 +210,27 @@ html.a11y-daltonism-achromatopsia {
   box-sizing: border-box;
 }
 
+/* Keep the returning-account entry card compact so its sign-in button stays prominent. */
+.login-return-card > .a11y-entry-prompt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 10px;
+  max-width: none;
+  margin: 0 0 16px;
+  padding: 9px 11px;
+  text-align: left;
+  border-radius: 12px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.login-return-card > .a11y-entry-prompt .a11y-entry-icon { display: none; }
+.login-return-card > .a11y-entry-prompt .a11y-entry-text { grid-column: 1; grid-row: 1; }
+.login-return-card > .a11y-entry-prompt .a11y-entry-text strong { font-size: 12px; margin: 0; }
+.login-return-card > .a11y-entry-prompt .a11y-entry-text p { font-size: 11px; line-height: 1.3; }
+.login-return-card > .a11y-entry-prompt .a11y-entry-actions { grid-column: 2; grid-row: 1; }
+.login-return-card > .a11y-entry-prompt .a11y-entry-btn-primary { padding: 8px 10px; font-size: 11px; }
+
 @keyframes a11yFadeIn {
   from { opacity: 0; transform: translateY(-8px); }
   to { opacity: 1; transform: translateY(0); }
