@@ -43,4 +43,13 @@ function object(kind,icon,phase){const mark=officeIcon(icon);switch(kind){
  case 'inventory':return `<div class="rv-unique-door">${mark}<small>VAZIO</small></div>`;
  default:return mark;
 }}
-export function expandedRevengeArt(id,phase,part,escape){const [label,kind,icon,title,detail]=props[id]||['TEATRO','stack','files',part[1],part[2]];return `<section class="rv-unique-scene rv-prop-${kind}" data-rv-enter="100" data-prop-phase="${phase}"><small>${label}</small><div class="rv-unique-prop">${object(kind,icon,phase)}</div><strong>${escape(title)}</strong><p>${escape(phase%2?part[0]:detail)}</p>${phase===4?'<span class="rv-unique-final">ENCENAÇÃO CONCLUÍDA</span>':''}</section>`;}
+export function expandedRevengeArt(id,phase,part,escape){
+ const [label,kind,icon,title,detail]=props[id]||['TEATRO','stack','files',part[1],part[2]];
+ const dialogue=phase===2
+  ? `<blockquote class="rv-unique-dialogue"><small>GOLPISTA</small>“${escape(part[1])}”</blockquote>`
+  : phase===4
+   ? `<blockquote class="rv-unique-dialogue rv-unique-reply"><small>FIRMA</small>“${escape(part[1])}”</blockquote>`
+   : '';
+ const note=phase===4?`<small class="rv-unique-scene-note">${escape(part[2])}</small>`:'';
+ return `<section class="rv-unique-scene rv-prop-${kind}" data-rv-enter="100" data-prop-phase="${phase}"><small>${label}</small><div class="rv-unique-prop">${object(kind,icon,phase)}</div><strong>${escape(title)}</strong><p>${escape(phase%2?part[0]:detail)}</p>${dialogue}${note}${phase===4?'<span class="rv-unique-final">ENCENAÇÃO CONCLUÍDA</span>':''}</section>`;
+}

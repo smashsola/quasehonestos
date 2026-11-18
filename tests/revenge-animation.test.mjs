@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {revengeAnimation} from '../src/revenge-animation.js';
 import {revengeScenes} from '../src/revenge.js';
+import {expandedScams} from '../src/expanded-scams.js';
 const escape=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
 const expected={whatsapp:'rv-chat', 'bank-call':'rv-support','fake-pix':'rv-bakery',boleto:'rv-billing',delivery:'rv-delivery',ransomware:'rv-license','fake-motoboy':'rv-collection','fake-store':'rv-store','fake-government':'rv-government','card-swap':'rv-warranty'};
 for(const [id,kind] of Object.entries(expected))test(`A vingança ${id} demonstra três mudanças na própria aplicação`,()=>{
@@ -32,6 +33,16 @@ test('All thirty stages reserve and stagger their props, control and result',()=
   assert.ok(delays.includes(650),`${id}/${step}: control entrance`);
   assert.ok(delays.includes(1700),`${id}/${step}: result entrance`);
   assert.doesNotMatch(html,/display:none|\shidden=/);
+ }
+});
+test('All twenty additional revenge scenes show the specific villain and firm dialogue',()=>{
+ for(const scam of expandedScams){
+  const scene=revengeScenes[scam.id];
+  const villain=revengeAnimation(scam.id,2,scene,escape);
+  const reply=revengeAnimation(scam.id,4,scene,escape);
+  assert.ok(villain.includes(escape(scam.villain)),`${scam.id}: villain line`);
+  assert.ok(reply.includes(escape(scam.reply)),`${scam.id}: firm reply`);
+  assert.ok(reply.includes(escape(scene.steps[4][2])),`${scam.id}: closing note`);
  }
 });
 
