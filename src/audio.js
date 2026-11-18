@@ -1,6 +1,7 @@
 import {revengeMusicTheme} from './revenge-music-themes.js';
 import {localStore as localStorage} from './safe-storage.js';
 import {speechPlan,replyDuration} from './speech-timing.js';
+import {getAccessibilitySettings,speakText,stopSpeaking} from './accessibility.js';
 let ctx,fanGain,reactionLimiter,computerDead=false;
 // Cartoon syllables: each caller has a different pitch, pace and vowel color.
 const speakingNodes=new Set();
@@ -8,13 +9,21 @@ let murmurRun=0;
 const softVoices=new Set(['nino','yara','bia','luana','maya','duda','golpista2','golpista3']);
 const grittyVoices=new Set(['davi','bento','caio','igor','rafa','golpista1','golpista5']);
 const quieterVoices=new Set(['davi','bento','caio','igor','rafa','golpista1','golpista5']);
-function stopMurmurs(){murmurRun++;for(const node of speakingNodes){try{node.stop();}catch{}}speakingNodes.clear();}
-document.addEventListener('qh-speaking-stop',stopMurmurs);
+function stopMurmurs(){murmurRun++;for(const node of speakingNodes){try{node.stop();}catch{}}speakingNodes.clear();stopSpeaking();}
+document.addEventListener('qh-speaking-stop',()=>{stopMurmurs();document.dispatchEvent(new CustomEvent('qh-a11y-speech-end'));});
 document.addEventListener('qh-computer-restart',()=>{computerDead=false;if(ctx?.state==='suspended')ctx.resume().then(updateFan).catch(()=>{});});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMurmurs();});
 document.addEventListener('click',e=>{if(e.target.closest('[data-sound-mute]'))stopMurmurs();},true);
 document.addEventListener('qh-murmur',async e=>{
  const detail=e.detail||{},skip=()=>document.dispatchEvent(new CustomEvent('qh-murmur-skipped',{detail:{caller:detail.caller}}));stopMurmurs();const run=murmurRun;
+ if(!computerDead&&!document.hidden&&detail.text&&getAccessibilitySettings().screenReader){
+  const utterance=speakText(detail.text);if(!utterance){skip();return;}
+  const duration=Math.max(replyDuration(detail.text),Math.min(30000,1200+detail.text.length*115));let ended=false;
+  const finishSpeech=()=>{if(ended||run!==murmurRun)return;ended=true;document.dispatchEvent(new CustomEvent('qh-a11y-speech-end'));document.dispatchEvent(new CustomEvent('qh-speaking-end',{detail:{caller:detail.caller}}));};
+  utterance.onend=finishSpeech;utterance.onerror=finishSpeech;
+  document.dispatchEvent(new CustomEvent('qh-speaking-start',{detail:{caller:detail.caller,emotion:detail.emotion,duration:duration*1000,pace:.18,audioStart:0,syllables:Math.max(1,Math.ceil(duration/.18))}}));
+  return;
+ }
  if(computerDead||muted||document.hidden||!characterVolume){skip();return;}
  try{
   await ensureAudio();if(run!==murmurRun)return;if(!ctx||ctx.state!=='running'||computerDead||muted||document.hidden){skip();return;}

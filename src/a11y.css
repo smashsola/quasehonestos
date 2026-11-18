@@ -60,7 +60,7 @@ html.qh-calm *,html.qh-calm *::before,html.qh-calm *::after{animation-duration:.
 .qh-snap-fly .z-max{width:100%}.qh-snap-fly .z-left{width:48%}.qh-snap-fly .z-right{width:48%;margin-left:auto}
 html.qh-calm .qh-snap-fly,html.qh-calm .qh-desk-settle{animation:none;transition:none}
 /* Conquistas */
-.qh-ach-btn{position:absolute;top:50%;transform:translateY(-50%);right:110px;display:flex;align-items:center;gap:4px;background:#ffffff14;border:1px solid #dfb77766;border-radius:10px;padding:3px 8px 3px 4px;color:#f3e3bf;font:700 12px system-ui,sans-serif;cursor:pointer;z-index:4;transition:background .2s,transform .2s}
+.qh-ach-btn{position:absolute;top:50%;transform:translateY(-50%);right:110px;display:flex;align-items:center;gap:9px;background:#ffffff14;border:1px solid #dfb77766;border-radius:10px;padding:4px 10px 4px 6px;color:#f3e3bf;font:700 12px system-ui,sans-serif;cursor:pointer;z-index:4;transition:background .2s,transform .2s}
 .qh-ach-btn:hover{background:#dfb77733}.qh-ach-btn svg{width:26px;height:26px}
 @media(max-width:780px){.qh-ach-btn{top:auto;bottom:6px;transform:none;right:92px}}
 .qh-ach-bar{height:8px;border-radius:8px;background:#0002;overflow:hidden;margin:4px 0 10px}.qh-ach-bar span{display:block;height:100%;background:linear-gradient(90deg,#81c8b1,#e9b45a)}
@@ -81,6 +81,7 @@ html[data-qh-wall=noite] .desktop{background:radial-gradient(2px 2px at 20% 30%,
 html[data-qh-wall=bau] .desktop{background:radial-gradient(circle at 50% 50%,#f6d77b,#b9822f 45%,#4a3010 90%)!important}
 html[data-qh-frame=ouro] .session-owner-photo{border-color:#ffd25e!important;box-shadow:0 0 0 3px #ffd25e66,0 0 18px #ffd25e88!important}
 html[data-qh-frame=lagrima] .session-owner-photo{border-color:#7fd3ff!important;box-shadow:0 0 0 3px #7fd3ff55,0 0 18px #7fd3ff88!important}
+html[data-qh-frame=porao-pedra] .session-owner-photo{border:5px solid #564739!important;outline:3px solid #c7ad79!important;outline-offset:2px!important;border-radius:13px!important;box-shadow:inset 0 0 0 3px #1b211c,0 4px 0 #34281f,0 0 0 1px #221b15!important}
 @media(prefers-reduced-motion:reduce){.qh-egg,.qh-mom,.qh-ach-toast{animation:none}}
 /* Controles de janela uniformes e brancos */
 .windowbar button[data-window]{color:#fff!important;width:46px;display:inline-grid;place-items:center;font-size:0;transition:background .15s}

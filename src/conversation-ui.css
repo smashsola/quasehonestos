@@ -1830,6 +1830,23 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .login-age>small{margin-top:12px!important;font-size:11px!important;line-height:1.5!important}
 }
 
+/* Keep the first-visit accessibility and account controls within narrow phones. */
+@media(max-width:780px){
+ .os-login{align-items:stretch!important;padding-left:14px!important;padding-right:14px!important;box-sizing:border-box!important;overflow-x:hidden!important}
+ .os-login>.a11y-pill-shortcut{display:none!important}
+ .os-login>.a11y-entry-prompt{width:calc(100vw - 28px)!important;max-width:100%!important;min-width:0!important;margin:0 auto 14px!important;box-sizing:border-box!important}
+ .os-login .a11y-entry-actions{grid-template-columns:minmax(0,1fr)!important}
+ .os-login .a11y-entry-actions button{width:100%!important;min-width:0!important}
+ .os-login .login-account{width:calc(100vw - 28px)!important;max-width:510px!important;min-width:0!important;box-sizing:border-box!important;align-self:center}
+ .os-login .login-account>*{max-width:100%;min-width:0;box-sizing:border-box}
+ .os-login .login-age,.os-login .login-avatar-picker{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+ .os-login .login-age>div{grid-template-columns:minmax(0,1fr)!important}
+ .os-login .login-age label{min-width:0!important;overflow-wrap:anywhere}
+ .os-login .login-avatar-picker>div{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;min-width:0!important}
+ .os-login .login-avatar-picker button{min-width:0!important}
+ .os-login footer{width:100%;box-sizing:border-box}
+}
+
 /* Keep the player identity fully visible above the mobile app switcher. */
 @media(max-width:780px),(pointer:coarse) and (max-width:1000px){
  .desktop-top{z-index:9600}

@@ -1,6 +1,6 @@
 // Animações estilo Windows para as janelas (abrir, maximizar, restaurar) e encaixe ao arrastar para o topo.
 const app=document.getElementById('app');let rects=new Map();
-const calm=()=>document.documentElement.classList.contains('qh-calm')||innerWidth<=780;
+const calm=()=>{const root=document.documentElement;return root.classList.contains('qh-calm')||root.classList.contains('a11y-reduced-motion')||root.dataset.qhMotion==='reduce'||matchMedia('(prefers-reduced-motion: reduce)').matches||innerWidth<=780;};
 const snap=()=>{const m=new Map();app.querySelectorAll('.desktop-window[data-window-id]').forEach(el=>m.set(el.dataset.windowId,el.getBoundingClientRect()));return m;};
 new MutationObserver(()=>{const next=snap();if(!calm())for(const [id,r] of next){const el=app.querySelector(`.desktop-window[data-window-id="${id}"]`);if(!el||el.classList.contains('window-dragging'))continue;const o=rects.get(id);
  if(!o){el.animate([{opacity:0,transform:'translateY(14px) scale(.94)'},{opacity:1,transform:'none'}],{duration:190,easing:'cubic-bezier(.2,.9,.3,1)'});continue;}

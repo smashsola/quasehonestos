@@ -1,5 +1,5 @@
 import {localStore} from './safe-storage.js';
-import {renderAccessibilityPrompt,renderAccessibilityPill} from './accessibility.js';
+import {renderAccessibilityPrompt,renderAccessibilityPill,startAccessibilityEntry} from './accessibility.js';
 export const normalizePlayerName=value=>String(value||'').replace(/[<>\u0000-\u001f\u007f]/g,'').trim().replace(/\s+/g,' ').slice(0,28);
 export const playerAvatars=['bia','luana','yara','pri','olga','enzo','igor','leo','nino','caio'];
 export const needsAgePicker=band=>!['child','teen'].includes(band);
@@ -9,7 +9,7 @@ export function showLogin(app,ready){
  const savedName=normalizePlayerName(localStore.getItem('qh-player-name')),savedAvatar=localStore.getItem('qh-player-avatar');
  if(savedName&&playerAvatars.includes(savedAvatar)){
   const welcome=document.createElement('section');welcome.className='os-login login-returning';welcome.setAttribute('aria-label','Confirmar entrada');
-  welcome.innerHTML=renderAccessibilityPill()+'<div class="login-return-card">'+renderAccessibilityPrompt()+'<img width="112" height="112" alt="Seu personagem"><small>QUASE HONESTOS · SUA CONTA</small><h1></h1><p>Seu computador está do jeito que você deixou.</p><button type="button" class="login-return-enter"><span class="login-enter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v8M7 5.5a8 8 0 1 0 10 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span>Entrar no computador</span></button><span>Nome e personagem salvos neste navegador.</span></div>';
+  welcome.innerHTML=renderAccessibilityPill()+'<div class="login-return-card"><img width="112" height="112" alt="Seu personagem"><small>QUASE HONESTOS · SUA CONTA</small><h1></h1><p>Seu computador está do jeito que você deixou.</p><button type="button" class="login-return-enter"><span class="login-enter-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v8M7 5.5a8 8 0 1 0 10 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><span>Entrar no computador</span></button><span>Nome e personagem salvos neste navegador.</span></div>';
   if(needsAgePicker(localStore.getItem('qh-player-age-band')))welcome.querySelector('.login-return-enter').insertAdjacentHTML('beforebegin',agePicker());welcome.querySelector('img').src='/src/portraits/'+savedAvatar+'-player.svg';welcome.querySelector('h1').textContent='Bora pro expediente, '+savedName+'?';app.inert=true;document.body.append(welcome);
   const enter=welcome.querySelector('.login-return-enter');enter.focus();enter.addEventListener('click',()=>{if(!saveAge(welcome))return;enter.disabled=true;document.dispatchEvent(new CustomEvent('qh-player-login'));welcome.remove();app.inert=false;ready();});return;
  }
@@ -19,6 +19,6 @@ export function showLogin(app,ready){
  let avatar=playerAvatars.includes(localStore.getItem('qh-player-avatar'))?localStore.getItem('qh-player-avatar'):playerAvatars[0];
  function selectAvatar(id){avatar=id;screen.querySelector('.login-avatar img').src='/src/portraits/'+id+'-player.svg';screen.querySelectorAll('[data-player-avatar]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.playerAvatar===id)));}
  selectAvatar(avatar);screen.querySelectorAll('[data-player-avatar]').forEach(button=>button.addEventListener('click',()=>selectAvatar(button.dataset.playerAvatar)));
- app.inert=true;document.body.append(screen);input.focus();input.select();let entering=false;
+ app.inert=true;document.body.append(screen);const firstAccessibilityVisit=startAccessibilityEntry(screen);if(firstAccessibilityVisit)screen.querySelector('[data-open-accessibility]')?.focus();else{input.focus();input.select();}let entering=false;
  form.addEventListener('submit',event=>{event.preventDefault();if(entering||!saveAge(screen))return;const name=normalizePlayerName(input.value);if(!name){screen.querySelector('.login-error').textContent='Digite um nome ou apelido para entrar.';input.focus();return;}entering=true;localStore.setItem('qh-player-name',name);localStore.setItem('qh-player-avatar',avatar);input.value=name;input.disabled=true;screen.querySelectorAll('button').forEach(button=>button.disabled=true);screen.querySelector('h1').textContent='Bem-vindo, '+name;screen.querySelector('.login-entering').hidden=false;screen.classList.add('is-entering');document.dispatchEvent(new CustomEvent('qh-player-login'));setTimeout(()=>{screen.remove();app.inert=false;ready();},900);});
 }

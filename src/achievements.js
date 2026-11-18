@@ -13,10 +13,10 @@ const A=[
  ['assiduo','Bate o ponto','Jogou em 3 dias diferentes de verdade.','📅'],
  ['selfie','Vaidoso','Clicou 7 vezes na própria foto.','🤳'],
  ['guaraciaba','Terra da Serra','Descobriu de onde vem o Trambique OS.','⛰️'],
- ['lagrima','Chorão profissional','Achou uma lágrima perdida na área de trabalho.','💧'],
- ['pilula','Pílula misteriosa','Engoliu uma pílula sem ler a bula. Não faça isso na vida real!','💊'],
- ['chave','Chave do porão','Achou a chave do porão.','🗝️'],
- ['coracao','Coração vermelho','Pegou um coração vermelho inteiro escondido.','❤️'],
+ ['lagrima','A primeira lágrima','Achou uma lágrima perdida no porão da firma.','💧'],
+ ['pilula','Pílula surpresa','Achou uma pílula misteriosa. Aqui é só um segredo de jogo: não tome nada sem saber o que é.','💊'],
+ ['chave','Chave do porão','Achou uma chave para abrir a próxima porta da firma.','🗝️'],
+ ['coracao','Coração extra','Achou um coração vermelho escondido no porão.','❤️'],
  ['cacador','Caçador de segredos','Achou todos os segredos dos 6 dias.','🔦'],
  ['mae','Mãe tá vendo','Fugiu da mãe por trás da cortina.','👁️'],
  ['colecionador','Colecionador','Desbloqueou 10 conquistas.','🏆'],
@@ -28,6 +28,7 @@ const REWARDS=[
  {at:7,id:'ouro',type:'frame',name:'Moldura dourada na foto'},
  {at:9,id:'noite',type:'wall',name:'Papel de parede: Noite estrelada'},
  {at:12,id:'lagrima',type:'frame',name:'Moldura lágrima azul'},
+ {at:14,id:'porao-pedra',type:'frame',name:'Moldura de Pedra do Porão'},
  {at:15,id:'bau',type:'wall',name:'Papel de parede: Baú dourado'},
 ];
 const SECRET=['lagrima','pilula','chave','coracao','mae','guaraciaba','cacador'];
@@ -113,7 +114,7 @@ let typed='';addEventListener('keydown',e=>{if(e.key.length!==1)return;typed=(ty
 let clockClicks=0,photoClicks=0;
 document.addEventListener('click',e=>{const app=e.target.closest('[data-app]');if(app){const id=app.dataset.app;if(!S.apps.includes(id)){S.apps.push(id);save();}if(S.apps.length>=5)unlock('curioso');if(S.apps.length>=10)unlock('explorador');}
  if(e.target.closest('.qh-desk,[data-qh-a11y],.qh-a11y-fab')){const t=e.target.closest('.qh-desk')?.textContent||'';if(/Salva/.test(t))unlock('backup');else unlock('acessivel');}
- if(e.target.closest('.taskbar>small')){if(++clockClicks>=5){clockClicks=0;toast(`<span>⛰️</span><div><small>GUARACIABA DO NORTE · CEARÁ</small><b>O Trambique OS nasceu lá na Serra da Ibiapaba!</b></div>`,sndEgg);unlock('guaraciaba');}}
+ if(e.target.closest('[data-clock]')){if(++clockClicks>=5){clockClicks=0;toast(`<span>⛰️</span><div><small>GUARACIABA DO NORTE, CEARÁ</small><b>O Trambique OS nasceu lá na Serra da Ibiapaba!</b></div>`,sndEgg);unlock('guaraciaba');}}
  if(e.target.closest('.session-owner-photo')){if(++photoClicks>=7){photoClicks=0;unlock('selfie');}}},true);
 function inject(){const top=document.querySelector('.desktop-top');if(top&&!top.querySelector('.qh-ach-btn')){const b=document.createElement('button');b.type='button';b.className='qh-ach-btn';b.innerHTML=trophy+`<span>${count()}</span>`;b.setAttribute('aria-label','Conquistas');b.onclick=openAch;const own=top.querySelector('.session-owner-details')?.parentElement;own?own.before(b):top.append(b);}
  const c=document.querySelector('.qh-ach-btn span');if(c&&c.textContent!=String(count()))c.textContent=count();}

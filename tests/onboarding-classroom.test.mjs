@@ -43,6 +43,13 @@ test('Validação em sala separa porcentagem da avaliação de aprendizagem',()=
  assert.match(html,/não entram na avaliação/);
 });
 
+test('Atividade curta avisa acerto ou revisão em cada situação após cada resposta',()=>{
+ const html=classroomPanel({...fresh(),classSession:{phase:'pre'}},esc);
+ assert.match(html,/data-assessment-form="A"/);
+ assert.equal((html.match(/data-assessment-feedback=/g)||[]).length,4);
+ assert.match(html,/aria-live="polite"/);
+});
+
 test('Percentual de confiança continua determinístico e limitado',()=>{
  assert.equal(trustAppearance(0).percent,0);
  assert.equal(trustAppearance(38).percent,38);

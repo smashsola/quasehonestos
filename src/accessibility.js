@@ -2,6 +2,7 @@
 // Oferece suporte completo para deficientes visuais e os top 4 tipos de daltonismo.
 
 const STORAGE_KEY = 'qh-accessibility-settings';
+const ENTRY_SEEN_KEY = 'qh-a11y-entry-seen-v1';
 
 export const accessibilityDefaults = {
   highContrast: false,
@@ -39,27 +40,25 @@ export function speakText(text, interrupt = true) {
   if (!speechSynth || !text) return;
   const clean = String(text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   if (!clean) return;
-
-  if (interrupt) {
-    speechSynth.cancel();
+  try {
+    if (interrupt) speechSynth.cancel();
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.lang = 'pt-BR';
+    utterance.rate = 1.05;
+    utterance.pitch = 1.0;
+    const voices = speechSynth.getVoices();
+    const ptVoice = voices.find(v => v.lang?.toLowerCase().startsWith('pt')) || voices[0];
+    if (ptVoice) utterance.voice = ptVoice;
+    currentUtterance = utterance;
+    speechSynth.speak(utterance);
+    return utterance;
+  } catch {
+    return null;
   }
-
-  const utterance = new SpeechSynthesisUtterance(clean);
-  utterance.lang = 'pt-BR';
-  utterance.rate = 1.05;
-  utterance.pitch = 1.0;
-
-  // Tenta encontrar uma voz em português
-  const voices = speechSynth.getVoices();
-  const ptVoice = voices.find(v => v.lang.startsWith('pt')) || voices[0];
-  if (ptVoice) utterance.voice = ptVoice;
-
-  currentUtterance = utterance;
-  speechSynth.speak(utterance);
 }
 
 export function stopSpeaking() {
-  if (speechSynth) speechSynth.cancel();
+  try { speechSynth?.cancel(); } catch {}
 }
 
 // Injeção de filtros SVG para correção e visualização de daltonismo
@@ -169,20 +168,36 @@ function installSpeechListeners() {
 
 // Banner com a pergunta sutil mas evidente ao abrir o site
 export function renderAccessibilityPrompt() {
+  try { if (localStorage.getItem(ENTRY_SEEN_KEY) === '1') return ''; } catch {}
   return `
     <aside class="a11y-entry-prompt" role="region" aria-label="Preferências de Acessibilidade">
       <span class="a11y-entry-icon" aria-hidden="true">♿</span>
       <div class="a11y-entry-text">
-        <strong>Acessibilidade</strong>
-        <p>Contraste, leitor de voz ou cores?</p>
+        <strong>Acessibilidade · primeira visita</strong>
+        <p>O leitor de voz começa ligado para ler o jogo. Você pode ajustar os recursos ou desligar a voz.</p>
       </div>
       <div class="a11y-entry-actions">
-        <button type="button" class="a11y-entry-btn-primary" data-open-accessibility aria-label="Configurar acessibilidade do jogo">
-          Ajustar
+        <button type="button" class="a11y-entry-btn-primary" data-open-accessibility aria-label="Ajustar acessibilidade do jogo">
+          Ajustar acessibilidade
         </button>
+        <button type="button" class="a11y-entry-btn-secondary" data-a11y-entry-stop>Parar narração</button>
       </div>
     </aside>
   `;
+}
+
+export function startAccessibilityEntry(root) {
+  const prompt = root?.querySelector('.a11y-entry-prompt');
+  if (!prompt) return false;
+  try {
+    if (localStorage.getItem(ENTRY_SEEN_KEY) === '1') { prompt.remove(); return false; }
+    localStorage.setItem(ENTRY_SEEN_KEY, '1');
+  } catch {}
+  const stop = prompt.querySelector('[data-a11y-entry-stop]');
+  const settings = getAccessibilitySettings(); settings.screenReader = true; saveAccessibilitySettings(settings);
+  stop?.addEventListener('click', () => { const next = getAccessibilitySettings(); next.screenReader = false; saveAccessibilitySettings(next); stopSpeaking(); prompt.remove(); });
+  window.setTimeout(() => speakText('Acessibilidade do Trambique OS. O leitor de voz começa ligado e vai ler as mensagens e opções do jogo. Use Ajustar acessibilidade para mudar contraste, tamanho das letras, movimento ou desligar a voz. Você também pode desligar a voz agora.'), 350);
+  return true;
 }
 
 // Botão de atalho flutuante sutil no canto
@@ -213,7 +228,7 @@ export function accessibilityContent(state, esc = s => s) {
 
         <div class="a11y-row">
           <div class="a11y-row-text">
-            <strong>Modo Alto Contraste (WCAG AAA)</strong>
+            <strong>Modo Alto Contraste</strong>
             <span>Preto profundo, texto amarelo ouro e branco com bordas hiper-nítidas.</span>
           </div>
           <button type="button" class="a11y-toggle-btn" data-a11y-toggle="highContrast" aria-pressed="${s.highContrast}">
@@ -248,12 +263,12 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Leitor de Voz Sintética Integrado</strong>
             <span>Lê em voz alta em português qualquer texto, opção ou mensagem selecionada.</span>
           </div>
-          <div style="display:flex;gap:6px;align-items:center;">
+          <div class="a11y-voice-controls">
             <button type="button" class="a11y-toggle-btn" data-a11y-toggle="screenReader" aria-pressed="${s.screenReader}">
               ${s.screenReader ? '✓ Leitor Ativo' : 'Desativado'}
             </button>
-            <button type="button" class="a11y-btn-group button" data-a11y-test-voice title="Testar sintetizador de voz" style="padding:7px 10px;font-size:12px;">
-              🔊 Testar Voz
+            <button type="button" class="a11y-test-voice" data-a11y-test-voice title="Testar sintetizador de voz">
+              🔊 Testar voz
             </button>
           </div>
         </div>
@@ -360,6 +375,8 @@ export function accessibilityContent(state, esc = s => s) {
 export function openAccessibilityModal() {
   const existing = document.getElementById('a11y-modal-dialog');
   if (existing) existing.remove();
+  const previousFocus = document.activeElement;
+  const appRoot = document.getElementById('app'), wasAppInert = appRoot?.inert;
 
   const backdrop = document.createElement('div');
   backdrop.id = 'a11y-modal-dialog';
@@ -385,6 +402,14 @@ export function openAccessibilityModal() {
 
   document.body.appendChild(backdrop);
 
+  if (appRoot) appRoot.inert = true;
+  const close = () => {
+    backdrop.remove();
+    document.removeEventListener('keydown', handleKeyDown);
+    if (appRoot) appRoot.inert = !!wasAppInert;
+    previousFocus?.focus?.({ preventScroll: true });
+  };
+
   const closeBtn = backdrop.querySelector('.a11y-modal-close');
   closeBtn?.focus();
 
@@ -392,14 +417,21 @@ export function openAccessibilityModal() {
     if (e.key === 'Escape') {
       backdrop.remove();
       document.removeEventListener('keydown', handleKeyDown);
+      if (appRoot) appRoot.inert = !!wasAppInert;
+      previousFocus?.focus?.({ preventScroll: true });
+      return;
     }
+    if (e.key !== 'Tab') return;
+    const controls = [...backdrop.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),[tabindex="0"]')].filter(el => !el.hidden);
+    const first = controls[0], last = controls.at(-1);
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
   };
   document.addEventListener('keydown', handleKeyDown);
 
   backdrop.addEventListener('click', e => {
     if (e.target === backdrop || e.target.closest('.a11y-modal-close') || e.target.closest('[data-a11y-close-window]')) {
-      backdrop.remove();
-      document.removeEventListener('keydown', handleKeyDown);
+      close();
     }
   });
 }
@@ -425,6 +457,7 @@ export function initAccessibility() {
     const openBtn = e.target.closest('[data-open-accessibility]');
     if (openBtn) {
       e.preventDefault();
+      try { localStorage.setItem(ENTRY_SEEN_KEY, '1'); } catch {}
       openAccessibilityModal();
       return;
     }

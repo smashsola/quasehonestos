@@ -16,6 +16,18 @@ export function instantTextOn() {
   }
 }
 
+export function screenReaderOn() {
+  try {
+    for (const key of A11Y_KEYS) {
+      const raw = JSON.parse(localStorage.getItem(key) || 'null');
+      if (raw?.screenReader) return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 // Espera normal do jogo, ou nada quando a narração está ligada.
 export function a11yDelay(ms) {
   return instantTextOn() ? 0 : Math.max(0, Number(ms) || 0);
