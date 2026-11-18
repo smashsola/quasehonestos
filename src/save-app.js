@@ -1,5 +1,5 @@
 const STATE_KEY='quase-honestos-v1';
-const SAFE_KEYS=['qh-player-avatar','qh-audience','qh-a11y-v1','qh-pinned-apps','qh-mobile-icon-order','qh-desktop-icons','qh-windows','qh-window-views','qh-conquistas-v1','qh-quick-invite'];
+const SAFE_KEYS=['qh-player-avatar','qh-audience','qh-a11y-v1','qh-accessibility-settings','qh-pinned-apps','qh-mobile-icon-order','qh-desktop-icons','qh-windows','qh-window-views','qh-conquistas-v1','qh-quick-invite'];
 const MAX_FILE_BYTES=2_000_000;
 const safeJson=(value,fallback)=>{try{return JSON.parse(value);}catch{return fallback;}};
 const storageGet=key=>{try{return localStorage.getItem(key);}catch{return null;}};

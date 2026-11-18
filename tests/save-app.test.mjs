@@ -11,6 +11,6 @@ test('Cópia portátil preserva progresso e remove conversas, anotações e mens
 });
 
 test('Importa somente arquivos de salvamento com progresso válido',()=>{
- const accepted={game:'quase-honestos',format:1,items:{'quase-honestos-v1':JSON.stringify({mode:'solo',cursor:1,history:[]})}};
+ const accepted={game:'quase-honestos',format:1,items:{'quase-honestos-v1':JSON.stringify({mode:'solo',cursor:1,history:[]}), 'qh-accessibility-settings':JSON.stringify({screenReader:true})}};
  assert.equal(validImport(accepted),true);assert.equal(validImport({...accepted,game:'outro'}),false);assert.equal(validImport({...accepted,items:{'quase-honestos-v1':'{}'}}),false);
 });

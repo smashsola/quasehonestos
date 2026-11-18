@@ -1,0 +1,533 @@
+/* Estilos de Acessibilidade — Trambique OS */
+
+:root {
+  --a11y-font-scale: 1;
+}
+
+/* Indicador de Foco Acentuado */
+html.a11y-focus-visible *:focus-visible,
+body.a11y-focus-visible *:focus-visible {
+  outline: 3px solid #ffcc00 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Escala de Fontes */
+html.a11y-font-large {
+  font-size: 118% !important;
+  --a11y-font-scale: 1.18;
+}
+
+html.a11y-font-xlarge {
+  font-size: 135% !important;
+  --a11y-font-scale: 1.35;
+}
+
+html.a11y-font-large .bubble p,
+html.a11y-font-large .choices button,
+html.a11y-font-large .welcome p,
+html.a11y-font-large .login-account,
+html.a11y-font-large .login-return-card p {
+  font-size: calc(1rem * var(--a11y-font-scale, 1.18)) !important;
+  line-height: 1.65 !important;
+}
+
+html.a11y-font-xlarge .bubble p,
+html.a11y-font-xlarge .choices button,
+html.a11y-font-xlarge .welcome p,
+html.a11y-font-xlarge .login-account,
+html.a11y-font-xlarge .login-return-card p {
+  font-size: calc(1.15rem * var(--a11y-font-scale, 1.35)) !important;
+  line-height: 1.7 !important;
+}
+
+/* Espaçamento Aumentado para Baixa Visão / Dislexia */
+html.a11y-text-spacing p,
+html.a11y-text-spacing span,
+html.a11y-text-spacing button,
+html.a11y-text-spacing small,
+html.a11y-text-spacing strong,
+html.a11y-text-spacing div {
+  line-height: 1.75 !important;
+  letter-spacing: 0.04em !important;
+  word-spacing: 0.08em !important;
+}
+
+/* Redução de Movimento */
+html.a11y-reduced-motion *,
+html.a11y-reduced-motion *::before,
+html.a11y-reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ALTO CONTRASTE (WCAG AAA) */
+html.a11y-high-contrast {
+  color-scheme: dark !important;
+}
+
+html.a11y-high-contrast body,
+html.a11y-high-contrast .desktop,
+html.a11y-high-contrast .os-login {
+  background: #000000 !important;
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast .desktop-window,
+html.a11y-high-contrast .login-return-card,
+html.a11y-high-contrast .login-account,
+html.a11y-high-contrast .computer {
+  background: #05070a !important;
+  border: 3px solid #ffcc00 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 0 2px #ffffff !important;
+}
+
+html.a11y-high-contrast .windowbar,
+html.a11y-high-contrast .taskbar {
+  background: #10141c !important;
+  border-top: 2px solid #ffcc00 !important;
+  border-bottom: 2px solid #ffcc00 !important;
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast .bubble {
+  background: #000000 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast .bubble small {
+  color: #ffcc00 !important;
+  font-weight: 800 !important;
+}
+
+html.a11y-high-contrast .bubble.own {
+  background: #111e14 !important;
+  border: 2px solid #55ff77 !important;
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast .choices button:not(.quiet),
+html.a11y-high-contrast button.primary,
+html.a11y-high-contrast .login-return-enter {
+  background: #ffcc00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  font-weight: 800 !important;
+}
+
+html.a11y-high-contrast .choices button:hover,
+html.a11y-high-contrast button.primary:hover,
+html.a11y-high-contrast .login-return-enter:hover {
+  background: #ffffff !important;
+  color: #000000 !important;
+  border-color: #ffcc00 !important;
+}
+
+html.a11y-high-contrast p,
+html.a11y-high-contrast span,
+html.a11y-high-contrast small {
+  color: #ffffff !important;
+}
+
+html.a11y-high-contrast strong,
+html.a11y-high-contrast h1,
+html.a11y-high-contrast h2,
+html.a11y-high-contrast h3 {
+  color: #ffcc00 !important;
+}
+
+/* TOP 4 TIPOS DE DALTONISMO */
+
+/* 1. Deuteranopia (Deficiência de Verde — o mais comum) */
+html.a11y-daltonism-deuteranopia {
+  filter: url('#a11y-filter-deuteranopia');
+}
+html.a11y-daltonism-deuteranopia .bubble.own {
+  background: #1a2f47 !important;
+  border-color: #5ea8ff !important;
+}
+html.a11y-daltonism-deuteranopia [data-app="calls"],
+html.a11y-daltonism-deuteranopia .primary {
+  background: #1d4e78 !important;
+  color: #ffffff !important;
+}
+
+/* 2. Protanopia (Deficiência de Vermelho) */
+html.a11y-daltonism-protanopia {
+  filter: url('#a11y-filter-protanopia');
+}
+html.a11y-daltonism-protanopia .result-outcome.blocked {
+  background: #004d80 !important;
+  color: #ffffff !important;
+}
+html.a11y-daltonism-protanopia .primary {
+  background: #0b4975 !important;
+}
+
+/* 3. Tritanopia (Deficiência de Azul/Amarelo) */
+html.a11y-daltonism-tritanopia {
+  filter: url('#a11y-filter-tritanopia');
+}
+html.a11y-daltonism-tritanopia .bubble.own {
+  background: #3d1b28 !important;
+  border-color: #ff6699 !important;
+}
+
+/* 4. Acromatopsia / Monocromia (Escala de Cinza de Alto Contraste) */
+html.a11y-daltonism-achromatopsia {
+  filter: grayscale(100%) contrast(125%);
+}
+
+/* Símbolos visuais para nunca depender unicamente de cor */
+.a11y-daltonism-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+}
+
+/* PERGUNTA SUTIL MAS EVIDENTE AO ABRIR O SITE (VISTA DO PC) */
+.a11y-entry-prompt {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto 16px;
+  background: rgba(22, 34, 30, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(130, 200, 165, 0.35);
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  color: #ecede8;
+  font-family: inherit;
+  animation: a11yFadeIn 0.35s ease-out;
+  box-sizing: border-box;
+}
+
+@keyframes a11yFadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.a11y-entry-icon {
+  font-size: 26px;
+  line-height: 1;
+  color: #88cfa4;
+  flex-shrink: 0;
+}
+
+.a11y-entry-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.a11y-entry-text strong {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  color: #ffd88a;
+  margin-bottom: 2px;
+}
+
+.a11y-entry-text p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #b7c7be;
+}
+
+.a11y-entry-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.a11y-entry-btn-primary {
+  background: #e5b364;
+  color: #17241d;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  white-space: nowrap;
+}
+
+.a11y-entry-btn-primary:hover {
+  background: #f7cb7e;
+  transform: translateY(-1px);
+}
+
+.a11y-entry-btn-primary:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.a11y-pill-shortcut {
+  position: fixed;
+  top: 14px;
+  right: 18px;
+  z-index: 9999;
+  background: rgba(18, 28, 24, 0.9);
+  border: 1px solid rgba(130, 200, 165, 0.4);
+  color: #d1ded6;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.a11y-pill-shortcut:hover {
+  background: #253d33;
+  color: #ffffff;
+  border-color: #88cfa4;
+}
+
+/* PAINEL / JANELA DO APLICATIVO DE ACESSIBILIDADE */
+.a11y-window-view {
+  padding: 24px 28px 40px;
+  max-width: 680px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.a11y-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 14px;
+  margin-bottom: 22px;
+}
+
+.a11y-header small {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  color: #e5b364;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.a11y-header h1 {
+  margin: 4px 0 6px;
+  font-size: 24px;
+  color: #eef2ed;
+}
+
+.a11y-header p {
+  margin: 0;
+  font-size: 13px;
+  color: #a4b8ad;
+  line-height: 1.5;
+}
+
+.a11y-section {
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.a11y-section h2 {
+  font-size: 16px;
+  margin: 0 0 14px;
+  color: #ffd88a;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.a11y-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.a11y-row:last-child {
+  border-bottom: none;
+}
+
+.a11y-row-text {
+  flex: 1;
+}
+
+.a11y-row-text strong {
+  display: block;
+  font-size: 13px;
+  color: #edf2ee;
+}
+
+.a11y-row-text span {
+  font-size: 11px;
+  color: #9cb2a5;
+  display: block;
+  line-height: 1.4;
+  margin-top: 2px;
+}
+
+/* Switches e Controles de Acessibilidade */
+.a11y-toggle-btn {
+  background: #233830;
+  border: 1px solid #4a6c5f;
+  color: #dbe7df;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  min-width: 90px;
+  text-align: center;
+}
+
+.a11y-toggle-btn[aria-pressed="true"] {
+  background: #468c68;
+  border-color: #79c59d;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.a11y-btn-group {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.a11y-btn-group button {
+  background: #1e3029;
+  border: 1px solid #3d584e;
+  color: #cbd8d1;
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.a11y-btn-group button[aria-pressed="true"] {
+  background: #e5b364;
+  border-color: #ffd88a;
+  color: #1a2720;
+}
+
+/* Grade de Daltonismo */
+.a11y-daltonism-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.a11y-daltonism-card {
+  background: #172620;
+  border: 2px solid #2d453b;
+  border-radius: 8px;
+  padding: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+  display: block;
+  width: 100%;
+}
+
+.a11y-daltonism-card[aria-pressed="true"] {
+  border-color: #ffd88a;
+  background: #20352d;
+  box-shadow: 0 0 0 1px #ffd88a;
+}
+
+.a11y-daltonism-card strong {
+  display: block;
+  font-size: 13px;
+  color: #eef3ef;
+  margin-bottom: 3px;
+}
+
+.a11y-daltonism-card span {
+  display: block;
+  font-size: 11px;
+  color: #9cb2a5;
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.a11y-palette-preview {
+  display: flex;
+  height: 14px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.a11y-palette-preview span {
+  flex: 1;
+  height: 100%;
+  margin: 0;
+}
+
+/* Modal Flutuante de Acessibilidade */
+.a11y-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: a11yFadeIn 0.2s ease-out;
+}
+
+.a11y-modal-content {
+  background: #1a2822;
+  border: 2px solid #4a6c5f;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  padding: 24px;
+  box-sizing: border-box;
+  color: #ecede8;
+}
+
+.a11y-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.a11y-modal-close {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ecede8;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.a11y-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
