@@ -5,6 +5,12 @@ test('Janela restaurada cabe no desktop sem cobrir a barra de tarefas',()=>{
  const r=fitWindow({x:1100,y:650,width:700,height:650},{width:1280,height:720});
  assert.ok(r.x+r.width<=1272);assert.ok(r.y+r.height<=663);assert.ok(r.y>=36);
 });
+test('Janela antiga salva com largura inválida volta ao mínimo utilizável',()=>{
+ const r=fitWindow({x:260,y:65,width:1,height:480},{width:1024,height:768});
+ assert.equal(r.width,360);assert.ok(r.x+r.width<=1016);
+ const narrow=fitWindow({x:240,y:65,width:1,height:480},{width:320,height:640});
+ assert.equal(narrow.width,304);assert.ok(narrow.x+narrow.width<=312);
+});
 test('Redimensionamento lateral e inferior afetam apenas o eixo arrastado',()=>{
  const r={x:170,y:65,width:490,height:500},v={width:1280,height:720};
  assert.deepEqual(resizeWindow(r,{x:60,y:100},'x',v),{...r,width:550});

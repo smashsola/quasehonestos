@@ -31,13 +31,14 @@ test('Destaque do tutorial e aviso de mensagem não tiram atalhos desktop da pos
  const css=await readFile(new URL('../src/style.css',import.meta.url),'utf8');
  assert.match(css,/@media\s*\(min-width:\s*781px\)\s*and\s*\(pointer:\s*fine\)\s*,\s*\(min-width:\s*1001px\)\s*and\s*\(pointer:\s*coarse\)\s*\{\.desktop\s+\.desktop-icons>button\[data-icon\]\s*\{position:absolute!important\}\}/);
 });
-test('Atalhos ficam em células distintas nas resoluções usuais de desktop',()=>{
+test('Atalhos ficam em células distintas nas cinco resoluções principais',()=>{
  const ids=Array.from({length:12},(_,i)=>`app-${i}`);
- for(const viewport of [{width:1024,height:768},{width:1280,height:720},{width:1366,height:768},{width:1920,height:1080}]){
+ for(const viewport of [{width:390,height:844},{width:768,height:1024},{width:1024,height:768},{width:1366,height:768},{width:1920,height:1080}]){
   const positions=Object.values(initialDesktopIcons(ids,{},viewport));
   for(let i=0;i<positions.length;i++)for(let j=i+1;j<positions.length;j++){
    const a=positions[i],b=positions[j];
    assert.ok(a.x+110<=b.x||b.x+110<=a.x||a.y+88<=b.y||b.y+88<=a.y,`atalhos sobrepostos em ${viewport.width}x${viewport.height}`);
+   assert.ok(a.x>=0&&a.y>=0&&a.x+110<=viewport.width&&a.y+88<=viewport.height,`atalho fora da tela em ${viewport.width}x${viewport.height}`);
   }
  }
 });

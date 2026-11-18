@@ -1,6 +1,6 @@
 export function windowBounds(viewport){return {left:8,top:36,right:Math.max(8,viewport.width-8),bottom:Math.max(36,viewport.height-57)};}
 export function fitWindow(rect,viewport){
- const b=windowBounds(viewport),width=Math.min(Math.max(1,rect.width),b.right-b.left),height=Math.min(Math.max(1,rect.height),b.bottom-b.top);
+ const b=windowBounds(viewport),availableWidth=b.right-b.left,minimumWidth=Math.min(360,availableWidth),width=Math.max(minimumWidth,Math.min(availableWidth,Number.isFinite(rect.width)?rect.width:560)),height=Math.min(Math.max(1,rect.height),b.bottom-b.top);
  return {width,height,x:Math.max(b.left,Math.min(b.right-width,rect.x)),y:Math.max(b.top,Math.min(b.bottom-height,rect.y))};
 }
 export function resizeWindow(rect,delta,axis,viewport){
