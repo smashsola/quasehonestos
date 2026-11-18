@@ -12,6 +12,11 @@ function preload(src){
  }
  return readyImages.get(src);
 }
+export function preloadPortrait(caller,emotion='neutral'){
+ if(!caller)return;
+ const expression=expressions.includes(emotion)?emotion:'neutral',base=`/src/portraits/${expandedPortraitId(caller)}-${expression}`;
+ preload(`${base}.svg`);preload(`${base}-talking.svg`);
+}
 export function portraitSource(caller,emotion){
  const valid=expressions.includes(emotion)?emotion:'neutral',base=`/src/portraits/${expandedPortraitId(caller)}-${valid}`;
  const animated=base+'-talking.svg';

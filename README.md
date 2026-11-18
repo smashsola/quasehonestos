@@ -19,7 +19,12 @@ Quase Honestos é uma comédia interativa no Trambique OS sobre golpes, pressão
 - Resultados e replay distinguem o que ocorreu, o risco observado e uma hipótese de proteção. Compartilhamentos anteriores continuam visíveis.
 - A rodada de defesa integra fichas, correio, pedidos e outros registros do próprio jogo. Casos podem ser legítimos, fraudulentos ou inconclusivos.
 - Os casos incluem falsa central, WhatsApp clonado, voz falsa, Pix, boletos, ransomware, permissões abusivas, skins falsas, anúncios de emprego, investimentos, aluguel, ingressos, doações e outras armadilhas. O catálogo e as categorias estão em `src/defense-round.js`, `src/expanded-scams.js` e `src/case-categories.js`.
-- O Manual oferece uma atividade opcional com situações A/B, cada uma pedindo ação e evidência. A exportação é local, codificada e não inclui conversas por padrão. **Ainda não foi aplicada nem validada com estudantes.**
+- O Manual oferece uma atividade opcional com situações A/B, cada uma pedindo ação e evidência. O registro é um arquivo JSON local com códigos de decisão/evidência; não inclui conversas. **Ainda não foi aplicada nem validada com estudantes.**
+- O quiz do Manual usa cartões com seleção por teclado e barra de progresso. Na primeira entrada do computador, aparece um convite opcional para fazer a atividade; a escolha é lembrada neste navegador.
+- Acessibilidade inclui leitura em voz alta, legendas, tamanho e contraste do texto, foco reforçado, menos movimento e falas instantâneas. O painel permite desligar ou ajustar os recursos.
+- Os apps **Acessibilidade** e **Salvamento** podem ser arrastados entre a área de trabalho e a barra. O relógio mostra a data e o menu do Trambique OS usa a foto e o nome do perfil.
+- Salvamentos para outro aparelho são arquivos locais: levam progresso e preferências, mas omitem nome, conversas e anotações; uma situação em andamento recomeça ao carregar. A importação substitui o progresso deste navegador após confirmação.
+- A campanha tem conquistas e segredos diários; o saldo muito negativo pode exibir aviso ou oferecer o recomeço do dia.
 - O progresso fica neste navegador. No celular, a navegação mostra um app por vez; no desktop, o Trambique OS mantém suas janelas.
 
 Todos os nomes, códigos, itens e créditos da simulação são inventados. Não use informações pessoais reais. A hospedagem pública ainda depende da disponibilidade do serviço Cloudflare; a partida não chama um provedor de IA.
@@ -41,7 +46,7 @@ O endpoint legado `/api/dialogue` responde HTTP 410. Há arquivos de protótipos
 
 ## Privacidade e limites
 
-A partida, o nome ou apelido, o personagem, a faixa etária, o saldo, as compras e as preferências ficam no armazenamento do navegador. Não pedimos idade exata: a faixa adapta textos, humor e alternativas. Não há conta remota nem sincronização entre dispositivos. A atividade em sala exporta apenas códigos de decisões/evidências e tempo da sessão; não envia resultados ao servidor. A hospedagem Cloudflare pode processar metadados técnicos de conexão conforme sua política. O filtro local reduz formatos comuns de dados pessoais, mas não detecta todas as informações identificáveis.
+A partida, o nome ou apelido, o personagem, a faixa etária, o saldo, as compras e as preferências ficam no armazenamento do navegador. Não pedimos idade exata: a faixa adapta textos, humor e alternativas. Não há conta remota nem sincronização automática; a cópia para outro aparelho é um arquivo local que omite nome, conversas e anotações. A atividade em sala exporta apenas códigos de decisões/evidências e tempo da sessão; não envia resultados ao servidor. A hospedagem Cloudflare pode processar metadados técnicos de conexão conforme sua política. O filtro local reduz formatos comuns de dados pessoais, mas não detecta todas as informações identificáveis.
 
 ## Verificação e pendências
 

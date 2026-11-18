@@ -37,6 +37,10 @@ test('Atividade explica o fluxo da turma e separa confiança do resultado',()=>{
  const html=classroomPanel(fresh(),String);
  assert.match(html,/Antes → jogo → depois/);assert.match(html,/Quatro situações antes/);assert.match(html,/ação combina com a situação/);assert.match(html,/porcentagem de confiança/);assert.match(html,/não entram na avaliação/);
 });
+test('Quiz do Manual usa cartões com rádio acessível e acompanha o progresso por situação',()=>{
+ const s=fresh();beginClassSession(s);const html=classroomPanel(s,String);
+ assert.match(html,/Pergunta 1 de 4/);assert.match(html,/role="radiogroup"/);assert.match(html,/type="radio" name="action0"/);assert.match(html,/type="radio" name="evidence0"/);assert.match(html,/assessment-choice/);assert.doesNotMatch(html,/<select\b/);
+});
 test('Hipótese usa a regra protetiva sem apagar exposição nem alterar saldo ou fatos reais',()=>{
  const s=start();applyTypedMove(s,'typed','Tenho um prêmio do concurso');applyTypedMove(s,'typed','A equipe do concurso organizou a premiação');applyTypedMove(s,'typed','Me passa seu cartão');
  assert.ok(s.active.item);verifyOperationCode(s,'wallet',s.active.item.token);executeScheme(s,'wallet');

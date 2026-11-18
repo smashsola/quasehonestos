@@ -1,0 +1,16 @@
+.classroom-assessment .assessment-progress{display:flex;align-items:center;gap:12px;margin:16px 0;font:700 12px/1.4 system-ui;color:#315b4b}
+.classroom-assessment .assessment-progress progress{width:min(220px,48%);height:10px;accent-color:#347b5c}
+.classroom-assessment .assessment-question{padding:16px!important;border:1px solid #a8bcae!important;border-radius:12px;background:#f3f4e9}
+.classroom-assessment .assessment-question>legend{padding:0 6px;font-weight:750;font-size:16px}
+.classroom-assessment .assessment-choice-group{margin:16px 0 8px}
+.classroom-assessment .assessment-choice-group h3{margin:0 0 8px;color:#315b4b;font:750 13px/1.4 system-ui}
+.classroom-assessment .assessment-choice-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.classroom-assessment .assessment-choice{position:relative;display:flex!important;align-items:stretch;min-height:48px;margin:0!important;padding:0;border:1px dashed #a88043;border-radius:9px;background:rgb(223 183 119 / 22%);color:#263e34;cursor:pointer;transition:background .15s,border-color .15s,box-shadow .15s}
+.classroom-assessment .assessment-choice input{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;clip-path:inset(50%);border:0}
+.classroom-assessment .assessment-choice span{display:flex;align-items:center;width:100%;padding:11px 13px;color:#263e34!important;font:500 13px/1.45 system-ui}
+.classroom-assessment .assessment-choice:hover{background:rgb(223 183 119 / 38%);border-color:#8a6634}
+.classroom-assessment .assessment-choice:has(input:checked){border:2px solid #347b5c;background:#d8e9d9;box-shadow:inset 4px 0 #347b5c}
+.classroom-assessment .assessment-choice:has(input:checked) span:after{content:'✓';margin-left:auto;padding-left:10px;color:#276245;font-weight:800}
+.classroom-assessment .assessment-choice:has(input:focus-visible){outline:3px solid #d18b27;outline-offset:3px}
+@media(max-width:540px){.classroom-assessment .assessment-choice-grid{grid-template-columns:1fr}.classroom-assessment .assessment-question{padding:12px!important}.classroom-assessment .assessment-progress{align-items:flex-start;flex-direction:column;gap:6px}.classroom-assessment .assessment-progress progress{width:100%}}
+@media(prefers-reduced-motion:reduce){.classroom-assessment .assessment-choice{transition:none}}
