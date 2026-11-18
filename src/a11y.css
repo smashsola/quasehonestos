@@ -101,11 +101,47 @@ html[data-qh-frame=porao-pedra] .session-owner-photo{border:5px solid #564739!im
 .qh-money-shade{position:fixed;inset:0;z-index:9000;background:#0b1512b3;display:grid;place-items:center;padding:16px}
 .qh-money-modal{position:relative!important;inset:auto!important;transform:none!important;max-width:460px;margin:0}
 
-/* Keep the familiar unboxed titlebar and make every window symbol black. */
+/* Use a light, consistent titlebar so the black controls stay readable in every app. */
+html body #app .desktop .desktop-window>.windowbar{background:#eaf0e8!important;color:#172b22!important;border-bottom:1px solid #91a99a!important}
+html body #app .desktop .desktop-window>.windowbar>strong{color:#172b22!important;text-shadow:none!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window],
-html body #app .desktop .desktop-window>.windowbar button.window-max-control{color:#111!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important;text-shadow:none!important}
+html body #app .desktop .desktop-window>.windowbar button.window-max-control{color:#111!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important;text-shadow:none!important;border-radius:0!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window] svg,
 html body #app .desktop .desktop-window>.windowbar button.window-max-control svg{stroke:#111!important;color:#111!important;filter:none!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window]:hover,
 html body #app .desktop .desktop-window>.windowbar button.window-max-control:hover{background:#00000012!important;color:#111!important}
-html body #app .desktop .desktop-window>.windowbar button[data-window=close]:hover{background:#00000018!important;color:#111!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]{position:relative;font-size:0!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]::before{content:"";display:block;width:12px;border-top:2px solid #111}
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover,
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:active{background:#c42b1c!important;border-color:#c42b1c!important;color:#fff!important;border-radius:0!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover svg,
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:active svg{stroke:#fff!important;color:#fff!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover svg path,
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:active svg path{stroke:#fff!important}
+
+/* Accessibility settings use a readable surface and strong text in every filter mode. */
+.desktop-window[data-window-id="accessibility"]{--app-accent:#315f49;--app-tint:#e8f0e8}
+.desktop-window[data-window-id="accessibility"] .app-window-body{background:#f4f7f2!important;color:#1b3328!important;overflow-x:hidden}
+.desktop-window[data-window-id="accessibility"] .a11y-window-view{width:100%;max-width:680px;padding:18px clamp(12px,3vw,24px) 28px;color:#1b3328}
+.desktop-window[data-window-id="accessibility"] .a11y-header{border-color:#a9beb0}
+.desktop-window[data-window-id="accessibility"] .a11y-header h1{color:#183c2b!important}
+.desktop-window[data-window-id="accessibility"] .a11y-header p{color:#40594d!important}
+.desktop-window[data-window-id="accessibility"] .a11y-section{background:#fff!important;color:#1b3328!important;border-color:#9db4a4}
+.desktop-window[data-window-id="accessibility"] .a11y-section h2{color:#214e37!important}
+.desktop-window[data-window-id="accessibility"] .a11y-help-copy{margin:0 0 12px!important;color:#334d40!important;font-size:12px;line-height:1.6}
+.desktop-window[data-window-id="accessibility"] .a11y-daltonism-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+.desktop-window[data-window-id="accessibility"] .a11y-daltonism-card{background:#183a2e!important;border-color:#416b55!important;color:#fff!important;min-width:0}
+.desktop-window[data-window-id="accessibility"] .a11y-daltonism-card strong{color:#fff!important}
+.desktop-window[data-window-id="accessibility"] .a11y-daltonism-card span{color:#edf5ef!important}
+.desktop-window[data-window-id="accessibility"] .a11y-daltonism-card[aria-pressed="true"]{background:#24533a!important;border-color:#bd8e2d!important}
+html.a11y-high-contrast .desktop-window[data-window-id="accessibility"] .a11y-daltonism-card{background:#000!important;color:#fff!important;border:2px solid #fff!important}
+html.a11y-high-contrast .desktop-window[data-window-id="accessibility"] .a11y-daltonism-card :is(strong,span){color:#fff!important}
+@media(max-width:780px){
+ .desktop-window[data-window-id="accessibility"] .a11y-window-view{padding:14px 12px 22px}
+ .desktop-window[data-window-id="accessibility"] .a11y-section{padding:14px 12px}
+ .desktop-window[data-window-id="accessibility"] .a11y-row{align-items:stretch;flex-direction:column;gap:8px}
+ .desktop-window[data-window-id="accessibility"] .a11y-row-text{min-width:0}
+ .desktop-window[data-window-id="accessibility"] .a11y-btn-group{justify-content:flex-start;min-width:0}
+ .desktop-window[data-window-id="accessibility"] .a11y-voice-controls{display:flex;justify-content:flex-start;flex-wrap:wrap;min-width:0}
+ .desktop-window[data-window-id="accessibility"] .a11y-daltonism-grid{grid-template-columns:minmax(0,1fr)}
+}

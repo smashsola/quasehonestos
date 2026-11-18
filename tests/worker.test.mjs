@@ -34,7 +34,7 @@ test('Endereços de versões antigas chegam à versão atual sem redirecionar a 
  await worker.fetch(new Request('https://example.com/index-v20261018at'),env);assert.equal(requested.at(-1),'/current');
  await worker.fetch(new Request('https://example.com/index-v20261018au'),env);assert.equal(requested.at(-1),'/current');
  for(const path of ['/index-v20261018az','/index-v20261018az.html','/index-v20261018bi','/index-v20261018bi.html','/index-v20261018bw','/index-v20261018bx','/index-v20261027d']){await worker.fetch(new Request(`https://example.com${path}`),env);assert.equal(requested.at(-1),'/current');}
- for(const path of ['/index-v20261118a','/index-v20261118a.html','/index-v20261118b','/index-v20261118b.html','/index-v20261118c','/index-v20261118c.html','/index-v20261118d','/index-v20261118d.html']){await worker.fetch(new Request(`https://example.com${path}`),env);assert.equal(requested.at(-1),'/current');}
+ for(const path of ['/index-v20261118a','/index-v20261118a.html','/index-v20261118b','/index-v20261118b.html','/index-v20261118c','/index-v20261118c.html','/index-v20261118d','/index-v20261118d.html','/index-v20261118e','/index-v20261118e.html']){await worker.fetch(new Request(`https://example.com${path}`),env);assert.equal(requested.at(-1),'/current');}
 });
 
 test('Endpoint aposentado não consulta binding mesmo que um ambiente antigo ainda o ofereça',async()=>{

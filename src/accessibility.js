@@ -297,7 +297,7 @@ export function accessibilityContent(state, esc = s => s) {
       <!-- SEÇÃO 2: TOP 4 TIPOS DE DALTONISMO -->
       <section class="a11y-section" aria-labelledby="a11y-color-title">
         <h2 id="a11y-color-title"><span aria-hidden="true">🎨</span> Modos para Daltonismo (Top 4 mais comuns)</h2>
-        <p style="font-size:12px;color:#a4b8ad;margin:0 0 12px;">Selecione o filtro correspondente para recalibrar as cores e garantir distinção por forma e luminosidade:</p>
+        <p class="a11y-help-copy">Selecione o filtro correspondente para recalibrar as cores e garantir distinção por forma e luminosidade:</p>
 
         <div class="a11y-daltonism-grid">
           <!-- Padrão -->
