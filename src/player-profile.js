@@ -28,20 +28,9 @@ function animateFace(mood){
 }
 export function mountPlayerPortrait(owner,id,mood){
  if(!owner||!['bia','luana','yara','pri','olga','enzo','igor','leo','nino','caio'].includes(id))return;
- if(!portrait){portrait=document.createElement('div');portrait.className='session-owner-photo';portrait.setAttribute('role','img');}
- owner.prepend(portrait);owner.classList.add('session-owner');portrait.setAttribute('aria-label','Seu bonequinho: '+playerMoodLabels[mood]);portrait.title='Humor do saldo: '+playerMoodLabels[mood];
- if(id===portraitId){if(mood!==faceTarget)animateFace(mood);return;}
- portraitId=id;faceTarget=mood;face=null;cancelAnimationFrame(faceFrame);const request=++faceLoad;
- portrait.style.backgroundImage=`url('/src/portraits/${id}-balance-${mood}.svg')`;portrait.style.backgroundSize='cover';
- fetch(`/src/portraits/${id}-balance-neutral.svg`).then(response=>{if(!response.ok)throw Error('portrait');return response.text();}).then(source=>{
-  if(request!==faceLoad)return;
-  const svg=new DOMParser().parseFromString(source,'image/svg+xml').documentElement;
-  svg.setAttribute('aria-hidden','true');svg.setAttribute('width','100%');svg.setAttribute('height','100%');
-  const paths=[...svg.querySelectorAll('path')];paths.find(path=>path.getAttribute('d')?.startsWith('M41 61'))?.remove();
-  paths.find(path=>path.getAttribute('d')?.startsWith('M32 39'))?.remove();
-  svg.querySelectorAll('g[fill="#29303b"]').forEach(group=>group.remove());
-  const make=(attributes)=>{const node=document.createElementNS(svgNS,'path');for(const [key,value]of Object.entries(attributes))node.setAttribute(key,value);svg.append(node);return node;};
-  const mouth=make({fill:'#713f43',stroke:'#713f43','stroke-width':'2.2','stroke-linejoin':'round'}),eyes=[0,1].map(()=>make({fill:'none',stroke:'#29303b','stroke-width':'3.8','stroke-linecap':'round'})),brows=make({fill:'none',stroke:'#655048','stroke-width':'2','stroke-linecap':'round'});
-  face={mouth,eyes,brows,values:[...faceStates[faceTarget]]};paintFace(face.values);portrait.replaceChildren(svg);portrait.style.backgroundImage='none';
- }).catch(()=>{});
+ if(!portrait||portrait.tagName!=='IMG'){portrait=document.createElement('img');portrait.className='session-owner-photo';portrait.width=72;portrait.height=72;portrait.decoding='async';portrait.onerror=()=>{portrait.onerror=null;portrait.src=`/src/portraits/${id}-balance-neutral.svg`;};}
+ owner.prepend(portrait);owner.classList.add('session-owner');portrait.alt='Seu bonequinho: '+playerMoodLabels[mood];portrait.title='Humor do saldo: '+playerMoodLabels[mood];
+ const source=`/src/portraits/${id}-balance-${['happy','smile','neutral','worried','sad'].includes(mood)?mood:'neutral'}.svg`;
+ if(portrait.dataset.source!==source){portrait.dataset.source=source;portrait.src=source;}
+ portraitId=id;faceTarget=mood;
 }
