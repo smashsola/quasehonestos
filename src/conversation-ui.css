@@ -1831,7 +1831,6 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 }
 
 /* Keep the first-visit accessibility and account controls within narrow phones. */
-.login-age label{grid-template-columns:24px minmax(0,1fr)!important;column-gap:14px!important}
 @media(max-width:780px){
  .os-login{align-items:stretch!important;padding-left:14px!important;padding-right:14px!important;box-sizing:border-box!important;overflow-x:hidden!important}
  .os-login>.a11y-pill-shortcut{display:none!important}
@@ -1905,3 +1904,6 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
  .desktop-window>.windowbar button[data-window="close"]{background:#a93632!important;border:1px solid #ffd1c6!important;color:#fff!important;box-shadow:0 2px 0 #68241f!important}
  .desktop-window>.windowbar button[data-window="close"]:hover,.desktop-window>.windowbar button[data-window="close"]:active{background:#c74639!important;color:#fff!important}
 }
+
+/* Keep the radio controls visibly separated from their labels at every width. */
+.os-login .login-age label{grid-template-columns:28px minmax(0,1fr)!important;gap:16px!important}
