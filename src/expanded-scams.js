@@ -1,5 +1,5 @@
 import {standaloneJokes} from './case-copy.js';
-// Sixteen playable additions. Sources are recorded in docs/scenario-sources.md.
+// Twenty playable additions. Sources are recorded in docs/scenario-sources.md.
 export const expandedScams=[
  {
   "id": "pix-return",

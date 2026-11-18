@@ -209,17 +209,16 @@ function installSpeechListeners() {
 export function renderAccessibilityPrompt() {
   return `
     <aside class="a11y-entry-prompt" role="region" aria-label="Preferências de Acessibilidade">
-      <span class="a11y-entry-icon" aria-hidden="true">♿</span>
+      <span class="a11y-entry-icon" aria-hidden="true"><svg viewBox="0 0 48 48" role="img" aria-label="Logo do Trambique OS"><rect x="4" y="5" width="40" height="38" rx="9" fill="#edb77f"/><rect x="11" y="12" width="26" height="21" rx="3" fill="#173b3a"/><path d="M17 19h4m6 0h4M18 25h12M20 33v5m8-5v5M15 39h18" fill="none" stroke="#edb77f" stroke-width="2.5" stroke-linecap="round"/></svg></span>
       <div class="a11y-entry-text">
         <strong>Acessibilidade · primeira visita</strong>
-        <p>O leitor de voz começa ligado para ler o jogo. Você pode ajustar os recursos ou desligar a voz.</p>
+        <p>O leitor de voz começa ligado. Toque em Ajustar ou em um personagem para ouvir a narração.</p>
       </div>
       <div class="a11y-entry-actions">
-        <button type="button" class="a11y-entry-btn-primary" data-open-accessibility aria-label="Ajustar acessibilidade do jogo">
-          Ajustar acessibilidade
-        </button>
-        <button type="button" class="a11y-entry-btn-secondary" data-a11y-entry-stop>Parar narração</button>
+        <button type="button" class="a11y-entry-btn-primary" data-open-accessibility aria-label="Ajustar acessibilidade do jogo">Ajustar</button>
+        <button type="button" class="a11y-entry-btn-secondary" data-a11y-entry-dismiss>Dispensar</button>
       </div>
+      <div class="a11y-entry-confirm" data-a11y-entry-confirm hidden><span>Dispensar agora?</span><button type="button" data-a11y-dismiss-cancel>Voltar</button><button type="button" data-a11y-dismiss-confirm>Sim, dispensar</button></div>
     </aside>
   `;
 }
@@ -227,11 +226,16 @@ export function renderAccessibilityPrompt() {
 export function startAccessibilityEntry(root) {
   const prompt = root?.querySelector('.a11y-entry-prompt');
   if (!prompt) return false;
-  const stop = prompt.querySelector('[data-a11y-entry-stop]');
+  if (localStorage.getItem('qh-a11y-entry-dismissed') === 'true') { prompt.remove(); return false; }
   const settings = getAccessibilitySettings(); settings.screenReader = true; saveAccessibilitySettings(settings);
-  stop?.addEventListener('click', () => { window.clearTimeout(entrySpeechTimer); entrySpeechTimer = 0; const next = getAccessibilitySettings(); next.screenReader = false; saveAccessibilitySettings(next); stopSpeaking(); prompt.querySelector('.a11y-entry-text p').textContent = 'Leitura por voz desligada. Você ainda pode ajustar os outros recursos.'; stop.disabled = true; stop.textContent = 'Narração desligada'; stop.setAttribute('aria-pressed','true'); });
+  const intro = 'Acessibilidade do Trambique OS. O leitor de voz acompanha os controles. Use Ajustar para mudar os recursos. Dispensar fecha este aviso; você pode voltar e ajustar depois.';
+  prompt.querySelector('[data-a11y-entry-dismiss]')?.addEventListener('click', () => { prompt.querySelector('[data-a11y-entry-confirm]').hidden = false; prompt.querySelector('[data-a11y-dismiss-cancel]').focus(); speakText('Quer dispensar este aviso? Voltar mantém as opções. Sim, dispensar fecha o aviso.'); });
+  prompt.querySelector('[data-a11y-dismiss-cancel]')?.addEventListener('click', () => { prompt.querySelector('[data-a11y-entry-confirm]').hidden = true; prompt.querySelector('[data-a11y-entry-dismiss]').focus(); });
+  prompt.querySelector('[data-a11y-dismiss-confirm]')?.addEventListener('click', () => { localStorage.setItem('qh-a11y-entry-dismissed','true'); prompt.remove(); stopSpeaking(); });
+  let started = false; const start = () => { if (!started) { started = true; speakText(intro); } };
+  root.addEventListener('pointerdown', start, {once:true}); root.addEventListener('keydown', start, {once:true});
   window.clearTimeout(entrySpeechTimer);
-  entrySpeechTimer = window.setTimeout(() => { entrySpeechTimer = 0; speakText('Acessibilidade do Trambique OS. O leitor de voz começa ligado e vai ler o jogo. Use Ajustar acessibilidade para mudar contraste, tamanho das letras ou movimento. Você também pode desligar a voz agora.'); }, 350);
+  entrySpeechTimer = window.setTimeout(() => { entrySpeechTimer = 0; speakText(intro); }, 350);
   return true;
 }
 
@@ -492,7 +496,7 @@ export function initAccessibility() {
     const openBtn = e.target.closest('[data-open-accessibility]');
     if (openBtn) {
       e.preventDefault();
-      window.clearTimeout(entrySpeechTimer); entrySpeechTimer = 0; stopSpeaking();
+      window.clearTimeout(entrySpeechTimer); entrySpeechTimer = 0;
       openAccessibilityModal();
       return;
     }

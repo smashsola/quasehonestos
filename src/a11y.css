@@ -160,7 +160,7 @@ html.a11y-high-contrast .desktop-window[data-window-id="accessibility"] .a11y-da
  .desktop .taskbar .os-account{margin-left:auto!important;flex:none;white-space:nowrap}
  .desktop .taskbar .taskbar-clock{flex:0 0 auto;min-width:64px}
  .desktop .taskbar .network-toggle,.desktop .taskbar .sound-toggle{flex:0 0 42px}
- .desktop .taskbar>.show-desktop{order:20;margin-left:8px!important;flex:0 0 44px!important}
+ .desktop .taskbar>.show-desktop{order:20;margin-left:8px!important;flex:0 0 10px!important}
 }
 .desktop .desktop-icons{overflow:auto;overscroll-behavior:contain}
 .desktop .qh-egg{touch-action:manipulation}
@@ -169,8 +169,8 @@ html.a11y-high-contrast .desktop-window[data-window-id="accessibility"] .a11y-da
 /* Give the desktop shortcut rail only the space its icons need. */
 @media (min-width:781px){
  .desktop .desktop-icons{width:110px!important;right:auto!important;border:0!important;box-shadow:none!important}
- .desktop .taskbar>.show-desktop{display:grid;place-items:center;width:44px;min-width:44px;height:44px;min-height:44px;padding:8px!important;border:1px solid #73958a!important;border-radius:6px!important;background:#21483f!important;color:#eff7f0!important}
- .desktop .taskbar>.show-desktop svg{display:block;width:22px;height:22px}
+ .desktop .taskbar>.show-desktop{display:block;width:10px;min-width:10px;height:auto;min-height:0;padding:0!important;margin-left:8px!important;border:0;border-left:1px solid #9cb2bd55!important;border-radius:0!important;background:transparent!important;color:#eff7f0!important}
+ .desktop .taskbar>.show-desktop .show-desktop-mark{display:none}
 }
 .desktop-window>.windowbar{margin:0!important;border-radius:0!important}
 .desktop-window>.app-window-body,.desktop-window>.call-window-body{margin:0!important}

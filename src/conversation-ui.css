@@ -1928,3 +1928,5 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 .desktop .taskbar button[data-show-desktop]:focus-visible{outline:3px solid #edb77f!important;outline-offset:-3px!important}
 .desktop .windowbar button[data-window="minimize"]::before{transform:translateY(3px)}
 @media(max-width:780px){.skip-main-link:focus{top:calc(env(safe-area-inset-top,0px) + 8px)}}
+
+.mobile-app-switcher header .mobile-os-brand{display:flex;align-items:center;gap:10px}.mobile-app-switcher header .mobile-os-brand svg{display:block;width:38px;height:38px;flex:none}

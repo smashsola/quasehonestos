@@ -1,6 +1,7 @@
 import {audienceQuestions,questionIsCorrect} from './audience.js';
 import {defenseCaseFor} from './defense-round.js';
 import {expandedScams} from './expanded-scams.js';
+import {expandedRevenge} from './expanded-revenge.js';
 import {defenseCases} from './defense-round.js';
 const question=(prompt,options,correct,lesson)=>({prompt,options:options.map((label,index)=>({id:String(index),label})),correct:String(correct),lesson});
 export const revengeCases={
@@ -45,11 +46,7 @@ export const revengeCases={
  question('Como reduzir a exposição durante o pagamento?', ['Conferir o visor, cobrir o teclado e acompanhar o cartão.','Deixar outra pessoa digitar a senha.','Repetir a senha em voz alta.'],0,'Acompanhe a compra e proteja a senha. Ao aproximar o celular, confira o valor primeiro.'),
  question('O cartão foi trocado ou a senha ficou exposta. E agora?', ['Voltar a digitar a senha no mesmo terminal sem conferir.','Bloquear o cartão e avisar o banco pelo canal oficial.','Pedir ao vendedor que guarde a senha para investigar.'],1,'Bloqueie e procure o banco. Conteste operações desconhecidas e nunca compartilhe a senha.') ]}
 };
-for(const s of expandedScams)revengeCases[s.id]={title:s.revengeTitle,plan:'No teatro da firma, o golpista compra uma cobrança inventada pela própria história: '+s.revengeTitle+'. O prêmio usa somente créditos do jogo.',villain:s.villain,reply:s.reply,questions:[
- question('Qual pista merece atenção em “'+s.title+'”?',[s.evidence.at(-1),'A presença de um logo bonito.','Uma mensagem dizendo pode confiar.'],0,s.lesson),
- question('Como conferir antes de continuar?',[s.unsafeLabel,s.safeLabel,'Deixar o contato decidir por você.'],1,s.lesson),
- question('Já houve envio de dinheiro ou dados. Qual atitude ajuda?',['Pagar outra taxa para recuperar.','Enviar mais dados ao mesmo contato.','Guardar os registros e procurar o serviço pelo canal oficial, com ajuda de confiança.'],2,'Guarde os registros e peça ajuda aos serviços envolvidos por canais oficiais. Não pague novas taxas ao contato. Recuperar valores não é garantido.')
-]};
+for(const s of expandedScams){const content=expandedRevenge[s.id];revengeCases[s.id]={title:s.revengeTitle,plan:content.plan,villain:s.villain,reply:s.reply,questions:content.questions.map(args=>question(...args))};}
 export const revengeCaseFor=a=>{const base=revengeCases[a?.caseId];return base?{...base,...(a.audience==='child'?{plan:'Você vai conferir o pedido, fechar a brecha e pedir ajuda se já houve prejuízo. Depois, acompanhe a brincadeira da história. Só as moedas do jogo mudam.',villain:'Pera aí... minha própria história virou contra mim?'}:{}),questions:audienceQuestions(base.questions,a.caseId,a.audience),reply:a.humor||base.reply}:null;};
 export function canRevenge(a){return !!(a?.mode==='defense'&&['blocked','fooled'].includes(a.outcome)&&!a.gameOver&&!a.actionPending&&!a.ransomwareDeadline&&a.choice!=='end-contact'&&!a.partial&&revengeCases[a.caseId]&&defenseCaseFor(a)?.choices.some(choice=>choice.id===a.choice)&&a.used?.includes(a.choice));}
 export function startRevenge(state,now=Date.now()){
@@ -96,11 +93,7 @@ export const revengeScenes={
  'fake-government':{icon:'files',prop:'Guichê da regularização',steps:[['Imprimir o formulário','Pedido de regularização da taxa','A papelada imaginária chegou ao guichê.'],['Cobrar a taxa da taxa','Regularização: quase regularizada','O golpista cai na burocracia que inventou.'],['Aplicar o carimbo final','REGULARIZAR NOVAMENTE','O guichê arrecadou só créditos do jogo.']]},
  'card-swap':{icon:'wallet',prop:'Garantia contra passar vergonha',steps:[['Preparar a apólice','Cobertura: quase nenhuma','O contrato cenográfico está pronto.'],['Vender a garantia imaginária','Garantia da maquininha: ativada','O golpista paga créditos pelo plano absurdo.'],['Analisar a reclamação','Não cobre falta de vergonha','A garantia venceu junto com a desculpa.']]}
 };
-for(const s of expandedScams)revengeScenes[s.id]={icon:s.icon,prop:s.revengeTitle,steps:[
- ['Preparar '+s.revengeTitle,s.revengeTitle,'A história de mentirinha ganhou um pedido fictício.'],
- ['Apresentar '+s.revengeTitle,s.villain,'O personagem entrou na própria conversa. Nenhum contato real foi feito.'],
- ['Concluir '+s.revengeTitle,s.reply,'A firma registrou a piada e liberou os créditos do jogo.']
-]};
+for(const s of expandedScams){const content=expandedRevenge[s.id];revengeScenes[s.id]={icon:s.icon,prop:content.prop,steps:content.steps};}
 // Five paced actions. Intermediate checks are specific to the prop being used.
 const preparations={
  whatsapp:['Revisar a conversa fictícia','Separar a taxa da taxa'], 'bank-call':['Distribuir a senha de espera','Conferir o protocolo de mentirinha'], 'fake-pix':['Conferir a receita de papel','Colar a etiqueta do bolo'], boleto:['Separar a via do golpista','Comparar os nomes da cobrança'], delivery:['Dobrar o aviso de frete','Conferir o endereço cenográfico'], ransomware:['Organizar a papelada do vírus','Revisar a licença de bloqueio'], 'fake-motoboy':['Guardar seu cartão','Lacrar a sacola vazia'], 'fake-store':['Montar a prateleira vazia','Anotar a reserva da reserva'], 'fake-government':['Separar os formulários','Conferir o carimbo do guichê'], 'card-swap':['Ler a cláusula da vergonha','Conferir a validade de zero dias'],
