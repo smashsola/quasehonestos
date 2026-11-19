@@ -61,9 +61,9 @@ test('Secrets are announced and can be collected without a mouse; accessibility 
  assert.match(achievements,/getElementById\('announcement'\);if\(live\)live\.textContent=/);
  assert.match(controls,/\.taskbar \.os-account\{margin-left:auto!important/);
  assert.match(controls,/\.taskbar>\.show-desktop\{order:20/);
- assert.match(controls,/\.taskbar>\.show-desktop\{order:20;margin-left:8px!important;flex:0 0 44px!important/);
+ assert.match(controls,/\.taskbar>\.show-desktop\{order:20;margin-left:8px!important;flex:0 0 10px!important/);
  assert.match(game,/data-show-desktop aria-label="\$\{desktopRestore\?'Restaurar janelas':'Mostrar área de trabalho'\}" aria-pressed="\$\{!!desktopRestore\}"/);
- assert.match(game,/class="show-desktop"[\s\S]*?<svg viewBox="0 0 24 24" aria-hidden="true"/);
+ assert.match(game,/class="show-desktop"[\s\S]*?<span class="show-desktop-mark" aria-hidden="true"><\/span>/);
  assert.match(controls,/\.desktop-window>\.app-window-body,\.desktop-window>\.call-window-body\{margin:0!important\}/);
  assert.match(game,/savedAvatar=localStorage\.getItem\('qh-player-avatar'\)[\s\S]*?:'nino'/);
  assert.match(controls,/\.a11y-header\{display:block!important/);

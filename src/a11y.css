@@ -182,3 +182,10 @@ html.a11y-high-contrast .desktop-window[data-window-id="accessibility"] .a11y-da
  .desktop-window>.windowbar{border-radius:0!important}
  .desktop-window>.app-window-body,.desktop-window>.call-window-body{margin:0!important}
 }
+/* Shared title-bar palette for minimize, maximize, and close controls. */
+html body #app .desktop .desktop-window>.windowbar button[data-window],html body #app .desktop .desktop-window>.windowbar button.window-max-control{color:#21483f!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important;text-shadow:none!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window] svg,html body #app .desktop .desktop-window>.windowbar button.window-max-control svg{color:#21483f!important;stroke:#21483f!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]::before{border-top-color:#21483f!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window]:hover,html body #app .desktop .desktop-window>.windowbar button.window-max-control:hover{background:#21483f14!important;color:#21483f!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover{background:#bd3d32!important;color:#fff!important}
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover svg{stroke:#fff!important;color:#fff!important}
