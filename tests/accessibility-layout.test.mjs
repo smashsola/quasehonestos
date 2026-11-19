@@ -16,7 +16,7 @@ const [controls,layout,app,loginCss,loginRuntime,game,achievements,accessibility
 ]);
 
 test('Titlebar controls are black at rest and the close control turns red on hover',()=>{
- assert.ok(controls.includes('button[data-window],\r\nhtml body #app .desktop .desktop-window>.windowbar button.window-max-control{color:#111!important'));
+ assert.match(controls,/button\[data-window\],\s*html body #app \.desktop \.desktop-window>\.windowbar button\.window-max-control\{color:#111!important/);
  assert.match(controls,/button\[data-window="close"\]:hover[^\{]*\{background:#c42b1c!important/);
  assert.match(controls,/button\[data-window="close"\]:hover svg path[^\{]*\{stroke:#fff!important/);
  assert.match(controls,/button\[data-window="minimize"\]::before[^\{]*\{content:"";display:block;width:12px;border-top:2px solid #111/);
