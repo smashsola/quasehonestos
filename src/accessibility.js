@@ -232,10 +232,10 @@ export function startAccessibilityEntry(root) {
   prompt.querySelector('[data-a11y-entry-dismiss]')?.addEventListener('click', () => { prompt.querySelector('[data-a11y-entry-confirm]').hidden = false; prompt.querySelector('[data-a11y-dismiss-cancel]').focus(); speakText('Quer dispensar este aviso? Voltar mantém as opções. Sim, dispensar fecha o aviso.'); });
   prompt.querySelector('[data-a11y-dismiss-cancel]')?.addEventListener('click', () => { prompt.querySelector('[data-a11y-entry-confirm]').hidden = true; prompt.querySelector('[data-a11y-entry-dismiss]').focus(); });
   prompt.querySelector('[data-a11y-dismiss-confirm]')?.addEventListener('click', () => { localStorage.setItem('qh-a11y-entry-dismissed','true'); prompt.remove(); stopSpeaking(); });
-  let started = false; const start = () => { if (!started) { started = true; speakText(intro); } };
+  let started = false; const start = () => { if (started) return; started = true; window.clearTimeout(entrySpeechTimer); entrySpeechTimer = 0; speakText(intro); };
   root.addEventListener('pointerdown', start, {once:true}); root.addEventListener('keydown', start, {once:true});
   window.clearTimeout(entrySpeechTimer);
-  entrySpeechTimer = window.setTimeout(() => { entrySpeechTimer = 0; speakText(intro); }, 350);
+  entrySpeechTimer = window.setTimeout(start, 350);
   return true;
 }
 
@@ -428,8 +428,8 @@ export function openAccessibilityModal() {
     <div class="a11y-modal-content">
       <div class="a11y-modal-header">
         <div>
-          <strong style="color:#ffd88a;font-size:16px;">♿ Acessibilidade e Daltonismo</strong>
-          <p style="margin:2px 0 0;font-size:12px;color:#a4b8ad;">Configure o visual antes ou durante o expediente.</p>
+          <strong>♿ Acessibilidade e Daltonismo</strong>
+          <p>Configure o visual antes ou durante o expediente.</p>
         </div>
         <button type="button" class="a11y-modal-close" aria-label="Fechar painel de acessibilidade (Escape)">✕ Fechar</button>
       </div>

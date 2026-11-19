@@ -605,6 +605,105 @@ html.a11y-high-contrast .a11y-test-voice { background: #ffdf00 !important; color
   background: rgba(255, 255, 255, 0.1);
 }
 
+/* The accessibility dialog uses a light reading surface, matching its settings cards. */
+.a11y-modal-content {
+  background: #eef4ec;
+  border: 1px solid #789687;
+  border-radius: 16px;
+  color: #173b32;
+  box-shadow: 0 24px 64px rgba(5, 24, 21, 0.45);
+}
+
+.a11y-modal-header {
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #c4d5c9;
+}
+
+.a11y-modal-header strong {
+  color: #173b32 !important;
+  font-size: 18px !important;
+  line-height: 1.25;
+}
+
+.a11y-modal-header p {
+  color: #40594d !important;
+  font-size: 13px !important;
+  line-height: 1.5;
+}
+
+.a11y-modal-close {
+  flex: 0 0 auto;
+  min-height: 42px;
+  background: #fffdf6;
+  border-color: #8da99a;
+  color: #173b32;
+  font-weight: 700;
+}
+
+.a11y-modal-close:hover {
+  background: #dcebe0;
+  border-color: #47765f;
+}
+
+.a11y-modal-body { min-width: 0; }
+.a11y-modal-body .a11y-window-view {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  color: #173b32;
+}
+
+/* The dialog title already names this panel; keep the duplicated app heading out of it. */
+.a11y-modal-body .a11y-header { display: none !important; }
+.a11y-modal-body .a11y-section {
+  margin: 0 0 14px;
+  background: #fffdf7;
+  border: 1px solid #b3c9b9;
+  border-radius: 12px;
+  padding: 18px;
+  color: #173b32;
+}
+
+.a11y-modal-body .a11y-section h2 {
+  color: #174c3d;
+  line-height: 1.35;
+}
+
+.a11y-modal-body .a11y-row {
+  align-items: center;
+  gap: 14px;
+}
+
+.a11y-modal-body .a11y-row-text {
+  min-width: 0;
+  color: #23483d;
+}
+
+.a11y-modal-body .a11y-row-text strong { color: #173b32; }
+.a11y-modal-body .a11y-row-text span { color: #40594d; }
+
+@media (max-width: 640px) {
+  .a11y-modal-backdrop { align-items: stretch; padding: 8px; }
+  .a11y-modal-content {
+    width: 100%;
+    max-width: none;
+    max-height: calc(100dvh - 16px);
+    padding: 16px 12px;
+    border-radius: 12px;
+  }
+  .a11y-modal-header { align-items: flex-start; margin-bottom: 12px; }
+  .a11y-modal-header strong { font-size: 16px !important; }
+  .a11y-modal-close { min-height: 40px; padding: 6px 9px; }
+  .a11y-modal-body .a11y-section { padding: 14px 12px; }
+  .a11y-modal-body .a11y-row { align-items: stretch; flex-direction: column; gap: 8px; }
+  .a11y-modal-body .a11y-row-text { min-width: 0; }
+  .a11y-modal-body .a11y-btn-group { flex: 1 1 auto; min-width: 0; flex-wrap: wrap; }
+  .a11y-modal-body .a11y-voice-controls { flex-wrap: wrap; }
+}
+
 .assessment-question-feedback { margin: 12px 0 0; padding: 11px 13px; border-left: 4px solid #99533b; border-radius: 0 8px 8px 0; background: #fff0e4; color: #542f24; font-size: 14px; line-height: 1.55; }
 .assessment-question-feedback[data-result=correct] { border-left-color: #286c49; background: #e3f2e5; color: #1e4932; }
 html.a11y-high-contrast .assessment-question-feedback, html.a11y-high-contrast .assessment-question-feedback[data-result=correct] { border: 2px solid #fff; background: #000; color: #fff; }

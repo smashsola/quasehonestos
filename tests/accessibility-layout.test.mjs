@@ -30,6 +30,23 @@ test('Accessibility app text and color cards retain readable contrast and fit na
  assert.match(layout,/@media\(max-width:780px\)[\s\S]*?\.a11y-daltonism-grid\{grid-template-columns:minmax\(0,1fr\)\}/);
 });
 
+test('Accessibility modal keeps readable colors and switches controls to a phone layout',()=>{
+ assert.match(accessibilityCss,/\.a11y-modal-content\s*\{[\s\S]*?background:\s*#eef4ec/);
+ assert.match(accessibilityCss,/\.a11y-modal-body \.a11y-header\s*\{\s*display:\s*none/);
+ assert.match(accessibilityCss,/@media\s*\(max-width:\s*640px\)[\s\S]*?\.a11y-modal-body \.a11y-row\s*\{[^}]*flex-direction:\s*column/);
+ assert.match(app,/class="a11y-modal-content"[\s\S]*?class="a11y-modal-header"[\s\S]*?<strong>♿ Acessibilidade e Daltonismo<\/strong>/);
+ assert.match(layout,/a11y-font-xlarge \.a11y-modal-body \.a11y-window-view\{zoom:1\.35;width:74\.08%\}/);
+ assert.match(layout,/a11y-high-contrast \.a11y-modal-content\{background:#000!important;color:#fff!important;border-color:#fff!important\}/);
+});
+
+test('Start menu uses the Trambique OS logo and the avatar picker has all portraits',async()=>{
+ const ids=['bia','luana','yara','pri','olga','enzo','igor','leo','nino','caio'];
+ assert.match(game,/src\/favicon\.svg/);
+ const {access}=await import('node:fs/promises');
+ await access(new URL('../src/favicon.svg',import.meta.url));
+ for(const id of ids)await access(new URL(`../src/portraits/${id}-player.svg`,import.meta.url));
+});
+
 test('Age selection spacing wins against phone-specific label overrides',()=>{
  assert.match(loginCss,/\.os-login \.login-age label\{display:flex!important;align-items:flex-start!important;gap:16px!important\}/);
  assert.match(loginCss,/\.os-login \.login-age label>span\{flex:1 1 auto!important;min-width:0!important\}/);
@@ -41,6 +58,8 @@ test('Age selection spacing wins against phone-specific label overrides',()=>{
 test('First profile always offers the voice onboarding, while returning accounts get the settings shortcut',()=>{
  assert.match(app,/export function renderAccessibilityPrompt\(\)\s*\{\s*return/);
  assert.match(app,/export function startAccessibilityEntry\(root\)[\s\S]*settings\.screenReader = true/);
+ assert.match(app,/let started = false; const start = \(\) => \{ if \(started\) return; started = true; window\.clearTimeout\(entrySpeechTimer\); entrySpeechTimer = 0; speakText\(intro\); \}/);
+ assert.match(app,/entrySpeechTimer = window\.setTimeout\(start, 350\)/);
  assert.match(loginRuntime,/screen\.className='os-login login-first-visit'/);
  assert.match(loginRuntime,/renderAccessibilityPrompt\(\)\}\s*<form/);
  assert.match(loginRuntime,/welcome\.innerHTML=renderAccessibilityPill\(\)/);
