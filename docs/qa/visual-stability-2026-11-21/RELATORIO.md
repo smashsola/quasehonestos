@@ -7,13 +7,29 @@
 
 ## Testes executados
 
-- `npm test`: **944 aprovados, 0 falhas**.
-- `npm run build`: concluído; pacote gerado como `v20261121a`.
+- `npm test`: **946 aprovados, 0 falhas**.
+- `npm run build`: concluído; pacote gerado como `v20261121b`.
 - Chromium headless, nos viewports **360×800, 447×900, 768×1024, 1280×800 e 1920×1080**:
   - Resultado: caixa dentro da tela; CTA alcançável dentro do painel por rolagem; “Próxima situação” acionou o avanço; nenhum erro de execução.
   - Vingança: caixa dentro da tela e das barras reservadas; “Voltar ao resultado” fechou a janela; nenhum erro de execução.
   - Abertura e fechamento de Manual e Acessibilidade, fluxo de conversa até resultado e conferência de imagens foram executados na matriz de cinco larguras durante a revisão.
 - O guia `CODEX_GUIA_PR.md` não foi encontrado no repositório nem na pasta de trabalho; usei as instruções do pedido e o README.
+
+## Auditoria de coerência: 30 situações e 30 vinganças
+
+- Cruzei os 30 IDs da campanha: cada situação tem texto, escolhas e uma vingança mapeada; cada vingança tem três perguntas, um objeto e cinco etapas com rótulos próprios. Os testes também verificam que títulos, planos, falas do golpista e respostas da equipe não são duplicados entre os 30 casos.
+- Reproduzi um defeito na vingança de WhatsApp: a resposta era mostrada como digitando em duas etapas e a animação usava uma frase diferente da fala exibida no final. Agora a sequência mostra mensagem recebida, rascunho, envio único, reação pendente e recibo; a resposta animada e a fala final vêm do mesmo texto.
+- Corrigi o título da vingança `marketplace-sale`: “Venda do frete do nada” falava de frete, embora o golpe cobrasse uma taxa falsa para liberar uma venda. O novo título, “A taxa da venda fantasma”, acompanha a situação.
+- Conferi também os fluxos e efeitos das quatro escolhas em todos os 30 casos, a continuidade da campanha para as duas faixas etárias e o estado salvo entre atendimentos. Não alterei limites, recompensas, respostas corretas ou progresso salvo.
+- Regressões adicionadas para a correspondência entre situação/vingança, a etapa de rascunho/envio único e o alias do build `v20261121b`.
+
+### Sequência corrigida da vingança de WhatsApp
+
+| Rascunho | Envio único |
+|---|---|
+| ![Rascunho ainda não enviado](whatsapp-revenge-stage-1-360.png) | ![Resposta enviada uma vez](whatsapp-revenge-stage-2-360.png) |
+
+O fluxo foi percorrido automaticamente nas cinco etapas em 360 px: a resposta não aparece antes do rascunho; surge uma vez no envio; permanece sem reanimação nas etapas de reação e recibo; nenhuma etapa gerou erro de execução.
 
 ## Evidências antes/depois
 
@@ -45,9 +61,10 @@
 
 - `src/game.js` — posiciona overlays fora da janela transformada.
 - `src/conversation-ui.css` — limites seguros para resultado, vingança e rolagem das ações.
+- `src/revenge-animation.js`, `src/revenge.js` e `src/expanded-scams.js` — sequência do diálogo de WhatsApp, texto final coerente e título do caso de venda.
 - `scripts/build.mjs` e `worker/index.js` — identificador do build e alias da versão para atualização coerente dos assets.
-- `tests/overlay-layering.test.mjs` e `tests/worker.test.mjs` — regressões para a camada de overlays, limites e alias.
-- Este relatório e oito capturas de evidência antes/depois.
+- `tests/overlay-layering.test.mjs`, `tests/revenge-animation.test.mjs` e `tests/worker.test.mjs` — regressões para overlays, catálogo das vinganças, diálogo de envio único e aliases.
+- Este relatório e dez capturas de evidência visual antes/depois e da sequência corrigida.
 
 ## Não testado / limitações
 

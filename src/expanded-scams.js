@@ -185,7 +185,7 @@ export const expandedScams=[
   "unsafeResult": "A taxa foi cobrada e o produto foi separado sem uma venda confirmada.",
   "lesson": "Confirme venda e pagamento no próprio app. Mensagens e e-mails não substituem o registro dentro da plataforma.",
   "loss": 80,
-  "revengeTitle": "Venda do frete do nada",
+  "revengeTitle": "A taxa da venda fantasma",
   "villain": "Comprei o quê mesmo?",
   "reply": "O direito de olhar o anúncio.",
   "kind": "market"
