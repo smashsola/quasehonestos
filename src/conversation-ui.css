@@ -1938,3 +1938,14 @@ img[src*="/portraits/"]{aspect-ratio:1/1;object-fit:contain;object-position:cent
 @media(max-width:780px){.desktop-window,.mobile-app-switcher,.first-call-guide{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
 
 .desktop-top .desktop-brand{display:flex!important;align-items:center;gap:8px;min-width:0}.desktop-top .desktop-brand>svg{display:block;width:30px;height:30px;flex:none}.desktop-top .desktop-brand>span{display:block;min-width:0}
+/* Fixed result/revenge dialogs must escape the transformed app window that contains their markup. */
+.desktop > :is(.defense-reaction-shade,.defense-confetti,.defense-feedback.defense-reaction,.revenge-window){zoom:1!important}
+.desktop > .revenge-window{top:calc((100dvh + 48px - 57px)/2);max-height:calc(100dvh - 48px - 57px - 16px)}
+.desktop > .defense-feedback.defense-reaction{top:calc((100dvh + 48px - 57px)/2)!important;max-height:min(780px,calc(100dvh - 48px - 57px - 16px))}
+@media(max-width:780px){
+ .desktop > .revenge-window{top:calc((100dvh + 86px - 78px - env(safe-area-inset-bottom,0px))/2);max-height:calc(100dvh - 86px - 78px - 16px - env(safe-area-inset-bottom,0px))}
+ .desktop > .defense-feedback.defense-reaction{top:calc((100dvh + 86px - 78px - env(safe-area-inset-bottom,0px))/2)!important;max-height:calc(100dvh - 86px - 78px - 16px - env(safe-area-inset-bottom,0px))}
+}
+/* Keep the result's actions inside its frame; long feedback remains reachable by scrolling. */
+@media(min-width:781px){.desktop .defense-reaction .reaction-scroll{max-height:min(756px,calc(100dvh - 141px))}}
+@media(max-width:780px){.desktop .defense-reaction .reaction-scroll{max-height:calc(100dvh - 212px)}}
