@@ -20,7 +20,10 @@ export function revengeAnimation(caseId,step,scene,escape){
  let content='',nav='',kind='';
  if(caseId==='whatsapp'){
   kind='chat';nav='Conversas · Departamento de taxas';
-  content=`<div class="rv-chat-head">${officeIcon('calls')}<div><b>Golpista · número de mentirinha</b><small>online na própria pressa</small></div></div><div class="rv-chat-log">${chatBubble('GOLPISTA','E o meu Pix? Tá demorando!')}${step===0?`<div class="rv-compose"><small>VOCÊ ESTÁ ESCREVENDO</small><p class="rv-type" aria-label="Para receber a taxa, pague a taxa da taxa.">${typedLine('Para receber a taxa, pague a taxa da taxa.',escape)}</p></div>`:chatBubble('EU','Para receber a taxa, pague a taxa da taxa.',true)}${step===2?receipt('Taxa da taxa recebida','O golpista pagou pela própria pressa.'):''}</div>`;
+  const incoming=chatBubble('GOLPISTA',escape(scene.incoming)),outgoing=chatBubble('EU',escape(scene.outgoing),true);
+  const draft=`<div class="rv-compose"><small>RASCUNHO · AINDA NÃO ENVIADO</small><p class="rv-type" aria-label="${escape(scene.outgoing)}">${typedLine(scene.outgoing,escape)}</p></div>`;
+  const pending='<div class="rv-chat-bubble rv-typing-status"><small>GOLPISTA</small><p>Mensagem visualizada · digitando uma resposta...</p></div>';
+  content=`<div class="rv-chat-head">${officeIcon('calls')}<div><b>Golpista · número de mentirinha</b><small>online na própria pressa</small></div></div><div class="rv-chat-log">${incoming}${playbackStep===1?draft:playbackStep>=2?outgoing:''}${playbackStep===3?pending:''}${playbackStep===4?receipt('Taxa da taxa recebida','O cofrinho cenográfico abriu; nenhum dinheiro real mudou de mãos.'):''}</div>`;
  }else if(caseId==='bank-call'){
   kind='support';nav='Atendimento · Central quase autorizada';
   content=step===0?`<div class="rv-call"><span class="rv-phone">${phone}</span><small>FALSA CENTRAL NA ESPERA</small><strong>Você é o próximo...</strong><div class="rv-wave">${Array.from({length:9},(_,i)=>`<i style="--beat:${i}"></i>`).join('')}</div><div class="rv-queue"><span>Senha do golpista</span><b>A-404</b><small>Atendendo agora: ninguém</small></div></div>`:step===1?paper('Atendimento premium','Serviço: aguardar o próprio atendimento','<div class="rv-ticket"><b>A-404</b><span>Taxa de espera emitida</span></div>'):receipt('Chamado encerrado','O falso suporte caiu no próprio atendimento.');
@@ -49,9 +52,17 @@ export function revengeAnimation(caseId,step,scene,escape){
   kind='warranty';nav='Garantias · Maquininha da firma';
   content=step===1?`<div class="rv-terminal"><div class="rv-terminal-screen"><small>GARANTIA IMAGINÁRIA</small><strong>APROVADA</strong><span>Cobertura: quase nenhuma</span></div><div class="rv-terminal-keys" aria-hidden="true">${Array.from({length:9},(_,i)=>`<i>${i+1}</i>`).join('')}</div><div class="rv-insert-card"><small>CARTÃO DO GOLPISTA</small><b>•••• NADA</b></div></div>`:`<div class="rv-policy">${paper('Garantia antivergonha','Cobertura: quase nenhuma',`<div class="rv-policy-clause">${step===2?'Exclusão: falta de vergonha.':'Validade: até perceber o golpe.'}</div>`)}${step===2?stamp('GARANTIA VENCIDA'):''}</div>`;
  }else{kind='extended';nav='Teatro da firma · '+escape(scene.prop);content=expandedRevengeArt(caseId,playbackStep,part,escape);}
- if(playbackStep%2)content=`<div class="rv-preparation"><span>${officeIcon('shield')}</span><b>${escape(part[0])}</b><small>Conferência da peça cenográfica</small><div class="rv-preparation-scan"></div></div>`+content;
- const revealObjects=new Set(['rv-chat-head','rv-chat-bubble','rv-compose','rv-call','rv-paper','rv-receipt','rv-cake-photo','rv-printer-slot','rv-cake-box','rv-parcel','rv-inner-note','rv-file-lock','rv-safe-card','rv-shopping-bag','rv-collection-pass','rv-listing','rv-reservation','rv-store-shutter','rv-terminal']);
+ if(playbackStep%2)content=`<div class="rv-preparation" data-rv-enter="100"><span>${officeIcon('shield')}</span><b>${escape(part[0])}</b><small>Conferência da peça cenográfica</small><div class="rv-preparation-scan"></div></div>`+content;
+ const revealObjects=new Set(['rv-chat-head','rv-chat-bubble','rv-typing-status','rv-compose','rv-call','rv-paper','rv-receipt','rv-cake-photo','rv-printer-slot','rv-cake-box','rv-parcel','rv-inner-note','rv-file-lock','rv-safe-card','rv-shopping-bag','rv-collection-pass','rv-listing','rv-reservation','rv-store-shutter','rv-terminal']);
  let revealIndex=0;
- content=content.replace(/class="([^"]+)"/g,(attribute,classes)=>revealObjects.has(classes.split(' ')[0])?`${attribute} data-rv-enter="${Math.min(850,100+revealIndex++*250)}"`:attribute);
+ content=content.replace(/class="([^"]+)"/g,(attribute,classes)=>{
+  const kind=classes.split(' ')[0];if(!revealObjects.has(kind))return attribute;
+  if(caseId==='whatsapp'){
+   const outgoingMessage=classes.includes('rv-outgoing');
+   const shouldEnter=kind==='rv-chat-head'?playbackStep===0:kind==='rv-chat-bubble'?outgoingMessage?playbackStep===2:playbackStep===0:kind==='rv-compose'?playbackStep===1:kind==='rv-typing-status'?playbackStep===3:kind==='rv-receipt'?playbackStep===4:true;
+   if(!shouldEnter)return attribute;
+  }else if(playbackStep%2===1)return attribute;
+  return `${attribute} data-rv-enter="${Math.min(850,100+revealIndex++*250)}"`;
+ });
  return `<div class="rv-app" style="--rv-from:${playbackStep/scene.steps.length};--rv-to:${(playbackStep+1)/scene.steps.length}" data-revenge-case="${escape(caseId)}" data-revenge-stage="${playbackStep}" data-revenge-art-stage="${step}"><header class="rv-appbar">${officeIcon(scene.icon)}<strong>${escape(scene.prop)}</strong><span>SIMULAÇÃO</span></header><div class="rv-appnav">${nav}</div><div class="rv-workspace rv-${kind}">${content}</div><div class="rv-toolbar" data-rv-enter="650">${control}</div><div class="rv-live-result" data-rv-enter="1700" role="status"><span>✓</span><p>${escape(part[2])}</p></div><div class="rv-timebar" aria-hidden="true"><i></i></div></div>`;
 }
