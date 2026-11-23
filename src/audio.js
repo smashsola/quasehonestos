@@ -104,7 +104,8 @@ function fan(){
  for(let i=0;i<data.length;i++){const noise=Math.random()*2-1;previous=(previous+.035*noise)/1.035;data[i]=(previous*2.2+noise*.08)*(1+.035*Math.sin(2*Math.PI*i/(ctx.sampleRate*3)));}
  const source=ctx.createBufferSource(),filter=ctx.createBiquadFilter();source.buffer=buffer;source.loop=true;filter.type='lowpass';filter.frequency.value=1450;source.connect(filter);filter.connect(fanGain);source.start();
 }
-function updateFan(){if(!fanGain)return;fanGain.gain.cancelScheduledValues(ctx.currentTime);fanGain.gain.setTargetAtTime(muted||computerDead||document.hidden||document.querySelector('.revenge-window')?0:.05*fanVolume/30,ctx.currentTime,.12);}
+function updateFan(){if(!fanGain)return;const loginVisible=!!document.querySelector('.os-login'),boot=document.querySelector('#os-boot'),bootVisible=!loginVisible&&!!boot&&getComputedStyle(boot).display!=='none';fanGain.gain.cancelScheduledValues(ctx.currentTime);fanGain.gain.setTargetAtTime(muted||computerDead||document.hidden||loginVisible||bootVisible||document.querySelector('.revenge-window')?0:.05*fanVolume/30,ctx.currentTime,.12);}
+document.addEventListener('qh-desktop-ready',updateFan);
 let mousePressed=false;
 document.addEventListener('pointerdown',async e=>{if(e.button!==0||muted||computerDead)return;mousePressed=true;try{await ensureAudio();if(mousePressed)playClick();}catch{}},true);
 document.addEventListener('pointerup',async e=>{if(e.button!==0||!mousePressed)return;mousePressed=false;try{await ensureAudio();playClick(true);}catch{}},true);
