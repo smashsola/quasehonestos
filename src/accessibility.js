@@ -163,6 +163,31 @@ function spokenName(target) {
   return [name, role, state].filter(Boolean).join('. ');
 }
 
+const speechControlSelector = 'button,a,input,select,textarea,summary,[role="button"],[role="link"],[role="tab"],[role="menuitem"],[role="checkbox"],[role="radio"],[data-app],[data-window],[data-action],[data-choice]';
+const speechTextSelector = 'p,h1,h2,h3,h4,h5,h6,li,dt,dd,legend,label,summary,figcaption,blockquote';
+
+function clickedSpeechTarget(node) {
+  const element = node instanceof Element ? node : node?.parentElement;
+  if (!element) return null;
+  const control = element.closest(speechControlSelector);
+  if (control) return control.closest('[aria-hidden="true"],[hidden],[inert]') ? null : control;
+  if (element.closest('[aria-hidden="true"],[hidden],[inert]')) return null;
+  const textBlock = element.closest(speechTextSelector);
+  if (textBlock) return textBlock;
+  const inlineText = element.closest('span,strong,em,b,i,small,code,time,mark');
+  if (inlineText?.textContent?.trim()) return inlineText;
+  for (let current = element; current && current !== document.body; current = current.parentElement) {
+    const directText = [...current.childNodes].filter(child => child.nodeType === Node.TEXT_NODE).map(child => child.textContent).join(' ').trim();
+    if (directText) return current;
+  }
+  return null;
+}
+
+function speechTextForClick(target) {
+  if (target.matches(speechControlSelector)) return spokenName(target);
+  return (target.innerText || target.textContent || '').replace(/\s+/g, ' ').trim();
+}
+
 function installLiveSpeech() {
   if (typeof document === 'undefined' || !document.body || document.body.dataset.a11yLiveSpeech) return;
   document.body.dataset.a11yLiveSpeech = 'true';
@@ -195,12 +220,22 @@ function installSpeechListeners() {
   speechListenerInstalled = true;
   installLiveSpeech();
 
+  let lastFocusedTarget = null, lastFocusedAt = 0;
   document.addEventListener('focusin', e => {
     const s = getAccessibilitySettings();
     if (!s.screenReader) return;
     const target = e.target;
     if (!target) return;
     const text = spokenName(target);
+    if (text) { lastFocusedTarget = target; lastFocusedAt = Date.now(); speakText(text); }
+  });
+  document.addEventListener('click', e => {
+    if (!getAccessibilitySettings().screenReader) return;
+    const target = clickedSpeechTarget(e.target);
+    if (!target) return;
+    // Pointer clicks focus buttons before the click event; the focus already spoke them.
+    if (target === lastFocusedTarget && Date.now() - lastFocusedAt < 900) { lastFocusedTarget = null; return; }
+    const text = speechTextForClick(target);
     if (text) speakText(text);
   });
 }
@@ -300,7 +335,7 @@ export function accessibilityContent(state, esc = s => s) {
         <div class="a11y-row">
           <div class="a11y-row-text">
             <strong>Leitor de Voz Sintética Integrado</strong>
-            <span>Lê em voz alta em português qualquer texto, opção ou mensagem selecionada.</span>
+            <span>Lê em voz alta textos clicados ou focados, opções, botões e mensagens do jogo.</span>
           </div>
           <div class="a11y-voice-controls">
             <button type="button" class="a11y-toggle-btn" data-a11y-toggle="screenReader" aria-pressed="${s.screenReader}">

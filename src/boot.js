@@ -14,7 +14,7 @@ export function startBoot({screen,app,storage=localStore,reduceMotion=false,sche
   if(typeof document!=='undefined')document.dispatchEvent(new CustomEvent('qh-boot-music-stop'));
   if(progress){progress.finish();}timers.forEach(cancel);cancel(endTimer);
   app.inert=false;screen.classList.add('boot-finished');ready();
-  schedule(()=>screen.remove(),reduceMotion?0:400);
+  schedule(()=>{screen.remove();if(typeof document!=='undefined')document.dispatchEvent(new CustomEvent('qh-desktop-ready'));},reduceMotion?0:400);
  }
  button?.addEventListener('click',finish);
  if(button){button.textContent=nextSkipLine(storage);button.setAttribute('aria-label','Pular inicialização: '+button.textContent);button.title='Pular inicialização';}
