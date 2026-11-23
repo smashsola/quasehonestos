@@ -411,7 +411,7 @@ export const expandedScams=[
   "title": "Termos e permissões que escondem uma armadilha",
   "icon": "help",
   "app": "Termos do aplicativo",
-  "message": "Este app promete organizar seus wallpapers. Marque Aceito tudo: contatos, mensagens e renovação de C$ 40 por semana já vêm selecionados.",
+  "message": "Este app promete organizar seus wallpapers. Marque “Aceitar tudo”: o acesso a contatos e mensagens e a cobrança semanal de C$ 40 já estão incluídos.",
   "technique": "Aceitar sem revisar pode autorizar acessos desnecessários e uma assinatura. Nem todo termo ruim é golpe: aqui, a cobrança foi escondida de propósito.",
   "evidence": [
    "Função prometida: escolher papel de parede",

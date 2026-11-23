@@ -35,13 +35,42 @@ export function saveAccessibilitySettings(settings) {
 // Síntese de voz integrada (Web Speech API)
 let speechSynth = typeof window !== 'undefined' ? window.speechSynthesis : null;
 let currentUtterance = null;
+let speechCaptionNode = null, speechCaptionTimer = 0, speechCaptionRevision = 0;
+
+export function showSpeechCaption(text, timeoutMs = 30000) {
+  if (typeof document === 'undefined') return 0;
+  const clean = String(text || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!clean || !document.body) return 0;
+  if (!speechCaptionNode?.isConnected) {
+    speechCaptionNode = document.createElement('div');
+    speechCaptionNode.className = 'qh-a11y-caption';
+    speechCaptionNode.setAttribute('aria-hidden', 'true');
+    speechCaptionNode.setAttribute('dir', 'auto');
+    document.body.append(speechCaptionNode);
+  }
+  clearTimeout(speechCaptionTimer);
+  const revision = ++speechCaptionRevision;
+  speechCaptionNode.textContent = clean;
+  speechCaptionNode.classList.add('show');
+  if (timeoutMs > 0) speechCaptionTimer = setTimeout(() => clearSpeechCaption(revision), timeoutMs);
+  return revision;
+}
+
+export function clearSpeechCaption(revision = 0) {
+  if (revision && revision !== speechCaptionRevision) return;
+  clearTimeout(speechCaptionTimer);
+  speechCaptionTimer = 0;
+  speechCaptionRevision++;
+  speechCaptionNode?.classList.remove('show');
+}
 
 export function speakText(text, interrupt = true) {
-  if (!speechSynth || !text) return;
+  if (!text) return;
   const clean = String(text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   if (!clean) return;
+  if (!speechSynth) { showSpeechCaption(clean, 6000); return; }
   try {
-    if (interrupt) speechSynth.cancel();
+    if (interrupt) { speechSynth.cancel(); clearSpeechCaption(); }
     const utterance = new SpeechSynthesisUtterance(clean);
     utterance.lang = 'pt-BR';
     utterance.rate = 1.05;
@@ -49,6 +78,8 @@ export function speakText(text, interrupt = true) {
     const voices = speechSynth.getVoices();
     const ptVoice = voices.find(v => v.lang?.toLowerCase().startsWith('pt')) || voices[0];
     if (ptVoice) utterance.voice = ptVoice;
+    const captionRevision = showSpeechCaption(clean);
+    utterance.addEventListener?.('end', () => clearSpeechCaption(captionRevision), { once: true });
     currentUtterance = utterance;
     speechSynth.speak(utterance);
     return utterance;
@@ -59,6 +90,7 @@ export function speakText(text, interrupt = true) {
 
 export function stopSpeaking() {
   try { speechSynth?.cancel(); } catch {}
+  clearSpeechCaption();
 }
 
 // Injeção de filtros SVG para correção e visualização de daltonismo
