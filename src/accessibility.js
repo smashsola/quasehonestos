@@ -9,6 +9,9 @@ export const accessibilityDefaults = {
   fontSize: 'normal', // 'normal' | 'large' | 'xlarge'
   textSpacing: false,
   screenReader: false,
+  speechRate: 1.05,
+  captionSize: 'normal',
+  captionPosition: 'top',
   focusIndicator: true,
   reducedMotion: false,
   daltonism: 'none' // 'none' | 'deuteranopia' | 'protanopia' | 'tritanopia' | 'achromatopsia'
@@ -35,6 +38,7 @@ export function saveAccessibilitySettings(settings) {
 // Síntese de voz integrada (Web Speech API)
 let speechSynth = typeof window !== 'undefined' ? window.speechSynthesis : null;
 let currentUtterance = null;
+let lastSpokenText = '';
 let speechCaptionNode = null, speechCaptionTimer = 0, speechCaptionRevision = 0;
 
 export function showSpeechCaption(text, timeoutMs = 30000) {
@@ -51,6 +55,9 @@ export function showSpeechCaption(text, timeoutMs = 30000) {
   clearTimeout(speechCaptionTimer);
   const revision = ++speechCaptionRevision;
   speechCaptionNode.textContent = clean;
+  const settings = getAccessibilitySettings();
+  speechCaptionNode.dataset.size = settings.captionSize === 'large' ? 'large' : 'normal';
+  speechCaptionNode.dataset.position = settings.captionPosition === 'bottom' ? 'bottom' : 'top';
   speechCaptionNode.classList.add('show');
   if (timeoutMs > 0) speechCaptionTimer = setTimeout(() => clearSpeechCaption(revision), timeoutMs);
   return revision;
@@ -68,12 +75,15 @@ export function speakText(text, interrupt = true) {
   if (!text) return;
   const clean = String(text).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
   if (!clean) return;
+  lastSpokenText = clean;
+  if (typeof document !== 'undefined') document.querySelectorAll('[data-a11y-replay-speech]').forEach(button => { button.disabled = false; });
   if (!speechSynth) { showSpeechCaption(clean, 6000); return; }
   try {
     if (interrupt) { speechSynth.cancel(); clearSpeechCaption(); }
     const utterance = new SpeechSynthesisUtterance(clean);
     utterance.lang = 'pt-BR';
-    utterance.rate = 1.05;
+    const requestedRate = Number(getAccessibilitySettings().speechRate);
+    utterance.rate = Number.isFinite(requestedRate) ? Math.max(.75, Math.min(1.25, requestedRate)) : 1.05;
     utterance.pitch = 1.0;
     const voices = speechSynth.getVoices();
     const ptVoice = voices.find(v => v.lang?.toLowerCase().startsWith('pt')) || voices[0];
@@ -86,6 +96,12 @@ export function speakText(text, interrupt = true) {
   } catch {
     return null;
   }
+}
+
+export function replayLastSpeech() {
+  if (!lastSpokenText) return false;
+  speakText(lastSpokenText);
+  return true;
 }
 
 export function stopSpeaking() {
@@ -142,6 +158,10 @@ export function applyAccessibility(settings) {
   const root = document.documentElement;
 
   ensureSvgFilters();
+  if (speechCaptionNode?.isConnected) {
+    speechCaptionNode.dataset.size = settings.captionSize === 'large' ? 'large' : 'normal';
+    speechCaptionNode.dataset.position = settings.captionPosition === 'bottom' ? 'bottom' : 'top';
+  }
 
   // Alto Contraste
   root.classList.toggle('a11y-high-contrast', !!settings.highContrast);
@@ -201,6 +221,7 @@ const speechTextSelector = 'p,h1,h2,h3,h4,h5,h6,li,dt,dd,legend,label,summary,fi
 function clickedSpeechTarget(node) {
   const element = node instanceof Element ? node : node?.parentElement;
   if (!element) return null;
+  if (element.closest('[data-a11y-replay-speech]')) return null;
   const control = element.closest(speechControlSelector);
   if (control) return control.closest('[aria-hidden="true"],[hidden],[inert]') ? null : control;
   if (element.closest('[aria-hidden="true"],[hidden],[inert]')) return null;
@@ -258,6 +279,7 @@ function installSpeechListeners() {
     if (!s.screenReader) return;
     const target = e.target;
     if (!target) return;
+    if (target.closest?.('[data-a11y-replay-speech]')) return;
     const text = spokenName(target);
     if (text) { lastFocusedTarget = target; lastFocusedAt = Date.now(); speakText(text); }
   });
@@ -337,7 +359,7 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Modo Alto Contraste</strong>
             <span>Preto profundo, texto amarelo ouro e branco com bordas hiper-nítidas.</span>
           </div>
-          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="highContrast" aria-pressed="${s.highContrast}">
+          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="highContrast" aria-label="Modo Alto Contraste" aria-pressed="${s.highContrast}">
             ${s.highContrast ? '✓ Ativado' : 'Desativado'}
           </button>
         </div>
@@ -359,7 +381,7 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Espaçamento e Legibilidade</strong>
             <span>Aumenta a altura de linha e o espaçamento entre caracteres para facilitar a leitura.</span>
           </div>
-          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="textSpacing" aria-pressed="${s.textSpacing}">
+          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="textSpacing" aria-label="Espaçamento e Legibilidade" aria-pressed="${s.textSpacing}">
             ${s.textSpacing ? '✓ Ativado' : 'Desativado'}
           </button>
         </div>
@@ -370,7 +392,7 @@ export function accessibilityContent(state, esc = s => s) {
             <span>Lê em voz alta textos clicados ou focados, opções, botões e mensagens do jogo.</span>
           </div>
           <div class="a11y-voice-controls">
-            <button type="button" class="a11y-toggle-btn" data-a11y-toggle="screenReader" aria-pressed="${s.screenReader}">
+            <button type="button" class="a11y-toggle-btn" data-a11y-toggle="screenReader" aria-label="Leitor de Voz Sintética Integrado" aria-pressed="${s.screenReader}">
               ${s.screenReader ? '✓ Leitor Ativo' : 'Desativado'}
             </button>
             <button type="button" class="a11y-test-voice" data-a11y-test-voice title="Testar sintetizador de voz">
@@ -384,7 +406,7 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Indicador de Foco Evidente</strong>
             <span>Destaca o elemento selecionado no teclado com uma borda amarela dupla e espessa.</span>
           </div>
-          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="focusIndicator" aria-pressed="${s.focusIndicator}">
+          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="focusIndicator" aria-label="Indicador de Foco Evidente" aria-pressed="${s.focusIndicator}">
             ${s.focusIndicator ? '✓ Ativado' : 'Desativado'}
           </button>
         </div>
@@ -394,9 +416,29 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Reduzir Movimentos e Animações</strong>
             <span>Desliga transições e animações da interface para quem tem sensibilidade ao movimento.</span>
           </div>
-          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="reducedMotion" aria-pressed="${s.reducedMotion}">
+          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="reducedMotion" aria-label="Reduzir Movimentos e Animações" aria-pressed="${s.reducedMotion}">
             ${s.reducedMotion ? '✓ Ativado' : 'Desativado'}
           </button>
+        </div>
+      </section>
+
+      <section class="a11y-section" aria-labelledby="a11y-speech-title">
+        <h2 id="a11y-speech-title"><span aria-hidden="true">🔊</span> Voz e legendas</h2>
+        <div class="a11y-row">
+          <div class="a11y-row-text"><strong>Velocidade da narração</strong><span>Escolha um ritmo confortável para a leitura em voz alta.</span></div>
+          <label class="a11y-select-control">Velocidade<select data-a11y-setting="speechRate"><option value="0.8" ${Number(s.speechRate)===0.8?'selected':''}>Mais devagar</option><option value="1.05" ${Number(s.speechRate)===1.05?'selected':''}>Padrão</option><option value="1.2" ${Number(s.speechRate)===1.2?'selected':''}>Mais rápida</option></select></label>
+        </div>
+        <div class="a11y-row">
+          <div class="a11y-row-text"><strong>Tamanho das legendas</strong><span>Aumenta o texto mostrado enquanto alguém fala.</span></div>
+          <label class="a11y-select-control">Tamanho<select data-a11y-setting="captionSize"><option value="normal" ${s.captionSize==='normal'?'selected':''}>Padrão</option><option value="large" ${s.captionSize==='large'?'selected':''}>Grande</option></select></label>
+        </div>
+        <div class="a11y-row">
+          <div class="a11y-row-text"><strong>Posição das legendas</strong><span>Coloque a legenda no alto ou perto do rodapé.</span></div>
+          <label class="a11y-select-control">Posição<select data-a11y-setting="captionPosition"><option value="top" ${s.captionPosition==='top'?'selected':''}>Em cima</option><option value="bottom" ${s.captionPosition==='bottom'?'selected':''}>Embaixo</option></select></label>
+        </div>
+        <div class="a11y-row">
+          <div class="a11y-row-text"><strong>Ouvir de novo</strong><span>Repete a última fala narrada neste computador.</span></div>
+          <button type="button" data-a11y-replay-speech ${lastSpokenText?'':'disabled'}>Repetir última fala</button>
         </div>
       </section>
 
@@ -612,12 +654,30 @@ export function initAccessibility() {
       return;
     }
 
+    const replay = e.target.closest('[data-a11y-replay-speech]');
+    if (replay) {
+      replayLastSpeech();
+      return;
+    }
+
     const closeWin = e.target.closest('[data-a11y-close-window]');
     if (closeWin) {
       const modal = document.getElementById('a11y-modal-dialog');
       if (modal) modal.remove();
       return;
     }
+  });
+
+  document.addEventListener('change', e => {
+    const control = e.target.closest('[data-a11y-setting]');
+    if (!control) return;
+    const key = control.dataset.a11ySetting, settings = getAccessibilitySettings();
+    if (key === 'speechRate') settings.speechRate = [0.8,1.05,1.2].includes(Number(control.value)) ? Number(control.value) : accessibilityDefaults.speechRate;
+    else if (key === 'captionSize') settings.captionSize = control.value === 'large' ? 'large' : 'normal';
+    else if (key === 'captionPosition') settings.captionPosition = control.value === 'bottom' ? 'bottom' : 'top';
+    else return;
+    saveAccessibilitySettings(settings);
+    if (settings.screenReader) speakText(`${control.labels?.[0]?.innerText||control.getAttribute('aria-label')||'Preferência'}: ${control.selectedOptions?.[0]?.text||control.value}.`);
   });
 }
 

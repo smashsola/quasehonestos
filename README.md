@@ -21,7 +21,7 @@ Quase Honestos é uma comédia interativa no Trambique OS sobre golpes, pressão
 - Os casos incluem falsa central, WhatsApp clonado, voz falsa, Pix, boletos, ransomware, permissões abusivas, skins falsas, anúncios de emprego, investimentos, aluguel, ingressos, doações e outras armadilhas. O catálogo e as categorias estão em `src/defense-round.js`, `src/expanded-scams.js` e `src/case-categories.js`.
 - O Manual oferece uma atividade opcional com situações A/B, cada uma pedindo ação e evidência. O registro é um arquivo JSON local com códigos de decisão/evidência; não inclui conversas. **Ainda não foi aplicada nem validada com estudantes.**
 - O quiz do Manual usa cartões com seleção por teclado e barra de progresso. Na primeira entrada do computador, aparece um convite opcional para fazer a atividade; a escolha é lembrada neste navegador.
-- Acessibilidade inclui leitura em voz alta, tamanho e espaçamento do texto, contraste, foco reforçado, menos movimento e opções de cores para daltonismo. As preferências continuam salvas neste navegador.
+- Acessibilidade inclui leitura em voz alta, controles para repetir a última fala e ajustar ritmo, tamanho e posição das legendas, além de tamanho e espaçamento do texto, contraste, foco reforçado, menos movimento e opções de cores para daltonismo. As preferências continuam salvas neste navegador.
 - Os apps **Acessibilidade** e **Salvamento** podem ser arrastados entre a área de trabalho e a barra. O relógio mostra a data e o menu do Trambique OS usa a foto e o nome do perfil.
 - Salvamentos para outro aparelho são arquivos locais: levam progresso e preferências, mas omitem nome, conversas e anotações; uma situação em andamento recomeça ao carregar. A importação substitui o progresso deste navegador após confirmação.
 - A campanha tem conquistas e segredos diários; o saldo muito negativo pode exibir aviso ou oferecer o recomeço do dia.
@@ -38,6 +38,8 @@ npm ci
 npm run dev
 npm test
 npm run build
+npx playwright install chromium
+npm run test:browser
 ```
 
 O servidor local abre em `http://127.0.0.1:4180` (`PORT` permite escolher outra porta). O build gera `dist/`. Código principal: `src/`, Worker estático: `worker/`, testes: `tests/`.
@@ -52,7 +54,7 @@ A partida, o nome ou apelido, o personagem, a faixa etária, o saldo, as compras
 
 Os testes automatizados cobrem regras, alternativas por idade, salvamento, créditos, campanhas, Correio, compras e regressões. A [auditoria de 27/10/2026](docs/AUDITORIA-2026-10-27.md) documenta a campanha completa por testes de integração, a matriz de telas no navegador, os cliques exercitados e os problemas corrigidos. Testes de software não garantem ausência de bugs nem comprovam impacto educativo.
 
-A matriz de revisão usa 360×800 e 390×844 (celulares), 768×1024 (tablet), 1366×768 e 1920×1080 (computadores). São tamanhos representativos para cobrir diferentes layouts, não uma promessa de que todo aparelho terá o mesmo comportamento. O roteiro inclui primeiro cadastro, retorno, termos, tutorial, seis dias de campanha, respostas das duas faixas etárias, vinganças, Correio, loja, resultados e recarregamento.
+A matriz de revisão automatizada do navegador usa 360×800 e 447×900 (celulares), 768×1024 (tablet), 1280×800 e 1920×1080 (computadores). Em cada tamanho, ela abre uma conversa, abre e fecha Acessibilidade, confere resultado e revanche, testa uma resposta errada e verifica a voz e as legendas. O teste de integração `npm test` percorre as 30 situações nos dois públicos e confirma as regras de resposta, dias, salvamento e revanche. Isso cobre a interface em telas representativas, não todo aparelho nem toda combinação de entrada.
 
 Para repetir estados visuais isolados: `npm run build` e `node scripts/qa-server.mjs`. O servidor de QA escuta somente em `127.0.0.1:4183` (ou `QA_PORT`). As rotas `/__qa` criam perfis e partidas fictícios e substituem o salvamento daquela origem local; use uma origem/perfil descartável. Exemplos e limites estão no relatório. Esse servidor não integra a publicação Cloudflare.
 
@@ -127,7 +129,7 @@ O humor aparece nas conversas e nas respostas engraçadinhas, mas as explicaçõ
 
 ### Evidências e próximos passos
 
-O repositório contém **938 testes automatizados**, além de roteiros de revisão funcional e visual. Esses testes verificam regras, campanhas, conteúdo, salvamento e interface automatizável. Eles demonstram que partes do software se comportam como especificado; não medem compreensão, confiança, retenção nem prevenção real de golpes.
+O repositório contém **947 testes automatizados**, além da matriz de navegador em cinco tamanhos e roteiros de revisão funcional e visual. Esses testes verificam regras, campanhas, conteúdo, salvamento e interface automatizável. Eles demonstram que partes do software se comportam como especificado; não medem compreensão, confiança, retenção nem prevenção real de golpes.
 
 Para avançar no TeenTech, a equipe pode organizar uma revisão de linguagem com educadores, realizar um teste de usabilidade voluntário com atividades fictícias, observar onde as pessoas hesitam e revisar os casos com base nesse retorno. Qualquer avaliação de aprendizagem deve ser planejada com consentimento, coleta mínima e autorização da escola ou responsáveis, conforme a idade e o contexto. Não se deve pedir que participantes compartilhem golpes, senhas, conversas ou situações pessoais.
 

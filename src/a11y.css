@@ -29,6 +29,12 @@ body.qh-has-banner .qh-a11y-fab{display:none}
 .qh-a11y-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 .qh-a11y-caption{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 44px);transform:translateX(-50%);z-index:2147482999;box-sizing:border-box;width:max-content;max-width:min(640px,calc(100vw - 24px));padding:8px 14px;background:#111b26ee;color:#fff;border-radius:4px;border-left:4px solid #e7a867;font:600 15px/1.35 system-ui,sans-serif;text-align:center;overflow-wrap:anywhere;pointer-events:none;opacity:0;transition:opacity .2s}
 .qh-a11y-caption.show{opacity:1}
+.qh-a11y-caption[data-size="large"]{font-size:20px;line-height:1.4}
+.qh-a11y-caption[data-position="bottom"]{top:auto;bottom:calc(env(safe-area-inset-bottom) + 76px)}
+.a11y-select-control{display:flex;align-items:center;gap:8px;flex:0 1 220px;min-width:0;color:#23483d;font-size:13px;font-weight:650}
+.a11y-select-control select{min-width:0;flex:1;padding:8px 30px 8px 10px;border:1px solid #829d91;border-radius:6px;background:#fffdf7;color:#173b32;font:inherit}
+.a11y-section [data-a11y-replay-speech]{min-height:40px;padding:8px 12px;border:1px solid #829d91;border-radius:6px;background:#e1eee6;color:#173b32;font:inherit;font-weight:650}
+.a11y-section [data-a11y-replay-speech]:disabled{opacity:.6;cursor:not-allowed}
 /* Tamanho do texto */
 html[data-qh-text="lg"] :is(p,li,label,legend,h1,h2,h3,input,textarea,button,small,strong):not(:is(p,li,label,button,h1,h2,h3,small,strong) *):not(.qh-a11y-win *){zoom:1.15}
 html[data-qh-text="xl"] :is(p,li,label,legend,h1,h2,h3,input,textarea,button,small,strong):not(:is(p,li,label,button,h1,h2,h3,small,strong) *):not(.qh-a11y-win *){zoom:1.32}
@@ -38,6 +44,7 @@ html.qh-contrast :is(p,small,span,li){text-shadow:none}
 html.qh-focus :focus-visible,html.qh-focus :focus{outline:3px solid #ffcf3a!important;outline-offset:2px!important;box-shadow:0 0 0 6px #173b3a!important}
 /* Menos movimento */
 html.qh-calm *,html.qh-calm *::before,html.qh-calm *::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+@media(max-width:640px){.a11y-select-control{width:100%;flex:1 1 auto}}
 /* Movimento das janelas estilo Windows */
 .desktop-window.window-dragging{box-shadow:0 22px 48px #112d3566,0 4px 8px #112d3540;cursor:grabbing;will-change:left,top}
 .desktop-window .windowbar[data-drag]{cursor:default}
