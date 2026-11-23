@@ -359,7 +359,7 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Modo Alto Contraste</strong>
             <span>Preto profundo, texto amarelo ouro e branco com bordas hiper-nítidas.</span>
           </div>
-          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="highContrast" aria-pressed="${s.highContrast}">
+          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="highContrast" aria-label="Modo Alto Contraste" aria-pressed="${s.highContrast}">
             ${s.highContrast ? '✓ Ativado' : 'Desativado'}
           </button>
         </div>
@@ -381,7 +381,7 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Espaçamento e Legibilidade</strong>
             <span>Aumenta a altura de linha e o espaçamento entre caracteres para facilitar a leitura.</span>
           </div>
-          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="textSpacing" aria-pressed="${s.textSpacing}">
+          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="textSpacing" aria-label="Espaçamento e Legibilidade" aria-pressed="${s.textSpacing}">
             ${s.textSpacing ? '✓ Ativado' : 'Desativado'}
           </button>
         </div>
@@ -392,7 +392,7 @@ export function accessibilityContent(state, esc = s => s) {
             <span>Lê em voz alta textos clicados ou focados, opções, botões e mensagens do jogo.</span>
           </div>
           <div class="a11y-voice-controls">
-            <button type="button" class="a11y-toggle-btn" data-a11y-toggle="screenReader" aria-pressed="${s.screenReader}">
+            <button type="button" class="a11y-toggle-btn" data-a11y-toggle="screenReader" aria-label="Leitor de Voz Sintética Integrado" aria-pressed="${s.screenReader}">
               ${s.screenReader ? '✓ Leitor Ativo' : 'Desativado'}
             </button>
             <button type="button" class="a11y-test-voice" data-a11y-test-voice title="Testar sintetizador de voz">
@@ -406,7 +406,7 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Indicador de Foco Evidente</strong>
             <span>Destaca o elemento selecionado no teclado com uma borda amarela dupla e espessa.</span>
           </div>
-          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="focusIndicator" aria-pressed="${s.focusIndicator}">
+          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="focusIndicator" aria-label="Indicador de Foco Evidente" aria-pressed="${s.focusIndicator}">
             ${s.focusIndicator ? '✓ Ativado' : 'Desativado'}
           </button>
         </div>
@@ -416,7 +416,7 @@ export function accessibilityContent(state, esc = s => s) {
             <strong>Reduzir Movimentos e Animações</strong>
             <span>Desliga transições e animações da interface para quem tem sensibilidade ao movimento.</span>
           </div>
-          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="reducedMotion" aria-pressed="${s.reducedMotion}">
+          <button type="button" class="a11y-toggle-btn" data-a11y-toggle="reducedMotion" aria-label="Reduzir Movimentos e Animações" aria-pressed="${s.reducedMotion}">
             ${s.reducedMotion ? '✓ Ativado' : 'Desativado'}
           </button>
         </div>

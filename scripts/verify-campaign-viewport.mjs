@@ -77,6 +77,9 @@ try{
     const accessibility=page.locator('[data-window-id="accessibility"]');
     await accessibility.waitFor({state:'visible'});
     await assertWithinViewport(accessibility,viewport.width,viewport.height,`${viewport.label} configurações`);
+    for(const name of ['Modo Alto Contraste','Espaçamento e Legibilidade','Leitor de Voz Sintética Integrado','Indicador de Foco Evidente','Reduzir Movimentos e Animações']){
+      assert.equal(await accessibility.getByRole('button',{name}).count(),1,`${viewport.label}: nome acessível para ${name}`);
+    }
     await accessibility.locator('[data-a11y-toggle="screenReader"]').click();
     await accessibility.locator('[data-a11y-setting="speechRate"]').selectOption('0.8');
     await accessibility.locator('[data-a11y-setting="captionSize"]').selectOption('large');
