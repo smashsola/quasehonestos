@@ -1,7 +1,7 @@
 import {revengeMusicTheme} from './revenge-music-themes.js';
 import {localStore as localStorage} from './safe-storage.js';
 import {speechPlan,replyDuration} from './speech-timing.js';
-import {getAccessibilitySettings,speakText,stopSpeaking} from './accessibility.js';
+import {getAccessibilitySettings,speakText,stopSpeaking,showSpeechCaption,clearSpeechCaption} from './accessibility.js';
 let ctx,fanGain,reactionLimiter,computerDead=false;
 // Cartoon syllables: each caller has a different pitch, pace and vowel color.
 const speakingNodes=new Set();
@@ -14,8 +14,10 @@ document.addEventListener('qh-speaking-stop',()=>{stopMurmurs();document.dispatc
 document.addEventListener('qh-computer-restart',()=>{computerDead=false;if(ctx?.state==='suspended')ctx.resume().then(updateFan).catch(()=>{});});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopMurmurs();});
 document.addEventListener('click',e=>{if(e.target.closest('[data-sound-mute]'))stopMurmurs();},true);
+document.addEventListener('qh-speaking-end',()=>clearSpeechCaption());
+document.addEventListener('qh-murmur-skipped',()=>clearSpeechCaption());
 document.addEventListener('qh-murmur',async e=>{
- const detail=e.detail||{},skip=()=>document.dispatchEvent(new CustomEvent('qh-murmur-skipped',{detail:{caller:detail.caller}}));stopMurmurs();const run=murmurRun;
+ const detail=e.detail||{},skip=()=>document.dispatchEvent(new CustomEvent('qh-murmur-skipped',{detail:{caller:detail.caller}}));stopMurmurs();if(detail.text)showSpeechCaption(detail.text,Math.max(10000,(Number(detail.duration)||0)+5000));const run=murmurRun;
  if(!computerDead&&!document.hidden&&detail.text&&getAccessibilitySettings().screenReader){
   const utterance=speakText(detail.text);if(!utterance){skip();return;}
   const duration=Math.max(replyDuration(detail.text),Math.min(30000,1200+detail.text.length*115));let ended=false;

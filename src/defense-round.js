@@ -24,7 +24,7 @@ export const defensePeople=[
 ];
 
 export const defenseCases={
- whatsapp:{title:'Pedido urgente de Pix no WhatsApp',technique:'Alguém usa outro número e finge ser uma pessoa conhecida para pedir dinheiro com pressa.',message:'Oi, sou eu! Troquei de número. Preciso pagar uma conta agora. Faz um Pix de R$ 480 pra mim? Depois explico.',cues:['Número novo sem confirmação por outro canal','Pedido de dinheiro com pressa','A história ainda não foi confirmada'],choices:[
+ whatsapp:{title:'Pedido urgente de Pix no WhatsApp',technique:'Alguém usa outro número e finge ser uma pessoa conhecida para pedir dinheiro com pressa.',message:'Oi, sou eu! Troquei de número. Preciso pagar uma conta agora. Faz um Pix de C$ 480 pra mim? Depois explico.',cues:['Número novo sem confirmação por outro canal','Pedido de dinheiro com pressa','A história ainda não foi confirmada'],choices:[
   {id:'verify-person',label:'AÇÃO — ligar para o número que você já tinha salvo e confirmar com a pessoa',safe:true,feedback:'Boa. A ligação pelo contato conhecido confirma a identidade sem depender do número novo.'},
   {id:'send-pix',label:'AÇÃO — fazer o Pix agora porque a mensagem parece ser da pessoa',safe:false,feedback:'A foto e o nome podem ser copiados. Confirme por um canal conhecido antes de transferir.'},
   {id:'ask-secret',label:'AÇÃO — pedir que a pessoa envie um código recebido por SMS',safe:false,classification:'Pedido de código',feedback:'Código de acesso não confirma identidade e não deve ser compartilhado. Use uma ligação ou outro canal conhecido.'},
@@ -52,7 +52,7 @@ export const defenseCases={
   {id:'track-official',label:'AÇÃO — abrir o app/site oficial da loja ou transportadora por conta própria',safe:true,feedback:'Boa. Consulte o pedido pelo app ou endereço que você já conhece.'},
   {id:'pay-link',label:'AÇÃO — abrir o link e preencher o cartão para liberar o pacote',safe:false,feedback:'A página pode copiar os dados do cartão. Não use o link; confira o pedido no app oficial.'},
   {id:'reply-cpf',label:'AÇÃO — responder com CPF e endereço para confirmar a entrega',safe:false,classification:'Resposta por mensagem',feedback:'Não envie dados pessoais por resposta a uma mensagem inesperada. Confirme pelo canal oficial.'},
-  {id:'ask-store',label:'AÇÃO — dizer “Minha encomenda foi sequestrada por um link de R$ 4,90?” e conferir no app da loja',safe:true,witty:true,feedback:'Boa. A taxa surpresa ficou sem surpresa: você conferiu o pedido no app conhecido.'}
+  {id:'ask-store',label:'AÇÃO — dizer “Minha encomenda foi sequestrada por um link de C$ 4,90?” e conferir no app da loja',safe:true,witty:true,feedback:'Boa. A taxa surpresa ficou sem surpresa: você conferiu o pedido no app conhecido.'}
  ]},
  ransomware:{title:'Anexo suspeito: “nota fiscal urgente”',technique:'O arquivo pode instalar um programa que trava os documentos e cobra dinheiro para liberar. Aqui, tudo acontece só no computador do jogo.',message:'Segue a nota fiscal que faltou. Clique em “Habilitar conteúdo” para abrir. Se não pagar hoje, perde o prazo.',cues:['Anexo inesperado e pressão por prazo','Pede para liberar funções ou abrir outro arquivo','Um programa pode travar seus arquivos; pagar não garante que voltem'],choices:[
   {id:'dont-open-report',label:'AÇÃO — não abrir; confirmar a nota com quem enviou por um contato conhecido',safe:true,feedback:'Boa. Você evitou executar o anexo e confirmou a cobrança por outro canal.'},
