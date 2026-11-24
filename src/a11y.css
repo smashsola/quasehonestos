@@ -29,6 +29,8 @@ body.qh-has-banner .qh-a11y-fab{display:none}
 .qh-a11y-foot{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
 .qh-a11y-caption{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 44px);transform:translateX(-50%);z-index:2147482999;box-sizing:border-box;width:max-content;max-width:min(640px,calc(100vw - 24px));padding:8px 14px;background:#111b26ee;color:#fff;border-radius:4px;border-left:4px solid #e7a867;font:600 15px/1.35 system-ui,sans-serif;text-align:center;overflow-wrap:anywhere;pointer-events:none;opacity:0;transition:opacity .2s}
 .qh-a11y-caption.show{opacity:1}
+/* Keep the spoken caption below the first-visit controls instead of covering their copy. */
+body:has(.os-login) .qh-a11y-caption{position:static;display:block;transform:none;width:auto;max-width:none;max-height:none;overflow:visible;margin:8px 0}
 .qh-a11y-caption[data-size="large"]{font-size:20px;line-height:1.4}
 .qh-a11y-caption[data-position="bottom"]{top:auto;bottom:calc(env(safe-area-inset-bottom) + 76px)}
 .a11y-select-control{display:flex;align-items:center;gap:8px;flex:0 1 220px;min-width:0;color:#23483d;font-size:13px;font-weight:650}
@@ -118,7 +120,9 @@ html body #app .desktop .desktop-window>.windowbar button.window-max-control svg
 html body #app .desktop .desktop-window>.windowbar button[data-window]:hover,
 html body #app .desktop .desktop-window>.windowbar button.window-max-control:hover{background:#00000012!important;color:#111!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]{position:relative;font-size:0!important}
-html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]::before{content:"";display:block;width:12px;border-top:2px solid #111}
+html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]::before{content:"";display:block;width:12px;border-top:2px solid #111;transform:translateY(2px)}
+html body #app .desktop .desktop-window>.windowbar button.window-max-control svg,
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"] svg{stroke:#111!important;color:#111!important;filter:none!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover,
 html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:active{background:#c42b1c!important;border-color:#c42b1c!important;color:#fff!important;border-radius:0!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover svg,
@@ -201,14 +205,6 @@ html.a11y-high-contrast .a11y-modal-content .a11y-daltonism-card{background:#000
  .desktop-window>.windowbar{border-radius:0!important}
  .desktop-window>.app-window-body,.desktop-window>.call-window-body{margin:0!important}
 }
-/* Shared title-bar palette for minimize, maximize, and close controls. */
-html body #app .desktop .desktop-window>.windowbar button[data-window],html body #app .desktop .desktop-window>.windowbar button.window-max-control{color:#21483f!important;background:transparent!important;border-color:transparent!important;box-shadow:none!important;text-shadow:none!important}
-html body #app .desktop .desktop-window>.windowbar button[data-window] svg,html body #app .desktop .desktop-window>.windowbar button.window-max-control svg{color:#21483f!important;stroke:#21483f!important}
-html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]::before{border-top-color:#21483f!important}
-html body #app .desktop .desktop-window>.windowbar button[data-window]:hover,html body #app .desktop .desktop-window>.windowbar button.window-max-control:hover{background:#21483f14!important;color:#21483f!important}
-html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover{background:#bd3d32!important;color:#fff!important}
-html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover svg{stroke:#fff!important;color:#fff!important}
-
 /* Accessibility app redesign: one clear reading column with a warm, high-contrast surface. */
 .desktop-window[data-window-id="accessibility"] .app-window-body{background:#e9f0e9!important;color:#183b32!important}
 .desktop-window[data-window-id="accessibility"] .a11y-window-view{max-width:760px;padding:24px clamp(16px,4vw,34px) 32px;color:#183b32}

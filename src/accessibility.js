@@ -50,8 +50,11 @@ export function showSpeechCaption(text, timeoutMs = 30000) {
     speechCaptionNode.className = 'qh-a11y-caption';
     speechCaptionNode.setAttribute('aria-hidden', 'true');
     speechCaptionNode.setAttribute('dir', 'auto');
-    document.body.append(speechCaptionNode);
   }
+  const login = document.querySelector('.os-login');
+  const prompt = login?.querySelector('.a11y-entry-prompt');
+  if (login && prompt) prompt.insertAdjacentElement('afterend', speechCaptionNode);
+  else if (speechCaptionNode.parentElement !== document.body) document.body.append(speechCaptionNode);
   clearTimeout(speechCaptionTimer);
   const revision = ++speechCaptionRevision;
   speechCaptionNode.textContent = clean;
@@ -62,6 +65,10 @@ export function showSpeechCaption(text, timeoutMs = 30000) {
   if (timeoutMs > 0) speechCaptionTimer = setTimeout(() => clearSpeechCaption(revision), timeoutMs);
   return revision;
 }
+
+if (typeof document !== 'undefined') document.addEventListener('qh-player-login', () => {
+  if (speechCaptionNode?.isConnected && speechCaptionNode.parentElement !== document.body) document.body.append(speechCaptionNode);
+});
 
 export function clearSpeechCaption(revision = 0) {
   if (revision && revision !== speechCaptionRevision) return;
