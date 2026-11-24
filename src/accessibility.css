@@ -708,12 +708,133 @@ html.a11y-high-contrast .a11y-test-voice { background: #ffdf00 !important; color
 .assessment-question-feedback[data-result=correct] { border-left-color: #286c49; background: #e3f2e5; color: #1e4932; }
 html.a11y-high-contrast .assessment-question-feedback, html.a11y-high-contrast .assessment-question-feedback[data-result=correct] { border: 2px solid #fff; background: #000; color: #fff; }
 
-/* Accessibility onboarding: responsive two-row card; dialog sits above the first-visit screen. */
-.a11y-entry-prompt{display:grid!important;grid-template-columns:34px minmax(0,1fr)!important;align-items:start!important;gap:8px 10px!important;width:min(520px,calc(100vw - 24px))!important;max-width:calc(100vw - 24px)!important;box-sizing:border-box!important}
-.a11y-entry-icon{grid-column:1;grid-row:1}.a11y-entry-icon svg{display:block;width:34px;height:34px}
-.a11y-entry-text{grid-column:2;grid-row:1;min-width:0!important;overflow-wrap:anywhere}.a11y-entry-text p{white-space:normal!important;line-height:1.45!important}
-.a11y-entry-actions{grid-column:1/-1;grid-row:2;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;width:100%!important;min-width:0!important;padding:9px!important;box-sizing:border-box!important;border:1px solid #517566;border-radius:9px;background:#203d36}
-.a11y-entry-actions button{width:100%;min-width:0!important;min-height:42px;white-space:normal!important;padding:8px!important;font-size:12px!important}
-.a11y-entry-confirm{grid-column:1/-1;grid-row:3;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:8px;padding:9px;border:1px solid #8da99a;border-radius:8px;background:#203d36;box-sizing:border-box}.a11y-entry-confirm[hidden]{display:none!important}
+/* First-visit accessibility prompt: keep its controls aligned and in the game's visual language. */
+.a11y-entry-prompt {
+  display: grid !important;
+  grid-template-columns: 34px minmax(0, 1fr) !important;
+  align-self: center;
+  align-items: start !important;
+  gap: 8px 10px !important;
+  width: min(520px, 100%) !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+.a11y-entry-icon { grid-column: 1; grid-row: 1; }
+.a11y-entry-icon svg { display: block; width: 34px; height: 34px; }
+.a11y-entry-text {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0 !important;
+  overflow-wrap: anywhere;
+}
+.a11y-entry-text p { white-space: normal !important; line-height: 1.45 !important; }
+.a11y-entry-actions {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 9px !important;
+  box-sizing: border-box !important;
+  border: 1px solid #517566;
+  border-radius: 11px;
+  background: #203d36;
+}
+.a11y-entry-actions button {
+  width: 100%;
+  min-width: 0 !important;
+  min-height: 42px;
+  white-space: normal !important;
+  padding: 8px 12px !important;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  cursor: pointer;
+}
+.a11y-entry-confirm {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  justify-content: stretch;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 9px;
+  border: 1px solid #8da99a;
+  border-radius: 11px;
+  background: #203d36;
+  box-sizing: border-box;
+}
+.a11y-entry-confirm[hidden] { display: none !important; }
+.a11y-entry-confirm > span {
+  min-width: 0;
+  color: #f2eee1;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+.a11y-entry-confirm button {
+  appearance: none;
+  min-width: 88px;
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid #8da99a;
+  border-radius: 9px;
+  background: #294b3f;
+  color: #f6f3e9;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.25;
+  white-space: normal;
+  cursor: pointer;
+  transition: background-color .16s ease, border-color .16s ease, transform .16s ease;
+}
+.a11y-entry-confirm button:hover { background: #365f4f; border-color: #b1c8b7; }
+.a11y-entry-confirm button:active { transform: translateY(1px); }
+.a11y-entry-confirm button:focus-visible { outline: 3px solid #ffd88a; outline-offset: 2px; }
+.a11y-entry-confirm [data-a11y-dismiss-confirm] {
+  border-color: #f0c780;
+  background: #e5b364;
+  color: #20382f;
+}
+.a11y-entry-confirm [data-a11y-dismiss-confirm]:hover { background: #f2ca83; border-color: #ffe0a2; }
+.login-return-card > .a11y-entry-prompt { width: 100% !important; max-width: 100% !important; }
+.login-return-card > .a11y-entry-prompt { grid-template-columns: minmax(0, 1fr) auto !important; }
+.login-return-card > .a11y-entry-prompt .a11y-entry-text { grid-column: 1 !important; grid-row: 1 !important; }
+.login-return-card > .a11y-entry-prompt .a11y-entry-actions {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  display: flex !important;
+  width: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+.login-return-card > .a11y-entry-prompt .a11y-entry-confirm {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+.a11y-high-contrast .a11y-entry-confirm { border: 2px solid #fff; background: #000; }
+.a11y-high-contrast .a11y-entry-confirm > span { color: #fff; }
+.a11y-high-contrast .a11y-entry-confirm button,
+.a11y-high-contrast .a11y-entry-confirm [data-a11y-dismiss-confirm] { border: 2px solid #fff; background: #000; color: #ffed00; }
 .a11y-modal-backdrop{z-index:200000!important}
-@media(max-width:520px){.a11y-entry-prompt{padding:10px!important;gap:8px!important}.a11y-entry-text p{font-size:12px!important}.a11y-entry-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:780px) {
+  .a11y-entry-prompt { width: 100% !important; max-width: 520px !important; }
+}
+@media(max-width:390px) {
+  .a11y-entry-prompt { padding: 10px !important; gap: 8px !important; }
+  .a11y-entry-text p { font-size: 12px !important; }
+  .a11y-entry-confirm { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .a11y-entry-confirm > span { grid-column: 1 / -1; }
+  .a11y-entry-confirm button { min-width: 0; }
+}
