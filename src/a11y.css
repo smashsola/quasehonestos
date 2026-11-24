@@ -30,7 +30,7 @@ body.qh-has-banner .qh-a11y-fab{display:none}
 .qh-a11y-caption{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 44px);transform:translateX(-50%);z-index:2147482999;box-sizing:border-box;width:max-content;max-width:min(640px,calc(100vw - 24px));padding:8px 14px;background:#111b26ee;color:#fff;border-radius:4px;border-left:4px solid #e7a867;font:600 15px/1.35 system-ui,sans-serif;text-align:center;overflow-wrap:anywhere;pointer-events:none;opacity:0;transition:opacity .2s}
 .qh-a11y-caption.show{opacity:1}
 /* Keep the spoken caption below the first-visit controls instead of covering their copy. */
-body:has(.os-login) .qh-a11y-caption{top:max(270px,calc(env(safe-area-inset-top) + 250px));max-height:calc(100dvh - 290px);overflow:auto}
+body:has(.os-login) .qh-a11y-caption{position:static;display:block;transform:none;width:auto;max-width:none;max-height:none;overflow:visible;margin:8px 0}
 .qh-a11y-caption[data-size="large"]{font-size:20px;line-height:1.4}
 .qh-a11y-caption[data-position="bottom"]{top:auto;bottom:calc(env(safe-area-inset-bottom) + 76px)}
 .a11y-select-control{display:flex;align-items:center;gap:8px;flex:0 1 220px;min-width:0;color:#23483d;font-size:13px;font-weight:650}
@@ -121,6 +121,8 @@ html body #app .desktop .desktop-window>.windowbar button[data-window]:hover,
 html body #app .desktop .desktop-window>.windowbar button.window-max-control:hover{background:#00000012!important;color:#111!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]{position:relative;font-size:0!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window="minimize"]::before{content:"";display:block;width:12px;border-top:2px solid #111;transform:translateY(2px)}
+html body #app .desktop .desktop-window>.windowbar button.window-max-control svg,
+html body #app .desktop .desktop-window>.windowbar button[data-window="close"] svg{stroke:#111!important;color:#111!important;filter:none!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover,
 html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:active{background:#c42b1c!important;border-color:#c42b1c!important;color:#fff!important;border-radius:0!important}
 html body #app .desktop .desktop-window>.windowbar button[data-window="close"]:hover svg,
