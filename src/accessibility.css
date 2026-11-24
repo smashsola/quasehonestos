@@ -839,24 +839,3 @@ html.a11y-high-contrast .assessment-question-feedback, html.a11y-high-contrast .
   .a11y-entry-confirm button { min-width: 0; }
 }
 
-/* Use matching titlebar control tiles; center the minimize dash like the other symbols. */
-.desktop-window > .windowbar > div > button[data-window="minimize"],
-.desktop-window > .windowbar > div > button[data-max],
-.desktop-window > .windowbar > div > button[data-window="close"] {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  background: #e8f0eb !important;
-  color: #294a3e !important;
-  border: 1px solid #a4baad !important;
-  box-shadow: 0 1px 3px #09231e25 !important;
-  font-weight: 800;
-  line-height: 1;
-}
-.desktop-window > .windowbar > div > button[data-window="minimize"] { padding: 0 0 3px !important; }
-.desktop-window > .windowbar > div > button[data-max] { padding: 0 !important; }
-.desktop-window > .windowbar > div > button[data-window="close"] { padding: 0 !important; }
-.desktop-window > .windowbar > div > button[data-window="minimize"]:hover,
-.desktop-window > .windowbar > div > button[data-max]:hover { background: #dce9e1 !important; color: #203d35 !important; }
-.desktop-window > .windowbar > div > button[data-window="close"]:hover { background: #c7372b !important; border-color: #b52e23 !important; color: #fff !important; }
